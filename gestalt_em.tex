@@ -54,7 +54,7 @@ We can discard the terms not depending on $g$. So taking the logarithm of the un
 \end{split}
 \end{equation}
 %
-where $g \in \left(0,1 \right]$ and $-\infty$ everywhere else. The negative log-posterior can be regarded as an energy function for a dynamical system updating invariantly to the posterior distribution. To use Hamiltonian MC sampling, the gradient of this energy has to be constructed as follows
+where $g \in \left(0,1 \right]$ and $\sum_{k=1}^{K} g_k = 1$, and $-\infty$ everywhere else. The negative log-posterior can be regarded as an energy function for a dynamical system updating invariantly to the posterior distribution. To use Hamiltonian MC sampling, the gradient of this energy has to be constructed as follows
 
 \begin{eqnarray}
 E(g,v) = \frac{1}{2} \left[(x-Av)^T C_x^{-1} (x-Av) + \log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)\\
