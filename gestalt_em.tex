@@ -1,0 +1,131 @@
+\documentclass{paper}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\begin{document}
+
+\title{EM for the gestalt-model}
+\maketitle
+
+\section{Generative model}
+
+A gestalt, a perceptual object is characterised by a covariance component for the joint distribution of visual neural activity. 
+
+\begin{eqnarray}
+p(v \mid g) = \mathcal{N}(v; 0,C_v) \\
+C_v = \sum_{k=1}^K g_k C_k \label{eq:cv}
+\end{eqnarray}
+%
+where K is the fixed number of possible gestalts in the visual scene and $g_k$ is the strength of the gestalt number $k$, coming from a $K$-dimensional symmetric Dirichlet prior distribution with concentration parameter $\alpha$ controlling the sparsity of the prior.
+
+\begin{equation}
+p(g) = \textrm{Dir}(g; \alpha)
+\end{equation}
+%
+The pixel intensities are generated from the neural activity through a set of linear projective field models, possibly Gabor filters, $A$, adding some independent observational noise.
+
+\begin{eqnarray}
+p(x \mid v) = \mathcal{N}(x; Av,C_x) \\
+C_x = \sigma_x I;
+\end{eqnarray}
+
+\section{E-step}
+
+The joint posterior over hidden variables $g$ and $v$ is the following
+
+\begin{equation}
+p(v,g \mid x) = p(x \mid v,g) \frac{p(v,g)}{p(x)} = p(x \mid v) p(v \mid g) p(g)\frac{1}{p(x)}
+\end{equation}
+%
+For the purpose of sampling, we can discard the normalisation factor $p(x)$ and the normalisation constants of the Gaussians. The logarithm of the Dirichlet prior over $g$ looks like the following. 
+
+\begin{equation}
+\log p(g) = \log(\Gamma(\alpha K)) - \log(\Gamma(\alpha)^K) + (\alpha-1) \sum_{k=1}^K \log(g_k)
+\end{equation}
+
+%
+We can discard the terms not depending on $g$. So taking the logarithm of the unnormalised posterior, the sampling target will look like this
+
+\begin{equation}
+\begin{split}
+&\log p(v,g \mid x) \sim \\ 
+&-\frac{1}{2} \left[(x-Av)^T C_x^{-1} (x-Av) + \log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k) \label{eq:log_post}
+\end{split}
+\end{equation}
+%
+where $g \in \left(0,1 \right]$ and $-\infty$ everywhere else. The negative log-posterior can be regarded as an energy function for a dynamical system updating invariantly to the posterior distribution. To use Hamiltonian MC sampling, the gradient of this energy has to be constructed as follows
+
+\begin{eqnarray}
+E(g,v) = \frac{1}{2} \left[(x-Av)^T C_x^{-1} (x-Av) + \log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)\\
+\begin{split}
+&\frac{\partial E(g,v)}{\partial g_j} = \\
+&\frac{1}{2} \sum_{a=1}^{D_v} \sum_{b=1}^{D_v} \left[ \left( \sum_{k=1}^K g_k C_k \right)^{-1} \left[ I - vv^T \left( \sum_{k=1}^K g_k C_k \right)^{-1} \right] \right]_{a,b} \left[ C_j \right]_{a,b} + \frac{(\alpha-1)}{g_j}
+\end{split}\\
+\frac{\partial E(g,v)}{\partial v} = A^T C_x^{-1}(Av-x) + \left( \sum_{k=1}^K g_k C_k \right)^{-1} v
+\end{eqnarray}
+%
+denoting the dimension of $v$ as $D_v$ and using differentiating rules \ref{eq:diffrule1}, \ref{eq:diffrule2} and \ref{eq:diffrule3}
+
+\begin{eqnarray}
+\frac{\partial}{\partial M} \log(\det(M))= M^{-T} \label{eq:diffrule1}\\
+\frac{\partial}{\partial M} a^T M^{-1} a = - M^{-T} aa^T M^{-T} \label{eq:diffrule2}\\
+f: \mathbb{R}^{D \times D} \rightarrow \mathbb{R} \;\;\; h: \mathbb{R} \rightarrow \mathbb{R}^{D \times D} \nonumber\\
+\frac{\partial}{\partial x} f(h(x)) = \sum_{a=1}^D \sum_{b=1}^D \left[ \frac{\partial}{\partial h(x)} f(h(x)) \right]_{a,b} \left[ \frac{\partial}{\partial x} h(x) \right]_{a,b} \label{eq:diffrule3}
+\end{eqnarray}
+
+However, given that the prior and thus the posterior over $g$ does not have relevant gradient information outside of the unit interval, it is a better idea to use a combined sampler that proposes from Hamiltonian dynamics only for the dimensions of $v$.
+
+\section{M-step}
+
+The complete-data likelihood with respect to a set of observations, $X = \lbrace x_1 \dots x_N \rbrace$ is the following
+
+\begin{equation}
+p(v,g,X \mid C_{1..K}) = \prod_{n=1}^N p(x_n \mid v) p(v \mid g) p(g)
+\end{equation}
+%
+Its logarithm ($\mathcal{L}=\log p(v,g,x \mid C_{1..K})$) is similar to \ref{eq:log_post}. We can approximate the integral of this logarithm over the joint posterior by averaging over $L$ samples from it, separately for each observation $x_n$. As we will seek the values of the covariance components $C_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters. This way we arrive to the following expression (substituting for $C_v$ according to \ref{eq:cv})
+
+\begin{equation}
+\mathcal{L} \sim \sum_{n=1}^N \frac{1}{L} \sum_{l=1}^L -\frac{1}{2} \left[\log \left( \det \left( \sum_{k=1}^K g_k^{l,n} C_k \right) \right) + v^{(l,n)T}  \left( \sum_{k=1}^K g_k^{l,n} C_k \right)^{-1} v^{l,n}\right]
+\end{equation}
+%
+The double summation over $L$ samples over all $N$ observations always happens on the same terms, so we can substitute it with a single sum that iterates over the full sample set. So taking the derivative with respect to one of the covariance components $j \in \left[ 1,k \right]$, we get
+
+\begin{equation}\label{eq:deriv}
+\frac{\partial \mathcal{L}}{\partial C_j} = -\frac{1}{2L} \sum_{m=1}^{LN} g_j^m \left[ \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} - \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} v^m v^{mT} \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} \right]
+\end{equation}
+%
+using $\frac{\partial}{\partial C_j} \sum_{k=1}^K g_k^m C_k = g_j^m$ and the differentiating rules \ref{eq:diffrule1} and \ref{eq:diffrule2} (all $C_j$ matrices are symmetric and regular, so transposes are identical and determinants are nonzero).
+
+Setting  \ref{eq:deriv} to zero and multiplying it from the left by $\sum_{k=1}^K g_k^m C_k$ gives
+
+\begin{equation}\label{eq:zero}
+0 =  -\frac{1}{2L} \sum_{m=1}^{LN}  g_j^m \left[ I -  v^m v^{mT} \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} \right]
+\end{equation}
+%
+multiplying by $-2L$ and by $\sum_{k=1}^K g_k^m C_k$, but this time from the right, gives
+
+\begin{equation}
+0 = \sum_{m=1}^{LN} g_j^m \left[ \sum_{k=1}^K g_k^m C_k - v^m v^{mT} \right]
+\end{equation}
+%
+rearranging the sums yields
+
+\begin{equation}
+0 =  \sum_{k=1}^K C_k \sum_{m=1}^{LN} g_j^m g_k^m  - \sum_{m=1}^{LN} g_j^m v^m v^{mT}
+\end{equation}
+%
+From this we can express $C_j$ to get
+
+\begin{equation}
+C_j^{new} = \frac{1}{\sum_{m=1}^{LN} g_j^{m2}} \left[ \sum_{m=1}^{LN} g_j^m v^m v^{mT} - \sum_{k \neq j}^K C_k \sum_{m=1}^{LN} g_j^m g_k^m \right]
+\end{equation}
+%
+that may be rearranged to
+
+\begin{equation}
+C_j^{new} = \frac{1}{\sum_{m=1}^{LN} g_j^{m2}} \sum_{m=1}^{LN} g_j^m \left[ v^m v^{mT} - \sum_{k \neq j}^K g_k^m C_k \right]
+\end{equation}
+
+\end{document}
