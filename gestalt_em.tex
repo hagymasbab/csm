@@ -5,7 +5,7 @@
 
 \begin{document}
 
-\title{EM for the gestalt-model}
+\title{EM for the gestalt model}
 \maketitle
 
 \section{Generative model}
@@ -29,6 +29,8 @@ The pixel intensities are generated from the neural activity through a set of li
 p(x \mid v) = \mathcal{N}(x; Av,C_x) \\
 C_x = \sigma_x I;
 \end{eqnarray}
+
+We might assume that a single composition of gestalts, characterised by the $g$ vector, generates a batch of $B$ images, described by cellular activities $V = \lbrace v_1 \dots v_B \rbrace$ and observations $X = \lbrace x_1 \dots x_B \rbrace$. 
 
 \section{E-step}
 
@@ -54,10 +56,17 @@ We can discard the terms not depending on $g$. So taking the logarithm of the un
 \end{split}
 \end{equation}
 %
-where $g \in \left(0,1 \right]$ and $\sum_{k=1}^{K} g_k = 1$, and $-\infty$ everywhere else. The negative log-posterior can be regarded as an energy function for a dynamical system updating invariantly to the posterior distribution. To use Hamiltonian MC sampling, the gradient of this energy has to be constructed as follows
+where $g \in \left(0,1 \right]$ and $\sum_{k=1}^{K} g_k = 1$, and $-\infty$ everywhere else. 
+
+\subsection{Hamiltonian Monte Carlo Sampling}
+
+The negative log-posterior can be regarded as an energy function for a dynamical system updating invariantly to the posterior distribution. To use Hamiltonian MC sampling, the gradient of this energy has to be constructed as follows
 
 \begin{eqnarray}
-E(g,v) = \frac{1}{2} \left[(x-Av)^T C_x^{-1} (x-Av) + \log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)\\
+\begin{split}
+&E(g,v) = \\
+&\frac{1}{2} \left[(x-Av)^T C_x^{-1} (x-Av) + \log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
+\end{split}\\
 \begin{split}
 &\frac{\partial E(g,v)}{\partial g_j} = \\
 &\frac{1}{2} \sum_{a=1}^{D_v} \sum_{b=1}^{D_v} \left[ \left( \sum_{k=1}^K g_k C_k \right)^{-1} \left[ I - vv^T \left( \sum_{k=1}^K g_k C_k \right)^{-1} \right] \right]_{a,b} \left[ C_j \right]_{a,b} + \frac{(\alpha-1)}{g_j}
@@ -73,8 +82,46 @@ denoting the dimension of $v$ as $D_v$ and using differentiating rules \ref{eq:d
 f: \mathbb{R}^{D \times D} \rightarrow \mathbb{R} \;\;\; h: \mathbb{R} \rightarrow \mathbb{R}^{D \times D} \nonumber\\
 \frac{\partial}{\partial x} f(h(x)) = \sum_{a=1}^D \sum_{b=1}^D \left[ \frac{\partial}{\partial h(x)} f(h(x)) \right]_{a,b} \left[ \frac{\partial}{\partial x} h(x) \right]_{a,b} \label{eq:diffrule3}
 \end{eqnarray}
-
+%
 However, given that the prior and thus the posterior over $g$ does not have relevant gradient information outside of the unit interval, it is a better idea to use a combined sampler that proposes from Hamiltonian dynamics only for the dimensions of $v$.
+
+\subsection{Gibbs sampling}
+
+A more efficient way to collect samples from the joint posterior over all hidden variables is to employ a Gibbs sampling scheme, where we sample from the conditional posteriors. The first is over $v$, and can be defined as follows
+
+\begin{equation} \label{eq:condpost}
+p(v \mid x,g) = \frac{p(x \mid v,g) p(v \mid g)}{p(x \mid g)} = \frac{\mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,C_v)}{\int_{-\infty}^{\infty} \mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,C_v) \mathrm{d}v}
+\end{equation}
+%
+The Gaussian over $x$ can be rewritten to a Gaussian over $v$ times a constant $c_1$ in the following way
+
+\begin{equation}
+\mathcal{N}(x;Av,\sigma_x I) = c_1 \mathcal{N}(v; -2 (A^T A)^{-1} A^T x, \sigma_x (A^T A)^{-1})
+\end{equation}
+%
+Consequently, the product of two Gaussians in the numerator of Eq. \ref{eq:condpost} can also be written as a Gaussian over $v$ introducing a new constant
+
+\begin{equation}
+\mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,C_v) = c_1 c_2 \mathcal{N}(v; \mu_{post},C_{post})
+\end{equation}
+%
+The denominator of Eq. \ref{eq:condpost} is the integral of this formula, which evaluates to $c_1c_2$, as the Gaussian integrates to one. This cancels the constants in the numerator, making the conditional posterior equal to the combined Gaussian over $v$, which, after expanding $\mu_{post}$ and $C_{post}$, is
+
+\begin{equation}
+p(v \mid x,g) = \mathcal{N}\left(v; -\frac{2}{\sigma_x} \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1}\right)
+\end{equation}
+%
+which can be sampled directly. The conditional posterior over $g$ is defined as follows
+
+\begin{equation} 
+p(g \mid x,v) = \frac{p(x \mid g,v) p(g \mid v)}{p(x \mid v)} = \frac{p(v \mid g) p(g)}{p(v)}
+\end{equation}
+%
+which can be sampled by a Metropolis-Hastings scheme with the following target
+
+\begin{equation} 
+\log p(g \mid x,v) \sim -\frac{1}{2} \left[\log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
+\end{equation}
 
 \section{M-step}
 
