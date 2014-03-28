@@ -43,7 +43,7 @@ function gestalt = gestaltCreate(name,varargin)
     
     gestalt = gestaltGenerate(gestalt,gestalt.N);
     fprintf('Transforming synthetic data\n');
-    gestalt.tX = gestalt.X * (gestalt.R)';
+    gestalt.tX = gestalt.X * gestalt.A';
     
     fprintf('Saving results\n');
     save(strcat('gestalt_',name,'.mat'),'gestalt');
