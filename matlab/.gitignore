@@ -1,2 +1,4 @@
 # ignore .mat files as they contain generated data
 *.mat
+# also temporary code files created by matlab
+*~
