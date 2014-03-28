@@ -33,14 +33,16 @@ function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
             printCounter(n);
         end
         % gestaltPlotPosterior(ge,ge.X(n,:)');
-        logpdf = @(gv) gestaltUnnormLogPost(gv(1:ge.k,:),gv(ge.k+1:size(gv),:),ge.X(n,:)',ge);
+        %logpdf = @(gv) gestaltUnnormLogPost(gv(1:ge.k,:),gv(ge.k+1:size(gv),:),ge.X(n,:)',ge);
         %grad = @(gv) gestaltLogPostGradient(gv(1:ge.k,:),gv(ge.k+1:size(gv),:),ge.X(n,:)',ge,true);
-        gradObj = GestaltLogPostGrad(ge);
-        grad = @(gv) gradObj.statefulGrad(gv(1:ge.k,:),gv(ge.k+1:size(gv),:),ge.X(n,:)',ge);
-        coeff = symmetricDirichlet(ge.sparsity,ge.k,1)';
-        Cv = componentSum(coeff,ge.cc);
-        [s,rr_act] = combinedMC(init,1:ge.k,logpdf,grad,nSamp,Cv,0.05,'summedToOne',true,'plot',pl,'verbose',v);
+        %gradObj = GestaltLogPostGrad(ge);
+        %grad = @(gv) gradObj.statefulGrad(gv(1:ge.k,:),gv(ge.k+1:size(gv),:),ge.X(n,:)',ge);
+        %coeff = symmetricDirichlet(ge.sparsity,ge.k,1)';
+        %Cv = componentSum(coeff,ge.cc);
+        %[s,rr_act] = combinedMC(init,1:ge.k,logpdf,grad,nSamp,Cv,0.05,'summedToOne',true,'plot',pl,'verbose',v);
         %[s,rr_act] = combinedMC(init,[],logpdf,grad,nSamp,Cv,0.05,'plot',pl,'verbose',v,'bounds',[1 0 1;2 0 1]);
+        
+        [s,rr_act] = gestaltGibbs(ge,n,nSamp,1,0.0001);
         samples(n,:,:) = s;
         rr = rr + rr_act;
     end

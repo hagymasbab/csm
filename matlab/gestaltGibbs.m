@@ -1,4 +1,4 @@
-function [s,rr] = gestaltGibbs(ge,xind,nSamp,metsteps,varargin)
+function [s,rr] = gestaltGibbs(ge,xind,nSamp,metsteps,metVar,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
     parse(parser,varargin{:});
@@ -30,7 +30,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,metsteps,varargin)
         lp_act = gestaltLogPostG(g,v,ge);
         while ms < metsteps
             % propose from a unit Gaussian of dimension K-1
-            g_part = mvnrnd(g(1:ge.k-1,1)',0.5*eye(ge.k-1));
+            g_part = mvnrnd(g(1:ge.k-1,1)',metVar*eye(ge.k-1));
             % the last element is determined by the rest
             g_next = [g_part; 1-sum(g_part)];
             a = rand();
