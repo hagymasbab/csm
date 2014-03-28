@@ -10,11 +10,12 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
     fSamp = p.Results.firstSamples;
     numGivenSamp = size(fSamp,2);
 
-    if test && close
+    if close
         fprintf('Test mode: using real covariance components plus noise as initial condition instead of the specified values!\n');
         ccInit = ge.cc;
+        rancc = randomCovariances(ge.k,ge.Dv);
         for i=1:ge.k
-            ccInit{i} = (ccInit{i} + 0.5 * rand(ge.Dv,ge.Dv))*0.4;
+            ccInit{i} = ccInit{i} + rancc{i};
         end
     end
     
@@ -82,6 +83,9 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         cc_next = cell(1,ge.k);
         for j=1:ge.k
             cc_next{j} = (1/scalars(1,j)) * reshape(matrices(j,:,:),ge.Dv,ge.Dv);
+            % TEST - cheating !!! making the matrix pos def 
+            L = ldl(cc_next{j});
+            cc_next{j} = L*L';
             gVV{i}{j} = (1/scalars(1,j)) * gVV{i}{j};
         end        
         

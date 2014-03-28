@@ -42,7 +42,7 @@ function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
         %[s,rr_act] = combinedMC(init,1:ge.k,logpdf,grad,nSamp,Cv,0.05,'summedToOne',true,'plot',pl,'verbose',v);
         %[s,rr_act] = combinedMC(init,[],logpdf,grad,nSamp,Cv,0.05,'plot',pl,'verbose',v,'bounds',[1 0 1;2 0 1]);
         
-        [s,rr_act] = gestaltGibbs(ge,n,nSamp,1,0.0001);
+        [s,rr_act] = gestaltGibbs(ge,n,nSamp,1,0.01,'verbose',v);
         samples(n,:,:) = s;
         rr = rr + rr_act;
     end
