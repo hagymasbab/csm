@@ -1,4 +1,4 @@
-function [s,rr] = gestaltGibbs(ge,xind,nSamp,metsteps,metVar,varargin)
+function [s,rr] = gestaltGibbs(ge,xind,nSamp,hamil,stepsize,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
     parse(parser,varargin{:});
@@ -8,6 +8,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,metsteps,metVar,varargin)
     rr = 0;
     g = 0.5 * ones(ge.k,1);
     v = zeros(ge.Dv,1);
+    
+    if hamil
+        bounds = [1:ge.k-1 repmat([0 1],ge.k-1,1)];
+        grad = @(g) gestaltPostGGrad(g,v,ge);
+    end
     
     if verb==1
         fprintf('Sample %d/',nSamp);
@@ -22,19 +27,16 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,metsteps,metVar,varargin)
         
         % Metropolis-Hastings scheme to sample from the conditional
         % posterior over g
-        ms = 0;
+        accept = false;
         lp_act = gestaltLogPostG(g,v,ge);
-        hamil = true;
-        while ms < metsteps
+        while ~accept
             if ~hamil
                 % propose from a unit Gaussian of dimension K-1
-                g_part = mvnrnd(g(1:ge.k-1,1)',metVar*eye(ge.k-1))';
+                g_part = mvnrnd(g(1:ge.k-1,1)',stepsize*eye(ge.k-1))';
             else
                 % propose from Hamiltonian dynamics
-                p_init = mvnrnd(zeros(ge.k-1),0.01*eye(ge.k-1))';
-                bounds = [1:ge.k-1 repmat([0 1],ge.k-1,1)];
-                grad = @(g) gestaltPostGGrad(g,v,ge);
-                [p_end,g_part] = leapfrog(p_init,g(1:ge.k-1,1),grad,0.0001,100,bounds);
+                p_init = mvnrnd(zeros(ge.k-1),0.01*eye(ge.k-1))';                
+                [p_end,g_part] = leapfrog(p_init,g(1:ge.k-1,1),grad,stepsize,100,bounds);
                 K_init = sum(p_init.^2) / 2;
                 K_end = sum(p_end.^2) / 2;
             end
@@ -58,9 +60,9 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,metsteps,metVar,varargin)
                 % accept the sample
                 g = g_next;
                 lp_act = lp_next;
-                ms = ms + 1;
+                accept = true;
                 if verb==2
-                    fprintf('accept %d\n',ms);
+                    fprintf('accept\n');
                 end
             else
                 rr = rr + 1;
