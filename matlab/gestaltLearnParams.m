@@ -56,12 +56,12 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         end 
         
         if test == 1
-            fprintf('test mode: using ground truth for g instead of samples!\n');
+            fprintf('....test mode: using ground truth for g instead of samples!\n');
             for l=1:nSamples
                 samples(:,l,1:ge.k) = ge.G(1:ge.N,:);                
             end
         elseif test == 2
-            fprintf('test mode: using ground truth for v instead of samples!\n');
+            fprintf('....test mode: using ground truth for v instead of samples!\n');
             for l=1:nSamples
                 samples(:,l,ge.k+1:ge.k+ge.Dv) = ge.V(1:ge.N,:);                                
             end
