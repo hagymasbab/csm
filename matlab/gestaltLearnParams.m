@@ -1,6 +1,6 @@
 function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
     p = inputParser;
-    addParamValue(p,'test',false,@islogical);
+    addParamValue(p,'test',false,@isnumeric);
     addParamValue(p,'close',false,@islogical);
     addParamValue(p,'firstSamples',{});
     p.KeepUnmatched = true;
@@ -37,12 +37,16 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
     for i=1:maxStep
         fprintf('EM iteration %d\n..E-step\n....',i);
         % E-step: sampling the posterior
-        if test
+        if test == 3
             fprintf('test mode: using data instead of samples!\n');
             samples = ones(ge.N,nSamples,ge.k+ge.Dv);
+            randCov = randomCovariances(1,ge.k+ge.Dv);            
+            noiseVar = (maxStep-i) * 1;
+            randCov = noiseVar * randCov{1};
             for l=1:nSamples
-                samples(:,l,1:ge.k) = ge.G;
-                samples(:,l,ge.k+1:ge.k+ge.Dv) = ge.V;
+                samples(:,l,1:ge.k) = ge.G(1:ge.N,:);
+                samples(:,l,ge.k+1:ge.k+ge.Dv) = ge.V(1:ge.N,:);                
+                samples(:,l,:) = mvnrnd(reshape(samples(:,l,:),ge.N,ge.k+ge.Dv),randCov);
             end
         elseif i<=numGivenSamp
             fprintf('using specified sample set\n');
@@ -50,6 +54,18 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         else
             samples = gestaltSamplePosterior(ge,nSamples);            
         end 
+        
+        if test == 1
+            fprintf('test mode: using ground truth for g instead of samples!\n');
+            for l=1:nSamples
+                samples(:,l,1:ge.k) = ge.G(1:ge.N,:);                
+            end
+        elseif test == 2
+            fprintf('test mode: using ground truth for v instead of samples!\n');
+            for l=1:nSamples
+                samples(:,l,ge.k+1:ge.k+ge.Dv) = ge.V(1:ge.N,:);                                
+            end
+        end
         
         % M-step: updating the parameters
         fprintf('..M-step\n');       
@@ -84,8 +100,8 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         for j=1:ge.k
             cc_next{j} = (1/scalars(1,j)) * reshape(matrices(j,:,:),ge.Dv,ge.Dv);
             % TEST - cheating !!! making the matrix pos def 
-            L = ldl(cc_next{j});
-            cc_next{j} = L*L';
+            %L = ldl(cc_next{j});
+            %cc_next{j} = L*L';
             gVV{i}{j} = (1/scalars(1,j)) * gVV{i}{j};
         end        
         
