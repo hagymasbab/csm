@@ -1,4 +1,6 @@
-#ignore all latex outputs
+# ignore all latex outputs
 *.aux
 *.log
 *.synctex.gz
+# temporary files from text editors
+*~
