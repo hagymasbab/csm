@@ -86,7 +86,7 @@ function [samples,rr] = testMH(dim,nSamp,sampler,varargin)
         %bounds = [1 -3 2;2 -3 2];
         [samples,rr] = combinedMC(init,dims,logpdf,modgrad,nSamp,C(m+1:dim,m+1:dim),p.Results.propVar,'verbose',p.Results.verbose,'plot',plot,'bounds',bounds,'transformMomentum',p.Results.transform);
     else
-        fprintf('Invalid sampler specified\n');
+        fprintf('Nonexistent sampler specified\n');
         return;
     end
     
