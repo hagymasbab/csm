@@ -30,17 +30,22 @@ p(x \mid v) = \mathcal{N}(x; Av,C_x) \\
 C_x = \sigma_x I;
 \end{eqnarray}
 
-We might assume that a single composition of gestalts, characterised by the $g$ vector, generates a batch of $B$ images, described by cellular activities $V = \lbrace v_1 \dots v_B \rbrace$ and observations $X = \lbrace x_1 \dots x_B \rbrace$. 
+We might assume that a single composition of gestalts, characterised by the $g$ vector, generates a batch of $B$ independent images, described by cellular activities $V = \lbrace v_1 \dots v_B \rbrace$ and observations $X = \lbrace x_1 \dots x_B \rbrace$. Then the following likelihood distributions hold
+
+\begin{eqnarray}
+p(V \mid g) = \prod_{b=1}^B \mathcal{N}(v_b; 0,C_v) \\
+p(X \mid V) = \prod_{b=1}^B \mathcal{N}(x_b; Av_b,C_x)
+\end{eqnarray}
 
 \section{E-step}
 
-The joint posterior over hidden variables $g$ and $v$ is the following
+The joint posterior over hidden variables $g$ and $V$ is the following
 
 \begin{equation}
-p(v,g \mid x) = p(x \mid v,g) \frac{p(v,g)}{p(x)} = p(x \mid v) p(v \mid g) p(g)\frac{1}{p(x)}
+p(V,g \mid X) = p(X \mid V,g) \frac{p(V,g)}{p(x)} = p(X \mid V) p(V \mid g) p(g)\frac{1}{p(X)}
 \end{equation}
 %
-For the purpose of sampling, we can discard the normalisation factor $p(x)$ and the normalisation constants of the Gaussians. The logarithm of the Dirichlet prior over $g$ looks like the following. 
+For the purpose of sampling, we can discard the normalisation factor $p(X)$ and the normalisation constants of the Gaussians. The logarithm of the Dirichlet prior over $g$ looks like the following 
 
 \begin{equation}
 \log p(g) = \log(\Gamma(\alpha K)) - \log(\Gamma(\alpha)^K) + (\alpha-1) \sum_{k=1}^K \log(g_k)
@@ -51,8 +56,9 @@ We can discard the terms not depending on $g$. So taking the logarithm of the un
 
 \begin{equation}
 \begin{split}
-&\log p(v,g \mid x) \sim \\ 
-&-\frac{1}{2} \left[(x-Av)^T C_x^{-1} (x-Av) + \log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k) \label{eq:log_post}
+&\log p(V,g \mid X) \sim \\ 
+&-\frac{1}{2} \left[\sum_{b=1}^B \left[(x_b-Av_b)^T C_x^{-1} (x_b-Av_b) + v_b^T C_v^{-1} v_b \right] + B \log(\det(C_v)) \right] + \\
+&+ (\alpha-1) \sum_{k=1}^K \log(g_k) \label{eq:log_post}
 \end{split}
 \end{equation}
 %
@@ -60,7 +66,7 @@ where $g \in \left(0,1 \right]$ and $\sum_{k=1}^{K} g_k = 1$, and $-\infty$ ever
 
 \subsection{Hamiltonian Monte Carlo Sampling}
 
-The negative log-posterior can be regarded as an energy function for a dynamical system updating invariantly to the posterior distribution. To use Hamiltonian MC sampling, the gradient of this energy has to be constructed as follows
+The negative log-posterior can be regarded as an energy function for a dynamical system updating invariantly to the posterior distribution. To use Hamiltonian MC sampling, the gradient of this energy has to be constructed as follows (for $B=1$)
 
 \begin{eqnarray}
 \begin{split}
@@ -111,68 +117,77 @@ The denominator of Eq. \ref{eq:condpost} is the integral of this formula, which 
 p(v \mid x,g) = \mathcal{N}\left(v; -\frac{2}{\sigma_x} \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1}\right)
 \end{equation}
 %
-which can be sampled directly. The conditional posterior over $g$ is defined as follows
+and for a batch of size $B$
 
-\begin{equation} 
-p(g \mid x,v) = \frac{p(x \mid g,v) p(g \mid v)}{p(x \mid v)} = \frac{p(v \mid g) p(g)}{p(v)}
+\begin{equation}
+p(V \mid X,g) = \prod_{b=1}^B \mathcal{N} \left(v_b; \mu_{post}(x_b),C_{post} \right)
 \end{equation}
 %
-which can be sampled by a Metropolis-Hastings scheme with the following target
+which can be sampled directly from a Gaussian of dimension $Dv \times B$. The conditional posterior over $g$ is defined as follows
 
 \begin{equation} 
-\log p(g \mid x,v) \sim -\frac{1}{2} \left[\log(\det(C_v)) + v^T C_v^{-1} v\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
+p(g \mid X,V) = \frac{p(X \mid g,V) p(g \mid V)}{p(X \mid V)} = \frac{p(V \mid g) p(g)}{p(V)}
+\end{equation}
+%
+which can be sampled by a Metropolis-Hastings or slice sampling scheme with the following target
+
+\begin{equation} 
+\log p(g \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(C_v)) + \sum_{b=1}^B v_b^T C_v^{-1} v_b\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
 \end{equation}
 
 \section{M-step}
 
-The complete-data likelihood with respect to a set of observations, $X = \lbrace x_1 \dots x_N \rbrace$ is the following
+The complete-data likelihood with respect to a set of batch observations of size $B$, $\mathbf{X} = \lbrace X_1 \dots X_N \rbrace$ is the following
 
 \begin{equation}
-p(v,g,X \mid C_{1..K}) = \prod_{n=1}^N p(x_n \mid v) p(v \mid g) p(g)
+\begin{split}
+&p(\mathbf{V},G,\mathbf{X} \mid C_{1..K}) = \prod_{n=1}^N p(X_n \mid V_n) p(V_n \mid g_n) p(g_n) = \\
+&\prod_{n=1}^N p(g_n) \prod_{b=1}^B p(x_{nb} \mid v_{nb}) p(v_{nb} \mid g_n) 
+\end{split}
 \end{equation}
 %
-Its logarithm ($\mathcal{L}=\log p(v,g,x \mid C_{1..K})$) is similar to \ref{eq:log_post}. We can approximate the integral of this logarithm over the joint posterior by averaging over $L$ samples from it, separately for each observation $x_n$. As we will seek the values of the covariance components $C_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters. This way we arrive to the following expression (substituting for $C_v$ according to \ref{eq:cv})
+Its logarithm ($\mathcal{L}=\log p(\mathbf{V},G,\mathbf{X} \mid C_{1..K})$) is similar to \ref{eq:log_post}. We can approximate the integral of this logarithm over the joint posterior by averaging over $L$ samples from it, separately for each observation $x_n$. As we will seek the values of the covariance components $C_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters. This way we arrive to the following expression 
 
 \begin{equation}
-\mathcal{L} \sim \sum_{n=1}^N \frac{1}{L} \sum_{l=1}^L -\frac{1}{2} \left[\log \left( \det \left( \sum_{k=1}^K g_k^{l,n} C_k \right) \right) + v^{(l,n)T}  \left( \sum_{k=1}^K g_k^{l,n} C_k \right)^{-1} v^{l,n}\right]
+\mathcal{L} \sim \sum_{n=1}^N \frac{1}{L} \sum_{l=1}^L -\frac{1}{2} \left[B \log \left( \det \left( C_v^{l,n} \right) \right) + \sum_{b=1}^B v^{(l,n,b)T}  \left( C_v^{l,n} \right)^{-1} v^{l,n,b}\right]
 \end{equation}
 %
-The double summation over $L$ samples over all $N$ observations always happens on the same terms, so we can substitute it with a single sum that iterates over the full sample set. So taking the derivative with respect to one of the covariance components $j \in \left[ 1,k \right]$, we get
+The double summation over $L$ samples over all $N$ observations always happens on the same terms, so we can substitute it with a single sum that iterates over the full sample set. So taking the derivative with respect to one of the covariance components $j \in \left[ 1,k \right]$, we get 
 
 \begin{equation}\label{eq:deriv}
-\frac{\partial \mathcal{L}}{\partial C_j} = -\frac{1}{2L} \sum_{m=1}^{LN} g_j^m \left[ \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} - \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} v^m v^{mT} \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} \right]
+\frac{\partial \mathcal{L}}{\partial C_j} = -\frac{1}{2L} \sum_{m=1}^{LN} g_j^m \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right]
 \end{equation}
 %
-using $\frac{\partial}{\partial C_j} \sum_{k=1}^K g_k^m C_k = g_j^m$ and the differentiating rules \ref{eq:diffrule1} and \ref{eq:diffrule2} (all $C_j$ matrices are symmetric and regular, so transposes are identical and determinants are nonzero).
+using $\frac{\partial}{\partial C_j} (C_v^m)^{-1} = \frac{\partial}{\partial C_j} \sum_{k=1}^K g_k^m C_k = g_j^m$ and the differentiating rules \ref{eq:diffrule1} and \ref{eq:diffrule2} (all $C_j$ matrices are symmetric and regular, so transposes are identical and determinants are nonzero).
 
-Setting  \ref{eq:deriv} to zero and multiplying it from the left by $\sum_{k=1}^K g_k^m C_k$ gives
+Setting \ref{eq:deriv} to zero, substituting for $C_v$ and multiplying it from the left by $\sum_{k=1}^K g_k^m C_k$ gives
 
 \begin{equation}\label{eq:zero}
-0 =  -\frac{1}{2L} \sum_{m=1}^{LN}  g_j^m \left[ I -  v^m v^{mT} \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} \right]
+0 =  -\frac{1}{2L} \sum_{m=1}^{LN}  g_j^m \left[ BI - \sum_{b=1}^B v^{m,b} v^{(m,b)T} \left( \sum_{k=1}^K g_k^m C_k \right)^{-1} \right]
 \end{equation}
 %
 multiplying by $-2L$ and by $\sum_{k=1}^K g_k^m C_k$, but this time from the right, gives
 
 \begin{equation}
-0 = \sum_{m=1}^{LN} g_j^m \left[ \sum_{k=1}^K g_k^m C_k - v^m v^{mT} \right]
+0 = \sum_{m=1}^{LN} g_j^m \left[ B \left( \sum_{k=1}^K g_k^m C_k \right) - \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right]
 \end{equation}
 %
 rearranging the sums yields
 
 \begin{equation}
-0 =  \sum_{k=1}^K C_k \sum_{m=1}^{LN} g_j^m g_k^m  - \sum_{m=1}^{LN} g_j^m v^m v^{mT}
+0 =  \sum_{k=1}^K C_k B \left( \sum_{m=1}^{LN} g_j^m g_k^m \right)  - \sum_{m=1}^{LN} g_j^m \sum_{b=1}^B v^{m,b} v^{(m,b)T}
 \end{equation}
 %
 From this we can express $C_j$ to get
 
 \begin{equation}
-C_j^{new} = \frac{1}{\sum_{m=1}^{LN} g_j^{m2}} \left[ \sum_{m=1}^{LN} g_j^m v^m v^{mT} - \sum_{k \neq j}^K C_k \sum_{m=1}^{LN} g_j^m g_k^m \right]
+C_j^{new} = \frac{1}{B \sum_{m=1}^{LN} g_j^{m2}} \left[ \sum_{m=1}^{LN} g_j^m \sum_{b=1}^B v^{m,b} v^{(m,b)T} - B \sum_{k \neq j}^K C_k \sum_{m=1}^{LN} g_j^m g_k^m \right]
 \end{equation}
 %
 that may be rearranged to
 
 \begin{equation}
-C_j^{new} = \frac{1}{\sum_{m=1}^{LN} g_j^{m2}} \sum_{m=1}^{LN} g_j^m \left[ v^m v^{mT} - \sum_{k \neq j}^K g_k^m C_k \right]
+C_j^{new} = \frac{1}{B \sum_{m=1}^{LN} g_j^{m2}} \sum_{m=1}^{LN} g_j^m \left[ \sum_{b=1}^B v^{m,b} v^{(m,b)T} - B \sum_{k \neq j}^K g_k^m C_k \right]
 \end{equation}
 
 \end{document}
