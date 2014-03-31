@@ -10,6 +10,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'N',100,@isnumeric);
     addParamValue(p,'obsVar',0.1,@isnumeric);
     addParamValue(p,'sparsity',0.2,@isnumeric);
+    addParamValue(p,'B',1,@isnumeric);
     p.KeepUnmatched = true;
     parse(p,varargin{:});
     gestalt = p.Results;        
@@ -43,7 +44,10 @@ function gestalt = gestaltCreate(name,varargin)
     
     gestalt = gestaltGenerate(gestalt,gestalt.N);
     fprintf('Transforming synthetic data\n');
-    gestalt.tX = gestalt.X * gestalt.A';
+    gestalt.tX = zeros(gestalt.N,gestalt.B,gestalt.Dv);
+    for n=1:gestalt.N
+        gestalt.tX(n,:,:) = reshape(gestalt.X(n,:,:),gestalt.B,gestalt.Dx) * gestalt.A';
+    end
     
     fprintf('Saving results\n');
     save(strcat('gestalt_',name,'.mat'),'gestalt');

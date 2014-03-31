@@ -1,13 +1,18 @@
 function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
+    addParamValue(parser,'burnin',0,@isnumeric);
+    addParamValue(parser,'plot',false,@islogical);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
+    plot = parser.Results.plot;    
+    burn = parser.Results.burnin;
+    N = nSamp + burn;
     
-    s = zeros(nSamp,ge.k + ge.Dv);
+    s = zeros(N,ge.k + ge.Dv);
     rr = 0;
     g = 0.5 * ones(ge.k,1);
-    v = zeros(ge.Dv,1);
+    v = zeros(ge.Dv,1); % unused if we sample the conditional over v first
     
     if strcmp(g_sampler,'hmc')
         bounds = [1:ge.k-1 repmat([0 1],ge.k-1,1)];
@@ -15,15 +20,22 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     end
     
     if verb==1
-        fprintf('Sample %d/',nSamp);
+        fprintf('Sample %d/',N);
     end
-    for i=1:nSamp
+    for i=1:N
         if verb==1
             printCounter(i);
         end
         
         % generate a direct sample from the conditional posterior over v
         v = gestaltPostVRnd(ge,xind,g);
+        
+        if plot
+            clf;
+            gestaltPlotCondPostG(ge,v);
+            hold on;
+            pause
+        end
         
         % Metropolis-Hastings scheme to sample from the conditional
         % posterior over g
@@ -74,7 +86,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
             end
         elseif strcmp(g_sampler,'slice')
             logpdf = @(g) gestaltLogPostG(g,v,ge);           
-            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize);
+            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',plot);
             g = [g_part; 1-sum(g_part)];
             rr = rr + rr_act;
         end
@@ -91,5 +103,10 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     end
     
     % calculate the rejection rate
-    rr = rr / (rr + nSamp);
+    rr = rr / (rr + N);
+    
+    % discard burn-in stage
+    if burn > 0
+        s = s(burn+1:N,:);
+    end
 end

@@ -9,4 +9,5 @@ function lp = gestaltLogPostG(g,v,ge)
     Cv = componentSum(g,ge.cc);
     prior = (ge.sparsity - 1) * sum(log(g));
     lp = (-1/2) * ( log(abs(det(Cv))) + v'*(Cv \ v) ) + prior;
+    %lp = (-1/2) * ( log(abs(det(Cv))) + v'*(Cv \ v) );
 end
