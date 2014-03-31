@@ -1,4 +1,5 @@
 function v = gestaltPostVRnd(ge,xind,g)
+    % TODO support batches
     % construct the covariance and mean of the conditional posterior over v
     sAA = (1/ge.obsVar) * ge.AA;
     Ax = ge.tX(xind,:)';

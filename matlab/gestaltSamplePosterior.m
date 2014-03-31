@@ -24,7 +24,7 @@ function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
     end
     
     rr = 0;
-    samples = zeros(dnum,nSamp,ge.k+ge.Dv);
+    samples = zeros(dnum,nSamp,ge.k+(ge.B*ge.Dv));
     if v == 0
         fprintf('Observation %d/',dnum);
     end

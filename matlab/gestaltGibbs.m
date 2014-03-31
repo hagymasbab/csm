@@ -12,11 +12,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     s = zeros(N,ge.k + ge.Dv);
     rr = 0;
     g = 0.5 * ones(ge.k,1);
-    v = zeros(ge.Dv,1); % unused if we sample the conditional over v first
+    V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
     
     if strcmp(g_sampler,'hmc')
         bounds = [1:ge.k-1 repmat([0 1],ge.k-1,1)];
-        grad = @(g) gestaltPostGGrad(g,v,ge);
+        grad = @(g) gestaltPostGGrad(g,V,ge);
     end
     
     if verb==1
@@ -28,11 +28,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
         end
         
         % generate a direct sample from the conditional posterior over v
-        v = gestaltPostVRnd(ge,xind,g);
+        V = gestaltPostVRnd(ge,xind,g);
         
         if plot
             clf;
-            gestaltPlotCondPostG(ge,v);
+            gestaltPlotCondPostG(ge,V);
             hold on;
             pause
         end
@@ -41,7 +41,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
         % posterior over g
         if strcmp(g_sampler,'hmc') || strcmp(g_sampler,'mh')
             accept = false;
-            lp_act = gestaltLogPostG(g,v,ge);
+            lp_act = gestaltLogPostG(g,V,ge);
             while ~accept
                 if strcmp(g_sampler,'mh')
                     % propose from a unit Gaussian of dimension K-1
@@ -57,7 +57,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
                 % the last element is determined by the rest
                 g_next = [g_part; 1-sum(g_part)];
                 a = rand();
-                lp_next = gestaltLogPostG(g_next,v,ge);
+                lp_next = gestaltLogPostG(g_next,V,ge);
                 if strcmp(g_sampler,'mh')
                     limit = lp_next - lp_act;
                 else
@@ -85,7 +85,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
                 end
             end
         elseif strcmp(g_sampler,'slice')
-            logpdf = @(g) gestaltLogPostG(g,v,ge);           
+            logpdf = @(g) gestaltLogPostG(g,V,ge);           
             [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',plot);
             g = [g_part; 1-sum(g_part)];
             rr = rr + rr_act;
@@ -96,7 +96,8 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
         % v = gestaltPostVRnd(ge,xind,g);
         
         % store the combined sample
-        s(i,:) = [g' v'];
+        vlong = reshape(V,1,ge.B*ge.Dv);
+        s(i,:) = [g' vlong];
     end
     if verb==1
         fprintf('\n');
