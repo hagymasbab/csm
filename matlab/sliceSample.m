@@ -1,7 +1,9 @@
 function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     parser = inputParser;
     addParamValue(parser,'plot',false,@islogical);
+    addParamValue(parser,'verbose',false,@islogical);
     parse(parser,varargin{:});
+    verb = parser.Results.verbose;
     
     dim = size(init,1);
     pl = parser.Results.plot && dim == 1;   % only works in 1D     
@@ -24,7 +26,7 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
                 plot(actpoint,u,'r-',actpoint,u,'ro');
                 pause
             end
-            if exp(logpdf(actpoint)) < u
+            if exp(logpdf(actpoint)) <= u
                 bounds(d,1) = actpoint(d,1);
                 inside = false;
             end
@@ -38,7 +40,7 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
                 plot(actpoint,u,'r-',actpoint,u,'ro');
                 pause
             end
-            if exp(logpdf(actpoint)) < u
+            if exp(logpdf(actpoint)) <= u
                 bounds(d,2) = actpoint(d,1);
                 inside = false;
             end

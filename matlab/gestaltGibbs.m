@@ -9,7 +9,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     burn = parser.Results.burnin;
     N = nSamp + burn;
     
-    s = zeros(N,ge.k + ge.Dv);
+    s = zeros(N,ge.k + ge.B*ge.Dv);
     rr = 0;
     g = 0.5 * ones(ge.k,1);
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
