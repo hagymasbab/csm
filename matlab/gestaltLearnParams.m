@@ -93,6 +93,8 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
                 %vv = cov(v_batch);
                 VV = VV + vv;
                 scalars = scalars + g .* g;
+                % TEST
+                %scalars = scalars + sqrt(g);
                 
                 for j=1:ge.k
                     cc_temp = ge.cc;
