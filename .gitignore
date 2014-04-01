@@ -2,5 +2,9 @@
 *.aux
 *.log
 *.synctex.gz
+
 # temporary files from text editors
 *~
+
+# OSX folder property files
+.DS_store

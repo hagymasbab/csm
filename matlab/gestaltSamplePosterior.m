@@ -11,7 +11,7 @@ function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
     dnum = parser.Results.dnum;
     dshift = parser.Results.dshift + 1;
     % TODO test whether these values are valid
-    fname = strcat(parser.Results.dnum,'.mat');
+    fname = strcat(parser.Results.savename,'.mat');
 
     init = [0.5*ones(ge.k,1); 0*ones(ge.Dv,1)];
     

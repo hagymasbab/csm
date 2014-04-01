@@ -9,14 +9,13 @@ function ge = gestaltGenerate(ge,N)
     for n=1:ge.N 
         %printCounter(n);
         Cv = componentSum(ge.G(n,:)',ge.cc);
-        for b=1:ge.B
-            ge.V(n,b,:) = mvnrnd(zeros(1,ge.Dv),Cv);
-        end            
+        ge.V(n,:,:) = mvnrnd(zeros(ge.B,ge.Dv),Cv);                   
     end
-    fprintf('\n..Generating observed values\n');
+    fprintf('..Generating observed values\n');
     ge.X = zeros(ge.N,ge.B,ge.Dx);
     for n=1:ge.N
-        means = reshape(ge.V(n,:,:),ge.B,ge.Dv)*ge.A';
+        means = reshape(ge.V(n,:,:),ge.B,ge.Dv);
+        means = means * ge.A';
         ge.X(n,:,:) = mvnrnd(means,ge.obsVar*eye(ge.Dx));
     end
 end
