@@ -28,6 +28,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
     ge.cc = ccInit;
     ge.X = X;
     ge.N = size(ge.X,1);
+    sdim = ge.k+(ge.Dv*ge.B);
     
     % structures for saving iterations
     pCC{1} = ccInit;
@@ -39,14 +40,14 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         % E-step: sampling the posterior
         if test == 3
             fprintf('test mode: using data instead of samples!\n');
-            samples = ones(ge.N,nSamples,ge.k+ge.Dv);
-            randCov = randomCovariances(1,ge.k+ge.Dv);            
+            samples = ones(ge.N,nSamples,sdim);
+            randCov = randomCovariances(1,sdim);            
             noiseVar = (maxStep-i) * 1;
             randCov = noiseVar * randCov{1};
             for l=1:nSamples
                 samples(:,l,1:ge.k) = ge.G(1:ge.N,:);
-                samples(:,l,ge.k+1:ge.k+ge.Dv) = ge.V(1:ge.N,:);                
-                samples(:,l,:) = mvnrnd(reshape(samples(:,l,:),ge.N,ge.k+ge.Dv),randCov);
+                samples(:,l,ge.k+1:sdim) = reshape(ge.V(1:ge.N,:,:),1,ge.Dv*ge.B);
+                samples(:,l,:) = mvnrnd(squeeze(samples(:,l,:)),randCov);
             end
         elseif i<=numGivenSamp
             fprintf('using specified sample set\n');
@@ -63,7 +64,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         elseif test == 2
             fprintf('....test mode: using ground truth for v instead of samples!\n');
             for l=1:nSamples
-                samples(:,l,ge.k+1:ge.k+ge.Dv) = ge.V(1:ge.N,:);                                
+                samples(:,l,ge.k+1:sdim) = reshape(ge.V(1:ge.N,:,:),1,ge.Dv*ge.B);
             end
         end
         
@@ -82,10 +83,16 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
             for l=1:nSamples
                 printCounter((n-1)*nSamples+l);
                 g = reshape(samples(n,l,1:ge.k),1,ge.k);
-                v = reshape(samples(n,l,ge.k+1:ge.k+ge.Dv),1,ge.Dv);
-                scalars = scalars + g .* g;
-                vv = v'*v;
+                v_batch = reshape(samples(n,l,ge.k+1:sdim),ge.B,ge.Dv); 
+                vv = zeros(ge.Dv,ge.Dv);
+                for b=1:ge.B
+                    v = v_batch(b,:);
+                    vv = vv + v'*v;
+                end
+                vv = vv / ge.B;
+                %vv = cov(v_batch);
                 VV = VV + vv;
+                scalars = scalars + g .* g;
                 
                 for j=1:ge.k
                     cc_temp = ge.cc;
@@ -98,7 +105,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         end
         cc_next = cell(1,ge.k);
         for j=1:ge.k
-            cc_next{j} = (1/scalars(1,j)) * reshape(matrices(j,:,:),ge.Dv,ge.Dv);
+            cc_next{j} = (1/scalars(1,j)) * squeeze(matrices(j,:,:));
             % TEST - cheating !!! making the matrix pos def 
             %L = ldl(cc_next{j});
             %cc_next{j} = L*L';

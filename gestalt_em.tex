@@ -187,7 +187,13 @@ C_j^{new} = \frac{1}{B \sum_{m=1}^{LN} g_j^{m2}} \left[ \sum_{m=1}^{LN} g_j^m \s
 that may be rearranged to
 
 \begin{equation}
-C_j^{new} = \frac{1}{B \sum_{m=1}^{LN} g_j^{m2}} \sum_{m=1}^{LN} g_j^m \left[ \sum_{b=1}^B v^{m,b} v^{(m,b)T} - B \sum_{k \neq j}^K g_k^m C_k \right]
+C_j^{new} = \frac{1}{\sum_{m=1}^{LN} g_j^{m2}} \sum_{m=1}^{LN} g_j^m \left[ \frac{1}{B} \sum_{b=1}^B v^{m,b} v^{(m,b)T} - \sum_{k \neq j}^K g_k^m C_k \right]
+\end{equation}
+%
+or alternatively
+
+\begin{equation}
+C_j^{new} = \frac{1}{\sum_{m=1}^{LN} g_j^{m2}} \sum_{m=1}^{LN} g_j^m \left[ \textrm{Cov} (V^{m}) - (C_v^m - g_j^m C_j^{old}) \right]
 \end{equation}
 
 \end{document}
