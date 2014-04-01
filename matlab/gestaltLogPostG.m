@@ -15,5 +15,6 @@ function lp = gestaltLogPostG(g,V,ge)
         quad = quad + vb'*(Cv \ vb);
     end
     lp = (-1/2) * ( B* log(abs(det(Cv))) + quad ) + prior;
-    %lp = (-1/2) * ( log(abs(det(Cv))) + v'*(Cv \ v) );
+    %lp = (-1/2) * ( B* log(abs(det(Cv))) + quad );
+    %lp = prior;
 end

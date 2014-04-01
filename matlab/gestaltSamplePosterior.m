@@ -1,7 +1,7 @@
 function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
-    addParamValue(parser,'plot',false,@islogical);
+    addParamValue(parser,'plot',0,@isnumeric);
     addParamValue(parser,'dnum',ge.N,@isnumeric);
     addParamValue(parser,'dshift',0,@isnumeric);
     addParamValue(parser,'savename','samples');
@@ -15,13 +15,13 @@ function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
 
     init = [0.5*ones(ge.k,1); 0*ones(ge.Dv,1)];
     
-    if pl
-        clf;
-        subplot(1,2,1);
-        hold on;
-        subplot(1,2,2);
-        hold on;
-    end
+%     if pl
+%         clf;
+%         subplot(1,2,1);
+%         hold on;
+%         subplot(1,2,2);
+%         hold on;
+%     end
     
     rr = 0;
     samples = zeros(dnum,nSamp,ge.k+(ge.B*ge.Dv));
@@ -42,7 +42,7 @@ function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
         %[s,rr_act] = combinedMC(init,1:ge.k,logpdf,grad,nSamp,Cv,0.05,'summedToOne',true,'plot',pl,'verbose',v);
         %[s,rr_act] = combinedMC(init,[],logpdf,grad,nSamp,Cv,0.05,'plot',pl,'verbose',v,'bounds',[1 0 1;2 0 1]);
         
-        [s,rr_act] = gestaltGibbs(ge,n,nSamp,'slice',0.01,'verbose',v);
+        [s,rr_act] = gestaltGibbs(ge,n,nSamp,'slice',0.05,'verbose',v,'plot',pl);
         samples(n,:,:) = s;
         rr = rr + rr_act;
     end

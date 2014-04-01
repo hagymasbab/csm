@@ -2,10 +2,10 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
     addParamValue(parser,'burnin',0,@isnumeric);
-    addParamValue(parser,'plot',false,@islogical);
+    addParamValue(parser,'plot',0,@isnumeric);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
-    plot = parser.Results.plot;    
+    pl = parser.Results.plot;    
     burn = parser.Results.burnin;
     N = nSamp + burn;
     
@@ -30,10 +30,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
         % generate a direct sample from the conditional posterior over v
         V = gestaltPostVRnd(ge,xind,g);
         
-        if plot
+        if pl > 0
             clf;
             gestaltPlotCondPostG(ge,V);
             hold on;
+            plot(ge.G(xind,1),0,'ro');
             pause
         end
         
@@ -86,7 +87,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
             end
         elseif strcmp(g_sampler,'slice')
             logpdf = @(g) gestaltLogPostG(g,V,ge);           
-            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',plot);
+            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
             g = [g_part; 1-sum(g_part)];
             rr = rr + rr_act;
         end

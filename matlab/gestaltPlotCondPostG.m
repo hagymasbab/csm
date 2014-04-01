@@ -7,4 +7,5 @@ function lp = gestaltPlotCondPostG(ge,V)
     end
     clf;
     plot(gx,exp(lp));
+    %plot(gx,lp);
 end
