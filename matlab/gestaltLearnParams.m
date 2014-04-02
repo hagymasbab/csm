@@ -84,17 +84,17 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
                 printCounter((n-1)*nSamples+l);
                 g = reshape(samples(n,l,1:ge.k),1,ge.k);
                 v_batch = reshape(samples(n,l,ge.k+1:sdim),ge.B,ge.Dv); 
-                vv = zeros(ge.Dv,ge.Dv);
-                for b=1:ge.B
-                    v = v_batch(b,:);
-                    vv = vv + v'*v;
-                end
-                vv = vv / ge.B;
-                %vv = cov(v_batch);
+%                 vv = zeros(ge.Dv,ge.Dv);
+%                 for b=1:ge.B
+%                     v = v_batch(b,:);
+%                     vv = vv + v'*v;
+%                 end
+%                 vv = vv / (ge.B);
+                vv = cov(v_batch);
                 VV = VV + vv;
                 scalars = scalars + g .* g;
                 % TEST
-                %scalars = scalars + sqrt(g);
+                %scalars = scalars + 2*sqrt(g);
                 
                 for j=1:ge.k
                     cc_temp = ge.cc;
@@ -107,7 +107,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         end
         cc_next = cell(1,ge.k);
         for j=1:ge.k
-            cc_next{j} = (1/scalars(1,j)) * squeeze(matrices(j,:,:));
+            cc_next{j} = (1/(scalars(1,j))) * squeeze(matrices(j,:,:));
             % TEST - cheating !!! making the matrix pos def 
             %L = ldl(cc_next{j});
             %cc_next{j} = L*L';

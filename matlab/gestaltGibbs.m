@@ -2,12 +2,14 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
     addParamValue(parser,'burnin',0,@isnumeric);
+    addParamValue(parser,'thin',1,@isnumeric);
     addParamValue(parser,'plot',0,@isnumeric);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
     pl = parser.Results.plot;    
     burn = parser.Results.burnin;
-    N = nSamp + burn;
+    thin = parser.Results.thin;
+    N = nSamp*thin + burn;
     
     s = zeros(N,ge.k + ge.B*ge.Dv);
     rr = 0;
@@ -110,5 +112,9 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     % discard burn-in stage
     if burn > 0
         s = s(burn+1:N,:);
+    end
+    if thin > 1
+        indices = 1:thin:nSamp*thin;
+        s = s(indices,:);
     end
 end
