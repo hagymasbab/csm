@@ -13,5 +13,5 @@ function viewImage(data,varargin)
     else
         IM = 1;
     end
-    imshow(data,'InitialMAgnification',IM,'colormap',jet,'DisplayRange',[-1 1]);
+    imshow(data,'InitialMAgnification',IM,'colormap',jet,'DisplayRange',[-2 2]);
 end
