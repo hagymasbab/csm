@@ -5,6 +5,7 @@ function plotCovariances(ge,dnum)
     %xx = (1/ge.N)*(ge.X'*ge.X);
     G = ge.G(1:dnum,:);    
     V = reshape(ge.V(1:dnum,:,:),dnum*ge.B,ge.Dv);
+    X = reshape(ge.X(1:dnum,:,:),dnum*ge.B,ge.Dx);
     %size(V)
     k = size(real,2);
     n = size(pCC,2);
@@ -38,8 +39,12 @@ function plotCovariances(ge,dnum)
         viewImage(real{j},'magnif',false)
         title(sprintf('Real component %d',j));
     end
-    % data covariance
+    % true hidden covariance
     subplot(vertical,horizontal,(k+1)*horizontal);
     viewImage(cov(V),'magnif',false);
     title('Real hidden variable covariance');
+    % data covariance
+    subplot(vertical,horizontal,(k+2)*horizontal);
+    viewImage(cov(X),'magnif',false);
+    title('Data covariance');
 end
