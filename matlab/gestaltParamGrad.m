@@ -1,0 +1,1 @@
+function grad = gestaltParamGrad(samples,cc)
