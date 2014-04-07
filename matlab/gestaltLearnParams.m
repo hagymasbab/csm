@@ -43,7 +43,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
     cc_next = cell(1,ge.k);
     
     for i=1:maxStep
-        fprintf('EM iteration %d\n..E-step - ',i);
+        fprintf('EM iteration %d: E-step - ',i);
         % E-step: sampling the posterior
         if test == 3
             fprintf('test mode: using data instead of samples!\n');
@@ -76,7 +76,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         end
         
         % M-step: updating the parameters
-        fprintf('..M-step - ');       
+        fprintf('\b M-step - ');       
         
         grad = gestaltParamGrad(ge,samples,cholesky);
         for j=1:ge.k
@@ -142,7 +142,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         diff = diff / (ge.k*ge.Dv^2);
         
         ge.cc = cc_next;        
-        fprintf('..Average of squared differences of parameters between last two iterations: %e\n',diff);
+        fprintf('\b diff %e\n',diff);
         
         % save some data to disk
         pCC{i+1} = ge.cc;
