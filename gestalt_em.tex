@@ -196,4 +196,26 @@ or alternatively
 C_j^{new} = \frac{1}{\sum_{m=1}^{LN} g_j^{m2}} \sum_{m=1}^{LN} g_j^m \left[ \textrm{Cov} (V^{m}) - (C_v^m - g_j^m C_j^{old}) \right]
 \end{equation}
 
+\subsection{Cholesky decomposition}
+
+To ensure that the iteration procedure does not produce covariance matrices that are not positive definite, we can optimise for the Cholesky upper triangle matrix istead of the covariance matrix, as this also specifies the Gaussian completely.
+
+\begin{eqnarray}
+C_j = U_j^T U_j \\
+C_v = \sum_{k=1}^K g_k U_k^T U_k \\
+\frac{\partial C_v}{\partial U_j} = 2 g_j U_j
+\end{eqnarray}
+%
+so by the chain rule, the derivative of $\mathcal{L}$ according to $U_j$ looks like this
+
+\begin{equation}
+\begin{split}
+&\frac{\partial \mathcal{L}}{\partial U_j} = \frac{\partial \mathcal{L}}{\partial C_v} \frac{\partial C_v}{\partial U_j} = \\
+& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] U_j = \\
+& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right] U_j
+\end{split}
+\end{equation}
+%
+
+
 \end{document}
