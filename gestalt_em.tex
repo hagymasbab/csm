@@ -211,20 +211,11 @@ so by the chain rule, the derivative of $\mathcal{L}$ according to $U_j$ looks l
 \begin{equation}
 \begin{split}
 &\frac{\partial \mathcal{L}}{\partial U_j} = \frac{\partial \mathcal{L}}{\partial C_v} \frac{\partial C_v}{\partial U_j} = \\
-& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m2} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] U_j^m
+& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] U_j = \\
+& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right] U_j
 \end{split}
 \end{equation}
 %
-setting this to zero, multiplying both sides by $-L$, and rearranging terms exploiting that both $C_v^m$ and $v^{m,b} v^{(m,b)T}$ are symmetric, so their multiplication is commutative, we get
 
-\begin{equation}
-0 = \sum_{m=1}^{LN} g_j^{m2} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-2} v^{m,b} v^{(m,b)T} \right] U_j^m
-\end{equation}
-%
-multiplying by $\left( C_v^m \right)^{-2}$ from the left we can get rid of the inverses and arrive to
-
-%\begin{equation}
-%0 = \sum_{m=1}^{LN} g_j^{m2} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-2} v^{m,b} v^{(m,b)T} \right] U_j^m
-%\end{equation}
 
 \end{document}
