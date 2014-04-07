@@ -24,16 +24,16 @@ function plotCovariances(ge,dnum)
         end
     end
     
-    % sample covariances at each step
-%     s = size(VC,2);
-%     for i=1:interleave:s
-%         act = gVV{i};
-%         for j=1:k
-%             subplot(vertical,horizontal,(j-1+k)*horizontal+ceil(i/interleave));
-%             viewImage(act{j},'magnif',false)
-%             title(sprintf('Samp cov w. for comp. %d',j));
-%         end
-%     end
+    %sample covariances at each step
+    s = size(S,2);
+    for i=1:interleave:s
+        act = weightedSampleCovariance(S{i},ge.k,ge.B);
+        for j=1:k
+            subplot(vertical,horizontal,(j-1+k)*horizontal+ceil(i/interleave));
+            viewImage(act{j},'magnif',false)
+            title(sprintf('Samp cov w. for comp. %d',j));
+        end
+    end
     % real components
     for j=1:k
         subplot(vertical,horizontal,j*horizontal);     

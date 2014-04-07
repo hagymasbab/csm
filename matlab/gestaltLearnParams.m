@@ -17,7 +17,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         ccInit = ge.cc;
         rancc = randomCovariances(ge.k,ge.Dv);
         for i=1:ge.k
-            ccInit{i} = ccInit{i} + rancc{i};
+            ccInit{i} = ccInit{i} + 5 * rancc{i};
         end
     end
     
@@ -43,7 +43,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
     cc_next = cell(1,ge.k);
     
     for i=1:maxStep
-        fprintf('EM iteration %d\n..E-step\n....',i);
+        fprintf('EM iteration %d\n..E-step - ',i);
         % E-step: sampling the posterior
         if test == 3
             fprintf('test mode: using data instead of samples!\n');
@@ -76,7 +76,7 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         end
         
         % M-step: updating the parameters
-        fprintf('..M-step\n');       
+        fprintf('..M-step - ');       
         
         grad = gestaltParamGrad(ge,samples,cholesky);
         for j=1:ge.k
