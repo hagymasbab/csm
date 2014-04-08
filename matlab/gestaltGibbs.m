@@ -89,9 +89,16 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
                 end
             end
         elseif strcmp(g_sampler,'slice')
-            logpdf = @(g) gestaltLogPostG(g,V,ge);           
-            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
-            g = [g_part; 1-sum(g_part)];
+            logpdf = @(g) gestaltLogPostG(g,V,ge); 
+            degenerate = true;
+            while degenerate
+                [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
+                g = [g_part; 1-sum(g_part)];
+                Cv = componentSum(g,ge.cc);
+                if det(Cv) > 0
+                    degenerate = false;
+                end
+            end
             rr = rr + rr_act;
         end
         

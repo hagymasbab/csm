@@ -1,6 +1,6 @@
 function cc = randomCovariances(k,dim)
     blocksize = floor(dim/k);
-    block = 0.5 * ones(blocksize);
+    block = 0.1 * ones(blocksize);
     for i=1:k
           base = rand(dim,dim);
           cc{i} = (1/dim)*(base'*base);

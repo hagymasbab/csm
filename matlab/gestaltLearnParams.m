@@ -81,6 +81,8 @@ function ge = gestaltLearnParams(ge,ccInit,X,nSamples,maxStep,varargin)
         grad = gestaltParamGrad(ge,samples,cholesky);
         for j=1:ge.k
             cholesky{j} = cholesky{j} + lrate * grad{j};
+            %TEST
+            %cholesky{j} = cholesky{j} - lrate * grad{j};
             cc_next{j} = cholesky{j}' * cholesky{j};
         end
         
