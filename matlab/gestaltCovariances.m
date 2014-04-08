@@ -27,5 +27,9 @@ function cc = gestaltCovariances(k,R)
         end
         fprintf('\n....Calculating covariance\n');
         cc{g} = cov(vs);
+        % preventing ill-conditioned covariance components
+        if rcond(cc{g}) < 1e-10
+            cc{g} = cc{g} + eye(Dv);
+        end
     end
 end

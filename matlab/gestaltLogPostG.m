@@ -8,7 +8,8 @@ function lp = gestaltLogPostG(g,V,ge)
     end
     B = size(V,1);
     Cv = componentSum(g,ge.cc);
-    iCv = inv(Cv);
+    %iCv = inv(Cv);
+    iCv = eye(ge.Dv) / Cv;
     prior = (ge.sparsity - 1) * sum(log(g));
     quad = 0;
     for b=1:B

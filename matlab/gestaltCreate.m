@@ -11,19 +11,23 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'obsVar',0.1,@isnumeric);
     addParamValue(p,'sparsity',0.2,@isnumeric);
     addParamValue(p,'B',1,@isnumeric);
-    p.KeepUnmatched = true;
+    addParamValue(p,'gabor',true,@islogical);
     parse(p,varargin{:});
     gestalt = p.Results;        
-    
-    %gestalt.A = gaborFilterBank(gestalt.imSize,gestalt.imSize,gestalt.filterShift,gestalt.filterShift,[0;pi/2],[4;8]);
-    gestalt.A = eye(gestalt.Dx);
+        
+    if gestalt.gabor
+        imSize = sqrt(gestalt.Dx); % TODO figure out something if it's not a square
+        gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[0;pi/2],[4;8]);
+    else
+        gestalt.A = eye(gestalt.Dx);
+    end
     gestalt.Dv = size(gestalt.A,2);   
     
     % compute some additional matrices to speed up inference
     fprintf('Calculating A^TA\n');
     gestalt.AA = (gestalt.A)'*gestalt.A;
-    fprintf('Calculating R\n');
-    gestalt.R = pinv(gestalt.AA)*(gestalt.A)';
+    %fprintf('Calculating R\n');
+    %gestalt.R = pinv(gestalt.AA)*(gestalt.A)';
         
     if gestalt.Dx == 1
         gestalt.cc{1} = 1;
@@ -39,14 +43,14 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.cc{1} = var*eye(4) + covar*[0 0 1 0; 0 0 0 0; 1 0 0 0; 0 0 0 0];
         gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
     else        
-        gestalt.cc = gestaltCovariances(gestalt.k,gestalt.R);
+        gestalt.cc = gestaltCovariances(gestalt.k,gestalt.A');
     end
     
     gestalt = gestaltGenerate(gestalt,gestalt.N);
     fprintf('Transforming synthetic data\n');
     gestalt.tX = zeros(gestalt.N,gestalt.B,gestalt.Dv);
     for n=1:gestalt.N
-        gestalt.tX(n,:,:) = reshape(gestalt.X(n,:,:),gestalt.B,gestalt.Dx) * gestalt.A';
+        gestalt.tX(n,:,:) = reshape(gestalt.X(n,:,:),gestalt.B,gestalt.Dx) * gestalt.A;
     end
     
     fprintf('Saving results\n');
