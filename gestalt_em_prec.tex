@@ -5,16 +5,16 @@
 
 \begin{document}
 
-\title{EM for the gestalt model}
+\title{Parameter estimation for the gestalt model}
 \maketitle
 
 \section{Generative model}
 
-A gestalt, a perceptual object, is characterised by a precision component for the joint distribution of visual neural activity. 
+A gestalt, a perceptual object, is characterised by a covariance component for the joint distribution of visual neural activity. 
 
 \begin{eqnarray}
-p(v \mid g) = \mathcal{N}(v; 0,\Lambda_v^{-1}) \\
-\Lambda_v = \sum_{k=1}^K g_k \Lambda_k \label{eq:cv}
+p(v \mid g) = \mathcal{N}(v; 0,C_v) \\
+C_v = \sum_{k=1}^K g_k C_k \label{eq:cv}
 \end{eqnarray}
 %
 where K is the fixed number of possible gestalts in the visual scene and $g_k$ is the strength of the gestalt number $k$, coming from a $K$-dimensional symmetric Dirichlet prior distribution with concentration parameter $\alpha$ controlling the sparsity of the prior.
@@ -33,7 +33,7 @@ C_x = \sigma_x I;
 We might assume that a single composition of gestalts, characterised by the $g$ vector, generates a batch of $B$ independent images, described by cellular activities $V = \lbrace v_1 \dots v_B \rbrace$ and observations $X = \lbrace x_1 \dots x_B \rbrace$. Then the following likelihood distributions hold
 
 \begin{eqnarray}
-p(V \mid g) = \prod_{b=1}^B \mathcal{N}(v_b; 0,\Lambda_v^{-1}) \\
+p(V \mid g) = \prod_{b=1}^B \mathcal{N}(v_b; 0,C_v) \\
 p(X \mid V) = \prod_{b=1}^B \mathcal{N}(x_b; Av_b,C_x)
 \end{eqnarray}
 
@@ -42,7 +42,7 @@ p(X \mid V) = \prod_{b=1}^B \mathcal{N}(x_b; Av_b,C_x)
 An efficient way to collect samples from the joint posterior over all hidden variables is to employ a Gibbs sampling scheme, where we sample from the conditional posteriors. The first is over $v$, and can be defined as follows
 
 \begin{equation} \label{eq:condpost}
-p(v \mid x,g) = \frac{p(x \mid v,g) p(v \mid g)}{p(x \mid g)} = \frac{\mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,\Lambda_v^{-1})}{\int_{-\infty}^{\infty} \mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,\Lambda_v^{-1}) \mathrm{d}v}
+p(v \mid x,g) = \frac{p(x \mid v,g) p(v \mid g)}{p(x \mid g)} = \frac{\mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,C_v)}{\int_{-\infty}^{\infty} \mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,C_v) \mathrm{d}v}
 \end{equation}
 %
 The Gaussian over $x$ can be rewritten to a Gaussian over $v$ times a constant $c_1$ in the following way
@@ -54,13 +54,13 @@ The Gaussian over $x$ can be rewritten to a Gaussian over $v$ times a constant $
 Consequently, the product of two Gaussians in the numerator of Eq. \ref{eq:condpost} can also be written as a Gaussian over $v$ introducing a new constant
 
 \begin{equation}
-\mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,\Lambda_v^{-1}) = c_1 c_2 \mathcal{N}(v; \mu_{post},C_{post})
+\mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,C_v) = c_1 c_2 \mathcal{N}(v; \mu_{post},C_{post})
 \end{equation}
 %
 The denominator of Eq. \ref{eq:condpost} is the integral of this formula, which evaluates to $c_1c_2$, as the Gaussian integrates to one. This cancels the constants in the numerator, making the conditional posterior equal to the combined Gaussian over $v$, which, after expanding $\mu_{post}$ and $C_{post}$, is
 
 \begin{equation}
-p(v \mid x,g) = \mathcal{N}\left(v; -\frac{2}{\sigma_x} \left(\frac{1}{\sigma_x} A^T A + \Lambda_v \right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + \Lambda_v\right)^{-1}\right)
+p(v \mid x,g) = \mathcal{N}\left(v; -\frac{2}{\sigma_x} \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1}\right)
 \end{equation}
 %
 and for a batch of size $B$
@@ -69,16 +69,16 @@ and for a batch of size $B$
 p(V \mid X,g) = \prod_{b=1}^B \mathcal{N} \left(v_b; \mu_{post}(x_b),C_{post} \right)
 \end{equation}
 %
-which can be sampled directly from a Gaussian of dimension $D_v \times B$. The conditional posterior over $g$ is defined as follows
+which can be sampled directly from a Gaussian of dimension $Dv \times B$. The conditional posterior over $g$ is defined as follows
 
 \begin{equation} 
 p(g \mid X,V) = \frac{p(X \mid g,V) p(g \mid V)}{p(X \mid V)} = \frac{p(V \mid g) p(g)}{p(V)}
 \end{equation}
 %
-which can be sampled by a slice sampling scheme with the following target
+which can be sampled by a Metropolis-Hastings or slice sampling scheme with the following target
 
 \begin{equation} 
-\log p(g \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(\Lambda_v^{-1})) + \sum_{b=1}^B v_b^T \Lambda_v v_b\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
+\log p(g \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(C_v)) + \sum_{b=1}^B v_b^T C_v^{-1} v_b\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
 \end{equation}
 
 \section{M-step}
@@ -87,7 +87,7 @@ The complete-data likelihood with respect to a set of batch observations of size
 
 \begin{equation}
 \begin{split}
-&p(\mathbf{V},G,\mathbf{X} \mid \Lambda_{1..K}) = \prod_{n=1}^N p(X_n \mid V_n) p(V_n \mid g_n) p(g_n) = \\
+&p(\mathbf{V},G,\mathbf{X} \mid C_{1..K}) = \prod_{n=1}^N p(X_n \mid V_n) p(V_n \mid g_n) p(g_n) = \\
 &\prod_{n=1}^N p(g_n) \prod_{b=1}^B p(x_{nb} \mid v_{nb}) p(v_{nb} \mid g_n) 
 \end{split}
 \end{equation}
@@ -96,8 +96,8 @@ Let's denote the logarithm of this by $\mathcal{L}=\log p(\mathbf{V},G,\mathbf{X
 
 \begin{equation}
 \begin{split}
-\mathcal{L} \sim \sum_{n=1}^N \frac{1}{L} \sum_{l=1}^L -\frac{1}{2} \left[B \log \left( \det \left( \Lambda_v^{-(l,n)} \right) \right) + \sum_{b=1}^B v^{(l,n,b)T}  \Lambda_v^{l,n} v^{l,n,b}\right]& = \\
-= -\frac{1}{2L} \sum_{m=1}^{NL} \left[B \log \left( \det \left( \Lambda_v^{-m} \right) \right) + \sum_{b=1}^B v^{(m,b)T}  \Lambda_v^{m} v^{m,b}\right]&
+\mathcal{L} \sim \sum_{n=1}^N \frac{1}{L} \sum_{l=1}^L -\frac{1}{2} \left[B \log \left( \det \left( C_v^{(l,n)} \right) \right) + \sum_{b=1}^B v^{(l,n,b)T}  \left( C_v^{l,n} \right)^{-1} v^{l,n,b}\right]& = \\
+= -\frac{1}{2L} \sum_{m=1}^{NL} \left[B \log \left( \det \left( C_v^{m} \right) \right) + \sum_{b=1}^B v^{(m,b)T}  \left( C_v^{m} \right)^{-1} v^{m,b}\right]&
 \end{split}
 \end{equation}
 %
@@ -106,18 +106,52 @@ noting that the double summation over $L$ samples over all $N$ observations alwa
 To ensure that the optimisation procedure does not produce precision matrices that are not positive definite, we can optimise for the Cholesky upper triangle matrix istead of the precision matrix, as this also specifies the Gaussian completely.
 
 \begin{eqnarray}
-\Lambda_j = U_j^T U_j \\
-\Lambda_v = \sum_{k=1}^K g_k U_k^T U_k \\
-\frac{\partial \Lambda_v}{\partial U_j} = 2 g_j U_j
+C_j = U_j^T U_j \\
+C_v = \sum_{k=1}^K g_k U_k^T U_k \\
+\frac{\partial C_v}{\partial U_j} = 2 g_j U_j
 \end{eqnarray}
 %
 so by the chain rule, the derivative of $\mathcal{L}$ according to $U_j$ looks like this
 
 \begin{equation}
 \begin{split}
-&\frac{\partial \mathcal{L}}{\partial U_j} = -\frac{1}{L} \sum_{m=1}^{LN} \frac{\partial \mathcal{L}^m}{\partial \Lambda_v^m} \frac{\partial \Lambda_v^m}{\partial U_j} = \\
-& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m2} \left[ - B \Lambda_v^{-m} + \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right] U_j
+&\frac{\partial \mathcal{L}}{\partial U_j} = -\frac{1}{2L} \sum_{m=1}^{NL} \frac{\partial \mathcal{L}^m}{\partial C_v^m} \frac{\partial C_v^m}{\partial U_j} = \\
+& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] U_j = \\
+& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right] U_j
 \end{split}
 \end{equation}
+%
+As a generalised M-step, we can move the parameters in the direction of the gradient scaled by a learning rate
+
+\begin{equation}
+U_j^{new} = U_j^{old} + \epsilon \frac{\partial \mathcal{L}}{\partial U_j}
+\end{equation}
+
+\section{Parametrisation with precision components}
+
+The model can be equally well parametrised by precision components
+
+\begin{eqnarray}
+p(v \mid g) = \mathcal{N}(v; 0,\Lambda_v^{-1}) \\
+\Lambda_v = \sum_{k=1}^K g_k \Lambda_k \label{eq:cv}
+\end{eqnarray}
+%
+in this case the conditional posterior over $v$ takes the form
+
+\begin{equation}
+p(v \mid x,g) = \mathcal{N}\left(v; -\frac{2}{\sigma_x} \left(\frac{1}{\sigma_x} A^T A + \Lambda_v \right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + \Lambda_v\right)^{-1}\right)
+\end{equation}
+%
+and the sampling target for the conditional posterior of $g$ will look as follows
+\begin{equation} 
+\log p(g \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(\Lambda_v^{-1})) + \sum_{b=1}^B v_b^T \Lambda_v v_b\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
+\end{equation}
+%
+The gradient of the expectation of the complete-data log-likelihod with respect to the joint posterior will look like this
+
+\begin{eqnarray}
+\Lambda_j = U_j^T U_j \\
+\frac{\partial \mathcal{L}}{\partial U_j} = -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m2} \left[ - B \Lambda_v^{-m} + \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right] U_j
+\end{eqnarray}
 
 \end{document}
