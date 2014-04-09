@@ -25,10 +25,9 @@ function grad = gestaltParamGradPrec(ge,samples,cholesky)
             opts.LT = false;
             opts.UT = true;
             iP = linsolve(U,temp,opts);
-            % TEST szor minuszegy
             matr = ge.B * iP - VV;
             for i=1:ge.k
-                grad{i} = grad{i} - (g(i,1) * matr * cholesky{i}) / L;
+                grad{i} = grad{i} + (g(i,1) * matr * cholesky{i}) / L;
             end
         end
     end

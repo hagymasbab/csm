@@ -151,7 +151,7 @@ The gradient of the expectation of the complete-data log-likelihod with respect 
 
 \begin{eqnarray}
 \Lambda_j = U_j^T U_j \\
-\frac{\partial \mathcal{L}}{\partial U_j} = -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m2} \left[ - B \Lambda_v^{-m} + \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right] U_j
+\frac{\partial \mathcal{L}}{\partial U_j} = \frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B  \left( \Lambda_v^m \right)^{-1} - \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right] U_j
 \end{eqnarray}
 
 \end{document}
