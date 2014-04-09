@@ -3,14 +3,14 @@ function gestalt = gestaltCreate(name,varargin)
     % Parse Input
     p = inputParser;
     addParamValue(p,'k',2,@isnumeric);
-    addParamValue(p,'Dx',32*32,@isnumeric);
+    addParamValue(p,'Dx',1024,@isnumeric);
     addParamValue(p,'filterShift',2,@isnumeric);
     addParamValue(p,'nOrients',2,@isnumeric);
     addParamValue(p,'nWLengths',2,@isnumeric);
     addParamValue(p,'N',100,@isnumeric);
     addParamValue(p,'obsVar',0.1,@isnumeric);
     addParamValue(p,'sparsity',0.2,@isnumeric);
-    addParamValue(p,'B',1,@isnumeric);
+    addParamValue(p,'B',10,@isnumeric);
     addParamValue(p,'gabor',true,@islogical);
     parse(p,varargin{:});
     gestalt = p.Results;        
