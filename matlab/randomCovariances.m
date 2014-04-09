@@ -1,4 +1,4 @@
-function cc = randomCovariances(k,dim)
+function cc = randomCovariances(k,dim,precision)
     blocksize = floor(dim/k);
     block = 0.1 * ones(blocksize);
     for i=1:k
@@ -6,7 +6,10 @@ function cc = randomCovariances(k,dim)
           cc{i} = (1/dim)*(base'*base);
           cc{i} = cc{i} + eye(dim);
           begin_block = (i-1)*blocksize + 1;
-          end_block = i*blocksize;
+          end_block = i*blocksize;          
           cc{i}(begin_block:end_block,begin_block:end_block) = cc{i}(begin_block:end_block,begin_block:end_block) + block;
+          if precision
+              cc{i} = inv(cc{i});
+          end
     end
 end

@@ -4,9 +4,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     addParamValue(parser,'burnin',0,@isnumeric);
     addParamValue(parser,'thin',1,@isnumeric);
     addParamValue(parser,'plot',0,@isnumeric);
+    addParamValue(parser,'precision',false,@islogical);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
     pl = parser.Results.plot;    
+    precision = parser.Results.precision;
     burn = parser.Results.burnin;
     thin = parser.Results.thin;
     N = nSamp*thin + burn;
@@ -31,7 +33,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
         end
         
         % generate a direct sample from the conditional posterior over v
-        V = gestaltPostVRnd(ge,xind,g);
+        if ~precision
+            V = gestaltPostVRnd(ge,xind,g);
+        else
+            V = gestaltPostVRndPrec(ge,xind,g);
+        end
         
         if pl > 0
             clf;
@@ -89,13 +95,21 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
                 end
             end
         elseif strcmp(g_sampler,'slice')
-            logpdf = @(g) gestaltLogPostG(g,V,ge); 
+            if ~precision
+                logpdf = @(g) gestaltLogPostG(g,V,ge); 
+            else
+                logpdf = @(g) gestaltLogPostGPrec(g,V,ge); 
+            end
             degenerate = true;
             while degenerate
                 [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
                 g = [g_part; 1-sum(g_part)];
-                Cv = componentSum(g,ge.cc);
-                if det(Cv) > 0
+                if ~precision
+                    CvP = componentSum(g,ge.cc);
+                else
+                    CvP = componentSum(g,ge.pc);
+                end
+                if det(CvP) > 0
                     degenerate = false;
                 end
             end
@@ -104,7 +118,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
         
         % uncomment this and comment out the similar line in the beginning if
         % you want to reverse the order of sampling from the conditionals
-        % v = gestaltPostVRnd(ge,xind,g);
+        % if ~precision
+        %     V = gestaltPostVRnd(ge,xind,g);
+        % else
+        %     V = gestaltPostVRndPrec(ge,xind,g);
+        % end
         
         % store the combined sample
         vlong = reshape(V,1,ge.B*ge.Dv);

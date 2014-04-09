@@ -1,7 +1,11 @@
-function plotCovariances(ge,dnum)
+function plotCovariances(ge,dnum,precision)
     clf;
     load iter;
-    real = ge.cc;
+    if ~precision
+        real = ge.cc;
+    else
+        real = ge.pc;
+    end
     %xx = (1/ge.N)*(ge.X'*ge.X);
     G = ge.G(1:dnum,:);    
     V = reshape(ge.V(1:dnum,:,:),dnum*ge.B,ge.Dv);

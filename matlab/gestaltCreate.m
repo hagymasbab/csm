@@ -12,6 +12,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'sparsity',0.2,@isnumeric);
     addParamValue(p,'B',10,@isnumeric);
     addParamValue(p,'gabor',true,@islogical);
+    addParamValue(p,'precision',false,@islogical);
     parse(p,varargin{:});
     gestalt = p.Results;        
         
@@ -46,7 +47,14 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.cc = gestaltCovariances(gestalt.k,gestalt.A');
     end
     
-    gestalt = gestaltGenerate(gestalt,gestalt.N);
+    if gestalt.precision
+        gestalt.pc = cell(1,gestalt.k);
+        for j=1:gestalt.k
+            gestalt.pc{j} = inv(gestalt.cc{j});
+        end
+    end
+    
+    gestalt = gestaltGenerate(gestalt,gestalt.N,gestalt.precision);
     fprintf('Transforming synthetic data\n');
     gestalt.tX = zeros(gestalt.N,gestalt.B,gestalt.Dv);
     for n=1:gestalt.N
