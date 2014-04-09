@@ -7,8 +7,7 @@ function V = gestaltPostVRndPrec(ge,xind,g)
     V = zeros(ge.B,ge.Dv);
     for b=1:ge.B
         Ax = reshape(ge.tX(xind,b,:),1,ge.Dv)';
-        % TEST: kivettem a minuszt
-        m = (2/ge.obsVar) * cov * Ax;
+        m = (1/ge.obsVar) * cov * Ax;
         V(b,:) = mvnrnd(m',cov);
     end
 end
