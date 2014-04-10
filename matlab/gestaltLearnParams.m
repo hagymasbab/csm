@@ -10,7 +10,8 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
     test = p.Results.test;
     close = p.Results.close;   
     precision = p.Results.precision;   
-    lrate = p.Results.learningRate;
+    % scale learning rate with number of datapoints
+    lrate = p.Results.learningRate / ge.N;
     fSamp = p.Results.firstSamples;
     numGivenSamp = size(fSamp,2);
 
@@ -95,6 +96,19 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
             grad = gestaltParamGradPrec(ge,samples,cholesky);
         end
         
+        % set the learning rate to change the matrices at most by about 0.1
+        maxval = 0;
+        for j=1:ge.k
+            actmax = max(max(abs(grad{j})));
+            if actmax > maxval
+                maxval = actmax;
+            end
+        end
+        lrate = min(0.15/maxval,lrate);
+        if precision
+            lrate = 1/lrate
+        end
+        
         for j=1:ge.k
             cholesky{j} = cholesky{j} + lrate * grad{j};
             cc_next{j} = cholesky{j}' * cholesky{j};
@@ -115,7 +129,7 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
         else
             ge.pc = cc_next;
         end
-        fprintf('\b diff %e\n',diff);
+        fprintf('\b lr %.2e diff %.2e\n',lrate,diff);
         
         % save some data to disk
         pCC{i+1} = cc_next;

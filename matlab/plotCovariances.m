@@ -5,6 +5,9 @@ function plotCovariances(ge,dnum,precision)
         real = ge.cc;
     else
         real = ge.pc;
+        for i=1:ge.k
+            real{i} = inv(real{i});
+        end
     end
     %xx = (1/ge.N)*(ge.X'*ge.X);
     G = ge.G(1:dnum,:);    
@@ -22,6 +25,9 @@ function plotCovariances(ge,dnum,precision)
         act = pCC{i};
         % estimated components at each step
         for j=1:k
+            if precision
+                act{j} = inv(act{j});
+            end
             subplot(vertical,horizontal,(j-1)*horizontal+ceil(i/interleave));           
             viewImage(act{j},'magnif',false)
             title(sprintf('Component %d at step %d',j,i));

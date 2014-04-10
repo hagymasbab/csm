@@ -18,7 +18,7 @@ function [samples,rr] = gestaltSamplePosterior(ge,nSamp,varargin)
     rr = 0;
     samples = zeros(dnum,nSamp,ge.k+(ge.B*ge.Dv));
     if v == 0
-        fprintf('Observation %d/',dnum);
+        fprintf('Obs %d/',dnum);
     end
     for n=dshift:dshift+dnum-1
         if v==0

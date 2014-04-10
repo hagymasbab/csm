@@ -12,7 +12,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'sparsity',0.2,@isnumeric);
     addParamValue(p,'B',10,@isnumeric);
     addParamValue(p,'gabor',true,@islogical);
-    addParamValue(p,'precision',false,@islogical);
+    addParamValue(p,'precision',true,@islogical);
     parse(p,varargin{:});
     gestalt = p.Results;        
         
