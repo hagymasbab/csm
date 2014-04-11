@@ -37,6 +37,15 @@ p(V \mid g) = \prod_{b=1}^B \mathcal{N}(v_b; 0,C_v) \\
 p(X \mid V) = \prod_{b=1}^B \mathcal{N}(x_b; Av_b,C_x)
 \end{eqnarray}
 
+The likelihood of the covariance components with respect to a dataset of size $N$, $\mathbf{X} = \lbrace X_1 \dots X_N \rbrace$ can be expressed as follows
+
+\begin{equation}
+\begin{split}
+p(\mathbf{X} \mid C_1 \dots C_k) = \iint_{-\infty}^{\infty} p(\mathbf{X} \mid \mathbf{V}) p(\mathbf{V} \mid G) p(G) \mathrm{d}\mathbf{V}\mathrm{d}G =\\
+= \int_{-\infty}^{\infty} \prod_{n=1}^N p(g_n) \int_{-\infty}^{\infty} \prod_{b=1}^B p(x_{n,b} \mid v_{n,b}) p(v_{n,b} \mid g_n) \mathrm{d}\mathbf{V}\mathrm{d}G
+\end{split}
+\end{equation}
+
 \section{Gibbs sampling as the E-step}
 
 An efficient way to collect samples from the joint posterior over all hidden variables is to employ a Gibbs sampling scheme, where we sample from the conditional posteriors. The first is over $v$, and can be defined as follows
@@ -69,13 +78,13 @@ and for a batch of size $B$
 p(V \mid X,g) = \prod_{b=1}^B \mathcal{N} \left(v_b; \mu_{post}(x_b),C_{post} \right)
 \end{equation}
 %
-which can be sampled directly from a Gaussian of dimension $Dv \times B$. The conditional posterior over $g$ is defined as follows
+which can be sampled directly from a Gaussian of dimension $D_v \times B$. The conditional posterior over $g$ is defined as follows
 
 \begin{equation} 
 p(g \mid X,V) = \frac{p(X \mid g,V) p(g \mid V)}{p(X \mid V)} = \frac{p(V \mid g) p(g)}{p(V)}
 \end{equation}
 %
-which can be sampled by a Metropolis-Hastings or slice sampling scheme with the following target
+which can be sampled by a  slice sampling scheme with the following target
 
 \begin{equation} 
 \log p(g \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(C_v)) + \sum_{b=1}^B v_b^T C_v^{-1} v_b\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
@@ -83,7 +92,7 @@ which can be sampled by a Metropolis-Hastings or slice sampling scheme with the 
 
 \section{M-step}
 
-The complete-data likelihood with respect to a set of batch observations of size $B$, $\mathbf{X} = \lbrace X_1 \dots X_N \rbrace$ is the following
+The complete-data likelihood with respect to a set of batch observations of size $B$ is the following
 
 \begin{equation}
 \begin{split}
@@ -92,7 +101,7 @@ The complete-data likelihood with respect to a set of batch observations of size
 \end{split}
 \end{equation}
 %
-Let's denote the logarithm of this by $\mathcal{L}=\log p(\mathbf{V},G,\mathbf{X} \mid \Lambda_{1..K})$. We can approximate the integral of this logarithm over the joint posterior by averaging over $L$ samples from it, separately for each observation $x_n$. As we will seek the values of the precision components $\Lambda_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters. This way we arrive to the following expression 
+Let's denote the logarithm of this by $\mathcal{L}=\log p(\mathbf{V},G,\mathbf{X} \mid C_{1..K})$. We can approximate the integral of this logarithm over the joint posterior by averaging over $L$ samples from it, separately for each observation $x_n$. As we will seek the values of the precision components $C_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters. This way we arrive to the following expression 
 
 \begin{equation}
 \begin{split}
