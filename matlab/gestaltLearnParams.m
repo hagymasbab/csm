@@ -4,14 +4,14 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
     addParamValue(p,'learningRate',0.001,@isnumeric);
     addParamValue(p,'close',false,@islogical);
     addParamValue(p,'precision',false,@islogical);
+    addParamValue(p,'onePointFirst',false,@islogical);
     addParamValue(p,'firstSamples',{});
-    p.KeepUnmatched = true;
     parse(p,varargin{:});
     test = p.Results.test;
     close = p.Results.close;   
     precision = p.Results.precision;   
-    % scale learning rate with number of datapoints
-    lrate = p.Results.learningRate / ge.N;
+    onepoint = p.Results.onePointFirst;   
+    lrate = p.Results.learningRate;
     fSamp = p.Results.firstSamples;
     numGivenSamp = size(fSamp,2);
 
@@ -25,7 +25,7 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
         end
     elseif strcmp(init,'random')
         fprintf('Using random initial condition.\n');
-        ccInit = randomCovariances(ge.k,ge.Dv,precision);
+        ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision);
     end
     
     % store existing specifications from ge to restore them at the end
@@ -57,6 +57,14 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
     for i=1:maxStep
         fprintf('EM iteration %d: E-step - ',i);
         % E-step: sampling the posterior
+        
+        if i==1 && onepoint
+            fulldata = ge.X;
+            fullN = ge.N;
+            ge.X = ge.X(1,:,:);
+            ge.N = 1;
+        end
+        
         if test == 3
             fprintf('test mode: using data instead of samples!\n');
             samples = ones(ge.N,nSamples,sdim);
@@ -97,17 +105,18 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
         end
         
         % set the learning rate to change the matrices at most by about 0.1
-        maxval = 0;
-        for j=1:ge.k
-            actmax = max(max(abs(grad{j})));
-            if actmax > maxval
-                maxval = actmax;
-            end
-        end
-        lrate = min(0.15/maxval,lrate);
-        if precision
-            lrate = 1/lrate
-        end
+        lrate = lrate / (ge.N * ge.B);
+%         maxval = 0;
+%         for j=1:ge.k
+%             actmax = max(max(abs(grad{j})));
+%             if actmax > maxval
+%                 maxval = actmax;
+%             end
+%         end
+%         lrate = min(0.15/maxval,lrate);
+%         if precision
+%             lrate = 1/lrate;
+%         end
         
         for j=1:ge.k
             cholesky{j} = cholesky{j} + lrate * grad{j};
@@ -138,11 +147,17 @@ function ge = gestaltLearnParams(ge,init,X,nSamples,maxStep,varargin)
         end
         save('iter.mat','pCC','S');
         
+        if i==1 && onepoint
+            ge.X = fulldata;
+            ge.N = fullN;
+        end
+        
         % test convergence
         if diff < 1e-3
             fprintf('Convergence achieved in %d steps.\n',i);
             break;
         end
+                
     end
     
     % store results
