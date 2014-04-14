@@ -2,13 +2,16 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate)
     ccInit = randomCovariances(ge.k,ge.Dv);
     X_old = ge.X;
     N_old = ge.N;
-    cholesky = ccInit;
-    for j=1:ge.k
-        cholesky{j} = chol(cholesky{j});
-    end
+    cc_old = ge.cc;
+    ge.cc = ccInit;
     ge.X = X;
     ge.N = size(ge.X,1);
     sdim = ge.k+(ge.Dv*ge.B);
+    
+    cholesky = ccInit;
+    for j=1:ge.k
+        cholesky{j} = chol(cholesky{j});
+    end    
     
     pCC{1} = ccInit;
     S = {};
@@ -19,6 +22,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate)
         cc_prev = ge.cc;
         for n=1:ge.N
             samples(n,:,:) = gestaltGibbs(ge,n,nSamples,'slice',0.05);            
+            
             grad = gestaltParamGrad(ge,samples(n,:,:),cholesky);
             for j=1:ge.k
                 cholesky{j} = cholesky{j} + lrate * grad{j};
@@ -40,5 +44,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate)
     ge.X = X_old;
     dnum = ge.N;
     ge.N = N_old;
+    ge.pCC = ge.cc;        
+    ge.cc = cc_old;
     plotCovariances(ge,dnum,false);
 end
