@@ -59,9 +59,9 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
                 CvP = componentSum(g,ge.pc);
                 postC = inv((1/ge.obsVar) * ge.AA + CvP);                
             end
-            [~,err] = cholcov(postC);
-            if det(CvP) > 0 && det(postC) > 0 && err == 0
-                degenerate = false;
+            [T,err] = cholcov(postC);
+            if det(CvP) > 0 && det(postC) > 0 && err == 0                
+                degenerate = false;                
             end
         end
         rr = rr + rr_act;
