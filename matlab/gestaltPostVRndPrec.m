@@ -3,6 +3,7 @@ function V = gestaltPostVRndPrec(ge,xind,g)
     sAA = (1/ge.obsVar) * ge.AA;
     P = componentSum(g,ge.pc);
     cov = inv(sAA + P);
+    %det(cov)
     
     V = zeros(ge.B,ge.Dv);
     for b=1:ge.B

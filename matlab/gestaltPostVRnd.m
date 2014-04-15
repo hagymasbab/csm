@@ -4,6 +4,7 @@ function V = gestaltPostVRnd(ge,xind,g)
     iCv = inv(componentSum(g,ge.cc));
     prec = sAA + iCv;
     cov = inv(sAA + iCv);
+    %det(cov)
     %cholprec = chol(prec,'lower');    
     
     V = zeros(ge.B,ge.Dv);

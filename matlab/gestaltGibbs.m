@@ -1,4 +1,4 @@
-function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
+function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
     addParamValue(parser,'burnin',0,@isnumeric);
@@ -18,12 +18,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
     %g = 0.5 * ones(ge.k,1);
     g = symmetricDirichlet(0.2,ge.k,1)';
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
-    
-    if strcmp(g_sampler,'hmc')
-        bounds = [1:ge.k-1 repmat([0 1],ge.k-1,1)];
-        grad = @(g) gestaltPostGGrad(g,V,ge);
-    end
-    
+        
     if verb==1
         fprintf('Sample %d/',N);
     end
@@ -47,75 +42,30 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
             pause
         end
         
-        % Metropolis-Hastings scheme to sample from the conditional
-        % posterior over g
-        if strcmp(g_sampler,'hmc') || strcmp(g_sampler,'mh')
-            accept = false;
-            lp_act = gestaltLogPostG(g,V,ge);
-            while ~accept
-                if strcmp(g_sampler,'mh')
-                    % propose from a unit Gaussian of dimension K-1
-                    g_part = mvnrnd(g(1:ge.k-1,1)',stepsize*eye(ge.k-1))';
-                else
-                    % propose from Hamiltonian dynamics
-                    p_init = mvnrnd(zeros(ge.k-1),0.01*eye(ge.k-1))';                
-                    [p_end,g_part] = leapfrog(p_init,g(1:ge.k-1,1),grad,stepsize,100,bounds);
-                    K_init = sum(p_init.^2) / 2;
-                    K_end = sum(p_end.^2) / 2;
-                end
-
-                % the last element is determined by the rest
-                g_next = [g_part; 1-sum(g_part)];
-                a = rand();
-                lp_next = gestaltLogPostG(g_next,V,ge);
-                if strcmp(g_sampler,'mh')
-                    limit = lp_next - lp_act;
-                else
-                    limit = K_init - K_end - lp_next + lp_act;
-                end
-
-                if verb==2
-                    fprintf('%f %f %f %f ',lp_act,lp_next,exp(limit),a);
-                    pause
-                end
-
-                if a < exp(limit)
-                    % accept the sample
-                    g = g_next;
-                    lp_act = lp_next;
-                    accept = true;
-                    if verb==2
-                        fprintf('accept\n');
-                    end
-                else
-                    rr = rr + 1;
-                    if verb==2
-                        fprintf('reject\n');
-                    end
-                end
-            end
-        elseif strcmp(g_sampler,'slice')
-            if ~precision
-                logpdf = @(g) gestaltLogPostG(g,V,ge); 
-            else
-                logpdf = @(g) gestaltLogPostGPrec(g,V,ge); 
-            end
-            degenerate = true;
-            while degenerate
-                [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
-                g = [g_part; 1-sum(g_part)];
-                if ~precision
-                    CvP = componentSum(g,ge.cc);
-                else
-                    CvP = componentSum(g,ge.pc);
-                end
-                if det(CvP) > 0
-                    degenerate = false;
-                end
-            end
-            rr = rr + rr_act;
+        % slice sampling for g
+        if ~precision
+            logpdf = @(g) gestaltLogPostG(g,V,ge); 
+        else
+            logpdf = @(g) gestaltLogPostGPrec(g,V,ge); 
         end
-        
+        degenerate = true;
+        while degenerate
+            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
+            g = [g_part; 1-sum(g_part)];
+            if ~precision
+                CvP = componentSum(g,ge.cc);
+                postC = inv((1/ge.obsVar) * ge.AA + inv(CvP));                
+            else
+                CvP = componentSum(g,ge.pc);
+                postC = inv((1/ge.obsVar) * ge.AA + CvP);                
+            end
+            [~,err] = cholcov(postC);
+            if det(CvP) > 0 && det(postC) > 0 && err == 0
+                degenerate = false;
+            end
+        end
+        rr = rr + rr_act;
+
         % uncomment this and comment out the similar line in the beginning if
         % you want to reverse the order of sampling from the conditionals
         % if ~precision
@@ -128,9 +78,9 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,g_sampler,stepsize,varargin)
         vlong = reshape(V,1,ge.B*ge.Dv);
         s(i,:) = [g' vlong];
     end
-    if verb==1
-        fprintf('\n');
-    end
+%     if verb==1
+%         fprintf('\n');
+%     end
     
     % calculate the rejection rate
     rr = rr / (rr + N);

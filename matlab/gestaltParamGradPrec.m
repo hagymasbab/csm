@@ -1,4 +1,9 @@
-function grad = gestaltParamGradPrec(ge,samples,cholesky)
+function grad = gestaltParamGradPrec(ge,samples,cholesky,varargin)
+    parser = inputParser;
+    addParamValue(parser,'verbose',0,@isnumeric);
+    parse(parser,varargin{:});
+    verb = parser.Results.verbose;   
+    
     L = size(samples,2);
     N = size(samples,1);
     grad = cell(1,ge.k);
@@ -7,9 +12,13 @@ function grad = gestaltParamGradPrec(ge,samples,cholesky)
         grad{i} = zeros(ge.Dv);
         pc{i} = cholesky{i}' * cholesky{i};
     end
-    fprintf('Sample set %d/', N);
+    if verb > 0
+        fprintf('Sample %d/', N*L);
+    end
     for n=1:N
-        printCounter(n);
+        if verb > 0
+            printCounter(n);
+        end
         GG = squeeze(samples(n,:,1:ge.k));
         for l=1:L            
             g = GG(l,:)';
@@ -33,6 +42,8 @@ function grad = gestaltParamGradPrec(ge,samples,cholesky)
             end
         end
     end
-    fprintf('\n');
+    if verb > 0
+        fprintf('\n');
+    end
 end
                 
