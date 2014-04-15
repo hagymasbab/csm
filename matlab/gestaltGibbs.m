@@ -16,7 +16,12 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
     s = zeros(N,ge.k + ge.B*ge.Dv);
     rr = 0;
     %g = 0.5 * ones(ge.k,1);
-    g = symmetricDirichlet(0.2,ge.k,1)';
+    valid = false;
+    while ~valid
+        %fprintf('e');
+        g = symmetricDirichlet(0.2,ge.k,1)';
+        valid = checkG(g,ge,precision);
+    end
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
         
     if verb==1
@@ -48,21 +53,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
         else
             logpdf = @(g) gestaltLogPostGPrec(g,V,ge); 
         end
-        degenerate = true;
-        while degenerate
+        valid = false;
+        while ~valid
             [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
             g = [g_part; 1-sum(g_part)];
-            if ~precision
-                CvP = componentSum(g,ge.cc);
-                postC = inv((1/ge.obsVar) * ge.AA + inv(CvP));                
-            else
-                CvP = componentSum(g,ge.pc);
-                postC = inv((1/ge.obsVar) * ge.AA + CvP);                
-            end
-            [T,err] = cholcov(postC);
-            if det(CvP) > 0 && det(postC) > 0 && err == 0                
-                degenerate = false;                
-            end
+            valid = checkG(g,ge,precision);
         end
         rr = rr + rr_act;
 
@@ -92,5 +87,21 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
     if thin > 1
         indices = 1:thin:nSamp*thin;
         s = s(indices,:);
+    end
+end
+
+function good = checkG(g,ge,precision)
+    if ~precision
+        CvP = componentSum(g,ge.cc);
+        postC = inv((1/ge.obsVar) * ge.AA + inv(CvP));                
+    else
+        CvP = componentSum(g,ge.pc);
+        postC = inv((1/ge.obsVar) * ge.AA + CvP);                
+    end
+    [~,err] = cholcov(postC);
+    if det(CvP) > 0 && det(postC) > 0 && err == 0                
+        good = true;                
+    else
+        good = false;
     end
 end
