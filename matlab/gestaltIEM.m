@@ -42,13 +42,8 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision)
             % E-step: Gibbs sampling
             samples(n,:,:) = gestaltGibbs(ge,n,nSamples,0.05,'verbose',1,'precision',precision);            
             
-            % M-step: gradient ascent
-            if ~precision
-                grad = gestaltParamGrad(ge,samples(n,:,:),cholesky);
-            else
-                grad = gestaltParamGradPrec(ge,samples(n,:,:),cholesky);
-            end
-            
+            % M-step: gradient ascent            
+            grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',precision);                        
             for j=1:ge.k
                 cholesky{j} = cholesky{j} + lrate * grad{j};
                 cc_next{j} = cholesky{j}' * cholesky{j};
@@ -70,6 +65,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision)
         for j=1:ge.k
             diff = diff + sum(sum((cc_next{j}-cc_prev{j})*(cc_next{j}-cc_prev{j})));           
         end
+        diff = diff / (ge.k*ge.Dv^2);
         
         if ~precision
             pCC{i+1} = ge.cc;
