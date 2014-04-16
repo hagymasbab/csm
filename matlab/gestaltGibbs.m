@@ -17,11 +17,12 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
     rr = 0;
     %g = 0.5 * ones(ge.k,1);
     valid = false;
-    while ~valid
-        %fprintf('e');
+    fprintf(' looking for a valid g');
+    while ~valid        
         g = symmetricDirichlet(0.2,ge.k,1)';
         valid = checkG(g,ge,precision);
     end
+    fprintf(repmat('\b',1,22));
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
         
     if verb==1
@@ -84,6 +85,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
 end
 
 function good = checkG(g,ge,precision)
+    good = true;
     if ~precision
         CvP = componentSum(g,ge.cc);
     else
@@ -102,11 +104,11 @@ function good = checkG(g,ge,precision)
         good = false;
         return;
     end
-    postC = inv(postP);
-    [~,err] = cholcov(postC);
-    if det(CvP) > 0 && det(postC) > 0 && err == 0                
-        good = true;                
-    else
-        good = false;
+    
+    %postC = inv(postP);
+    [~,err] = cholcov(postP);
+    %if det(CvP) > 0 && det(postC) > 0 && err == 0                
+    if err ~= 0                
+        good = false;                
     end
 end

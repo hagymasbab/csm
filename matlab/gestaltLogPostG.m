@@ -23,14 +23,15 @@ function lp = gestaltLogPostG(g,V,ge,precision)
         vb = V(b,:)';
         
         if ~precision
+            quad = quad + vb' * (Cv \ vb);
             %this should be faster
-            opts.LT = true;
-            opts.UT = false;
-            temp = linsolve(U',vb,opts);
-            opts.LT = false;
-            opts.UT = true;
-            rightvec = linsolve(U,temp,opts);
-            quad = quad + vb' * rightvec;
+%             opts.LT = true;
+%             opts.UT = false;
+%             temp = linsolve(U',vb,opts);
+%             opts.LT = false;
+%             opts.UT = true;
+%             rightvec = linsolve(U,temp,opts);
+%             quad = quad + vb' * rightvec;
         else
             quad = quad + vb' * P * vb;
         end

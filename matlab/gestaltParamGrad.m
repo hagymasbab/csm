@@ -26,14 +26,13 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
             g = GG(l,:)';
             V = reshape(samples(n,l,ge.k+1:ge.k+ge.Dv*ge.B),ge.B,ge.Dv);
             VV = V'*V;
-            if ~precision
-                Cv = componentSum(g,cc);
-                matr = (ge.B * eye(ge.Dv)) / Cv - (Cv \ VV) / Cv;
-                %iCv = inv(Cv);
+            CvP = componentSum(g,cc);
+            if ~precision                
+                matr = (ge.B * eye(ge.Dv)) / CvP - (CvP \ VV) / CvP;
+                %iCv = inv(CvP);
                 %matr = ge.B * iCv - iCv * VV * iCv;
-            else
-                P = componentSum(g,pc);                
-                matr = (ge.B * eye(ge.Dv)) / P - VV;
+            else                        
+                matr = (ge.B * eye(ge.Dv)) / CvP - VV;
             end
             for i=1:ge.k
                 grad{i} = grad{i} - (g(i,1) * matr);
