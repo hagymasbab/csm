@@ -32,12 +32,8 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
             printCounter(i);
         end
         
-        % generate a direct sample from the conditional posterior over v
-        if ~precision
-            V = gestaltPostVRnd(ge,xind,g);
-        else
-            V = gestaltPostVRndPrec(ge,xind,g);
-        end
+        % generate a direct sample from the conditional posterior over v        
+        V = gestaltPostVRnd(ge,xind,g,precision);
         
         if pl > 0
             clf;
