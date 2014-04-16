@@ -44,11 +44,8 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
         end
         
         % slice sampling for g
-        if ~precision
-            logpdf = @(g) gestaltLogPostG(g,V,ge); 
-        else
-            logpdf = @(g) gestaltLogPostGPrec(g,V,ge); 
-        end
+        logpdf = @(g) gestaltLogPostG(g,V,ge,precision); 
+        
         valid = false;
         while ~valid
             [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
