@@ -10,7 +10,11 @@ function lp = gestaltLogPostG(g,V,ge)
     Cv = componentSum(g,ge.cc);
     %iCv = inv(Cv);
     %iCv = eye(ge.Dv) / Cv;
-    U = chol(Cv);
+    [U,err] = chol(Cv);
+    if err > 0
+        lp = -Inf;
+        return;
+    end
     prior = (ge.sparsity - 1) * sum(log(g));
     quad = 0;
     for b=1:B

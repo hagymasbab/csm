@@ -1,4 +1,5 @@
 function plotCovariances(ge,dnum,precision)
+    subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
     clf;
     load iter;
     if ~precision
