@@ -7,7 +7,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
     RandStream.setGlobalStream(s);
     randseed = s.Seed;
     save('lastrandseed.mat','randseed');
-
+            
     ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision);
     
     X_old = ge.X;
@@ -24,6 +24,8 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
     ge.X = X;
     ge.N = size(ge.X,1);
     sdim = ge.k+(ge.Dv*ge.B);
+    % average change of a parameter over a cycle should not be more than:
+    goaldiff = 0.2 / ge.N;
     
     cholesky = ccInit;
     for j=1:ge.k
@@ -43,17 +45,34 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
             cc_prev = ge.pc;
         end
         
+        skipped = 0;
+        avgrate = 0;
         for n=1:ge.N
             printCounter(n);
             fprintf(' ');
             
             % E-step: Gibbs sampling
-            samples(n,:,:) = gestaltGibbs(ge,n,nSamples,0.05,'verbose',1,'precision',precision);            
+            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,0.05,'verbose',1,'precision',precision);            
+            if rr < 0                
+                fprintf('\b');                
+                skipped = skipped + 1;
+                continue;
+            end
             
             % M-step: gradient ascent            
             grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',precision);                        
+            
+            % choose learning rate
+            meanval = 0;
             for j=1:ge.k
-                cholesky{j} = cholesky{j} + lrate * grad{j};
+                meanval = meanval + mean(mean(abs(grad{j}),2),1);
+            end
+            meanval = meanval / ge.k;            
+            actrate = min(goaldiff/meanval,lrate);
+            avgrate = avgrate + actrate;
+            
+            for j=1:ge.k
+                cholesky{j} = cholesky{j} + actrate * grad{j};
                 cc_next{j} = cholesky{j}' * cholesky{j};
             end
             
@@ -83,7 +102,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
         
         S{i} = samples;
         save('iter.mat','pCC','S');
-        fprintf(' lr %.2e diff %.2e\n',lrate,diff');
+        fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/ge.N,diff,skipped);
     end
         
     ge.X = X_old;

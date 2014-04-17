@@ -4,23 +4,33 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
     addParamValue(parser,'burnin',0,@isnumeric);
     addParamValue(parser,'thin',1,@isnumeric);
     addParamValue(parser,'plot',0,@isnumeric);
+    addParamValue(parser,'sampleRetry',10,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
     pl = parser.Results.plot;    
+    retry = parser.Results.sampleRetry;    
     precision = parser.Results.precision;
     burn = parser.Results.burnin;
     thin = parser.Results.thin;
     N = nSamp*thin + burn;
     
+    
     s = zeros(N,ge.k + ge.B*ge.Dv);
     rr = 0;
     %g = 0.5 * ones(ge.k,1);
     valid = false;
+    tries = 0;
     %fprintf(' looking for a valid g');
-    while ~valid        
+    while ~valid
         g = symmetricDirichlet(0.2,ge.k,1)';
         valid = checkG(g,ge,precision);
+        tries = tries + 1;
+        % if we cannot find a valid g, return an error code
+        if tries > retry
+            rr = -1;
+            return;
+        end
     end
     %fprintf(repmat('\b',1,22));
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
