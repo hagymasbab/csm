@@ -47,6 +47,9 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed,plot)
     samples = zeros(ge.N,nSamples,sdim);
     for i=1:maxStep
         fprintf('IEM cycle %d datapoint %d/',i,ge.N);
+        if plot
+            nopause = false;
+        end
         if ~precision
             cc_prev = ge.cc;
         else
@@ -90,31 +93,51 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed,plot)
             end     
             
             if plot
+                hor = 6;
                 for j=1:ge.k
-                    % previous components
-                    subplot(ge.k,4,(j-1)*4+1);
-                    viewImage(ge.cc{j},'magnif',false);
-                    title(sprintf('comp %d at %d#%d',j,i,n-1));                    
+                    % cholesky
+                    subplot(ge.k,hor,(j-1)*hor+1);
+                    viewImage(cholesky{j},'magnif',false);
+                    title(sprintf('chol %d at %d#%d',j,i,n));                    
                     % gradients
-                    subplot(ge.k,4,(j-1)*4+3);
-                    viewImage(grad{j}/oldchol{j},'magnif',false);
+                    subplot(ge.k,hor,(j-1)*hor+3);
+                    %compgrad = grad{j}/oldchol{j};
+                    compgrad = grad{j};
+                    learnrate = min(goaldiff(1,1)/meanvals(1,j),lrate);
+                    viewImage(compgrad,'magnif',false);
                     gavg = mean(squeeze(samples(n,:,j)));
-                    title(sprintf('sg%d=%.3f, lr=%.3f',j,gavg,goaldiff(1,1)/meanvals(1,j)));
+                    title(sprintf('grad sg%d=%.3f',j,gavg));
+                    % delta
+                    subplot(ge.k,hor,(j-1)*hor+4);
+                    viewImage(compgrad*learnrate,'magnif',false);                    
+                    title(sprintf('delta lr=%.3f',learnrate));
                     % next components
-                    subplot(ge.k,4,(j-1)*4+4);
+                    subplot(ge.k,hor,(j-1)*hor+5);
                     viewImage(cc_next{j},'magnif',false);
                     title(sprintf('comp %d at %d#%d',j,i,n));
+                    % truth
+                    subplot(ge.k,hor,(j-1)*hor+6);
+                    viewImage(cc_old{j},'magnif',false);
+                    title(sprintf('true comp %d',j));
                 end
                 % data cov                    
-                subplot(ge.k,4,2);
+                subplot(ge.k,hor,2);
                 viewImage(cov(squeeze(ge.X(n,:,:))),'magnif',false);
                 title(sprintf('data cov, g1=%.3f',ge.G(n,1)));
                 % sample cov                    
-                subplot(ge.k,4,4+2);
+                subplot(ge.k,hor,hor+2);
                 vsamp = reshape(samples(n,:,ge.k+1:sdim),nSamples*ge.B,ge.Dv);
                 viewImage(cov(vsamp),'magnif',false);
                 title('sample cov');
-                pause;
+                pause(0.01);
+                if ~nopause
+                    ch = getkey('non-ascii');
+                    if strcmp('f',ch)
+                        nopause = true;
+                    elseif strcmp('r',ch)
+                        plot = false;
+                    end
+                end
             end
             
             % update parameters

@@ -1,8 +1,15 @@
 function viewImage(data,varargin)
     p = inputParser;
     addParamValue(p,'magnif',true,@islogical);
+    addParamValue(p,'usemax',false,@islogical);
     parse(p,varargin{:});
     magn = p.Results.magnif;
+    usemax = p.Results.usemax;
+    range = [-2 2];
+    if usemax
+        maxval = max(max(abs(data)));
+        range = [-maxval maxval];
+    end
     
     if min(size(data)) == 1
         imdim = sqrt(max(size(data)));
@@ -13,5 +20,5 @@ function viewImage(data,varargin)
     else
         IM = 1;
     end
-    imshow(data,'InitialMAgnification',IM,'colormap',jet,'DisplayRange',[-2 2]);
+    imshow(data,'InitialMAgnification',IM,'colormap',jet,'DisplayRange',range);
 end
