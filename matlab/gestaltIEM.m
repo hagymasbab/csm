@@ -1,4 +1,4 @@
-function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
+function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed,plot)
     
     if strcmp(randseed,'last')
         load lastrandseed;
@@ -25,7 +25,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
     ge.N = size(ge.X,1);
     sdim = ge.k+(ge.Dv*ge.B);
     % maximum change of a parameter over a cycle should not be more than:
-    goaldiff = (1 / ge.N) * ones(ge.Dv);
+    goaldiff = (2 / ge.N) * ones(ge.Dv);
     % empirical correction of the dimension dependence of the largest eigenvalue of the inverse covariance
     goaldiff = goaldiff / (ge.Dv * 0.025);
     
@@ -37,6 +37,11 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
     
     pCC{1} = ccInit;
     S = {};
+    
+    if plot
+        subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
+        clf;
+    end
     
     cc_next = cell(1,ge.k);
     samples = zeros(ge.N,nSamples,sdim);
@@ -71,7 +76,8 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
                 meanvals(1,j) = meanvals(1,j) + mean(mean(abs(grad{j}),2),1);
             end
             meanval = mean(meanvals,2);   
-
+            
+            oldchol = cholesky;
             for j=1:ge.k
                 % choose learning rate
                 %actrate = min(goaldiff ./ abs(grad{j}),lrate * ones(ge.Dv));
@@ -80,7 +86,35 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
                 avgrate = avgrate + sum(sum(actrate))/cholparnum;
                 % update 
                 cholesky{j} = cholesky{j} + actrate .* grad{j};
-                cc_next{j} = cholesky{j}' * cholesky{j};
+                cc_next{j} = cholesky{j}' * cholesky{j};                                
+            end     
+            
+            if plot
+                for j=1:ge.k
+                    % previous components
+                    subplot(ge.k,4,(j-1)*4+1);
+                    viewImage(ge.cc{j},'magnif',false);
+                    title(sprintf('comp %d at %d#%d',j,i,n-1));                    
+                    % gradients
+                    subplot(ge.k,4,(j-1)*4+3);
+                    viewImage(grad{j}/oldchol{j},'magnif',false);
+                    gavg = mean(squeeze(samples(n,:,j)));
+                    title(sprintf('sg%d=%.3f, lr=%.3f',j,gavg,goaldiff(1,1)/meanvals(1,j)));
+                    % next components
+                    subplot(ge.k,4,(j-1)*4+4);
+                    viewImage(cc_next{j},'magnif',false);
+                    title(sprintf('comp %d at %d#%d',j,i,n));
+                end
+                % data cov                    
+                subplot(ge.k,4,2);
+                viewImage(cov(squeeze(ge.X(n,:,:))),'magnif',false);
+                title(sprintf('data cov, g1=%.3f',ge.G(n,1)));
+                % sample cov                    
+                subplot(ge.k,4,4+2);
+                vsamp = reshape(samples(n,:,ge.k+1:sdim),nSamples*ge.B,ge.Dv);
+                viewImage(cov(vsamp),'magnif',false);
+                title('sample cov');
+                pause;
             end
             
             % update parameters
