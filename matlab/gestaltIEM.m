@@ -24,13 +24,14 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
     ge.X = X;
     ge.N = size(ge.X,1);
     sdim = ge.k+(ge.Dv*ge.B);
-    % average change of a parameter over a cycle should not be more than:
-    goaldiff = 0.2 / ge.N;
+    % maximum change of a parameter over a cycle should not be more than:
+    goaldiff = (0.5 / ge.N) * ones(ge.Dv);
     
     cholesky = ccInit;
     for j=1:ge.k
         cholesky{j} = chol(cholesky{j});
     end    
+    cholparnum = (ge.Dv^2 + ge.Dv) / 2;
     
     pCC{1} = ccInit;
     S = {};
@@ -63,16 +64,20 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
             grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',precision);                        
             
             % choose learning rate
-            meanval = 0;
+            meanvals = zeros(1,j);
             for j=1:ge.k
-                meanval = meanval + mean(mean(abs(grad{j}),2),1);
+                meanvals(1,j) = meanvals(1,j) + mean(mean(abs(grad{j}),2),1);
             end
-            meanval = meanval / ge.k;            
-            actrate = min(goaldiff/meanval,lrate);
-            avgrate = avgrate + actrate;
-            
+            meanval = mean(meanvals,2);   
+
             for j=1:ge.k
-                cholesky{j} = cholesky{j} + actrate * grad{j};
+                % choose learning rate
+                %actrate = min(goaldiff ./ abs(grad{j}),lrate * ones(ge.Dv));
+                %actrate = min(goaldiff / meanval,lrate * ones(ge.Dv));
+                actrate = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
+                avgrate = avgrate + sum(sum(actrate))/cholparnum;
+                % update 
+                cholesky{j} = cholesky{j} + actrate .* grad{j};
                 cc_next{j} = cholesky{j}' * cholesky{j};
             end
             
@@ -102,7 +107,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
         
         S{i} = samples;
         save('iter.mat','pCC','S');
-        fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/ge.N,diff,skipped);
+        fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/(ge.N*ge.k),diff,skipped);
     end
         
     ge.X = X_old;
