@@ -25,7 +25,9 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
     ge.N = size(ge.X,1);
     sdim = ge.k+(ge.Dv*ge.B);
     % maximum change of a parameter over a cycle should not be more than:
-    goaldiff = (0.5 / ge.N) * ones(ge.Dv);
+    goaldiff = (1 / ge.N) * ones(ge.Dv);
+    % empirical correction of the dimension dependence of the largest eigenvalue of the inverse covariance
+    goaldiff = goaldiff / (ge.Dv * 0.025);
     
     cholesky = ccInit;
     for j=1:ge.k
