@@ -1,5 +1,13 @@
-function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision)
+function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed)
     
+    if strcmp(randseed,'last')
+        load lastrandseed;
+    end
+    s = RandStream('mt19937ar','Seed',randseed);
+    RandStream.setGlobalStream(s);
+    randseed = s.Seed;
+    save('lastrandseed.mat','randseed');
+
     ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision);
     
     X_old = ge.X;

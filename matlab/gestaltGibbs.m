@@ -17,12 +17,12 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
     rr = 0;
     %g = 0.5 * ones(ge.k,1);
     valid = false;
-    fprintf(' looking for a valid g');
+    %fprintf(' looking for a valid g');
     while ~valid        
         g = symmetricDirichlet(0.2,ge.k,1)';
         valid = checkG(g,ge,precision);
     end
-    fprintf(repmat('\b',1,22));
+    %fprintf(repmat('\b',1,22));
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
         
     if verb==1
