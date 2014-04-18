@@ -41,6 +41,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     end
     for i=1:ge.k
         grad{i} = grad{i} * cholesky{i} / L;
+        %grad{i} = grad{i} .* cholesky{i} / L;
     end
     if verb > 0
         fprintf('\n');
