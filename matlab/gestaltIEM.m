@@ -63,7 +63,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed,plot)
             fprintf(' ');
             
             % E-step: Gibbs sampling
-            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,0.05,'verbose',1,'precision',precision);            
+            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',1,'precision',precision);            
             if rr < 0                
                 fprintf('\b');                
                 skipped = skipped + 1;

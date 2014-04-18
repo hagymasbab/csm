@@ -1,6 +1,7 @@
-function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
+function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
+    addParamValue(parser,'stepsize',0.05,@isnumeric);
     addParamValue(parser,'burnin',0,@isnumeric);
     addParamValue(parser,'thin',1,@isnumeric);
     addParamValue(parser,'plot',0,@isnumeric);
@@ -14,6 +15,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,stepsize,varargin)
     burn = parser.Results.burnin;
     thin = parser.Results.thin;
     N = nSamp*thin + burn;
+    stepsize = parser.Results.stepsize;
     
     
     s = zeros(N,ge.k + ge.B*ge.Dv);
