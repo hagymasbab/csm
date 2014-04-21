@@ -1,5 +1,43 @@
 function disc = testGestaltDer(ge)
     
+    function lp = loggauss(C,v)
+        b = size(v,2);
+        iC = inv(C);
+        quad = 0;
+        for i=1:b
+            quad = quad + v(:,b)' * iC * v(:,b);
+        end
+        lp = -(b*log(det(C)) + quad) / 2;
+    end
+
+    function grad = loggaussgrad(C,v)
+        b = size(v,2);
+        iC = inv(C);
+        quad = 0;
+        for i=1:b
+            quad = quad + iC * v(:,b) * v(:,b)' * iC;
+        end
+        grad = -(b*iC - quad) / 2;
+    end
+
+    function cv = kovmat(cholmat,g,ge)
+        cv = zeros(ge.Dv);
+        choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
+        for i=1:ge.k
+            cv = cv + g(i,1) * (choles{i}' * choles{i});
+        end
+        cv = trace(cv);
+    end
+
+    function gradmat = kovmatder(cholmat,g,ge)
+        gradcell = cell(1,ge.k);
+        choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
+        for i=1:ge.k
+            gradcell{i} = 2 * g(i,1) * choles{i};
+        end
+        gradmat = cell2mat(gradcell);
+    end
+
     function lp = gestaltUCDLL(cholmat,ge,samples)
         % unnormalised complete-data log-likelihood
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));        
@@ -12,9 +50,11 @@ function disc = testGestaltDer(ge)
         grad = gestaltParamGrad(ge,samples,choles);
         gradmat = cell2mat(grad);
     end
-
-    samples = zeros(1,5,ge.k+ge.B*ge.Dv);
-    samples(1,:,:) = gestaltGibbs(ge,1,5);
+    
+    ge.B = 1;
+    nSamp = 1;
+    samples = zeros(1,nSamp,ge.k+ge.B*ge.Dv);
+    samples(1,:,:) = gestaltGibbs(ge,1,nSamp);
 
     cholesky = cell(1,ge.k);
     for j=1:ge.k
@@ -22,9 +62,19 @@ function disc = testGestaltDer(ge)
     end
     cholmat = cell2mat(cholesky);
 
+    Cv = componentSum(0.5*ones(ge.k,1),ge.cc);
+    v = mvnrnd(zeros(100,ge.Dv),Cv)';
+    
     a = @(x) gestaltUCDLL(x,ge,samples);
     b = @(x) gestaltDerUCDLL(x,ge,samples);
+    init = cholmat;
+%     a = @(x) kovmat(x,0.5*ones(ge.k,1),ge);
+%     b = @(x) kovmatder(x,0.5*ones(ge.k,1),ge);
+
+%     a = @(x) loggauss(x,v);
+%     b = @(x) loggaussgrad(x,v);
+%     init = Cv;
     
-    disc = checkDerivative(a,b,cholmat);
+    disc = checkDerivative(a,b,init);
 
 end

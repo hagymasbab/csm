@@ -88,7 +88,8 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed,plot)
                 actrate = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
                 avgrate = avgrate + sum(sum(actrate))/cholparnum;
                 % update 
-                cholesky{j} = cholesky{j} + actrate .* grad{j};
+                %cholesky{j} = cholesky{j} + actrate .* grad{j};
+                cholesky{j} = cholesky{j} + actrate .* triu(grad{j});
                 cc_next{j} = cholesky{j}' * cholesky{j};                                
             end     
             

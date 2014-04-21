@@ -21,9 +21,9 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         if verb > 0
             printCounter(n);
         end
-        GG = squeeze(samples(n,:,1:ge.k));
+        GG = reshape(samples(n,:,1:ge.k),L,ge.k); % squeeze doesn't work for L=1
         for l=1:L
-            g = GG(l,:)';
+            g = GG(l,:)';            
             V = reshape(samples(n,l,ge.k+1:ge.k+ge.Dv*ge.B),ge.B,ge.Dv);
             VV = V'*V;
             CvP = componentSum(g,cc);
@@ -33,7 +33,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
                 %matr = ge.B * iCv - iCv * VV * iCv;
             else                        
                 matr = (ge.B * eye(ge.Dv)) / CvP - VV;
-            end
+            end            
             for i=1:ge.k
                 grad{i} = grad{i} - (g(i,1) * matr);
             end

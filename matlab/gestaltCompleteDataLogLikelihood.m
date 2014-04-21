@@ -8,7 +8,7 @@ function ll = gestaltCompleteDataLogLikelihood(ge,samples,cholesky)
     end
     
     for n=1:N
-        GG = squeeze(samples(n,:,1:ge.k));
+        GG = reshape((samples(n,:,1:ge.k)),L,ge.k);
         for l=1:L
             g = GG(l,:)';
             V = reshape(samples(n,l,ge.k+1:ge.k+ge.Dv*ge.B),ge.B,ge.Dv);
