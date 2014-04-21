@@ -72,6 +72,12 @@ The denominator of Eq. \ref{eq:condpost} is the integral of this formula, which 
 p(v \mid x,g) = \mathcal{N}\left(v; \frac{1}{\sigma_x} \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1}\right)
 \end{equation}
 %
+If we can assume that $\frac{1}{\sigma_x}$ is small compared to elements of the matrices (i.e. observation variance is large), then we may use the following approximation
+
+\begin{equation}
+C_{post} \approx C_v - \frac{1}{\sigma_x}C_v A^T A C_v
+\end{equation}
+%
 and for a batch of size $B$
 
 \begin{equation}

@@ -1,4 +1,14 @@
-function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed,plot)
+function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
+    parser = inputParser;
+    addParamValue(parser,'learningRate',0.01,@isnumeric);
+    addParamValue(parser,'plot',false,@islogical);
+    addParamValue(parser,'precision',false,@islogical);
+    addParamValue(parser,'approximatePostCov',false,@islogical);
+    parse(parser,varargin{:});
+    lrate = parser.Results.learningRate; 
+    plot = parser.Results.plot;
+    approx = parser.Results.approximatePostCov;
+    precision = parser.Results.precision;
     
     if strcmp(randseed,'last')
         load lastrandseed;
@@ -63,7 +73,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,lrate,precision,randseed,plot)
             fprintf(' ');
             
             % E-step: Gibbs sampling
-            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',1,'precision',precision);            
+            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',1,'precision',precision,'approximatePostCov',approx);            
             if rr < 0                
                 fprintf('\b');                
                 skipped = skipped + 1;

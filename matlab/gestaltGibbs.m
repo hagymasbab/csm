@@ -7,6 +7,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'plot',0,@isnumeric);
     addParamValue(parser,'sampleRetry',10,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
+    addParamValue(parser,'approximatePostCov',false,@islogical);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
     pl = parser.Results.plot;    
@@ -16,7 +17,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     thin = parser.Results.thin;
     N = nSamp*thin + burn;
     stepsize = parser.Results.stepsize;
-    
+    approx = parser.Results.approximatePostCov;    
     
     s = zeros(N,ge.k + ge.B*ge.Dv);
     rr = 0;
@@ -46,7 +47,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
         end
         
         % generate a direct sample from the conditional posterior over v        
-        V = gestaltPostVRnd(ge,xind,g,precision);
+        V = gestaltPostVRnd(ge,xind,g,precision,approx);
         
         if pl > 0
             clf;
