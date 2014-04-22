@@ -1,4 +1,4 @@
-function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
+function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     parser = inputParser;
     addParamValue(parser,'learningRate',0.01,@isnumeric);
     addParamValue(parser,'plot',false,@islogical);
@@ -17,7 +17,7 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     RandStream.setGlobalStream(s);
     randseed = s.Seed;
     save('lastrandseed.mat','randseed');
-            
+        
     ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision);
     
     X_old = ge.X;
@@ -31,11 +31,19 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         ge.pc = ccInit;
     end
     
+    minperm = [];
+    diff = zeros(1,maxStep+1);
+    diff(1,1) = rootMeanSquare(ccInit,cc_old,minperm);
+    if nargout > 1
+        longdiff = zeros(1,maxStep*ge.N+1);
+        longdiff(1,1) = diff(1,1);
+    end    
+    
     ge.X = X;
     ge.N = size(ge.X,1);
     sdim = ge.k+(ge.Dv*ge.B);
     % maximum change of a parameter over a cycle should not be more than:
-    goaldiff = (2 / ge.N) * ones(ge.Dv);
+    goaldiff = (1 / ge.N) * ones(ge.Dv);
     % empirical correction of the dimension dependence of the largest eigenvalue of the inverse covariance
     goaldiff = goaldiff / (ge.Dv * 0.025);
     
@@ -98,7 +106,6 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 actrate = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
                 avgrate = avgrate + sum(sum(actrate))/cholparnum;
                 % update 
-                %cholesky{j} = cholesky{j} + actrate .* grad{j};
                 cholesky{j} = cholesky{j} + actrate .* triu(grad{j});
                 cc_next{j} = cholesky{j}' * cholesky{j};                                
             end     
@@ -151,6 +158,11 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 end
             end
             
+            if nargout > 1
+                lidx = 1+(i-1)*ge.N+n;
+                [longdiff(1,lidx),minperm] = rootMeanSquare(cc_next,ge.cc,minperm);
+            end
+            
             % update parameters
             if ~precision
                 ge.cc = cc_next;
@@ -163,11 +175,8 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             end
         end
         
-        diff = 0;
-        for j=1:ge.k
-            diff = diff + sum(sum((cc_next{j}-cc_prev{j})*(cc_next{j}-cc_prev{j})));           
-        end
-        diff = diff / (ge.k*ge.Dv^2);
+        reldiff = rootMeanSquare(cc_next,cc_prev,1:ge.k);
+        [diff(1,i+1),minperm] = rootMeanSquare(cc_next,cc_old,minperm);        
         
         if ~precision
             pCC{i+1} = ge.cc;
@@ -177,7 +186,12 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         
         S{i} = samples;
         save('iter.mat','pCC','S');
-        fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/(ge.N*ge.k),diff,skipped);
+        fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/(ge.N*ge.k),reldiff,skipped);
+        
+        if reldiff < 1e-3
+            fprintf('Convergence achieved in %d steps.\n',i);
+            break;
+        end
     end
         
     ge.X = X_old;
@@ -193,3 +207,28 @@ function ge = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     end
     plotCovariances(ge,dnum,precision);
 end
+
+function [mindiff,minperm] = rootMeanSquare(cc1,cc2,minperm)
+    % we should take the minimum over all possible permutations
+    k = size(cc1,2);
+    d = size(cc1{1},1);
+    if size(minperm,2) < k;
+        permutations = perms(1:k);
+    else
+        permutations = minperm;
+    end
+    mindiff = Inf;
+    for p=1:size(permutations,1)
+        si = permutations(p,:);
+        diff = 0;
+        for j=1:k
+            diff = diff + sum(sum((cc2{j}-cc1{si(1,j)})*(cc2{j}-cc1{si(1,j)})));           
+        end
+        diff = diff / (k*(d+d^2)/2);
+        if diff < mindiff
+            mindiff = diff;
+            minperm = si;
+        end
+    end
+end
+    
