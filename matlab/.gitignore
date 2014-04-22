@@ -1,4 +1,6 @@
 # ignore .mat files as they contain generated data
 *.mat
+# ignore generated figures
+*.fig
 # also temporary code files created by matlab
 *~

@@ -1,7 +1,7 @@
 function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     parser = inputParser;
     addParamValue(parser,'learningRate',0.01,@isnumeric);
-    addParamValue(parser,'plot',false,@islogical);
+    addParamValue(parser,'plot',1,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'approximatePostCov',false,@islogical);
     parse(parser,varargin{:});
@@ -56,7 +56,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     pCC{1} = ccInit;
     S = {};
     
-    if plot
+    if plot>1
         subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
         clf;
     end
@@ -65,7 +65,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     samples = zeros(ge.N,nSamples,sdim);
     for i=1:maxStep
         fprintf('IEM cycle %d datapoint %d/',i,ge.N);
-        if plot
+        if plot>1
             nopause = false;
         end
         if ~precision
@@ -110,7 +110,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 cc_next{j} = cholesky{j}' * cholesky{j};                                
             end     
             
-            if plot
+            if plot>1
                 hor = 6;
                 for j=1:ge.k
                     % cholesky
@@ -153,7 +153,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                     if strcmp('f',ch)
                         nopause = true;
                     elseif strcmp('r',ch)
-                        plot = false;
+                        plot = 1;
                     end
                 end
             end
@@ -205,7 +205,9 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         ge.pPC = ge.pc;        
         ge.pc = cc_old;
     end
-    plotCovariances(ge,dnum,precision);
+    if plot>0
+        plotCovariances(ge,dnum,precision);
+    end
 end
 
 function [mindiff,minperm] = rootMeanSquare(cc1,cc2,minperm)
