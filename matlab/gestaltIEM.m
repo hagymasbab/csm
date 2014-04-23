@@ -54,6 +54,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         cholesky{j} = chol(cholesky{j});
     end    
     cholparnum = (ge.Dv^2 + ge.Dv) / 2;
+    cdll = -Inf;
     
     pCC{1} = ccInit;
     S = {};
@@ -88,6 +89,10 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 fprintf(' ');
             end
             
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+            % ACTUAL IEM PART BEGINS HERE            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
             % E-step: Gibbs sampling
             [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',verb-1,'precision',precision,'approximatePostCov',approx);            
             if rr < 0                
@@ -102,70 +107,45 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',precision);                        
             
             % choose learning rate
-            meanvals = zeros(1,j);
+            meanvals = zeros(1,ge.k);
             for j=1:ge.k
                 meanvals(1,j) = meanvals(1,j) + mean(mean(abs(grad{j}),2),1);
             end
             meanval = mean(meanvals,2);   
             
-            oldchol = cholesky;
+            chol_cand = cholesky;
+            cdll = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);
+            avgrates = zeros(1,ge.k);
             for j=1:ge.k
                 % choose learning rate
                 %actrate = min(goaldiff ./ abs(grad{j}),lrate * ones(ge.Dv));
                 %actrate = min(goaldiff / meanval,lrate * ones(ge.Dv));
                 actrate = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
-                avgrate = avgrate + sum(sum(actrate))/cholparnum;
+                avgrates(1,j) = sum(sum(actrate))/cholparnum;
+
                 % update 
-                cholesky{j} = cholesky{j} + actrate .* triu(grad{j});
+                %cholesky{j} = cholesky{j} + actrate .* triu(grad{j});
+                
+                increase = true;
+                while increase
+                    chol_cand{j} = cholesky{j} + actrate .* triu(grad{j});
+                    cdll_cand = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);
+                    if cdll_cand > cdll
+                        cholesky = chol_cand;
+                        cdll = cdll_cand;
+                    else
+                        increase = false;
+                    end
+                end
                 cc_next{j} = cholesky{j}' * cholesky{j};                                
             end     
             
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+            % ACTUAL IEM PART ENDS HERE            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
             if plot>1
-                hor = 6;
-                for j=1:ge.k
-                    % cholesky
-                    subplot(ge.k,hor,(j-1)*hor+1);
-                    viewImage(cholesky{j},'magnif',false);
-                    title(sprintf('chol %d at %d#%d',j,i,n));                    
-                    % gradients
-                    subplot(ge.k,hor,(j-1)*hor+3);
-                    %compgrad = grad{j}/oldchol{j};
-                    compgrad = grad{j};
-                    learnrate = min(goaldiff(1,1)/meanvals(1,j),lrate);
-                    viewImage(compgrad,'magnif',false);
-                    gavg = mean(squeeze(samples(n,:,j)));
-                    title(sprintf('grad sg%d=%.3f',j,gavg));
-                    % delta
-                    subplot(ge.k,hor,(j-1)*hor+4);
-                    viewImage(compgrad*learnrate,'magnif',false);                    
-                    title(sprintf('delta lr=%.3f',learnrate));
-                    % next components
-                    subplot(ge.k,hor,(j-1)*hor+5);
-                    viewImage(cc_next{j},'magnif',false);
-                    title(sprintf('comp %d at %d#%d',j,i,n));
-                    % truth
-                    subplot(ge.k,hor,(j-1)*hor+6);
-                    viewImage(cc_old{j},'magnif',false);
-                    title(sprintf('true comp %d',j));
-                end
-                % data cov                    
-                subplot(ge.k,hor,2);
-                viewImage(cov(squeeze(ge.X(n,:,:))),'magnif',false);
-                title(sprintf('data cov, g1=%.3f',ge.G(n,1)));
-                % sample cov                    
-                subplot(ge.k,hor,hor+2);
-                vsamp = reshape(samples(n,:,ge.k+1:sdim),nSamples*ge.B,ge.Dv);
-                viewImage(cov(vsamp),'magnif',false);
-                title('sample cov');
-                pause(0.01);
-                if ~nopause
-                    ch = getkey('non-ascii');
-                    if strcmp('f',ch)
-                        nopause = true;
-                    elseif strcmp('r',ch)
-                        plot = 1;
-                    end
-                end
+                [nopause,plot] = plotIEMStep(ge,cholesky,i,n,samples,grad,cc_next,cc_old,avgrates,nopause);
             end
             
             if nargout > 1
@@ -199,7 +179,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         S{i} = samples;
         save('iter.mat','pCC','S');
         if verb>1
-            fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/(ge.N*ge.k),reldiff,skipped);
+            fprintf(' avglr %.2e diff %.2e skipped %d\n',sum(avgrates,2)/(ge.N*ge.k),reldiff,skipped);
         end
         
         if reldiff < 1e-3
@@ -250,3 +230,50 @@ function [mindiff,minperm] = rootMeanSquare(cc1,cc2,minperm)
     end
 end
     
+function [nopause,plot] = plotIEMStep(ge,cholesky,i,n,samples,grad,cc_next,cc_old,avgrates,nopause)
+    hor = 6;
+    for j=1:ge.k
+        % cholesky
+        subplot(ge.k,hor,(j-1)*hor+1);
+        viewImage(cholesky{j},'magnif',false);
+        title(sprintf('chol %d at %d#%d',j,i,n));                    
+        % gradients
+        subplot(ge.k,hor,(j-1)*hor+3);
+        %compgrad = grad{j}/oldchol{j};
+        compgrad = grad{j};
+        viewImage(compgrad,'magnif',false);
+        gavg = mean(squeeze(samples(n,:,j)));
+        title(sprintf('grad sg%d=%.3f',j,gavg));
+        % delta
+        subplot(ge.k,hor,(j-1)*hor+4);
+        viewImage(compgrad*avgrates(1,j),'magnif',false);                    
+        title(sprintf('delta lr=%.3f',avgrates(1,j)));
+        % next components
+        subplot(ge.k,hor,(j-1)*hor+5);
+        viewImage(cc_next{j},'magnif',false);
+        title(sprintf('comp %d at %d#%d',j,i,n));
+        % truth
+        subplot(ge.k,hor,(j-1)*hor+6);
+        viewImage(cc_old{j},'magnif',false);
+        title(sprintf('true comp %d',j));
+    end
+    % data cov                    
+    subplot(ge.k,hor,2);
+    viewImage(cov(squeeze(ge.X(n,:,:))),'magnif',false);
+    title(sprintf('data cov, g1=%.3f',ge.G(n,1)));
+    % sample cov                    
+    subplot(ge.k,hor,hor+2);
+    vsamp = reshape(samples(n,:,ge.k+1:ge.k+(ge.Dv*ge.B)),size(samples,2)*ge.B,ge.Dv);
+    viewImage(cov(vsamp),'magnif',false);
+    title('sample cov');
+    pause(0.01);
+    plot = 2;    
+    if ~nopause
+        ch = getkey('non-ascii');
+        if strcmp('f',ch)
+            nopause = true;
+        elseif strcmp('r',ch)
+            plot = 1;
+        end
+    end
+end
