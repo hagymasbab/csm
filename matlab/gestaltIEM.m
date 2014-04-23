@@ -3,6 +3,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'learningRate',0.01,@isnumeric);
     addParamValue(parser,'plot',1,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
+    addParamValue(parser,'multistep',false,@islogical);
     addParamValue(parser,'verbose',2,@isnumeric);
     addParamValue(parser,'approximatePostCov',false,@islogical);
     parse(parser,varargin{:});
@@ -11,6 +12,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     approx = parser.Results.approximatePostCov;
     precision = parser.Results.precision;
     verb = parser.Results.verbose;
+    multistep = parser.Results.multistep;
     
     if strcmp(randseed,'last')
         load lastrandseed;
@@ -49,12 +51,8 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     % empirical correction of the dimension dependence of the largest eigenvalue of the inverse covariance
     goaldiff = goaldiff / (ge.Dv * 0.025);
     
-    cholesky = ccInit;
-    for j=1:ge.k
-        cholesky{j} = chol(cholesky{j});
-    end    
+    cholesky = cellchol(ccInit);  
     cholparnum = (ge.Dv^2 + ge.Dv) / 2;
-    cdll = -Inf;
     
     pCC{1} = ccInit;
     S = {};
@@ -115,21 +113,32 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             
             chol_cand = cholesky;
             cdll = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);
+            actrate = cell(1,ge.k);
             avgrates = zeros(1,ge.k);
             for j=1:ge.k
                 % choose learning rate
                 %actrate = min(goaldiff ./ abs(grad{j}),lrate * ones(ge.Dv));
                 %actrate = min(goaldiff / meanval,lrate * ones(ge.Dv));
-                actrate = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
-                avgrates(1,j) = sum(sum(actrate))/cholparnum;
-
+                actrate{j} = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
+                avgrates(1,j) = sum(sum(actrate{j}))/cholparnum;
+            
                 % update 
-                %cholesky{j} = cholesky{j} + actrate .* triu(grad{j});
-                
+                if ~multistep
+                    cholesky{j} = cholesky{j} + actrate{j} .* triu(grad{j});
+                end
+            end    
+            if multistep
                 increase = true;
                 while increase
-                    chol_cand{j} = cholesky{j} + actrate .* triu(grad{j});
-                    cdll_cand = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);
+                    for j=1:ge.k
+                        chol_cand{j} = chol_cand{j} + actrate{j} .* triu(grad{j});
+                    end
+                    cdll_cand = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),chol_cand);
+%                     fprintf(' %f %f\n',cdll,cdll_cand);
+%                     pause;
+%                     for b=1:3+2*7
+%                         fprintf('\b');
+%                     end
                     if cdll_cand > cdll
                         cholesky = chol_cand;
                         cdll = cdll_cand;
@@ -137,8 +146,10 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                         increase = false;
                     end
                 end
-                cc_next{j} = cholesky{j}' * cholesky{j};                                
-            end     
+            end
+            for j=1:ge.k
+                cc_next{j} = cholesky{j}' * cholesky{j};                                             
+            end
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % ACTUAL IEM PART ENDS HERE            
