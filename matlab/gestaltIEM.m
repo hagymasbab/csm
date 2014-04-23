@@ -3,12 +3,14 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'learningRate',0.01,@isnumeric);
     addParamValue(parser,'plot',1,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
+    addParamValue(parser,'verbose',2,@isnumeric);
     addParamValue(parser,'approximatePostCov',false,@islogical);
     parse(parser,varargin{:});
     lrate = parser.Results.learningRate; 
     plot = parser.Results.plot;
     approx = parser.Results.approximatePostCov;
     precision = parser.Results.precision;
+    verb = parser.Results.verbose;
     
     if strcmp(randseed,'last')
         load lastrandseed;
@@ -64,7 +66,9 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     cc_next = cell(1,ge.k);
     samples = zeros(ge.N,nSamples,sdim);
     for i=1:maxStep
-        fprintf('IEM cycle %d datapoint %d/',i,ge.N);
+        if verb > 1
+            fprintf('IEM cycle %d datapoint %d/',i,ge.N);
+        end
         if plot>1
             nopause = false;
         end
@@ -77,13 +81,19 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         skipped = 0;
         avgrate = 0;
         for n=1:ge.N
-            printCounter(n);
-            fprintf(' ');
+            if verb>1
+                printCounter(n);
+            end
+            if verb > 1
+                fprintf(' ');
+            end
             
             % E-step: Gibbs sampling
-            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',1,'precision',precision,'approximatePostCov',approx);            
+            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',verb-1,'precision',precision,'approximatePostCov',approx);            
             if rr < 0                
-                fprintf('\b');                
+                if verb>1
+                    fprintf('\b');                
+                end
                 skipped = skipped + 1;
                 continue;
             end
@@ -170,8 +180,10 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 ge.pc = cc_next;
             end
             
-            for b=1:9+2*(floor(log10(nSamples))+1)
-                fprintf('\b');
+            if verb>1
+                for b=1:9+2*(floor(log10(nSamples))+1)
+                    fprintf('\b');
+                end
             end
         end
         
@@ -186,10 +198,14 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         
         S{i} = samples;
         save('iter.mat','pCC','S');
-        fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/(ge.N*ge.k),reldiff,skipped);
+        if verb>1
+            fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate/(ge.N*ge.k),reldiff,skipped);
+        end
         
         if reldiff < 1e-3
-            fprintf('Convergence achieved in %d steps.\n',i);
+            if verb>1
+                fprintf('Convergence achieved in %d steps.\n',i);
+            end
             break;
         end
     end
