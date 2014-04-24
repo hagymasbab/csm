@@ -15,7 +15,11 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'precision',true,@islogical);
     parse(p,varargin{:});
     gestalt = p.Results;        
-        
+    
+    if gestalt.Dx < 36
+        gestalt.gabor = false;
+    end
+    
     if gestalt.gabor
         imSize = sqrt(gestalt.Dx); % TODO figure out something if it's not a square
         gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[0;pi/2],[4;8]);
@@ -34,7 +38,8 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.cc{1} = 1;
         gestalt.k = 1;
     elseif gestalt.Dx == 2
-        % TODO
+        gestalt.cc{1} = [0.9 0.5;0.5 0.3];
+        gestalt.k = 1;
     elseif gestalt.Dx == 3
         gestalt.cc{1} = 0.5*[1 0.9 0;0.9 1 0;0 0 1];
         gestalt.cc{2} = 0.5*[1 0 0.9;0 1 0;0.9 0 1];
