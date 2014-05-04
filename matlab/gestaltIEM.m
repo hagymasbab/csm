@@ -1,6 +1,7 @@
 function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     parser = inputParser;
     addParamValue(parser,'learningRate',0.01,@isnumeric);
+    addParamValue(parser,'rateMethod','componentwise_goal');
     addParamValue(parser,'plot',1,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'multistep',false,@islogical);
@@ -8,6 +9,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'approximatePostCov',false,@islogical);
     parse(parser,varargin{:});
     lrate = parser.Results.learningRate; 
+    ratemethod = parser.Results.rateMethod; 
     plot = parser.Results.plot;
     approx = parser.Results.approximatePostCov;
     precision = parser.Results.precision;
@@ -117,9 +119,17 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             avgrates = zeros(1,ge.k);
             for j=1:ge.k
                 % choose learning rate
-                %actrate = min(goaldiff ./ abs(grad{j}),lrate * ones(ge.Dv));
-                %actrate = min(goaldiff / meanval,lrate * ones(ge.Dv));
-                actrate{j} = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
+                if strcmp(ratemethod,'elementwise_goal')
+                    actrate = min(goaldiff ./ abs(grad{j}),lrate * ones(ge.Dv));
+                elseif strcmp(ratemethod,'mean_goal')
+                    actrate = min(goaldiff / meanval,lrate * ones(ge.Dv));
+                elseif strcmp(ratemethod,'componentwise_goal')                  
+                    actrate{j} = min(goaldiff / meanvals(1,j),lrate * ones(ge.Dv));
+                elseif strcmp(ratemethod,'only_goal')
+                    actrate{j} = goaldiff / meanvals(1,j);
+                elseif strcmp(ratemethod,'only_rate')
+                    actrate{j} = 1e-3 * ones(ge.Dv);
+                end
                 avgrates(1,j) = sum(sum(actrate{j}))/cholparnum;
             
                 % update 
