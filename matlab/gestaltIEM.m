@@ -39,7 +39,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     
     minperm = [];
     diff = zeros(1,maxStep+1);
-    diff(1,1) = rootMeanSquare(ccInit,cc_old,minperm);
+    diff(1,1) = covcompRootMeanSquare(ccInit,cc_old,minperm);
     if nargout > 1
         longdiff = zeros(1,maxStep*ge.N+1);
         longdiff(1,1) = diff(1,1);
@@ -128,7 +128,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 elseif strcmp(ratemethod,'only_goal')
                     actrate{j} = goaldiff / meanvals(1,j);
                 elseif strcmp(ratemethod,'only_rate')
-                    actrate{j} = 1e-3 * ones(ge.Dv);
+                    actrate{j} = lrate * ones(ge.Dv);
                 end
                 avgrates(1,j) = sum(sum(actrate{j}))/cholparnum;
             
@@ -171,7 +171,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             
             if nargout > 1
                 lidx = 1+(i-1)*ge.N+n;
-                [longdiff(1,lidx),minperm] = rootMeanSquare(cc_next,ge.cc,minperm);
+                [longdiff(1,lidx),minperm] = covcompRootMeanSquare(cc_next,ge.cc,minperm);
             end
             
             % update parameters
@@ -188,8 +188,8 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             end
         end
         
-        reldiff = rootMeanSquare(cc_next,cc_prev,1:ge.k);
-        [diff(1,i+1),minperm] = rootMeanSquare(cc_next,cc_old,minperm);        
+        reldiff = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
+        [diff(1,i+1),minperm] = covcompRootMeanSquare(cc_next,cc_old,minperm);        
         
         if ~precision
             pCC{i+1} = ge.cc;
@@ -224,30 +224,6 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     end
     if plot>0
         plotCovariances(ge,dnum,precision);
-    end
-end
-
-function [mindiff,minperm] = rootMeanSquare(cc1,cc2,minperm)
-    % we should take the minimum over all possible permutations
-    k = size(cc1,2);
-    d = size(cc1{1},1);
-    if size(minperm,2) < k;
-        permutations = perms(1:k);
-    else
-        permutations = minperm;
-    end
-    mindiff = Inf;
-    for p=1:size(permutations,1)
-        si = permutations(p,:);
-        diff = 0;
-        for j=1:k
-            diff = diff + sum(sum((cc2{j}-cc1{si(1,j)})*(cc2{j}-cc1{si(1,j)})));           
-        end
-        diff = diff / (k*(d+d^2)/2);
-        if diff < mindiff
-            mindiff = diff;
-            minperm = si;
-        end
     end
 end
     
