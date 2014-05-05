@@ -2,14 +2,19 @@ function ge = gestaltGenerate(ge,N,varargin)
     parser = inputParser;
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'verbose',true,@islogical);
+    addParamValue(parser,'batchSize',10,@isnumeric);
+    addParamValue(parser,'obsVar',0.1,@isnumeric);
+    addParamValue(parser,'sparsity',0.2,@isnumeric);
     parse(parser,varargin{:});
     precision = parser.Results.precision; 
     verbose = parser.Results.verbose;
+    ge.B = parser.Results.batchSize;
+    ge.obsVar = parser.Results.obsVar;
+    ge.sparsity = parser.Results.sparsity;
+    ge.N = N;
+    
     if verbose
         fprintf('Generating synthetic data\n');
-    end
-    ge.N = N;
-    if verbose
         fprintf('..Generating g values from a Dirichlet prior with concentration parameter %.2f\n',ge.sparsity);
     end
     ge.G = symmetricDirichlet(ge.sparsity,ge.k,ge.N);
