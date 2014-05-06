@@ -129,6 +129,8 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                     actrate{j} = goaldiff / meanvals(1,j);
                 elseif strcmp(ratemethod,'only_rate')
                     actrate{j} = lrate * ones(ge.Dv);
+                else
+                    exit('Invalid learning rate method: %s',ratemethod);
                 end
                 avgrates(1,j) = sum(sum(actrate{j}))/cholparnum;
             
