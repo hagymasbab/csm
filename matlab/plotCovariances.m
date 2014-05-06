@@ -1,6 +1,9 @@
 function plotCovariances(ge,dnum,precision,filename)
     subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
     clf;
+    if isempty(filename)
+        filename = 'iter.mat';
+    end
     load(filename);
     if ~precision
         real = ge.cc;

@@ -66,6 +66,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     
     cc_next = cell(1,ge.k);
     samples = zeros(ge.N,nSamples,sdim);
+    mean_gradient = zeros(1,maxStep*ge.N);
     for i=1:maxStep
         if verb > 1
             fprintf('IEM cycle %d datapoint %d/',i,ge.N);
@@ -111,7 +112,19 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             for j=1:ge.k
                 meanvals(1,j) = meanvals(1,j) + mean(mean(abs(grad{j}),2),1);
             end
-            meanval = mean(meanvals,2);   
+            meanval = mean(meanvals,2);  
+            mean_gradient(1,(i-1)*ge.N+n) = meanval;
+            
+            % TEST: skip large gradients
+            if meanval > 5
+                skipped = skipped + 1;
+                if verb>1
+                    for b=1:9+2*(floor(log10(nSamples))+1)
+                        fprintf('\b');
+                    end
+                end
+                continue;
+            end
             
             chol_cand = cholesky;
             cdll = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);
@@ -165,7 +178,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % ACTUAL IEM PART ENDS HERE            
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                        
             
             if plot>1
                 [nopause,plot] = plotIEMStep(ge,cholesky,i,n,samples,grad,cc_next,cc_old,avgrates,nopause);
@@ -188,7 +201,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                     fprintf('\b');
                 end
             end
-        end
+        end %for n=1:ge.N
         
         reldiff = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         [diff(1,i+1),minperm] = covcompRootMeanSquare(cc_next,cc_old,minperm);        
@@ -200,7 +213,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         end
         
         S{i} = samples;
-        save('iter.mat','pCC','S');
+        save('iter.mat','pCC','S','mean_gradient');
         if verb>1
             fprintf(' avglr %.2e diff %.2e skipped %d\n',sum(avgrates,2)/(ge.N*ge.k),reldiff,skipped);
         end
@@ -225,7 +238,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         ge.pc = cc_old;
     end
     if plot>0
-        plotCovariances(ge,dnum,precision);
+        plotCovariances(ge,dnum,precision,[]);
     end
 end
     
