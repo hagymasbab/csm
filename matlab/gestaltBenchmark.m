@@ -12,7 +12,6 @@ function diffs = gestaltBenchmark(ge,N,nRun,nSamples,maxStep,name,hyperparams)
     end
     nParams = size(hyperparams,2);
     parametrisations = cell(1,nParams);
-    lumpedLevel = lumpedRMS(ge);
     for hp=1:nParams
         fprintf('Parametrisation %d/%d ',nParams,hp);
         actparam = defaults;
@@ -30,19 +29,7 @@ function diffs = gestaltBenchmark(ge,N,nRun,nSamples,maxStep,name,hyperparams)
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));
         end
         fprintf('\n');
-        %h=figure('visible','off');
-        h=figure();
-        errorbar(0:size(diffs,2)-1,mean(diffs,1),std(diffs,1));
-        set( findobj(gca,'type','line'), 'LineWidth', 3);
-        hold on;
-        for i=1:nRun
-            plot(0:size(diffs,2)-1,diffs(i,:),'k');
-        end
-        xlims = xlim;
-        plot([xlims(1) lumpedLevel],[xlims(2) lumpedLevel],'k--');        
-        ylim([0,max(diffs(:,1),1)+0.2]);
-        xlabel('Iterative EM step #');
-        ylabel('RMS error of covariance parameters')
+        h=plotConvergence(ge,diffs);
         saveas(h,sprintf('%s_convergence_param%d.fig',name,hp),'fig');
     end
 end
@@ -68,13 +55,5 @@ function val = nextValue(cellArray,valName)
     end
 end
 
-function lrms = lumpedRMS(ge)
-    % only works for 2 components, covariance formulation and lumping into
-    % the first
-    combined = ge.cc{1} + ge.cc{2};
-    result = randomCovariances(2,ge.Dv);
-    result{1} = combined;
-    lrms = covcompRootMeanSquare(result,ge.cc,[1 2]);
-end
     
     
