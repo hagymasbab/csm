@@ -2,9 +2,10 @@ function h = plotConvergence(ge,diffs)
     if ischar(diffs)
         load(diffs);
     end
-    legends = cell(1,size(diffs,1));
+    legends = cell(1,size(diffs,1)+1);
+    legends{1} = 'mean';
     for i=1:size(diffs,1)
-        legends{i} = int2str(i);
+        legends{i+1} = int2str(i);
     end
     h=figure();
     errorbar(0:size(diffs,2)-1,mean(diffs,1),std(diffs,1));
@@ -16,7 +17,7 @@ function h = plotConvergence(ge,diffs)
     plot(xlim,[lrms(2) lrms(2)],'k--');
     ylim([0,max(diffs(:,1))+0.2]);
     xlabel('Iterative EM step #');    
-    ylabel('RMS error of covariance parameters')
+    ylabel('Mean squared error of covariance parameters')
     legend(legends,'Location','NorthEastOutside');
 end
 
