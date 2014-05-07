@@ -224,6 +224,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     end        
 
     if plot>0
+        ge = replaceComponents(ge,cc_old,precision);
         plotCovariances(ge,ge.N,precision,[]);
     end
 end
