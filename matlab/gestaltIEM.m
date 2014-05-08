@@ -58,10 +58,15 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     minperm = [];
     diff = zeros(1,maxStep+1);
     diff(1,1) = covcompRootMeanSquare(ccInit,cc_old,minperm);
-    if nargout > 1
-        longdiff = zeros(1,maxStep*ge.N+1);
+    longdiff = zeros(1,maxStep*ge.N+1);
+    if nargout > 1        
         longdiff(1,1) = diff(1,1);
     end              
+    
+    like_coeff = zeros(1,maxStep*ge.N+1);
+    like_exp = zeros(1,maxStep*ge.N+1);
+    gSamp = 10;
+    [like_coeff(1),like_exp(1)] = gestaltLikelihood(ge,gSamp);
     
     S = {};
     sdim = ge.k+(ge.Dv*ge.B);
@@ -177,7 +182,14 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             for j=1:ge.k
                 cc_next{j} = cholesky{j}' * cholesky{j};                                             
             end
-            ge = replaceComponents(ge,cc_next,precision);                                                        
+            cc_temp = extractComponents(ge,precision);
+            ge = replaceComponents(ge,cc_next,precision);      
+%             [like_coeff(lidx),like_exp(lidx)] = gestaltLikelihood(ge,gSamp);
+%             % TEST: if likelihood didn't increase, revert
+%             if like_coeff(lidx) < like_coeff(lidx-1)
+%                 ge = replaceComponents(ge,cc_temp,precision);
+%                 skipped = skipped + 1;
+%             end
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % PLOT, PRINT AND SAVE DATA            
@@ -205,7 +217,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         pCC{i+1} = extractComponents(ge,precision);
         
         S{i} = samples;
-        save('iter.mat','pCC','S','mean_gradient','diff','longdiff','cdll_array');
+        save('iter.mat','pCC','S','mean_gradient','diff','longdiff','cdll_array','like_coeff','like_exp');
         if verb>1
             fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate,reldiff,skipped);
         end
