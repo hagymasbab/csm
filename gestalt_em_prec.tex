@@ -59,8 +59,8 @@ so the integral over $v$ gives the first Gaussian over $A^{+}x$, as this is cons
 
 \begin{equation}
 \begin{split}
-p(\mathbf{X} \mid C_1 \dots C_k) \sim \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_jC_j) = \\
-= \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N} \left( x_{n,b}:0,\sigma_x I + A \left( \sum_{j=1}^K g_jC_j \right) A^T \right) 
+p(\mathbf{X} \mid C_1 \dots C_k) \sim \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_j^{l,n} C_j) = \\
+= \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N} \left( x_{n,b}:0,\sigma_x I + A \left( \sum_{j=1}^K g_j^{l,n} C_j \right) A^T \right) 
 \end{split}
 \end{equation}
 
