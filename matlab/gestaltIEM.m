@@ -7,6 +7,9 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'multistep',false,@islogical);
     addParamValue(parser,'verbose',2,@isnumeric);
     addParamValue(parser,'approximatePostCov',false,@islogical);
+    addParamValue(parser,'calculateLikelihood',false,@islogical);
+    addParamValue(parser,'increaseLikelihood',false,@islogical);
+    addParamValue(parser,'likelihoodSamples',20,@isnumeric);
     parse(parser,varargin{:});
     lrate = parser.Results.learningRate; 
     ratemethod = parser.Results.rateMethod; 
@@ -15,6 +18,12 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     precision = parser.Results.precision;
     verb = parser.Results.verbose;
     multistep = parser.Results.multistep;
+    calcLike = parser.Results.calculateLikelihood;
+    incLike = parser.Results.increaseLikelihood;
+    likeSamp = parser.Results.likelihoodSamples;
+    if incLike
+        calcLike = true;
+    end
     
     if plot>1
         subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
@@ -65,8 +74,9 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     
     like_coeff = zeros(1,maxStep*ge.N+1);
     like_exp = zeros(1,maxStep*ge.N+1);
-    gSamp = 10;
-    [like_coeff(1),like_exp(1)] = gestaltLikelihood(ge,gSamp);
+    if calcLike
+        [like_coeff(1),like_exp(1)] = gestaltLikelihood(ge,likeSamp);
+    end
     
     S = {};
     sdim = ge.k+(ge.Dv*ge.B);
@@ -184,13 +194,18 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             end
             cc_temp = extractComponents(ge,precision);
             ge = replaceComponents(ge,cc_next,precision);      
-%             [like_coeff(lidx),like_exp(lidx)] = gestaltLikelihood(ge,gSamp);
-%             % TEST: if likelihood didn't increase, revert
-%             if like_coeff(lidx) < like_coeff(lidx-1)
-%                 ge = replaceComponents(ge,cc_temp,precision);
-%                 skipped = skipped + 1;
-%             end
             
+            if calcLike
+                [like_coeff(lidx),like_exp(lidx)] = gestaltLikelihood(ge,likeSamp);
+                if incLike
+                    % if likelihood didn't increase, revert
+                    if like_exp(lidx) < like_exp(lidx-1)
+                        ge = replaceComponents(ge,cc_temp,precision);
+                        skipped = skipped + 1;
+                        %like_coeff(lidx) = like_coeff(lidx-1)
+                    end
+                end
+            end
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % PLOT, PRINT AND SAVE DATA            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                        
