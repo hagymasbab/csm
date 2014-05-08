@@ -3,6 +3,8 @@ function likelihood = gestaltLikelihood(ge,L)
     % get L samples from a k-dimensional symmetric dirichelet prior for g
     G = symmetricDirichlet(ge.sparsity,ge.k,L);
     likelihood = 0;
+    coefficients = zeros(1,ge.N*ge.B);
+    exponents = zeros(1,ge.N*ge.B);
     for s=1:L        
         Cv = componentSum(G(s,:)',ge.cc);
         C = ge.obsVar * eye(ge.Dx) + ge.A * Cv * ge.A';

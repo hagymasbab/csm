@@ -39,10 +39,28 @@ p(X \mid V) = \prod_{b=1}^B \mathcal{N}(x_b; Av_b,C_x)
 
 The likelihood of the covariance components with respect to a dataset of size $N$, $\mathbf{X} = \lbrace X_1 \dots X_N \rbrace$ can be expressed as follows
 
-\begin{equation}
+\begin{equation} \label{eq:likelihood}
 \begin{split}
 p(\mathbf{X} \mid C_1 \dots C_k) = \iint_{-\infty}^{\infty} p(\mathbf{X} \mid \mathbf{V}) p(\mathbf{V} \mid G) p(G) \mathrm{d}\mathbf{V}\mathrm{d}G =\\
 = \int_{-\infty}^{\infty} \prod_{n=1}^N p(g_n) \int_{-\infty}^{\infty} \prod_{b=1}^B p(x_{n,b} \mid v_{n,b}) p(v_{n,b} \mid g_n) \mathrm{d}\mathbf{V}\mathrm{d}G
+\end{split}
+\end{equation}
+
+this can be transformed in the following way similarly to \ref{eq:gauss_rewrite1} and \ref{eq:gauss_rewrite2}
+
+\begin{equation}
+\begin{split}
+p(x_{n,b} \mid v_{n,b}) p(v_{n,b} \mid g_n) = \mathcal{N}(x_{n,b}:Av_{n,b},\sigma_x I) \mathcal{N}(v_{n,b}:0,\sum_{j=1}^K g_jC_j) = \\
+= \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_jC_j) \mathcal{N}(v_{n,b}:\mu_v,C_v)\\
+\end{split}
+\end{equation}
+%
+so the integral over $v$ gives the first Gaussian over $A^{+}x$, as this is constant in $v$, and the second Gaussian integrates to one. We can approximate the integral over $g$ in \ref{eq:likelihood} with a finite sum over $L$ samples from $p(g)$, which can be sampled directly. 
+
+\begin{equation}
+\begin{split}
+p(\mathbf{X} \mid C_1 \dots C_k) \sim \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_jC_j) = \\
+= \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N} \left( x_{n,b}:0,\sigma_x I + A \left( \sum_{j=1}^K g_jC_j \right) A^T \right) 
 \end{split}
 \end{equation}
 
@@ -56,13 +74,13 @@ p(v \mid x,g) = \frac{p(x \mid v,g) p(v \mid g)}{p(x \mid g)} = \frac{\mathcal{N
 %
 The Gaussian over $x$ can be rewritten to a Gaussian over $v$ times a constant $c_1$ in the following way
 
-\begin{equation}
+\begin{equation} \label{eq:gauss_rewrite1}
 \mathcal{N}(x;Av,\sigma_x I) = c_1 \mathcal{N}(v; (A^T A)^{-1} A^T x, \sigma_x (A^T A)^{-1}) = c_1 \mathcal{N}(v; A^{+} x, \sigma_x (A^T A)^{-1})
 \end{equation}
 %
 where $A^{+}$ is the Moore-Penrose pseudoinverse of $A$, with $D_x = D_v \rightarrow A^{+} = A^{-1}$. Consequently, the product of two Gaussians in the numerator of Eq. \ref{eq:condpost} can also be written as a Gaussian over $v$ introducing a new constant
 
-\begin{equation}
+\begin{equation} \label{eq:gauss_rewrite2}
 \mathcal{N}(x;Av,\sigma_x I) \mathcal{N}(v;0,C_v) = c_1 c_2 \mathcal{N}(v; \mu_{post},C_{post})
 \end{equation}
 %
