@@ -15,8 +15,9 @@ function ll = gestaltPlotLikelihood(ge,L,gridnum,negative,ll)
                     ge.cc{1} = [x(i) z(k); z(k) y(j)];
                     [~,err] = chol(ge.cc{1});
                     if err == 0 && rcond(ge.cc{1}) > 1e-16                        
-                        [co,ex] = gestaltLikelihood(ge,L);
-                        ll(i,j,k) = log10(co) + ex;
+                        %[co,ex] = gestaltLikelihood(ge,L);
+                        %ll(i,j,k) = log10(co) + ex;
+                        ll(i,j,k) = gestaltLogLikelihood(ge,L);
                     else
                         ll(i,j,k) = -Inf;
                     end
