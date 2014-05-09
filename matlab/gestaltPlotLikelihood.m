@@ -15,43 +15,75 @@ function ll = gestaltPlotLikelihood(ge,L,gridnum,negative,ll)
                     ge.cc{1} = [x(i) z(k); z(k) y(j)];
                     [~,err] = chol(ge.cc{1});
                     if err == 0 && rcond(ge.cc{1}) > 1e-16                        
-                        ll(i,j,k) = gestaltLikelihood(ge,L);
+                        [co,ex] = gestaltLikelihood(ge,L);
+                        ll(i,j,k) = log10(co) + ex;
                     else
-                        ll(i,j,k) = 0;
+                        ll(i,j,k) = -Inf;
                     end
                 end
             end
         end
         fprintf('\n');
-    end        
+        ll = shiftLogData(ll);
+    end                
     
+    clf;
     subplot(2,3,1);
-    imagesc(sum(ll,3));
+    viewImage(sum(ll,3),'usemax',true);
     xlabel('C(2,2)');
     ylabel('C(1,1)');
     set(gca,'XTick',tics);
     set(gca,'YTick',tics);
     subplot(2,3,2);
-    imagesc(squeeze(sum(ll,2)));
+    viewImage(squeeze(sum(ll,2)),'usemax',true);
+    %imagesc(squeeze(sum(ll,2)));
     xlabel('C(1,2)');
     ylabel('C(1,1)');
     subplot(2,3,3);
-    imagesc(squeeze(sum(ll,1)));
+    viewImage(squeeze(sum(ll,1)),'usemax',true);
+    %imagesc(squeeze(sum(ll,1)));
     xlabel('C(1,2)');
-    ylabel('C(2,2)');
+    ylabel('C(2,2)');      
+    
     subplot(2,3,4);
     plot(x,sum(sum(ll,3),2));
     xlabel('C(1,1)');
     ylim = get(gca,'YLim');
-    line([ge.cc{1}(1,1) ge.cc{1}(1,1)], [0 ylim(2)])
+    hold on
+    plot([ge.cc{1}(1,1) ge.cc{1}(1,1)], [0 ylim(2)],'r')
+    
     subplot(2,3,5);
     plot(y,sum(sum(ll,3),1));
     xlabel('C(2,2)');
     ylim = get(gca,'YLim');
-    line([ge.cc{1}(2,2) ge.cc{1}(2,2)], [0 ylim(2)])
+    hold on
+    plot([ge.cc{1}(2,2) ge.cc{1}(2,2)], [0 ylim(2)],'r')
+    
     subplot(2,3,6);
     plot(z,reshape(sum(sum(ll,1),2),1,gridnum));
     xlabel('C(1,2)');
     ylim = get(gca,'YLim');
-    line([ge.cc{1}(1,2) ge.cc{1}(1,2)], [0 ylim(2)])
+    hold on
+    plot([ge.cc{1}(1,2) ge.cc{1}(1,2)], [0 ylim(2)],'r')
+
+end
     
+function md = mindiff(A)
+    md = realmax;
+    for i=1:numel(A)
+        for j=i+1:numel(A)
+            if abs(i-j)> 0 && abs(i-j) < md
+                md = abs(i-j);
+            end
+        end
+    end
+end
+
+function sd = shiftLogData(d)
+    md = mindiff(d);
+    noinf = d(d~=-Inf);
+    minel = min(noinf(:));
+    sd = d;
+    sd(d==-Inf) = minel-md;
+    sd = sd - (minel-md);
+end

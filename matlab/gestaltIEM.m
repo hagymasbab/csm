@@ -139,6 +139,8 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 if nargout > 1                    
                     longdiff(1,lidx) = longdiff(1,lidx-1);
                 end
+                like_coeff(lidx) = like_coeff(lidx-1);
+                like_exp(lidx) = like_exp(lidx-1);
                 continue;
             end
                         
@@ -202,7 +204,8 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                     if like_exp(lidx) < like_exp(lidx-1)
                         ge = replaceComponents(ge,cc_temp,precision);
                         skipped = skipped + 1;
-                        %like_coeff(lidx) = like_coeff(lidx-1)
+                        like_coeff(lidx) = like_coeff(lidx-1);
+                        like_exp(lidx) = like_exp(lidx-1);
                     end
                 end
             end

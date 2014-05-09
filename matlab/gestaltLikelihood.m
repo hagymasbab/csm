@@ -19,13 +19,14 @@ function [coefficient, exponent] = gestaltLikelihood(ge,L)
             end
         end 
         expsum = sum(exps(s,:),2);
-        coeffprod = prod(coeffs(s,:),2);
-        [co,ex] = sciNot(coeffprod);
+        actco = coeffs(s,:);
+        size(actco);
+        [co,ex] = sciProd(actco);
         expsum = expsum + ex;
-        if s==1
+        if s==1            
             coefficient = co;
             exponent = expsum;
-        else
+        else            
             [coefficient,exponent] = sumSciNot(coefficient,exponent,co,expsum);
         end
     end
@@ -36,7 +37,7 @@ function [coefficient,exponent] = sciNot(a)
     [coefficient,exponent] = strread(strrep(sprintf('%E',a),'E','#'),'%f#%f');
 end
 
-function [coefficient,exponent] = sumSciNot(c1,e1,c2,e2)
+function [coefficient,exponent] = sumSciNot(c1,e1,c2,e2)    
     exponent = max(e1,e2);
     expdiff = abs(e1-e2);
     if(e1 > e2)
@@ -47,4 +48,16 @@ function [coefficient,exponent] = sumSciNot(c1,e1,c2,e2)
     [co,ex] = sciNot(coefficient);
     coefficient = co;
     exponent = exponent + ex;
+end
+
+function [coefficient,exponent] = sciProd(a)
+    exponent = 0;
+    coefficient = 1;
+    for i=1:size(a,2)        
+        coefficient = coefficient * a(i);
+        if coefficient >= 10
+            exponent = exponent + 1;
+            coefficient = coefficient / 10;
+        end
+    end    
 end
