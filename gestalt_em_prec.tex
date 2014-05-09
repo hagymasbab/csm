@@ -37,31 +37,38 @@ p(V \mid g) = \prod_{b=1}^B \mathcal{N}(v_b; 0,C_v) \\
 p(X \mid V) = \prod_{b=1}^B \mathcal{N}(x_b; Av_b,C_x)
 \end{eqnarray}
 
-The likelihood of the covariance components with respect to a dataset of size $N$, $\mathbf{X} = \lbrace X_1 \dots X_N \rbrace$ can be expressed as follows
+The likelihood of the covariance components with respect to a dataset of size $N$, $\mathbf{X} = \lbrace X_1 \dots X_N \rbrace$ can be expressed as follows, using $\mathbf{C} = \lbrace C_1 \dots C_k \rbrace$
 
 \begin{equation} \label{eq:likelihood}
 \begin{split}
-p(\mathbf{X} \mid C_1 \dots C_k) = \iint_{-\infty}^{\infty} p(\mathbf{X} \mid \mathbf{V}) p(\mathbf{V} \mid G) p(G) \mathrm{d}\mathbf{V}\mathrm{d}G =\\
-= \int_{-\infty}^{\infty} \prod_{n=1}^N p(g_n) \int_{-\infty}^{\infty} \prod_{b=1}^B p(x_{n,b} \mid v_{n,b}) p(v_{n,b} \mid g_n) \mathrm{d}\mathbf{V}\mathrm{d}G
+p(\mathbf{X} \mid \mathbf{C}) = \prod_{n=1}^N p(X_n \mid \mathbf{C}) = \\
+= \prod_{n=1}^N \iint_{-\infty}^{\infty} p(X_n \mid V_n) p(V_n \mid g_n) p(g_n) \mathrm{d}V_n\mathrm{d}g_n =\\
+= \prod_{n=1}^N \int_{-\infty}^{\infty}  p(g_n) \int_{-\infty}^{\infty} \prod_{b=1}^B p(x_{n,b} \mid v_{n,b}) p(v_{n,b} \mid g_n) \mathrm{d}V_n\mathrm{d}g_n
 \end{split}
 \end{equation}
 
 this can be transformed in the following way similarly to \ref{eq:gauss_rewrite1} and \ref{eq:gauss_rewrite2}
 
-\begin{equation}
+\begin{equation} \label{eq:gaussprod}
 \begin{split}
 p(x_{n,b} \mid v_{n,b}) p(v_{n,b} \mid g_n) = \mathcal{N}(x_{n,b}:Av_{n,b},\sigma_x I) \mathcal{N}(v_{n,b}:0,\sum_{j=1}^K g_jC_j) = \\
-= \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_jC_j) \mathcal{N}(v_{n,b}:\mu_v,C_v)\\
+= \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_jC_j) \cdot \mathcal{N}(v_{n,b}:\mu_v,C_v) \cdot const.\\
 \end{split}
 \end{equation}
 %
-so the integral over $v$ gives the first Gaussian over $A^{+}x$, as this is constant in $v$, and the second Gaussian integrates to one. We can approximate the integral over $g$ in \ref{eq:likelihood} with a finite sum over $L$ samples from $p(g)$, which can be sampled directly. 
+so the integral over $v$ gives the first Gaussian over $A^{+}x$, as this is constant in $v$, and the second Gaussian integrates to one. We can approximate the integral over $g$ in \ref{eq:likelihood} with a finite sum over $L$ samples from $p(g)$, which can be sampled directly. Discarding the term in \ref{eq:gaussprod} that is constant in all variables we get
 
 \begin{equation}
 \begin{split}
-p(\mathbf{X} \mid C_1 \dots C_k) \sim \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_j^{l,n} C_j) = \\
-= \frac{1}{L} \sum_{l=1}^L \prod_{n=1}^N \prod_{b=1}^B \mathcal{N} \left( x_{n,b}:0,\sigma_x I + A \left( \sum_{j=1}^K g_j^{l,n} C_j \right) A^T \right) 
+p(\mathbf{X} \mid \mathbf{C}) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^L \prod_{b=1}^B \mathcal{N}(A^{+}x_{n,b}:0,\sigma_x(A^TA)^{-1} + \sum_{j=1}^K g_j^{l,n} C_j) \sim \\
+\sim \prod_{n=1}^N \sum_{l=1}^L  \prod_{b=1}^B \mathcal{N} \left( x_{n,b}:0,\sigma_x I + A \left( \sum_{j=1}^K g_j^{l,n} C_j \right) A^T \right) 
 \end{split}
+\end{equation}
+%
+and we may take the logarithm
+
+\begin{equation}
+\log p(\mathbf{X} \mid \mathbf{C}) \sim \sum_{n=1}^N \log \left[ \sum_{l=1}^L  \prod_{b=1}^B \mathcal{N} \left( x_{n,b}:0,\sigma_x I + A \left( \sum_{j=1}^K g_j^{l,n} C_j \right) A^T \right) \right]
 \end{equation}
 
 \section{Gibbs sampling as the E-step}
