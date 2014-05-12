@@ -5,6 +5,13 @@ function ll = gestaltPlotLikelihood(ge,L,gridnum,negative,ll)
     z = linspace(-1*double(negative),1,gridnum);
     tics = linspace(-1*double(negative),1,4);
     
+    true_x = ge.cc{1}(1,1);
+    true_y = ge.cc{1}(2,2);
+    true_z = ge.cc{1}(1,2);
+    [~,trueindex_x] = min(abs(x - true_x));
+    [~,trueindex_y] = min(abs(y - true_y));
+    [~,trueindex_z] = min(abs(z - true_z));
+    
     if ll==0
         ll = zeros(gridnum,gridnum,gridnum);
         fprintf('%d/',gridnum^3);
@@ -26,46 +33,90 @@ function ll = gestaltPlotLikelihood(ge,L,gridnum,negative,ll)
         end
         fprintf('\n');
         ll = shiftLogData(ll);
-    end                
+    end                        
     
     clf;
-    subplot(2,3,1);
+    subplot(4,3,1);
     viewImage(sum(ll,3),'usemax',true);
     xlabel('C(2,2)');
     ylabel('C(1,1)');
-    set(gca,'XTick',tics);
-    set(gca,'YTick',tics);
-    subplot(2,3,2);
+%     set(gca,'XTick',tics);
+%     set(gca,'YTick',tics);
+    
+    subplot(4,3,2);
     viewImage(squeeze(sum(ll,2)),'usemax',true);
     %imagesc(squeeze(sum(ll,2)));
     xlabel('C(1,2)');
     ylabel('C(1,1)');
-    subplot(2,3,3);
+    
+    subplot(4,3,3);
     viewImage(squeeze(sum(ll,1)),'usemax',true);
     %imagesc(squeeze(sum(ll,1)));
     xlabel('C(1,2)');
     ylabel('C(2,2)');      
     
-    subplot(2,3,4);
+    subplot(4,3,4);
     plot(x,sum(sum(ll,3),2));
     xlabel('C(1,1)');
     ylim = get(gca,'YLim');
     hold on
-    plot([ge.cc{1}(1,1) ge.cc{1}(1,1)], [0 ylim(2)],'r')
+    plot([true_x true_x], [0 ylim(2)],'r')
     
-    subplot(2,3,5);
+    subplot(4,3,5);
     plot(y,sum(sum(ll,3),1));
     xlabel('C(2,2)');
     ylim = get(gca,'YLim');
     hold on
     plot([ge.cc{1}(2,2) ge.cc{1}(2,2)], [0 ylim(2)],'r')
     
-    subplot(2,3,6);
+    subplot(4,3,6);
     plot(z,reshape(sum(sum(ll,1),2),1,gridnum));
     xlabel('C(1,2)');
     ylim = get(gca,'YLim');
     hold on
     plot([ge.cc{1}(1,2) ge.cc{1}(1,2)], [0 ylim(2)],'r')
+    
+    subplot(4,3,7);
+    viewImage(squeeze(ll(:,:,trueindex_z)),'usemax',true);
+    xlabel('C(2,2)');
+    ylabel('C(1,1)');
+    title(sprintf('C(1,2) = %.2f',z(trueindex_z)));
+    
+    subplot(4,3,8);
+    viewImage(squeeze(ll(:,trueindex_y,:)),'usemax',true);
+    xlabel('C(1,2)');
+    ylabel('C(1,1)');
+    title(sprintf('C(2,2) = %.2f',y(trueindex_y)));
+    
+    subplot(4,3,9);
+    viewImage(squeeze(ll(trueindex_x,:,:)),'usemax',true);
+    xlabel('C(1,2)');
+    ylabel('C(2,2)');
+    title(sprintf('C(1,1) = %.2f',x(trueindex_x)));
+    
+    subplot(4,3,10);
+    plot(x,squeeze(ll(:,trueindex_y,trueindex_z))');
+    xlabel('C(1,1)');
+    ylim = get(gca,'YLim');
+    hold on
+    plot([true_x true_x], [0 ylim(2)],'r')
+    title(sprintf('C(2,2)=%.2f C(1,2)=%.2f',y(trueindex_y),z(trueindex_z)));
+    
+    subplot(4,3,11);
+    plot(y,squeeze(ll(trueindex_x,:,trueindex_z))');
+    xlabel('C(2,2)');
+    ylim = get(gca,'YLim');
+    hold on
+    plot([true_y true_y], [0 ylim(2)],'r')
+    title(sprintf('C(1,1)=%.2f C(1,2)=%.2f',x(trueindex_x),z(trueindex_z)));
+    
+    subplot(4,3,12);
+    plot(z,squeeze(ll(trueindex_x,trueindex_y,:))');
+    xlabel('C(1,2)');
+    ylim = get(gca,'YLim');
+    hold on
+    plot([true_z true_z], [0 ylim(2)],'r')
+    title(sprintf('C(1,1)=%.2f C(2,2)=%.2f',x(trueindex_x),y(trueindex_y)));
 
 end
     
