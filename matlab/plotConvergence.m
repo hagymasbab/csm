@@ -1,4 +1,4 @@
-function h = plotConvergence(ge,diffs)
+function h = plotConvergence(ge,diffs,lsamples)
     if ischar(diffs)
         load(diffs);
     end
@@ -12,12 +12,21 @@ function h = plotConvergence(ge,diffs)
     set( findobj(gca,'type','line'), 'LineWidth', 3);
     hold on;
     plot(0:size(diffs,2)-1,diffs);   
-    lrms = lumpedRMS(ge);
+    if lsamples == 0
+        lrms = lumpedRMS(ge);
+    else
+        lrms = lumpedLike(ge,lsamples);
+    end
     plot(xlim,[lrms(1) lrms(1)],'k--');
     plot(xlim,[lrms(2) lrms(2)],'k--');
+    plot(xlim,[lrms(3) lrms(3)],'k--');
     ylim([0,max(diffs(:,1))+0.2]);
-    xlabel('Iterative EM step #');    
-    ylabel('Mean squared error of covariance parameters')
+    xlabel('Iterative EM step #');  
+    if lsamples == 0
+        ylabel('Mean squared error of covariance parameters')
+    else
+        ylabel('Unnormalised log-likelihood');
+    end
     legend(legends,'Location','NorthEastOutside');
 end
 
@@ -30,4 +39,20 @@ function lrms = lumpedRMS(ge)
     lrms(1) = covcompRootMeanSquare(result,ge.cc,[1 2]);
     result{1} = ge.cc{1};
     lrms(2) = covcompRootMeanSquare(result,ge.cc,[1 2]);
+    lrms(3) = 0;
 end
+
+function lrms = lumpedLike(ge,lsamples)
+    lrms(1) = gestaltLogLikelihood(ge,lsamples);
+    
+    combined = ge.cc{1} + ge.cc{2};
+    first = ge.cc{1};
+    result = randomCovariances(2,ge.Dv);    
+    
+    result{1} = combined;
+    ge.cc = result;
+    lrms(2) = gestaltLogLikelihood(ge,lsamples);
+    
+    result{1} = first;
+    ge.cc = result;
+    lrms(3) = gestaltLogLikelihood(ge,lsamples);

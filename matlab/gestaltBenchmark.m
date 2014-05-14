@@ -1,11 +1,13 @@
 function diffs = gestaltBenchmark(ge,N,nRun,nSamples,maxStep,name,hyperparams)
-    defaults.rateMethod     = 'componentwise_goal';
-    defaults.learningRate   = 0.001;
-    defaults.multistep      = false;
+    defaults.increaseLikelihood     = true;
+    defaults.likelihoodSamples      = 20;
+    defaults.rateMethod             = 'componentwise_goal';
+    defaults.learningRate           = 0.001;
+    defaults.multistep              = false;
     
-    defaults.batchSize      = 10;
-    defaults.obsVar         = 0.01;
-    defaults.sparsity       = 0.2;
+    defaults.batchSize              = 10;
+    defaults.obsVar                 = 0.01;
+    defaults.sparsity               = 0.2;
     
     if isempty(hyperparams)
         hyperparams = {{}};
@@ -20,17 +22,20 @@ function diffs = gestaltBenchmark(ge,N,nRun,nSamples,maxStep,name,hyperparams)
         save(sprintf('%s_params.mat',name),'parametrisations');
         
         diffs = zeros(nRun,maxStep+1);
+        like = zeros(nRun,maxStep+1);
         fprintf('Run %d/',nRun);
         for r=1:nRun
             printCounter(r);
             ge = gestaltGenerate(ge,N,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
-            diffs(r,:) = gestaltIEM(ge,ge.X,nSamples,maxStep,'shuffle','plot',0,'verbose',1,'rateMethod',actparam.rateMethod,'learningRate',actparam.learningRate,'multistep',actparam.multistep);
-            save(sprintf('%s_diffs_param%d.mat',name,hp),'diffs');
+            [diffs(r,:),like(r,:)] = gestaltIEM(ge,ge.X,nSamples,maxStep,'shuffle','plot',0,'verbose',1,'rateMethod',actparam.rateMethod,'learningRate',actparam.learningRate,'multistep',actparam.multistep,'increaseLikelihood',actparam.increaseLikelihood,'likelihoodSamples',actparam.likelihoodSamples);
+            save(sprintf('%s_diffs_param%d.mat',name,hp),'diffs','like');
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));
         end
         fprintf('\n');
-        h=plotConvergence(ge,diffs);
+        h=plotConvergence(ge,diffs,0);
         saveas(h,sprintf('%s_convergence_param%d.fig',name,hp),'fig');
+        h=plotConvergence(ge,like,actparam.likelihoodSamples);
+        saveas(h,sprintf('%s_convergence_like%d.fig',name,hp),'fig');
     end
 end
 

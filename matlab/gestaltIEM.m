@@ -1,4 +1,4 @@
-function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
+function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     parser = inputParser;
     addParamValue(parser,'learningRate',0.01,@isnumeric);
     addParamValue(parser,'rateMethod','componentwise_goal');
@@ -71,11 +71,12 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     if nargout > 1        
         longdiff(1,1) = diff(1,1);
     end              
-    
-    like_coeff = zeros(1,maxStep*ge.N+1);
-    like_exp = zeros(1,maxStep*ge.N+1);
+        
+    loglike = zeros(1,maxStep*ge.N+1);    
+    like = zeros(1,maxStep+1);    
     if calcLike
-        [like_coeff(1),like_exp(1)] = gestaltLikelihood(ge,likeSamp);
+        loglike(1) = gestaltLogLikelihood(ge,likeSamp);
+        like(1) = loglike(1);
     end
     
     S = {};
@@ -131,18 +132,17 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             mean_gradient(1,(i-1)*ge.N+n) = gradAvg;
             
             % TEST: skip large gradients
-            if gradAvg > 5
-                skipped = skipped + 1;
-                if verb>1
-                    delPrint(nSamples);
-                end
-                if nargout > 1                    
-                    longdiff(1,lidx) = longdiff(1,lidx-1);
-                end
-                like_coeff(lidx) = like_coeff(lidx-1);
-                like_exp(lidx) = like_exp(lidx-1);
-                continue;
-            end
+%             if gradAvg > 5
+%                 skipped = skipped + 1;
+%                 if verb>1
+%                     delPrint(nSamples);
+%                 end
+%                 if nargout > 1                    
+%                     longdiff(1,lidx) = longdiff(1,lidx-1);
+%                 end
+%                 loglike(lidx) = loglike(lidx-1);                
+%                 continue;
+%             end
                         
             actrate = cell(1,ge.k);
             avgrates = zeros(1,ge.k);
@@ -198,14 +198,13 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             ge = replaceComponents(ge,cc_next,precision);      
             
             if calcLike
-                [like_coeff(lidx),like_exp(lidx)] = gestaltLikelihood(ge,likeSamp);
+                loglike(lidx) = gestaltLogLikelihood(ge,likeSamp);
                 if incLike
                     % if likelihood didn't increase, revert
-                    if like_exp(lidx) < like_exp(lidx-1)
+                    if loglike(lidx) < loglike(lidx-1)
                         ge = replaceComponents(ge,cc_temp,precision);
                         skipped = skipped + 1;
-                        like_coeff(lidx) = like_coeff(lidx-1);
-                        like_exp(lidx) = like_exp(lidx-1);
+                        loglike(lidx) = loglike(lidx-1);                        
                     end
                 end
             end
@@ -230,12 +229,13 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         avgrate = avgrate / ge.N;
         
         reldiff = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
-        [diff(1,i+1),minperm] = covcompRootMeanSquare(cc_next,cc_old,[]);        
+        [diff(1,i+1),minperm] = covcompRootMeanSquare(cc_next,cc_old,[]);   
+        like(1,i+1) = loglike(1,1+i*ge.N);
         
         pCC{i+1} = extractComponents(ge,precision);
         
         S{i} = samples;
-        save('iter.mat','pCC','S','mean_gradient','diff','longdiff','cdll_array','like_coeff','like_exp');
+        save('iter.mat','pCC','S','mean_gradient','diff','longdiff','cdll_array','loglike');
         if verb>1
             fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate,reldiff,skipped);
         end
@@ -256,7 +256,7 @@ function [diff,longdiff] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     if plot>0
         ge = replaceComponents(ge,cc_old,precision);
         plotCovariances(ge,ge.N,precision,[]);
-    end
+    end    
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
