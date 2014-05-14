@@ -56,3 +56,4 @@ function lrms = lumpedLike(ge,lsamples)
     result{1} = first;
     ge.cc = result;
     lrms(3) = gestaltLogLikelihood(ge,lsamples);
+end
