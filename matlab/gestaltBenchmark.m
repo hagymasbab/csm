@@ -2,7 +2,7 @@ function diffs = gestaltBenchmark(ge,N,nRun,nSamples,maxStep,name,hyperparams)
     defaults.increaseLikelihood     = true;
     defaults.likelihoodSamples      = 20;
     defaults.rateMethod             = 'componentwise_goal';
-    defaults.learningRate           = 0.001;
+    defaults.learningRate           = 0.01;
     defaults.multistep              = false;
     
     defaults.batchSize              = 10;

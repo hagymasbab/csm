@@ -2,6 +2,7 @@ function h = plotConvergence(ge,diffs,lsamples)
     if ischar(diffs)
         load(diffs);
     end
+    diffs(:, ~any(diffs,1) ) = [];
     legends = cell(1,size(diffs,1)+1);
     legends{1} = 'mean';
     for i=1:size(diffs,1)
@@ -18,9 +19,9 @@ function h = plotConvergence(ge,diffs,lsamples)
         lrms = lumpedLike(ge,lsamples);
     end
     plot(xlim,[lrms(1) lrms(1)],'k--');
-    plot(xlim,[lrms(2) lrms(2)],'k--');
-    plot(xlim,[lrms(3) lrms(3)],'k--');
-    ylim([0,max(diffs(:,1))+0.2]);
+    plot(xlim,[lrms(2) lrms(2)],'r--');
+    plot(xlim,[lrms(3) lrms(3)],'g--');
+    %ylim([0,max(diffs(:,1))+0.2]);
     xlabel('Iterative EM step #');  
     if lsamples == 0
         ylabel('Mean squared error of covariance parameters')
