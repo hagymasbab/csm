@@ -10,6 +10,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'calculateLikelihood',false,@islogical);
     addParamValue(parser,'increaseLikelihood',false,@islogical);
     addParamValue(parser,'likelihoodSamples',20,@isnumeric);
+    addParamValue(parser,'fullLikelihood',false,@islogical);
     parse(parser,varargin{:});
     lrate = parser.Results.learningRate; 
     ratemethod = parser.Results.rateMethod; 
@@ -20,6 +21,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     multistep = parser.Results.multistep;
     calcLike = parser.Results.calculateLikelihood;
     incLike = parser.Results.increaseLikelihood;
+    fullLike = parser.Results.fullLikelihood;
     likeSamp = parser.Results.likelihoodSamples;
     if incLike
         calcLike = true;
@@ -75,8 +77,8 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     loglike = zeros(1,maxStep*ge.N+1);    
     like = zeros(1,maxStep+1);    
     if calcLike
-        loglike(1) = gestaltLogLikelihood(ge,likeSamp);
-        like(1) = loglike(1);
+        like(1) = gestaltLogLikelihood(ge,likeSamp);
+        loglike(1) = like(1);
     end
     
     S = {};
@@ -143,7 +145,8 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
 %                 loglike(lidx) = loglike(lidx-1);                
 %                 continue;
 %             end
-                        
+                   
+            old_chol = cholesky;
             actrate = cell(1,ge.k);
             avgrates = zeros(1,ge.k);
             for j=1:ge.k
@@ -202,6 +205,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 if incLike
                     % if likelihood didn't increase, revert
                     if loglike(lidx) < loglike(lidx-1)
+                        cholesky = old_chol;
                         ge = replaceComponents(ge,cc_temp,precision);
                         skipped = skipped + 1;
                         loglike(lidx) = loglike(lidx-1);                        
@@ -244,7 +248,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         % TEST FOR CONVERGENCE   
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        reldiff = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
+        %reldiff = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         if reldiff < 1e-3
             if verb>1
                 fprintf('Convergence achieved in %d steps.\n',i);
