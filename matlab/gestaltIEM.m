@@ -9,7 +9,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'calculateLikelihood',false,@islogical);
     addParamValue(parser,'increaseLikelihood',true,@islogical);
     addParamValue(parser,'likelihoodSamples',10,@isnumeric);
-    addParamValue(parser,'fullLikelihood',false,@islogical);
+    addParamValue(parser,'fullLikelihood',true,@islogical);
     parse(parser,varargin{:});
     
     lrate = parser.Results.learningRate; 
