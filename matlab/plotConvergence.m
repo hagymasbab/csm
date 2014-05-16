@@ -60,14 +60,14 @@ function lrms = lumpedLike(ge,lsamples)
     gVV = weightedSampleCovariance(trueSamples,ge.k,ge.B);
     
     ge.cc = gVV;    
-    lrms(1) = gestaltLogLikelihood(ge,lsamples)
+    lrms(1) = gestaltLogLikelihood(ge,lsamples,0);
 
     rands = randomCovariances(2,ge.Dv);    
     
     ge.cc{1} = gVV{1} + gVV{2};
     ge.cc{2} = rands{2};
-    lrms(2) = gestaltLogLikelihood(ge,lsamples)    
+    lrms(2) = gestaltLogLikelihood(ge,lsamples,0);   
     
     ge.cc{1} = gVV{1};
-    lrms(3) = gestaltLogLikelihood(ge,lsamples)
+    lrms(3) = gestaltLogLikelihood(ge,lsamples,0);
 end

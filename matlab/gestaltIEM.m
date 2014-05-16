@@ -1,4 +1,4 @@
-function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
+function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)        
     parser = inputParser;
     addParamValue(parser,'learningRate',0.01,@isnumeric);
     addParamValue(parser,'rateMethod','componentwise_goal');
@@ -6,28 +6,29 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'multistep',false,@islogical);
     addParamValue(parser,'verbose',2,@isnumeric);
-    addParamValue(parser,'approximatePostCov',false,@islogical);
     addParamValue(parser,'calculateLikelihood',false,@islogical);
-    addParamValue(parser,'increaseLikelihood',false,@islogical);
-    addParamValue(parser,'likelihoodSamples',20,@isnumeric);
+    addParamValue(parser,'increaseLikelihood',true,@islogical);
+    addParamValue(parser,'likelihoodSamples',10,@isnumeric);
     addParamValue(parser,'fullLikelihood',false,@islogical);
     parse(parser,varargin{:});
+    
     lrate = parser.Results.learningRate; 
     ratemethod = parser.Results.rateMethod; 
     plot = parser.Results.plot;
-    approx = parser.Results.approximatePostCov;
     precision = parser.Results.precision;
     verb = parser.Results.verbose;
     multistep = parser.Results.multistep;
     calcLike = parser.Results.calculateLikelihood;
     incLike = parser.Results.increaseLikelihood;
     fullLike = parser.Results.fullLikelihood;
-    likeSamp = parser.Results.likelihoodSamples;
-    if incLike
+    likeSamp = parser.Results.likelihoodSamples;    
+    
+    if incLike || fullLike
         calcLike = true;
     end
     
     if plot>1
+        % redefine plot to make figures more dense
         subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
         clf;
     end
@@ -56,15 +57,11 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     ge = replaceComponents(ge,ccInit,precision);
     ge.X = X;
     ge.N = size(ge.X,1);
+    sdim = ge.k+(ge.Dv*ge.B);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
     % INITIALISE ARRAYS FOR SAVING VALUES   
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
-        
-    % maximum change of a parameter over a cycle should not be more than:
-    goaldiff = (1 / ge.N) * ones(ge.Dv);
-    % empirical correction of the dimension dependence of the largest eigenvalue of the inverse covariance
-    goaldiff = goaldiff / (ge.Dv * 0.025);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                    
     
     minperm = [];
     diff = zeros(1,maxStep+1);
@@ -77,15 +74,13 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     loglike = zeros(1,maxStep*ge.N+1);    
     like = zeros(1,maxStep+1);    
     if calcLike
-        like(1) = gestaltLogLikelihood(ge,likeSamp);
+        like(1) = gestaltLogLikelihood(ge,likeSamp,0);
         loglike(1) = like(1);
     end
     
-    S = {};
-    sdim = ge.k+(ge.Dv*ge.B);
+    S = {};    
     samples = zeros(ge.N,nSamples,sdim);
     mean_gradient = zeros(1,maxStep*ge.N);
-    cdll_array = zeros(1,maxStep*ge.N);
     cc_next = cell(1,ge.k);
     
     for i=1:maxStep
@@ -112,7 +107,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             % Gibbs sampling
-            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',verb-1,'precision',precision,'approximatePostCov',approx);            
+            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',verb-1,'precision',precision);            
             % if couldn't find a valid g-sample in 10 steps, skip
             if rr < 0                %%%%
                 if verb>1
@@ -129,54 +124,20 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             % gradient of the parameters of the complete-data log-likelihood            
             grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',precision);                        
             
-            % mean of gradient for learning rate calculation
-            [gradAvg,gradCompAvgs] = componentAbsMeans(grad);
-            mean_gradient(1,(i-1)*ge.N+n) = gradAvg;
+            % calculate rates and average gradients
+            [actrate,avgrates,gradAvg] = rateMatrices(grad,ratemethod,lrate,ge.N);            
+            avgrate = avgrate + sum(avgrates,2)/ge.k;    
+            mean_gradient(1,(i-1)*ge.N+n) = gradAvg;    
             
-            % TEST: skip large gradients
-%             if gradAvg > 5
-%                 skipped = skipped + 1;
-%                 if verb>1
-%                     delPrint(nSamples);
-%                 end
-%                 if nargout > 1                    
-%                     longdiff(1,lidx) = longdiff(1,lidx-1);
-%                 end
-%                 loglike(lidx) = loglike(lidx-1);                
-%                 continue;
-%             end
-                   
+            % update cholesky components
             old_chol = cholesky;
-            actrate = cell(1,ge.k);
-            avgrates = zeros(1,ge.k);
-            for j=1:ge.k
-                % choose learning rate according to selected method
-                if strcmp(ratemethod,'elementwise_goal')
-                    actrate = min(goaldiff ./ abs(grad{j}),lrate * ones(ge.Dv));
-                elseif strcmp(ratemethod,'mean_goal')
-                    actrate = min(goaldiff / gradAvg,lrate * ones(ge.Dv));
-                elseif strcmp(ratemethod,'componentwise_goal')                  
-                    actrate{j} = min(goaldiff / gradCompAvgs(1,j),lrate * ones(ge.Dv));
-                elseif strcmp(ratemethod,'only_goal')
-                    actrate{j} = goaldiff / gradCompAvgs(1,j);
-                elseif strcmp(ratemethod,'only_rate')
-                    actrate{j} = lrate * ones(ge.Dv);
-                else
-                    exit('Invalid learning rate method: %s',ratemethod);
-                end
-                avgrates(1,j) = sum(sum(actrate{j}))/(ge.Dv^2);                
-            
-                % update 
-                if ~multistep
+            if ~multistep
+                for j=1:ge.k
                     cholesky{j} = cholesky{j} + actrate{j} .* triu(grad{j});
                 end
-            end    
-            avgrate = avgrate + sum(avgrates,2)/ge.k;    
-            
-            % multistep update
-            chol_cand = cholesky;
-            cdll = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);
-            if multistep
+            else                        
+                chol_cand = cholesky;
+                cdll = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);            
                 increase = true;
                 while increase
                     for j=1:ge.k
@@ -191,8 +152,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                         increase = false;
                     end
                 end
-            end
-            
+            end            
             % update component matrices
             for j=1:ge.k
                 cc_next{j} = cholesky{j}' * cholesky{j};                                             
@@ -200,8 +160,16 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             cc_temp = extractComponents(ge,precision);
             ge = replaceComponents(ge,cc_next,precision);      
             
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+            % CONTROL FOR LIKELIHOOD            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                        
+            
             if calcLike
-                loglike(lidx) = gestaltLogLikelihood(ge,likeSamp);
+                if fullLike
+                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,0);
+                else
+                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,n);
+                end
                 if incLike
                     % if likelihood didn't increase, revert
                     if loglike(lidx) < loglike(lidx-1)
@@ -212,11 +180,10 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                     end
                 end
             end
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % PLOT, PRINT AND SAVE DATA            
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                        
-            
-            cdll_array(1,lidx) = cdll;
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                   
             
             if plot>1
                 [nopause,plot] = plotIEMStep(ge,cholesky,i,n,samples,grad,cc_next,cc_old,avgrates,nopause);
@@ -234,12 +201,16 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         
         reldiff = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         [diff(1,i+1),minperm] = covcompRootMeanSquare(cc_next,cc_old,[]);   
-        like(1,i+1) = loglike(1,1+i*ge.N);
+        if fullLike
+            like(1,i+1) = loglike(1,1+i*ge.N);
+        else
+            like(1,i+1) = gestaltLogLikelihood(ge,likeSamp,0);
+        end
         
         pCC{i+1} = extractComponents(ge,precision);
         
         S{i} = samples;
-        save('iter.mat','pCC','S','mean_gradient','diff','longdiff','cdll_array','loglike');
+        save('iter.mat','pCC','S','mean_gradient','diff','longdiff','loglike','like');
         if verb>1
             fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate,reldiff,skipped);
         end
@@ -264,9 +235,42 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-% FUNCTIONS FOR PLOTTING AND DATA ACCESS
+% FUNCTIONS FOR CALCULATIONS, PLOTTING AND DATA ACCESS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function [actrate,avgrates,gradAvg] = rateMatrices(grad,ratemethod,lrate,N)
+    Dv = size(grad{1},1);
+    k = size(grad,2);
+
+    % mean of gradient for learning rate calculation
+    [gradAvg,gradCompAvgs] = componentAbsMeans(grad);     
     
+    % maximum change of a parameter over a cycle should not be more than:
+    goaldiff = (1 / N) * ones(Dv);
+    % empirical correction of the dimension dependence of the largest eigenvalue of the inverse covariance
+    goaldiff = goaldiff / (Dv * 0.025);
+    
+    actrate = cell(1,k);
+    avgrates = zeros(1,k);
+    for j=1:k
+        % choose learning rate according to selected method
+        if strcmp(ratemethod,'elementwise_goal')
+            actrate{j} = min(goaldiff ./ abs(grad{j}),lrate * ones(Dv));
+        elseif strcmp(ratemethod,'mean_goal')
+            actrate{j} = min(goaldiff / gradAvg,lrate * ones(Dv));
+        elseif strcmp(ratemethod,'componentwise_goal')                  
+            actrate{j} = min(goaldiff / gradCompAvgs(1,j),lrate * ones(Dv));
+        elseif strcmp(ratemethod,'only_goal')
+            actrate{j} = goaldiff / gradCompAvgs(1,j);
+        elseif strcmp(ratemethod,'only_rate')
+            actrate{j} = lrate * ones(Dv);
+        else
+            exit('Invalid learning rate method: %s',ratemethod);
+        end
+        avgrates(1,j) = sum(sum(actrate{j}))/(Dv^2);                
+    end    
+end
+
 function [nopause,plot] = plotIEMStep(ge,cholesky,i,n,samples,grad,cc_next,cc_old,avgrates,nopause)
     hor = 6;
     for j=1:ge.k

@@ -1,15 +1,22 @@
-function ll = gestaltLogLikelihood(ge,L)
+function ll = gestaltLogLikelihood(ge,L,data)
     % approximated, up to a constant
     % get L samples from a k-dimensional symmetric dirichelet prior for g
-    G = symmetricDirichlet(ge.sparsity,ge.k,ge.N*L);
+    
     ll = 0;
-    coeffs = zeros(L,ge.N*ge.B);
-    exps = zeros(L,ge.N*ge.B);
-    for n=1:ge.N
+    if data == 0
+        nseq = 1:ge.N;
+        N = ge.N;
+    else
+        nseq = [data];
+        N = 1;
+    end
+    G = symmetricDirichlet(ge.sparsity,ge.k,N*L);
+    for i=1:N
+        n = nseq(i);
         samp_coeffs = zeros(1,L);
         samp_exps = zeros(1,L);
         for s=1:L
-            g = G((s-1)*ge.N+n,:)';
+            g = G((i-1)*L+s,:)';
             Cv = componentSum(g,ge.cc);
             C = ge.obsVar * eye(ge.Dx) + ge.A * Cv * ge.A';
             batch_coeffs = zeros(1,ge.B);
