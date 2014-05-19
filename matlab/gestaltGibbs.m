@@ -61,10 +61,16 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
         logpdf = @(g) gestaltLogPostG(g,V,ge,precision); 
         
         valid = false;
+        tries = 0;
         while ~valid
+            if tries > retry
+                rr = -1;
+                return;
+            end
             [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
             g = [g_part; 1-sum(g_part)];
             valid = checkG(g,ge,precision);
+            tries = tries + 1;
         end
         rr = rr + rr_act;
 

@@ -8,8 +8,8 @@ function A = gaborFilterBank(sizex,sizey,dx,dy,orients,wavelengths)
     end
     D = sizex * sizey;
     sigma = floor(sizex/20);
-    xsteps = floor(sizex/dx+1);
-    ysteps = floor(sizey/dy+1);
+    xsteps = floor(sizex/dx);
+    ysteps = floor(sizey/dy);
     orNum = size(orients,1);
     freqNum = size(wavelengths,1);
     N = xsteps * ysteps * orNum * freqNum;

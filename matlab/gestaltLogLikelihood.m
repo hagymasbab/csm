@@ -16,16 +16,19 @@ function ll = gestaltLogLikelihood(ge,L,data)
         samp_coeffs = zeros(1,L);
         samp_exps = zeros(1,L);
         for s=1:L
+            batch_coeffs = zeros(1,ge.B);
+            batch_exps = zeros(1,ge.B);
             g = G((i-1)*L+s,:)';
             Cv = componentSum(g,ge.cc);
             C = ge.obsVar * eye(ge.Dx) + ge.A * Cv * ge.A';
-            batch_coeffs = zeros(1,ge.B);
-            batch_exps = zeros(1,ge.B);
-            for b=1:ge.B                
-                x = squeeze(ge.X(n,b,:));                                
-                p = mvnpdf(x,zeros(size(x)),C);                               
-                [batch_coeffs(1,b),batch_exps(1,b)] = sciNot(p);                                
-            end            
+            [~,err] = chol(C);
+            if err == 0 && isequal(C,C')                          
+                for b=1:ge.B                
+                    x = squeeze(ge.X(n,b,:));                                
+                    p = mvnpdf(x,zeros(size(x)),C);                               
+                    [batch_coeffs(1,b),batch_exps(1,b)] = sciNot(p);                                
+                end            
+            end
             [samp_coeffs(1,s),samp_exps(1,s)] = sciProd(batch_coeffs,batch_exps);            
         end 
         [datum_coeff,datum_exp] = sciSum(samp_coeffs,samp_exps);
