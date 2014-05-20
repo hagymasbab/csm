@@ -63,8 +63,8 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
         valid = false;
         tries = 0;
         while ~valid
-            if tries > retry
-                rr = -1;
+            if tries > retry                
+                rr = -i -1;
                 return;
             end
             [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);

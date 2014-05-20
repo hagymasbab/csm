@@ -111,7 +111,11 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             % if couldn't find a valid g-sample in 10 steps, skip
             if rr < 0                %%%%
                 if verb>1
-                    fprintf('\b');                
+                    if rr == -1
+                        fprintf('\b');                
+                    else
+                        delPrint(-rr-1);
+                    end
                 end
                 skipped = skipped + 1;
                 continue;
