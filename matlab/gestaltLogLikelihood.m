@@ -22,7 +22,7 @@ function ll = gestaltLogLikelihood(ge,L,data)
             Cv = componentSum(g,ge.cc);
             C = ge.obsVar * eye(ge.Dx) + ge.A * Cv * ge.A';
             [~,err] = chol(C);
-            if err == 0 && isequal(C,C')                          
+            if err == 0 && isequal(C,C')                                          
                 for b=1:ge.B                
                     x = squeeze(ge.X(n,b,:));                                
                     p = mvnpdf(x,zeros(size(x)),C);                               
@@ -49,6 +49,15 @@ function [coefficient,exponent] = sciSum(coeffs,exps)
 end
 
 function [coefficient,exponent] = sumSciNot(c1,e1,c2,e2)    
+    if c1 == 0 && e1 == 0
+        coefficient = c2;
+        exponent = e2;
+        return;
+    elseif c2 == 0 && e2 == 0
+        coefficient = c1;
+        exponent = e1;
+        return;
+    end
     exponent = max(e1,e2);
     expdiff = abs(e1-e2);
     if(e1 > e2)
@@ -56,8 +65,7 @@ function [coefficient,exponent] = sumSciNot(c1,e1,c2,e2)
     else
         coefficient = c2 + 10^(-expdiff) * c1;
     end
-    [co,ex] = sciNot(coefficient);
-    coefficient = co;
+    [coefficient,ex] = sciNot(coefficient);    
     exponent = exponent + ex;
 end
 
@@ -68,6 +76,9 @@ function [coefficient,exponent] = sciProd(a,e)
         coefficient = coefficient * a(i);
         if coefficient >= 10
             exponent = exponent + 1;
+            coefficient = coefficient / 10;
+        elseif coefficient <= -10
+            exponent = exponent - 1;
             coefficient = coefficient / 10;
         end
     end    
