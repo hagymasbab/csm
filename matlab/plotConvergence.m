@@ -2,7 +2,15 @@ function h = plotConvergence(ge,diffs,lsamples)
     if ischar(diffs)
         load(diffs);
     end
-    diffs(:, ~any(diffs,1) ) = [];
+    %diffs(:, ~any(diffs,1) ) = [];
+    %diffs(diffs == 0) = [];
+    for i = 1:size(diffs,1)
+       for j = 2:size(diffs,2) 
+           if diffs(i,j) == 0
+               diffs(i,j) = diffs(i,j-1);
+           end
+       end
+    end
     legends = cell(1,size(diffs,1));
     %legends{1} = 'mean & 1';
     for i=1:size(diffs,1)
@@ -19,7 +27,8 @@ function h = plotConvergence(ge,diffs,lsamples)
     if lsamples == 0
         lrms = lumpedRMS(ge);
     else
-        lrms = lumpedLike(ge,lsamples);
+        %lrms = lumpedLike(ge,lsamples);
+        lrms = zeros(1,3);
     end
     %plot(xlim,[lrms(1) lrms(1)],'k--');
     %plot(xlim,[lrms(2) lrms(2)],'r--');
