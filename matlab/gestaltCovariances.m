@@ -8,7 +8,7 @@ function cc = gestaltCovariances(k,R)
     %fprintf('Calculating R\n');
     % R = pinv(A'*A)*A';
     % the gestalts should be placed over or watermarked onto natural images
-    shift = floor(imsizex/3);
+    shift = floor(imsizex/(k+1));
     width = max(1,floor(shift/2));
     margin = width;
     N = max(Dx,Dv) + 1;

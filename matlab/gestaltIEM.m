@@ -10,6 +10,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'increaseLikelihood',true,@islogical);
     addParamValue(parser,'likelihoodSamples',10,@isnumeric);
     addParamValue(parser,'fullLikelihood',true,@islogical);
+    addParamValue(parser,'noiseLevel',0.1,@isnumeric);
     parse(parser,varargin{:});
     
     lrate = parser.Results.learningRate; 
@@ -22,6 +23,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     incLike = parser.Results.increaseLikelihood;
     fullLike = parser.Results.fullLikelihood;
     likeSamp = parser.Results.likelihoodSamples;    
+    noiseLevel = parser.Results.noiseLevel;
     
     if incLike || fullLike
         calcLike = true;
@@ -49,7 +51,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     % CREATE INITAL PARAMETER MATRICES AND MODEL STRUCTURE     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-    ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision);        
+    ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision,'noiseLevel',noiseLevel,'transformationMatrix',ge.A);        
     cholesky = cellchol(ccInit);   
     pCC{1} = ccInit;            
     

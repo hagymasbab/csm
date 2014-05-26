@@ -1,4 +1,4 @@
-function diffs = gestaltBenchmark(ge,N,nRun,maxStep,name,hyperparams)
+function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
     defaults.samples                = 50;
     defaults.increaseLikelihood     = true;
     defaults.fullLikelihood         = true;
@@ -7,6 +7,7 @@ function diffs = gestaltBenchmark(ge,N,nRun,maxStep,name,hyperparams)
     defaults.learningRate           = 0.01;
     defaults.multistep              = false;
     
+    defaults.dataPoints             = 20;
     defaults.batchSize              = 10;
     defaults.obsVar                 = 0.01;
     defaults.sparsity               = 0.2;
@@ -28,7 +29,7 @@ function diffs = gestaltBenchmark(ge,N,nRun,maxStep,name,hyperparams)
         fprintf('Run %d/',nRun);
         for r=1:nRun
             printCounter(r);
-            ge = gestaltGenerate(ge,N,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
+            ge = gestaltGenerate(ge,actparam.dataPoints,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
             [diffs(r,:),like(r,:)] = gestaltIEM(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'rateMethod',actparam.rateMethod,'learningRate',actparam.learningRate,'multistep',actparam.multistep,'increaseLikelihood',actparam.increaseLikelihood,'fullLikelihood',actparam.fullLikelihood,'likelihoodSamples',actparam.likelihoodSamples);
             save(sprintf('%s_diffs_param%d.mat',name,hp),'diffs','like');
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));

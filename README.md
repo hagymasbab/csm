@@ -1,1 +1,1 @@
-# This is my README
+kiprobalni olyan kiinulomatrixokat, ahol a zajt az A matrixxal transzformalom
