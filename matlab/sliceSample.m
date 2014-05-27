@@ -8,11 +8,14 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     dim = size(init,1);
     pl = parser.Results.plot && dim == 1;   % only works in 1D     
     
-    p_init = exp(logpdf(init));
+    logp_init = logpdf(init);
+    %p_init = exp(logpdf(init));
     % sample slice height
-    u = p_init * rand();
+    %u = p_init * rand();
+    log_u = logp_init + log(rand());
     if pl
-        plot(init,u,'r-',init,u,'ro');
+        %plot(init,u,'r-',init,u,'ro');
+        plot(init,log_u,'r-',init,log_u,'ro');
         pause
     end
     bounds = repmat(init,1,2);
@@ -23,10 +26,12 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
         while inside
             actpoint(d,1) = actpoint(d,1) - stepsize;
             if pl
-                plot(actpoint,u,'r-',actpoint,u,'ro');
+                %plot(actpoint,u,'r-',actpoint,u,'ro');
+                plot(actpoint,log_u,'r-',actpoint,log_u,'ro');
                 pause
             end
-            if exp(logpdf(actpoint)) <= u
+            %if exp(logpdf(actpoint)) <= u
+            if logpdf(actpoint) <= log_u
                 bounds(d,1) = actpoint(d,1);
                 inside = false;
             end
@@ -37,10 +42,12 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
         while inside
             actpoint(d,1) = actpoint(d,1) + stepsize;
             if pl
-                plot(actpoint,u,'r-',actpoint,u,'ro');
+                %plot(actpoint,u,'r-',actpoint,u,'ro');
+                plot(actpoint,log_u,'r-',actpoint,log_u,'ro');
                 pause
             end
-            if exp(logpdf(actpoint)) <= u
+            %if exp(logpdf(actpoint)) <= u
+            if logpdf(actpoint) <= log_u
                 bounds(d,2) = actpoint(d,1);
                 inside = false;
             end
@@ -52,7 +59,8 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     rr = 0;
     while reject
         x = bounds(:,1) + rand(dim,1) .* (bounds(:,2)-bounds(:,1));
-        if exp(logpdf(x)) >= u
+        %if exp(logpdf(x)) >= u
+        if logpdf(x) >= log_u
             reject = false;
         else
             rr = rr + 1;

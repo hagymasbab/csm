@@ -6,6 +6,6 @@ function lp = gestaltPlotCondPostG(ge,V,precision)
         lp(1,g) = gestaltLogPostG(gx(g),V,ge,precision);
     end
     clf;
-    plot(gx,exp(lp));
-    %plot(gx,lp);
+    %plot(gx,exp(lp));
+    plot(gx,lp);
 end
