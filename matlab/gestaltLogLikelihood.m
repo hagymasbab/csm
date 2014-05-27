@@ -1,14 +1,20 @@
-function ll = gestaltLogLikelihood(ge,L,data)
+function ll = gestaltLogLikelihood(ge,L,data,cholesky)
     % approximated, up to a constant
     % get L samples from a k-dimensional symmetric dirichelet prior for g
+    
+    if ~isempty(cholesky)
+        for j=1:ge.k
+            ge.cc{j} = cholesky{j}' * cholesky{j};                                             
+        end
+    end
     
     ll = 0;
     if data == 0
         nseq = 1:ge.N;
         N = ge.N;
     else
-        nseq = [data];
-        N = 1;
+        nseq = 1:data;
+        N = data;
     end
     G = symmetricDirichlet(ge.sparsity,ge.k,N*L);
     for i=1:N

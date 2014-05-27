@@ -76,7 +76,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     loglike = zeros(1,maxStep*ge.N+1);    
     like = zeros(1,maxStep+1);    
     if calcLike
-        like(1) = gestaltLogLikelihood(ge,likeSamp,0);
+        like(1) = gestaltLogLikelihood(ge,likeSamp,0,[]);
         loglike(1) = like(1);
     end
     
@@ -143,13 +143,17 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 end
             else                        
                 chol_cand = cholesky;
-                cdll = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);            
+                %cdll = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),cholesky);            
+                %cdll = gestaltLogLikelihood(ge,5,0,cholesky);            
+                cdll = gestaltLogLikelihood(ge,5,n,cholesky);            
                 increase = true;
                 while increase
                     for j=1:ge.k
                         chol_cand{j} = chol_cand{j} + actrate{j} .* triu(grad{j});
                     end
-                    cdll_cand = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),chol_cand);
+                    %cdll_cand = gestaltCompleteDataLogLikelihood(ge,samples(n,:,:),chol_cand);
+                    %cdll_cand = gestaltLogLikelihood(ge,5,0,chol_cand);
+                    cdll_cand = gestaltLogLikelihood(ge,5,n,chol_cand);
 
                     if cdll_cand > cdll
                         cholesky = chol_cand;
@@ -172,9 +176,9 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             
             if calcLike
                 if fullLike
-                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,0);
+                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,0,[]);
                 else
-                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,n);
+                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,n,[]);
                 end
                 if incLike
                     % if likelihood didn't increase, revert
@@ -210,7 +214,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         if fullLike
             like(1,i+1) = loglike(1,1+i*ge.N);
         else
-            like(1,i+1) = gestaltLogLikelihood(ge,likeSamp,0);
+            like(1,i+1) = gestaltLogLikelihood(ge,likeSamp,0,[]);
         end
         
         pCC{i+1} = extractComponents(ge,precision);
