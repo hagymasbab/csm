@@ -1,2 +1,2 @@
-a g folotti kondicionalis poszterior nagyobb modelleknel mindig nulla, valszeg infeket ad vissza, mert nem tudja invertalni a matrixot
-nem, hanem annyira kicsi a log, hogy az exponenciálisa mindig 0
+g-mintakat ellenorizni kene meg
+a nagyobb modellnel a learning rate-be beleszol a goaldiff, a kicsinel nem
