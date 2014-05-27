@@ -51,9 +51,9 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
         
         if pl > 0
             clf;
-            gestaltPlotCondPostG(ge,V);
+            gestaltPlotCondPostG(ge,V,precision);
             hold on;
-            plot(ge.G(xind,1),0,'ro');
+            plot(ge.G(xind,1),0,'go');
             pause
         end
         
