@@ -23,7 +23,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     incLike = parser.Results.increaseLikelihood;
     fullLike = parser.Results.fullLikelihood;
     likeSamp = parser.Results.likelihoodSamples;    
-    noiseLevel = parser.Results.noiseLevel;
+    noiseLevel = parser.Results.noiseLevel;   
     
     if incLike || fullLike
         calcLike = true;
@@ -86,8 +86,8 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     cc_next = cell(1,ge.k);
     
     for i=1:maxStep
-        if verb > 1
-            fprintf('IEM cycle %d datapoint %d/',i,ge.N);
+        if verb == 2
+            fprintf('IEM cycle %d datapoint %d/',i,ge.N);            
         end
         if plot>1
             nopause = false;
@@ -99,7 +99,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         
         for n=1:ge.N
             lidx = 1+(i-1)*ge.N+n;
-            if verb>1
+            if verb==2
                 printCounter(n);
                 fprintf(' ');
             end
@@ -112,7 +112,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',verb-1,'precision',precision);            
             % if couldn't find a valid g-sample in 10 steps, skip
             if rr < 0                %%%%
-                if verb>1
+                if verb==2
                     if rr == -1
                         fprintf('\b');                
                     else
@@ -170,6 +170,12 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             cc_temp = extractComponents(ge,precision);
             ge = replaceComponents(ge,cc_next,precision);      
             
+            if ge.k == 1 && ge.Dv == 2 && verb == 3
+                dcov = cov(squeeze(ge.X(n,:,:)));
+                fprintf('Data cov %.2f %.2f %.2f Chol %.2f %.2f %.2f Grad %.2f %.2f %.2f\n',dcov(1,1),dcov(2,2),dcov(1,2),cholesky{1}(1,1),cholesky{1}(2,2),cholesky{1}(1,2),grad{1}(1,1),grad{1}(2,2),grad{1}(1,2))
+                pause;
+            end
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % CONTROL FOR LIKELIHOOD            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                        
@@ -186,7 +192,10 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                         cholesky = old_chol;
                         ge = replaceComponents(ge,cc_temp,precision);
                         skipped = skipped + 1;
-                        loglike(lidx) = loglike(lidx-1);                        
+                        loglike(lidx) = loglike(lidx-1);         
+                        if ge.k == 1 && ge.Dv == 2 && verb == 3
+                            fprintf('\b skipped\n');
+                        end
                     end
                 end
             end
@@ -203,7 +212,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
                 [longdiff(1,lidx),minperm] = covcompRootMeanSquare(cc_next,cc_old,[]);
             end                        
             
-            if verb>1
+            if verb==2
                 delPrint(nSamples);
             end
         end %for n=1:ge.N
@@ -221,7 +230,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         
         S{i} = samples;
         save('iter.mat','pCC','S','mean_gradient','diff','longdiff','loglike','like');
-        if verb>1
+        if verb == 2
             fprintf(' avglr %.2e diff %.2e skipped %d\n',avgrate,reldiff,skipped);
         end
         
@@ -230,7 +239,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         %reldiff = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
-        if reldiff < 1e-3
+        if reldiff < 1e-6
             if verb>1
                 fprintf('Convergence achieved in %d steps.\n',i);
             end
@@ -312,11 +321,13 @@ function [nopause,plot] = plotIEMStep(ge,cholesky,i,n,samples,grad,cc_next,cc_ol
     subplot(ge.k,hor,2);
     viewImage(cov(squeeze(ge.X(n,:,:))),'magnif',false);
     title(sprintf('data cov, g1=%.3f',ge.G(n,1)));
-    % sample cov                    
-    subplot(ge.k,hor,hor+2);
-    vsamp = reshape(samples(n,:,ge.k+1:ge.k+(ge.Dv*ge.B)),size(samples,2)*ge.B,ge.Dv);
-    viewImage(cov(vsamp),'magnif',false);
-    title('sample cov');
+    % sample cov  
+    if ge.k>1
+        subplot(ge.k,hor,hor+2);
+        vsamp = reshape(samples(n,:,ge.k+1:ge.k+(ge.Dv*ge.B)),size(samples,2)*ge.B,ge.Dv);
+        viewImage(cov(vsamp),'magnif',false);
+        title('sample cov');
+    end
     pause(0.01);
     plot = 2;    
     if ~nopause
