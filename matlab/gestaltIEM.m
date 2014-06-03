@@ -51,7 +51,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     % CREATE INITAL PARAMETER MATRICES AND MODEL STRUCTURE     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-    ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision,'noiseLevel',noiseLevel,'transformationMatrix',ge.A);        
+    ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision,'noiseLevel',noiseLevel);        
     cholesky = cellchol(ccInit);   
     pCC{1} = ccInit;            
     
@@ -182,7 +182,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             
             if calcLike
                 if fullLike
-                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,0,[]);
+                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,0,[])
                 else
                     loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,n,[]);
                 end

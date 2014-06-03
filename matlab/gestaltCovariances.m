@@ -23,7 +23,8 @@ function cc = gestaltCovariances(k,R)
             x = reshape(X(i,:),imsizex,imsizey);
             x(margin:imsizex-margin,act_shift:act_shift+width) = x(margin,act_shift);
             x = reshape(x,1,Dx);
-            vs(i,:) = x * R';
+            %vs(i,:) = x * R';      
+            vs(i,:) = x;
         end
         fprintf('\n....Calculating covariance\n');
         cc{g} = cov(vs);
