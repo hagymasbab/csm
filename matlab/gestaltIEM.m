@@ -139,6 +139,10 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             old_chol = cholesky;
             if ~multistep
                 for j=1:ge.k
+                    % TEST
+                    if n==1
+                        actrate{j} = 0.1 * ones(ge.Dv);
+                    end
                     cholesky{j} = cholesky{j} + actrate{j} .* triu(grad{j});
                 end
             else                        
@@ -182,13 +186,15 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
             
             if calcLike
                 if fullLike
-                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,0,[])
+                    loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,0,[]);
                 else
                     loglike(lidx) = gestaltLogLikelihood(ge,likeSamp,n,[]);
                 end
                 if incLike
                     % if likelihood didn't increase, revert
-                    if loglike(lidx) < loglike(lidx-1)
+                    %if loglike(lidx) < loglike(lidx-1)
+                    % TEST
+                    if loglike(lidx) < loglike(lidx-1) && n > 1
                         cholesky = old_chol;
                         ge = replaceComponents(ge,cc_temp,precision);
                         skipped = skipped + 1;

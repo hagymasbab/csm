@@ -6,6 +6,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     verb = parser.Results.verbose;    
     precision = parser.Results.precision;    
 
+    %size(samples)
     L = size(samples,2);
     N = size(samples,1);
     grad = cell(1,ge.k);
