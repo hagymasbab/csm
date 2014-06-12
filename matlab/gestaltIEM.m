@@ -11,6 +11,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'likelihoodSamples',10,@isnumeric);
     addParamValue(parser,'fullLikelihood',true,@islogical);
     addParamValue(parser,'noiseLevel',0.1,@isnumeric);
+    addParamValue(parser,'sortData',false,@islogical);
     parse(parser,varargin{:});
     
     lrate = parser.Results.learningRate; 
@@ -24,6 +25,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     fullLike = parser.Results.fullLikelihood;
     likeSamp = parser.Results.likelihoodSamples;    
     noiseLevel = parser.Results.noiseLevel;   
+    sortData = parser.Results.sortData;   
     
     if incLike || fullLike
         calcLike = true;
@@ -59,6 +61,12 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     ge = replaceComponents(ge,ccInit,precision);
     ge.X = X;
     ge.N = size(ge.X,1);
+    if sortData
+        % here's a strong assumption that we used the first part of the
+        % data stored in the structure
+        ge.G = ge.G(1:ge.N,:);
+        ge = sortByGestalt(ge);
+    end    
     sdim = ge.k+(ge.Dv*ge.B);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -374,5 +382,30 @@ end
 function delPrint(num)
     for b=1:9+2*(floor(log10(num))+1)
         fprintf('\b');
+    end
+end
+
+function ge = sortByGestalt(ge)
+    indices = maxByRow(ge.G);
+    newX = zeros(size(ge.X));
+    %newV = zeros(size(ge.V));
+    newG = zeros(size(ge.G));
+    sofar = 0;
+    for j = 1:ge.k
+        gnum = sum(indices == j);
+        newX(sofar + 1 : sofar + gnum,:,:) = ge.X(indices == j,:,:);
+        %newv(sofar + 1 : sofar + gnum,:,:) = ge.V(indices == j,:,:);
+        newG(sofar + 1 : sofar + gnum,:) = ge.G(indices == j,:);
+        sofar = sofar + gnum;
+    end
+    ge.X = newX;
+    %ge.V = newV;
+    ge.G = newG;
+end
+
+function indices = maxByRow(A)
+    indices = zeros(size(A,1),1);
+    for i = 1:size(A,1)
+        [~,indices(i,1)] = max(A(i,:));
     end
 end
