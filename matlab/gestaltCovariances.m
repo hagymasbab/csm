@@ -1,4 +1,4 @@
-function cc = gestaltCovariances(k,R)
+function cc = gestaltCovariances(k,R,plusShift)
     fprintf('Calculating covariance components\n');
     % vertical lines
     Dx = size(R,2);
@@ -14,7 +14,7 @@ function cc = gestaltCovariances(k,R)
     N = max(Dx,Dv) + 1;
     for g = 1:k
         fprintf('..Component %d\n', g);
-        act_shift = g*shift;
+        act_shift = g*shift + plusShift;
         vs = zeros(N,Dv);
         X = mvnrnd(zeros(N,Dx),eye(Dx));
         fprintf('....%d/', N);

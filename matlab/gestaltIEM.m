@@ -12,6 +12,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'fullLikelihood',true,@islogical);
     addParamValue(parser,'noiseLevel',0.1,@isnumeric);
     addParamValue(parser,'sortData',false,@islogical);
+    addParamValue(parser,'initCond','random');
     parse(parser,varargin{:});
     
     lrate = parser.Results.learningRate; 
@@ -26,6 +27,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     likeSamp = parser.Results.likelihoodSamples;    
     noiseLevel = parser.Results.noiseLevel;   
     sortData = parser.Results.sortData;   
+    initCond = parser.Results.initCond;   
     
     if incLike || fullLike
         calcLike = true;
@@ -52,8 +54,12 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
     % CREATE INITAL PARAMETER MATRICES AND MODEL STRUCTURE     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
-    ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision,'noiseLevel',noiseLevel);        
+    if strcmp(initCond,'random') 
+        ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision,'noiseLevel',noiseLevel);        
+    elseif strcmp(initCond,'shifted') 
+        ccInit = gestaltCovariances(ge.k,ge.A',floor(sqrt(ge.Dx)/4));        
+    end
+    
     cholesky = cellchol(ccInit);   
     pCC{1} = ccInit;            
     
