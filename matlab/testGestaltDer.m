@@ -38,6 +38,14 @@ function disc = testGestaltDer(ge)
         gradmat = cell2mat(gradcell);
     end
 
+    function lp = loggausschol(cholmat,g,v,ge)
+       % TODO 
+    end
+
+    function grad = chained(cholmat,g,v,ge)
+        % TODO
+    end
+
     function lp = gestaltUCDLL(cholmat,ge,samples)
         % unnormalised complete-data log-likelihood
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));        
@@ -51,8 +59,8 @@ function disc = testGestaltDer(ge)
         gradmat = cell2mat(grad);
     end
     
-    ge.B = 1;
-    nSamp = 1;
+    ge.B = 10;
+    nSamp = 10;
     samples = zeros(1,nSamp,ge.k+ge.B*ge.Dv);
     samples(1,:,:) = gestaltGibbs(ge,1,nSamp);
 
@@ -75,6 +83,6 @@ function disc = testGestaltDer(ge)
 %     b = @(x) loggaussgrad(x,v);
 %     init = Cv;
     
-    disc = checkDerivative(a,b,init);
+    disc = checkDerivative(a,b,init,false);
 
 end

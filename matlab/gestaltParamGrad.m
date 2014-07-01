@@ -1,7 +1,10 @@
 function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
+    % gradient of the complete data log-likelihood with respect to the
+    % cholesky decomposition of the covariance components
+
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
-    addParamValue(parser,'precision',0,@islogical);
+    addParamValue(parser,'precision',false,@islogical);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
     precision = parser.Results.precision;    
