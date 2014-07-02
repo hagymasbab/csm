@@ -24,8 +24,11 @@ function disc = checkDerivative(formula,deriv,init,builtin)
         initval = formula(init);
         initder = deriv(init);
         step = 0.1;
+        nPoint = 6;
         disc = [];
-        for k=1:6
+        fprintf('Point %d/',nPoint);
+        for k=1:nPoint
+            printCounter(k);
             step = step*0.1;
             discrepancy = 0;
             for i=1:size(init,1)
@@ -39,6 +42,7 @@ function disc = checkDerivative(formula,deriv,init,builtin)
             end
             disc=[disc discrepancy];
         end
+        fprintf('\n');
         plot(disc)
     end
 end

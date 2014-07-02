@@ -1,5 +1,13 @@
 function disc = testGestaltDer(ge)
     
+    function cv = cholmat2cov(cholmat,g,ge)
+        cv = zeros(ge.Dv);
+        choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
+        for i=1:ge.k
+            cv = cv + g(i,1) * (choles{i}' * choles{i});
+        end
+    end
+
     function lp = loggauss(C,v)
         b = size(v,2);
         iC = inv(C);
@@ -21,11 +29,7 @@ function disc = testGestaltDer(ge)
     end
 
     function cv = kovmat(cholmat,g,ge)
-        cv = zeros(ge.Dv);
-        choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
-        for i=1:ge.k
-            cv = cv + g(i,1) * (choles{i}' * choles{i});
-        end
+        cv = cholmat2cov(cholmat,g,ge);
         cv = trace(cv);
     end
 
@@ -39,11 +43,19 @@ function disc = testGestaltDer(ge)
     end
 
     function lp = loggausschol(cholmat,g,v,ge)
-       % TODO 
+        cv = cholmat2cov(cholmat,g,ge);
+        lp = loggauss(cv,v);
     end
 
     function grad = chained(cholmat,g,v,ge)
-        % TODO
+        cv = cholmat2cov(cholmat,g,ge);
+        cvgrad = loggaussgrad(cv,v);
+        choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
+        gradcell = cell(1,ge.k);
+        for i=1:ge.k
+            gradcell{i} = 2 * g(i,1) * cvgrad * choles{i};
+        end
+        grad = cell2mat(gradcell);
     end
 
     function lp = gestaltUCDLL(cholmat,ge,samples)
@@ -60,7 +72,7 @@ function disc = testGestaltDer(ge)
     end
     
     ge.B = 10;
-    nSamp = 10;
+    nSamp = 1;
     samples = zeros(1,nSamp,ge.k+ge.B*ge.Dv);
     samples(1,:,:) = gestaltGibbs(ge,1,nSamp);
 
@@ -72,12 +84,16 @@ function disc = testGestaltDer(ge)
 
     Cv = componentSum(0.5*ones(ge.k,1),ge.cc);
     v = mvnrnd(zeros(100,ge.Dv),Cv)';
+    g = 0.5*ones(ge.k,1);
     
     a = @(x) gestaltUCDLL(x,ge,samples);
     b = @(x) gestaltDerUCDLL(x,ge,samples);
     init = cholmat;
-%     a = @(x) kovmat(x,0.5*ones(ge.k,1),ge);
-%     b = @(x) kovmatder(x,0.5*ones(ge.k,1),ge);
+%     a = @(x) kovmat(x,g,ge);
+%     b = @(x) kovmatder(x,g,ge);
+
+    a = @(x) loggausschol(x,g,v,ge);
+    b = @(x) chained(x,g,v,ge);
 
 %     a = @(x) loggauss(x,v);
 %     b = @(x) loggaussgrad(x,v);
