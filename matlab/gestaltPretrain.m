@@ -1,7 +1,17 @@
-function [cc,W] = gestaltPretrain(ge,X,steps,alpha)
+function [cc,W,g_bias] = gestaltPretrain(ge,X,steps,varargin)
     % learn RBM weights between v and g as Gaussian units with CD1 
     
-    gstep = 3;
+    parser = inputParser;
+    addParamValue(parser,'alpha',0.01,@isnumeric);
+    addParamValue(parser,'gstep',1,@isnumeric);
+    addParamValue(parser,'cdstep',1,@isnumeric);
+    addParamValue(parser,'initVar',0.1,@isnumeric);
+    parse(parser,varargin{:});
+    alpha = parser.Results.alpha;    
+    gstep = parser.Results.gstep;    
+    cdstep = parser.Results.cdstep;    
+    initVar = parser.Results.initVar; 
+    
     N = ge.N;
     % transform out batches
     if ndims(X) == 3
@@ -10,29 +20,42 @@ function [cc,W] = gestaltPretrain(ge,X,steps,alpha)
     end
         
     % initialise W
-    W = randn(ge.Dv,ge.k);
+    g_bias = randn(ge.k,1) * initVar;
+    W = randn(ge.Dv,ge.k) * initVar;
     pA = pinv(ge.A);
-    data_corr = zeros(ge.Dv,ge.k);
-    fantasy_corr = zeros(ge.Dv,ge.k);
-    samples = cell(1,steps);
+%     data_corr = zeros(ge.Dv,ge.k);
+%     fantasy_corr = zeros(ge.Dv,ge.k);
+%     data_hiddenact = zeros(1,ge.k);
+%     fantasy_hiddenact = zeros(1,ge.k);
+%     samples = cell(1,steps);
     
+    % transform each line of X into a V by the pseudoinverse of A
+    V_data = pA * X'; % TODO check whether we have to transpose
+
     for s = 1:steps
-        % transform each line of X into a V by the pseudoinverse of A
-        V = pA * X'; % TODO check whether we have to transpose
+        V = V_data;
         % take one sample for each v from fake-G
-        G = gibbsG(V,W,gstep);
+        G = gibbsG(V,W,gstep,g_bias);
+        % record hidden activity
+        data_hiddenact = sum(G,2);
         % record positive phase correlations        
-        data_corr = data_corr + V * G';
+        data_corr = V * G';
         
-        % update V 
-        V = W * G + randn(ge.Dv,N);
-        % update G
-        G = gibbsG(V,W,gstep);
+        for cds=1:cdstep
+            % update V 
+            V = W * G + randn(ge.Dv,N);
+            % update G
+            G = gibbsG(V,W,gstep,g_bias);
+        end
         % record negative phase correlations
-        fantasy_corr = fantasy_corr + V * G';
+        fantasy_corr = V * G';
+        % record hidden activity
+        fantasy_hiddenact = sum(G,2);
         
         % update W
-        W = alpha * (data_corr - fantasy_corr) / N;
+        W = W + alpha * (data_corr - fantasy_corr) / N;
+        % update bias
+        g_bias = g_bias + alpha * (data_hiddenact - fantasy_hiddenact) / N; 
         
     end
     
@@ -50,10 +73,10 @@ function [cc,W] = gestaltPretrain(ge,X,steps,alpha)
     
 end
 
-function G = gibbsG(V,W,gstep)
+function G = gibbsG(V,W,gstep,g_bias)
     k = size(W,2);
     N = size(V,2);
-    G_mean = W' * V;
+    G_mean = W' * V + repmat(g_bias,1,N);
     G = G_mean + randn(k,N);
     % updating all G-s alternatingly with negative weight between each
     % other
