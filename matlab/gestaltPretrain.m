@@ -1,9 +1,9 @@
-function [cc,W,g_bias,v_bias] = gestaltPretrain(ge,X,steps,varargin)
+function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargin)
     % learn RBM weights between v and g as Gaussian units with CD1 
     
     parser = inputParser;
     addParamValue(parser,'alpha',0.01,@isnumeric);
-    addParamValue(parser,'gstep',1,@isnumeric);
+    addParamValue(parser,'gstep',0,@isnumeric);
     addParamValue(parser,'cdstep',1,@isnumeric);
     addParamValue(parser,'initVar',0.1,@isnumeric);
     addParamValue(parser,'gbias',true,@islogical);
@@ -16,7 +16,16 @@ function [cc,W,g_bias,v_bias] = gestaltPretrain(ge,X,steps,varargin)
     gbias = parser.Results.gbias; 
     vbias = parser.Results.vbias; 
     
+    if strcmp(randseed,'last')
+        load lastrandseed;
+    end
+    s = RandStream('mt19937ar','Seed',randseed);
+    RandStream.setGlobalStream(s);
+    randseed = s.Seed;
+    save('lastrandseed.mat','randseed');
+    
     N = ge.N;
+    X = ge.X;
     % transform out batches
     if ndims(X) == 3
         X = reshape(X,size(X,1)*size(X,2),size(X,3));
@@ -33,6 +42,9 @@ function [cc,W,g_bias,v_bias] = gestaltPretrain(ge,X,steps,varargin)
 %     data_hiddenact = zeros(1,ge.k);
 %     fantasy_hiddenact = zeros(1,ge.k);
 %     samples = cell(1,steps);
+    winc = zeros(ge.Dv * ge.k,steps);
+    gbiasinc = zeros(ge.k,steps);
+    vbiasinc = zeros(ge.Dv,steps);
     
     % transform each line of X into a V by the pseudoinverse of A
     V_data = pA * X'; % TODO check whether we have to transpose
@@ -46,7 +58,7 @@ function [cc,W,g_bias,v_bias] = gestaltPretrain(ge,X,steps,varargin)
         % record V activity
         data_vact = sum(V,2);
         % record positive phase correlations        
-        data_corr = V * G';
+        data_corr = correlate(V,G);
         
         for cds=1:cdstep
             % update V 
@@ -60,25 +72,29 @@ function [cc,W,g_bias,v_bias] = gestaltPretrain(ge,X,steps,varargin)
             G = gibbsG(V,W,gstep,gbias,g_bias);
         end
         % record negative phase correlations
-        fantasy_corr = V * G';
+        fantasy_corr = correlate(V,G);
         % record G activity
         fantasy_gact = sum(G,2);
         % record V activity
         fantasy_vact = sum(V,2);
         
-        % update W
-        W = W + alpha * (data_corr - fantasy_corr) / N;
+        % update W      
+        W = W + alpha * (data_corr - fantasy_corr);
+        winc(:,s) = W(:)';
         % update bias
         if gbias
             g_bias = g_bias + alpha * (data_gact - fantasy_gact) / N; 
+            gbiasinc(:,s) = g_bias;
         end
         if vbias
             v_bias = v_bias + alpha * (data_vact - fantasy_vact) / N; 
+            vbiasinc(:,s) = v_bias;
         end
         
     end
     
     % construct covariance components from W
+    close all;
     cc = cell(1,ge.k);
     for k = 1:ge.k
         actc = zeros(ge.Dv);
@@ -88,8 +104,9 @@ function [cc,W,g_bias,v_bias] = gestaltPretrain(ge,X,steps,varargin)
             end
         end
         cc{k} = actc;
-    end
-    
+        figure;
+        viewImage(cc{k},'usemax',true);
+    end        
 end
 
 function G = gibbsG(V,W,gstep,gbias,g_bias)
@@ -111,4 +128,15 @@ function G = gibbsG(V,W,gstep,gbias,g_bias)
             G(j,:) = G_mean(j,:) - sum(restG,1) + randn(1,N);
         end
     end
+end
+
+function corr = correlate(A,B) 
+    N = size(A,2);
+    % standardise
+    A = A ./ repmat(std(A,0,2),1,N);
+    B = B ./ repmat(std(B,0,2),1,N);
+    % covariance
+    corr = A * B';
+    % normalise
+    corr = corr / N;
 end
