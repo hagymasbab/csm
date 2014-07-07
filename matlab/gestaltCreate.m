@@ -57,7 +57,8 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B);
+    %gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B);
+    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision);
     fprintf('Transforming synthetic data\n');
     gestalt.tX = zeros(gestalt.N,gestalt.B,gestalt.Dv);
     for n=1:gestalt.N
