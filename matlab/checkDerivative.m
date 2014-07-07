@@ -23,7 +23,7 @@ function disc = checkDerivative(formula,deriv,init,builtin)
 
         initval = formula(init);
         initder = deriv(init);
-        step = 0.1;
+        step = 1;
         nPoint = 6;
         disc = [];
         fprintf('Point %d/',nPoint);
