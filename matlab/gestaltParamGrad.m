@@ -34,18 +34,25 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
             if ~precision                
                 matr = (ge.B * eye(ge.Dv)) / CvP - (CvP \ VV) / CvP;
                 %iCv = inv(CvP);
-                %matr = ge.B * iCv - iCv * VV * iCv;
+                %matr = ge.B * iCv - iCv * VV * iCv;                
             else                        
                 matr = (ge.B * eye(ge.Dv)) / CvP - VV;
+                
             end            
-            for i=1:ge.k
-                grad{i} = grad{i} - (g(i,1) * matr);
+            trmatr = trace(matr);
+            for kk=i:ge.k
+                %grad{kk} = grad{kk} - (g(kk,1) * matr);
+                for i=1:ge.Dv
+                    for j=1:ge.Dv
+                        grad{kk}(i,j) = grad{kk}(i,j) + g(kk,1) * trmatr;
+                    end
+                end
             end
         end
     end
-    for i=1:ge.k
-        grad{i} = grad{i} * cholesky{i} / L;
-        %grad{i} = grad{i} .* cholesky{i} / L;
+    for kk=1:ge.k
+        grad{kk} = - grad{kk} .* cholesky{kk} / L;
+        %grad{kk} = grad{kk} .* cholesky{kk} / L;        
     end
     if verb > 0
         fprintf('\n');

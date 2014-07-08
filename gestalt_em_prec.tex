@@ -148,23 +148,23 @@ To ensure that the optimisation procedure does not produce precision matrices th
 \begin{eqnarray}
 C_k = U_k^T U_k \\
 C_v = \sum_{k=1}^K g_k U_k^T U_k \\
-\frac{\partial C_v^m}{\partial \left[ U_k \right]_{a,b}} = 2 g_k^m \left[ U_k \right]_{a,b}
+\frac{\partial C_v^m}{\partial \left[ U_k \right]_{i,j}} = 2 g_k^m \left[ U_k \right]_{i,j}
 \end{eqnarray}
 %
 so by the chain rule, the derivative of $\mathcal{L}$ according to an element of $U_k$ looks like this
 
 \begin{equation}
 \begin{split}
-&\frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{a,b}} = -\frac{1}{2L} \sum_{m=1}^{NL} \textrm{Tr} \left[ \frac{\partial \mathcal{L}^m}{\partial C_v^m} \frac{\partial C_v^m}{\partial \left[ U_k \right]_{a,b}} \right] = \\
-& -\frac{1}{L} \sum_{m=1}^{LN} \textrm{Tr} \left[ g_k^{m} \left[ U_k \right]_{a,b} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] \right] = \\
-& -\frac{ \left[ U_k \right]_{a,b}}{L} \sum_{m=1}^{LN} g_k^{m} \textrm{Tr} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right]
+&\frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{i,j}} = -\frac{1}{2L} \sum_{m=1}^{NL} \textrm{Tr} \left[ \frac{\partial \mathcal{L}^m}{\partial C_v^m} \frac{\partial C_v^m}{\partial \left[ U_k \right]_{i,j}} \right] = \\
+& -\frac{1}{L} \sum_{m=1}^{LN} \textrm{Tr} \left[ g_k^{m} \left[ U_k \right]_{i,j} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] \right] = \\
+& -\frac{ \left[ U_k \right]_{i,j}}{L} \sum_{m=1}^{LN} g_k^{m} \textrm{Tr} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right]
 \end{split}
 \end{equation}
 %
 As a generalised M-step, we can move the parameters in the direction of the gradient scaled by a learning rate
 
 \begin{equation}
-\left[ U_k \right]_{a,b}^{new} = \left[ U_k \right]_{a,b}^{old} + \epsilon \frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{a,b}}
+\left[ U_k \right]_{i,j}^{new} = \left[ U_k \right]_{i,j}^{old} + \epsilon \frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{i,j}}
 \end{equation}
 
 \section{Parametrisation with precision components}

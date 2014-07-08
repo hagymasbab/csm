@@ -55,8 +55,12 @@ function disc = testGestaltDer(ge)
         %grad = cvgrad;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
         gradcell = cell(1,ge.k);
-        for i=1:ge.k
-            gradcell{i} = 2 * g(i,1) * cvgrad * choles{i};
+        for act_k=1:ge.k
+            for i=1:ge.Dv
+                for j=1:ge.Dv
+                    gradcell{act_k}(i,j) = - choles{act_k}(i,j) * g(act_k,1) * trace(cvgrad);
+                end
+            end
         end
         grad = cell2mat(gradcell);
     end
@@ -80,8 +84,8 @@ function disc = testGestaltDer(ge)
     samples(1,:,:) = gestaltGibbs(ge,1,nSamp);
 
     cholesky = cell(1,ge.k);
-    for j=1:ge.k
-        cholesky{j} = chol(ge.cc{j});
+    for ak=1:ge.k
+        cholesky{ak} = chol(ge.cc{ak});
     end
     cholmat = cell2mat(cholesky);
 
