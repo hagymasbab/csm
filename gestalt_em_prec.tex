@@ -146,25 +146,25 @@ noting that the double summation over $L$ samples over all $N$ observations alwa
 To ensure that the optimisation procedure does not produce precision matrices that are not positive definite, we can optimise for the Cholesky upper triangle matrix istead of the precision matrix, as this also specifies the Gaussian completely.
 
 \begin{eqnarray}
-C_j = U_j^T U_j \\
+C_k = U_k^T U_k \\
 C_v = \sum_{k=1}^K g_k U_k^T U_k \\
-\frac{\partial C_v^m}{\partial U_j} = 2 g_j^m U_j
+\frac{\partial C_v^m}{\partial \left[ U_k \right]_{a,b}} = 2 g_k^m \left[ U_k \right]_{a,b}
 \end{eqnarray}
 %
-so by the chain rule, the derivative of $\mathcal{L}$ according to $U_j$ looks like this
+so by the chain rule, the derivative of $\mathcal{L}$ according to an element of $U_k$ looks like this
 
 \begin{equation}
 \begin{split}
-&\frac{\partial \mathcal{L}}{\partial U_j} = -\frac{1}{2L} \sum_{m=1}^{NL} \frac{\partial \mathcal{L}^m}{\partial C_v^m} \frac{\partial C_v^m}{\partial U_j} = \\
-& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] U_j = \\
-& -\frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right] U_j
+&\frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{a,b}} = -\frac{1}{2L} \sum_{m=1}^{NL} \textrm{Tr} \left[ \frac{\partial \mathcal{L}^m}{\partial C_v^m} \frac{\partial C_v^m}{\partial \left[ U_k \right]_{a,b}} \right] = \\
+& -\frac{1}{L} \sum_{m=1}^{LN} \textrm{Tr} \left[ g_k^{m} \left[ U_k \right]_{a,b} \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] \right] = \\
+& -\frac{ \left[ U_k \right]_{a,b}}{L} \sum_{m=1}^{LN} g_k^{m} \textrm{Tr} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right]
 \end{split}
 \end{equation}
 %
 As a generalised M-step, we can move the parameters in the direction of the gradient scaled by a learning rate
 
 \begin{equation}
-U_j^{new} = U_j^{old} + \epsilon \frac{\partial \mathcal{L}}{\partial U_j}
+\left[ U_k \right]_{a,b}^{new} = \left[ U_k \right]_{a,b}^{old} + \epsilon \frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{a,b}}
 \end{equation}
 
 \section{Parametrisation with precision components}
