@@ -8,6 +8,7 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     addParamValue(parser,'initVar',0.1,@isnumeric);
     addParamValue(parser,'gbias',true,@islogical);
     addParamValue(parser,'vbias',true,@islogical);
+    addParamValue(parser,'plot',false,@islogical);
     parse(parser,varargin{:});
     alpha = parser.Results.alpha;    
     gstep = parser.Results.gstep;    
@@ -15,6 +16,7 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     initVar = parser.Results.initVar; 
     gbias = parser.Results.gbias; 
     vbias = parser.Results.vbias; 
+    plot = parser.Results.plot; 
     
     if strcmp(randseed,'last')
         load lastrandseed;
@@ -24,13 +26,13 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     randseed = s.Seed;
     save('lastrandseed.mat','randseed');
     
-    N = ge.N;
     X = ge.X;
     % transform out batches
     if ndims(X) == 3
         X = reshape(X,size(X,1)*size(X,2),size(X,3));
         N = ge.N * ge.B;
     end
+    N = size(X,1);
         
     % initialise W
     g_bias = randn(ge.k,1) * initVar;
@@ -104,8 +106,10 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
             end
         end
         cc{k} = actc;
-        figure;
-        viewImage(cc{k},'usemax',true);
+        if plot
+            figure;
+            viewImage(cc{k},'usemax',true);
+        end
     end        
 end
 

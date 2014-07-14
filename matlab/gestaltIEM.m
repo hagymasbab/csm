@@ -57,7 +57,15 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     if strcmp(initCond,'random') 
         ccInit = randomCovariances(ge.k,ge.Dv,'precision',precision,'noiseLevel',noiseLevel);        
     elseif strcmp(initCond,'shifted') 
-        ccInit = gestaltCovariances(ge.k,ge.A',floor(sqrt(ge.Dx)/4));        
+        ccInit = gestaltCovariances(ge.k,ge.A',floor(sqrt(ge.Dx)/4));     
+    elseif strcmp(initCond,'pretrain')
+        pre_seed = randi(intmax);
+        data = reshape(X,size(X,1)*size(X,2),size(X,3));
+        ge.X = repmat(data,floor(1000/size(data,1)),1);
+        ccInit = gestaltPretrain(ge,1000,pre_seed,'plot',false);
+        for kk = 1:ge.k
+            ccInit{kk} = 10 * ccInit{kk} + eye(ge.Dv);
+        end
     end
     
     cholesky = cellchol(ccInit);   
