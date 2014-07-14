@@ -39,19 +39,19 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
                 matr = (ge.B * eye(ge.Dv)) / CvP - VV;
                 
             end            
-            trmatr = trace(matr);
             for kk=i:ge.k
                 %grad{kk} = grad{kk} - (g(kk,1) * matr);
                 for i=1:ge.Dv
                     for j=1:ge.Dv
-                        grad{kk}(i,j) = grad{kk}(i,j) + g(kk,1) * trmatr;
+                        U_hat = derivQuadByElement(cholesky{kk},i,j);
+                        grad{kk}(i,j) = grad{kk}(i,j) + g(kk,1) * trace(matr*U_hat);
                     end
                 end
             end
         end
     end
     for kk=1:ge.k
-        grad{kk} = - grad{kk} .* cholesky{kk} / L;
+        grad{kk} = - grad{kk} / (2*L);
         %grad{kk} = grad{kk} .* cholesky{kk} / L;        
     end
     if verb > 0

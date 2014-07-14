@@ -54,11 +54,12 @@ function disc = testGestaltDer(ge)
         cvgrad = loggaussgrad(cv,v);
         %grad = cvgrad;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
-        gradcell = cell(1,ge.k);
-        for act_k=1:ge.k
-            for i=1:ge.Dv
-                for j=1:ge.Dv
-                    gradcell{act_k}(i,j) = - choles{act_k}(i,j) * g(act_k,1) * trace(cvgrad);
+        gradcell = cell(1,ge.k);        
+        for i=1:ge.Dv
+            for j=1:ge.Dv                
+                for act_k=1:ge.k
+                    U_hat = derivQuadByElement(choles{act_k},i,j);
+                    gradcell{act_k}(i,j) = - g(act_k,1) * trace(cvgrad*U_hat) / 2;
                 end
             end
         end
