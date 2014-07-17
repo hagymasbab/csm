@@ -28,18 +28,22 @@ function disc = testGestaltDer(ge)
         grad = -(b*iC - quad) / 2;
     end
 
-    function cv = kovmat(cholmat,g,ge)
-        cv = cholmat2cov(cholmat,g,ge);
-        cv = trace(cv);
+    function cv = kovmat(upperleft,cholmat,g,ge)        
+        cholmat(1,1) = upperleft;
+        cv = cholmat2cov(cholmat,g,ge);        
+        %cv = trace(cv);
     end
 
-    function gradmat = kovmatder(cholmat,g,ge)
+    function gradmat = kovmatder(upperleft,cholmat,g,ge)        
         gradcell = cell(1,ge.k);
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
-        for i=1:ge.k
-            gradcell{i} = 2 * g(i,1) * choles{i};
-        end
-        gradmat = cell2mat(gradcell);
+        choles{1}(1,1) = upperleft;
+        U_hat = derivQuadByElement(choles{1},1,1);
+        gradmat = g(1) * U_hat;
+%         for i=1:ge.k
+%             gradcell{i} = 2 * g(i,1) * choles{i};
+%         end
+%         gradmat = cell2mat(gradcell);
     end
 
     function lp = loggausschol(cholmat,g,v,ge)
@@ -96,12 +100,13 @@ function disc = testGestaltDer(ge)
     
     a = @(x) gestaltUCDLL(x,ge,samples);
     b = @(x) gestaltDerUCDLL(x,ge,samples);
-    init = cholmat;
-%     a = @(x) kovmat(x,g,ge);
-%     b = @(x) kovmatder(x,g,ge);
+    %init = cholmat;
+    init = 1;
+    a = @(x) kovmat(x,cholmat,g,ge);
+    b = @(x) kovmatder(x,cholmat,g,ge);
 
-    a = @(x) loggausschol(x,g,v,ge);
-    b = @(x) chained(x,g,v,ge);
+%     a = @(x) loggausschol(x,g,v,ge);
+%     b = @(x) chained(x,g,v,ge);
 
 %     a = @(x) loggauss(x,v);
 %     b = @(x) loggaussgrad(x,v);
