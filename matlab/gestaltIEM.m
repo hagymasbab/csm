@@ -1,7 +1,7 @@
 function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)        
     parser = inputParser;
     addParamValue(parser,'learningRate',0.01,@isnumeric);
-    addParamValue(parser,'rateMethod','componentwise_goal');
+    addParamValue(parser,'rateMethod','only_rate');
     addParamValue(parser,'plot',1,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'multistep',false,@islogical);
@@ -13,7 +13,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'noiseLevel',0.1,@isnumeric);
     addParamValue(parser,'sortData',false,@islogical);
     addParamValue(parser,'initCond','random');
-    parse(parser,varargin{:});
+    parse(parser,varargin{:});    
     
     lrate = parser.Results.learningRate; 
     ratemethod = parser.Results.rateMethod; 
@@ -108,14 +108,16 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     cc_next = cell(1,ge.k);
     
     for i=1:maxStep
+                        
+        cc_prev = extractComponents(ge,precision);
+        
         if verb == 2
             fprintf('IEM cycle %d datapoint %d/',i,ge.N);            
         end
+        
         if plot>1
             nopause = false;
         end
-        
-        cc_prev = extractComponents(ge,precision);
         skipped = 0;
         avgrate = 0;
         
