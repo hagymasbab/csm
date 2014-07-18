@@ -21,6 +21,8 @@ function disc = checkDerivative(formula,deriv,init,builtin)
     
     else
 
+        % TODO unsure whether will work in the R^N -> R^M case
+      
         initval = formula(init);
         initder = deriv(init);
         outputdim = size(initval(:),1);
@@ -31,17 +33,27 @@ function disc = checkDerivative(formula,deriv,init,builtin)
         for k=1:nPoint
             printCounter(k);
             step = step*0.1;
-            discrepancy = 0;
+            numdiff = zeros([size(init) size(initval)]);
+            %size(numdiff)
             for i=1:size(init,1)
                 for j=1:size(init,2)
                     act = init;
                     act(i,j) = act(i,j) + step;
                     actval = formula(act);
-                    numdiff = (actval-initval)/step;
-                    disc_mat = (initder-numdiff).^2;
-                    discrepancy = discrepancy + sum(disc_mat(:));
-                end
+                    numdiff(i,j,:,:) = (actval-initval)/step;                  
+                end                
             end
+            summeddiff = numdiff;            
+            % summing up differences for output dimensions
+            if ndims(summeddiff)>2
+                %summeddiff = sum(sum(summeddiff,1),1);            
+                summeddiff = squeeze(summeddiff);
+            end
+%             size(numdiff)
+%             size(summeddiff)
+%             size(initder)
+            disc_mat = (initder-summeddiff).^2;
+            discrepancy = sum(disc_mat(:));
             disc=[disc discrepancy];
         end
         fprintf('\n');
