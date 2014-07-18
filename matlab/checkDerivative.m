@@ -24,7 +24,7 @@ function disc = checkDerivative(formula,deriv,init,builtin)
         initval = formula(init);
         initder = deriv(init);
         outputdim = size(initval(:),1);
-        step = 1;
+        step = 10;
         nPoint = 6;
         disc = [];
         fprintf('Point %d/',nPoint);
@@ -38,7 +38,7 @@ function disc = checkDerivative(formula,deriv,init,builtin)
                     act(i,j) = act(i,j) + step;
                     actval = formula(act);
                     numdiff = (actval-initval)/step;
-                    disc_mat = (initder(i,j)-numdiff).^2;
+                    disc_mat = (initder-numdiff).^2;
                     discrepancy = discrepancy + sum(disc_mat(:));
                 end
             end

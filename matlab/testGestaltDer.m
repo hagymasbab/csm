@@ -46,28 +46,33 @@ function disc = testGestaltDer(ge)
 %         gradmat = cell2mat(gradcell);
     end
 
-    function lp = loggausschol(cholmat,g,v,ge)
+    function lp = loggausschol(upperleft,cholmat,g,v,ge)
+        cholmat(1,1) = upperleft;
         cv = cholmat2cov(cholmat,g,ge);
         %cv = cholmat;
         lp = loggauss(cv,v);
     end
 
-    function grad = chained(cholmat,g,v,ge)
+    function grad = chained(upperleft,cholmat,g,v,ge)
+        cholmat(1,1) = upperleft;
         cv = cholmat2cov(cholmat,g,ge);
         %cv = cholmat;
         cvgrad = loggaussgrad(cv,v);
         %grad = cvgrad;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
-        gradcell = cell(1,ge.k);        
-        for i=1:ge.Dv
-            for j=1:ge.Dv                
-                for act_k=1:ge.k
-                    U_hat = derivQuadByElement(choles{act_k},i,j);
-                    gradcell{act_k}(i,j) = - g(act_k,1) * trace(cvgrad*U_hat) / 2;
-                end
-            end
-        end
-        grad = cell2mat(gradcell);
+        U_hat = derivQuadByElement(choles{1},1,1);
+        grad = - g(1,1) * trace((-1/2)*cvgrad*U_hat) / 2;
+        
+%         gradcell = cell(1,ge.k);        
+%         for i=1:ge.Dv
+%             for j=1:ge.Dv                
+%                 for act_k=1:ge.k
+%                     U_hat = derivQuadByElement(choles{act_k},i,j);
+%                     gradcell{act_k}(i,j) = - g(act_k,1) * trace(cvgrad*U_hat) / 2;
+%                 end
+%             end
+%         end
+%         grad = cell2mat(gradcell);
     end
 
     function lp = gestaltUCDLL(cholmat,ge,samples)
@@ -101,16 +106,17 @@ function disc = testGestaltDer(ge)
     a = @(x) gestaltUCDLL(x,ge,samples);
     b = @(x) gestaltDerUCDLL(x,ge,samples);
     %init = cholmat;
-    init = 1;
-    a = @(x) kovmat(x,cholmat,g,ge);
-    b = @(x) kovmatder(x,cholmat,g,ge);
+    
+%     a = @(x) kovmat(x,cholmat,g,ge);
+%     b = @(x) kovmatder(x,cholmat,g,ge);
 
-%     a = @(x) loggausschol(x,g,v,ge);
-%     b = @(x) chained(x,g,v,ge);
+%     a = @(x) loggausschol(x,cholmat,g,v,ge);
+%     b = @(x) chained(x,cholmat,g,v,ge);
+%     init = 1;
 
-%     a = @(x) loggauss(x,v);
-%     b = @(x) loggaussgrad(x,v);
-%      init = Cv;
+    a = @(x) loggauss(x,v);
+    b = @(x) loggaussgrad(x,v);
+     init = Cv;
     
     disc = checkDerivative(a,b,init,false);
 
