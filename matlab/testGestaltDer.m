@@ -72,17 +72,20 @@ function disc = testGestaltDer(ge,formula)
         grad = trace(dLdC' * dCdu);
     end
 
-    function lp = gestaltUCDLL(cholmat,ge,samples)
+    function lp = gestaltUCDLL(upperleft,cholmat,ge,samples)
         % unnormalised complete-data log-likelihood
+        cholmat(1,1) = upperleft;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));        
         lp = gestaltCompleteDataLogLikelihood(ge,samples,choles);
     end
 
-    function gradmat = gestaltDerUCDLL(cholmat,ge,samples)
+    function elementGrad = gestaltDerUCDLL(upperleft,cholmat,ge,samples)
         % derivative of unnormalised complete-data log-likelihood
+        cholmat(1,1) = upperleft;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
         grad = gestaltParamGrad(ge,samples,choles);
-        gradmat = cell2mat(grad);
+        elementGrad = grad{1}(1,1);
+        %gradmat = cell2mat(grad);
     end
     
     %ge.B = 10;
@@ -101,10 +104,10 @@ function disc = testGestaltDer(ge,formula)
     g = 0.5*ones(ge.k,1);
 
     if strcmp(formula,'cdll')    
-        
-        a = @(x) gestaltUCDLL(x,ge,samples);
-        b = @(x) gestaltDerUCDLL(x,ge,samples);
-        init = cholmat;
+        % R -> R
+        a = @(x) gestaltUCDLL(x,cholmat,ge,samples);
+        b = @(x) gestaltDerUCDLL(x,cholmat,ge,samples);
+        init = 1;
         
     elseif strcmp(formula,'kovmat')
         % R -> R^N

@@ -27,33 +27,41 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         end
         GG = reshape(samples(n,:,1:ge.k),L,ge.k); % squeeze doesn't work for L=1
         for l=1:L
-            g = GG(l,:)';            
+            % retrieve g^m
+            g = GG(l,:)'; 
+            % calculate \sum_{b=1}^B v^{m,b} v^{(m,b)T}
             V = reshape(samples(n,l,ge.k+1:ge.k+ge.Dv*ge.B),ge.B,ge.Dv);
             VV = V'*V;
+            % calculate the covariance matrix
             CvP = componentSum(g,cc);
             if ~precision                
-                matr = (ge.B * eye(ge.Dv)) / CvP - (CvP \ VV) / CvP;
+                % derivative of the log-gaussian formula w.r.t the
+                % covariance matrix
+                dLdC = (-1/(2*L)) * ( (ge.B * eye(ge.Dv)) / CvP - (CvP \ VV) / CvP );
+                
                 %iCv = inv(CvP);
                 %matr = ge.B * iCv - iCv * VV * iCv;                
             else                        
-                matr = (ge.B * eye(ge.Dv)) / CvP - VV;
-                
-            end            
+                dLdC = (ge.B * eye(ge.Dv)) / CvP - VV;                
+            end          
+            % calculate the derivative of the covariance matrix w.r.t. each
+            % element of each covariance component
             for kk=i:ge.k
-                %grad{kk} = grad{kk} - (g(kk,1) * matr);
                 for i=1:ge.Dv
                     for j=1:ge.Dv
                         U_hat = derivQuadByElement(cholesky{kk},i,j);
-                        grad{kk}(i,j) = grad{kk}(i,j) + g(kk,1) * trace(matr*U_hat);
+                        dCdu = grad{kk}(i,j) * U_hat;
+                        
+                        % gradient of the log-gaussian w.r.t. the actual
+                        % element of the actual component, summed over
+                        % samples
+                        grad{kk}(i,j) = grad{kk}(i,j) + trace(dLdC' * dCdu);
                     end
                 end
             end
         end
     end
-    for kk=1:ge.k
-        grad{kk} = - grad{kk} / (2*L);
-        %grad{kk} = grad{kk} .* cholesky{kk} / L;        
-    end
+
     if verb > 0
         fprintf('\n');
     end
