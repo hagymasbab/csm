@@ -18,6 +18,7 @@ function ll = gestaltCompleteDataLogLikelihood(ge,samples,cholesky)
             quad = 0;
             for b=1:ge.B
                 vb = V(b,:)';
+                %size(vb)
                 quad = quad + vb' * iCv * vb;
             end
             ll = ll + ge.B * log(det(Cv)) + quad;

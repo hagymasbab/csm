@@ -1,4 +1,4 @@
-function disc = testGestaltDer(ge,formula)
+function disc = testGestaltDer(ge,formula,randseed)
     
     function cv = cholmat2cov(cholmat,g,ge)
         cv = zeros(ge.Dv);
@@ -13,7 +13,9 @@ function disc = testGestaltDer(ge,formula)
         iC = inv(C);
         quad = 0;
         for i=1:b
-            quad = quad + v(:,b)' * iC * v(:,b);
+            v_act = v(:,i);
+            %size(v_act)
+            quad = quad + v_act' * iC * v_act;
         end
         lp = -(b*log(det(C)) + quad) / 2;
     end
@@ -23,7 +25,8 @@ function disc = testGestaltDer(ge,formula)
         iC = inv(C);
         quad = zeros(size(C));
         for i=1:b
-            quad = quad + iC * v(:,b) * v(:,b)' * iC;
+            v_act = v(:,i);
+            quad = quad + iC * (v_act * v_act') * iC;
         end
         grad = -(b*iC - quad) / 2;
     end
@@ -83,13 +86,20 @@ function disc = testGestaltDer(ge,formula)
         % derivative of unnormalised complete-data log-likelihood
         cholmat(1,1) = upperleft;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
-        grad = gestaltParamGrad(ge,samples,choles);
+        grad = gestaltParamGrad(ge,samples,choles);        
         elementGrad = grad{1}(1,1);
         %gradmat = cell2mat(grad);
     end
+
+    if strcmp(randseed,'last')
+        load lastrandseed;
+    end
+    s = RandStream('mt19937ar','Seed',randseed);
+    RandStream.setGlobalStream(s);
+    randseed = s.Seed;
+    save('lastrandseed.mat','randseed');
     
-    %ge.B = 10;
-    nSamp = 1;
+    nSamp = 10;
     samples = zeros(1,nSamp,ge.k+ge.B*ge.Dv);
     samples(1,:,:) = gestaltGibbs(ge,1,nSamp);
 
@@ -100,8 +110,9 @@ function disc = testGestaltDer(ge,formula)
     cholmat = cell2mat(cholesky);
 
     Cv = componentSum(0.5*ones(ge.k,1),ge.cc);
-    v = mvnrnd(zeros(100,ge.Dv),Cv)';
+    v = mvnrnd(zeros(ge.B,ge.Dv),Cv)';
     g = 0.5*ones(ge.k,1);
+    %samples(1,1,:) = [g' reshape(v,1,ge.B*ge.Dv)];
 
     if strcmp(formula,'cdll')    
         % R -> R

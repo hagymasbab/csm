@@ -28,7 +28,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         GG = reshape(samples(n,:,1:ge.k),L,ge.k); % squeeze doesn't work for L=1
         for l=1:L
             % retrieve g^m
-            g = GG(l,:)'; 
+            g = GG(l,:)';
             % calculate \sum_{b=1}^B v^{m,b} v^{(m,b)T}
             V = reshape(samples(n,l,ge.k+1:ge.k+ge.Dv*ge.B),ge.B,ge.Dv);
             VV = V'*V;
@@ -37,20 +37,26 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
             if ~precision                
                 % derivative of the log-gaussian formula w.r.t the
                 % covariance matrix
-                dLdC = (-1/(2*L)) * ( (ge.B * eye(ge.Dv)) / CvP - (CvP \ VV) / CvP );
+                % dLdC = (-1/(2*L)) * ( (ge.B * eye(ge.Dv)) / CvP - (CvP \ VV) / CvP );
                 
-                %iCv = inv(CvP);
-                %matr = ge.B * iCv - iCv * VV * iCv;                
+                iCv = inv(CvP);
+                quad = 0;
+                for b=1:ge.B
+                    v = V(b,:)';
+                    %size(v)
+                    quad = quad + iCv * (v * v') * iCv;
+                end
+                dLdC = (-1/(2*L)) * (ge.B * iCv - quad);                
             else                        
                 dLdC = (ge.B * eye(ge.Dv)) / CvP - VV;                
             end          
             % calculate the derivative of the covariance matrix w.r.t. each
             % element of each covariance component
-            for kk=i:ge.k
+            for kk=1:ge.k
                 for i=1:ge.Dv
                     for j=1:ge.Dv
                         U_hat = derivQuadByElement(cholesky{kk},i,j);
-                        dCdu = grad{kk}(i,j) * U_hat;
+                        dCdu = g(kk,:) * U_hat;
                         
                         % gradient of the log-gaussian w.r.t. the actual
                         % element of the actual component, summed over

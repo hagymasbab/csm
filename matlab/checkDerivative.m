@@ -24,7 +24,7 @@ function disc = checkDerivative(formula,deriv,init,builtin)
         % TODO unsure whether will work in the R^N -> R^M case
       
         initval = formula(init);
-        initder = deriv(init);
+        initder = deriv(init)
         outputdim = size(initval(:),1);
         step = 10;
         nPoint = 6;
