@@ -1,6 +1,6 @@
 function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,varargin)        
     parser = inputParser;
-    addParamValue(parser,'learningRate',0.01,@isnumeric);    
+    addParamValue(parser,'learningRate',0.02,@isnumeric);    
     addParamValue(parser,'plot',1,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);   
     addParamValue(parser,'verbose',2,@isnumeric);
@@ -50,6 +50,8 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     ge.X = X;
     ge.N = size(ge.X,1);    
     sdim = ge.k+(ge.Dv*ge.B);
+    % correct learning rate for data set size
+    params.learningRate = params.learningRate * (10 / ge.N);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
     % INITIALISE ARRAYS FOR SAVING VALUES   
@@ -78,11 +80,10 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     for step=1:maxStep
                         
         cc_prev = extractComponents(ge,params.precision);
-        
-        if strcmp(params.method,'iterative')
+                
 
             if params.verbose == 2
-                fprintf('IEM cycle %d datapoint %d/',step,ge.N);            
+                fprintf('EM cycle %d datapoint %d/',step,ge.N);            
             end
 
             skipped = 0;
@@ -111,34 +112,52 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                     continue;
                 end
 
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-                % M - step            
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                if strcmp(params.method,'iterative')
+                    
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+                    % M - step            
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                % gradient of the parameters of the complete-data log-likelihood            
-                grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',params.precision);                        
+                    % gradient of the parameters of the complete-data log-likelihood            
+                    grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',params.precision);                        
 
-                % update cholesky components
-                for j=1:ge.k
-                    cholesky{j} = cholesky{j} + params.learningRate .* grad{j};
-                    cc_next{j} = cholesky{j}' * cholesky{j};                                             
+                    % update cholesky components
+                    for j=1:ge.k
+                        cholesky{j} = cholesky{j} + params.learningRate .* grad{j};
+                        cc_next{j} = cholesky{j}' * cholesky{j};                                             
+                    end
+
+                    ge = replaceComponents(ge,cc_next,params.precision);      
+
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+                    % PRINT AND SAVE DATA            
+                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                                  
+
+                    microstate.difference_to_truth = covcompRootMeanSquare(cc_next,cc_old,[]);                    
+                    microstate_sequence{step*ge.N+n+1} = microstate;
                 end
-               
-                ge = replaceComponents(ge,cc_next,params.precision);      
-
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-                % PRINT AND SAVE DATA            
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                                  
-                
-                microstate.difference_to_truth = covcompRootMeanSquare(cc_next,cc_old,[]);                    
-                microstate_sequence{step*ge.N+n+1} = microstate;
 
                 if params.verbose==2
                     delPrint(nSamples);
                 end
             end %for n=1:ge.N           
-        elseif strcmp(params.method,'block')
-            % TODO block EM
+        if strcmp(params.method,'block')
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+            % M - step            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if params.verbose == 2
+                fprintf(' M: ');
+            end
+            % gradient of the parameters of the complete-data log-likelihood            
+            grad = gestaltParamGrad(ge,samples,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
+
+            % update cholesky components
+            for j=1:ge.k
+                cholesky{j} = cholesky{j} + params.learningRate .* grad{j};
+                cc_next{j} = cholesky{j}' * cholesky{j};                                             
+            end
+
+            ge = replaceComponents(ge,cc_next,params.precision);      
         end
         
         

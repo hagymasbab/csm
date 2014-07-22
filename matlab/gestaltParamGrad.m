@@ -19,7 +19,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         cc{i} = cholesky{i}' * cholesky{i};
     end
     if verb > 0
-        fprintf('Sample %d/', N*L);
+        fprintf('datapoint %d/', N);
     end
     
     % calculate U_hat
@@ -82,8 +82,8 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         end
     end
 
-    if verb > 0
-        fprintf('\n');
-    end
+%     if verb > 0
+%         fprintf('\n');
+%     end
 end
                 
