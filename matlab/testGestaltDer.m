@@ -75,18 +75,18 @@ function disc = testGestaltDer(ge,formula,randseed)
         grad = trace(dLdC' * dCdu);
     end
 
-    function lp = gestaltUCDLL(upperleft,cholmat,ge,samples)
+    function lp = gestaltUCDLL(upperleft,cholmat,ge,samples,precision)
         % unnormalised complete-data log-likelihood
         cholmat(1,1) = upperleft;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));        
-        lp = gestaltCompleteDataLogLikelihood(ge,samples,choles);
+        lp = gestaltCompleteDataLogLikelihood(ge,samples,choles,'precision',precision);
     end
 
-    function elementGrad = gestaltDerUCDLL(upperleft,cholmat,ge,samples)
+    function elementGrad = gestaltDerUCDLL(upperleft,cholmat,ge,samples,precision)
         % derivative of unnormalised complete-data log-likelihood
         cholmat(1,1) = upperleft;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
-        grad = gestaltParamGrad(ge,samples,choles);        
+        grad = gestaltParamGrad(ge,samples,choles,'precision',precision);        
         elementGrad = grad{1}(1,1);
         %gradmat = cell2mat(grad);
     end
@@ -114,23 +114,27 @@ function disc = testGestaltDer(ge,formula,randseed)
     g = 0.5*ones(ge.k,1);
     %samples(1,1,:) = [g' reshape(v,1,ge.B*ge.Dv)];
 
+    init = 1;
+    
     if strcmp(formula,'cdll')    
         % R -> R
-        a = @(x) gestaltUCDLL(x,cholmat,ge,samples);
-        b = @(x) gestaltDerUCDLL(x,cholmat,ge,samples);
-        init = 1;
+        a = @(x) gestaltUCDLL(x,cholmat,ge,samples,false);
+        b = @(x) gestaltDerUCDLL(x,cholmat,ge,samples,false);        
+        
+    elseif strcmp(formula,'cdll_prec')    
+        % R -> R
+        a = @(x) gestaltUCDLL(x,cholmat,ge,samples,true);
+        b = @(x) gestaltDerUCDLL(x,cholmat,ge,samples,true);        
         
     elseif strcmp(formula,'kovmat')
         % R -> R^N
         a = @(x) kovmat(x,cholmat,g,ge);
-        b = @(x) kovmatder(x,cholmat,g,ge);
-        init = 1;
+        b = @(x) kovmatder(x,cholmat,g,ge);        
         
     elseif strcmp(formula,'chain')
         % R -> R
         a = @(x) loggausschol(x,cholmat,g,v,ge);
-        b = @(x) chained(x,cholmat,g,v,ge);
-        init = 1;
+        b = @(x) chained(x,cholmat,g,v,ge);        
         
     elseif strcmp(formula,'loggauss')
         % R^N -> R

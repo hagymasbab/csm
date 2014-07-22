@@ -7,7 +7,7 @@ function [diff,like] = gestaltIEM(ge,X,nSamples,maxStep,randseed,varargin)
     addParamValue(parser,'multistep',false,@islogical);
     addParamValue(parser,'verbose',2,@isnumeric);
     addParamValue(parser,'calculateLikelihood',false,@islogical);
-    addParamValue(parser,'increaseLikelihood',true,@islogical);
+    addParamValue(parser,'increaseLikelihood',false,@islogical);
     addParamValue(parser,'likelihoodSamples',10,@isnumeric);
     addParamValue(parser,'fullLikelihood',true,@islogical);
     addParamValue(parser,'noiseLevel',0.1,@isnumeric);

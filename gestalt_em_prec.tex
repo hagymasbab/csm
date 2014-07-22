@@ -190,8 +190,8 @@ and the sampling target for the conditional posterior of $g$ will look as follow
 The gradient of the expectation of the complete-data log-likelihod with respect to the joint posterior will look like this
 
 \begin{eqnarray}
-\Lambda_j = U_j^T U_j \\
-\frac{\partial \mathcal{L}}{\partial U_j} = \frac{1}{L} \sum_{m=1}^{LN} g_j^{m} \left[ B  \left( \Lambda_v^m \right)^{-1} - \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right] U_j
+\Lambda_k = U_k^T U_k \\
+\frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{i,j}} = \frac{1}{L} \sum_{m=1}^{LN} g_k^{m} \textrm{Tr} \left[ \left[ B  \left( \Lambda_v^m \right)^{-1} - \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right] \hat U_k^{ij} \right]
 \end{eqnarray}
 
 \end{document}

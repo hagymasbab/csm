@@ -5,6 +5,7 @@ function plotCovariances(ge,dnum,precision,filename)
         filename = 'iter.mat';
     end
     load(filename);
+            
     if ~precision
         real = ge.cc;
     else
@@ -19,14 +20,23 @@ function plotCovariances(ge,dnum,precision,filename)
     X = reshape(ge.X(1:dnum,:,:),dnum*ge.B,ge.Dx);
     %size(V)
     k = size(real,2);
-    n = size(pCC,2);
+    if exist('pCC')
+        n = size(pCC,2);
+    else
+        n = size(state_sequence,2);
+    end
     interleave = ceil(n/8);
     
     vertical = 2*k;
     horizontal = size(1:interleave:n,2) + 1;
     
     for i=1:interleave:n
-        act = pCC{i};
+        if exist('pCC')
+            act = pCC{i};
+        else
+            act = state_sequence{i}.estimated_components;
+        end
+            
         % estimated components at each step
         for j=1:k
             if precision
@@ -39,9 +49,15 @@ function plotCovariances(ge,dnum,precision,filename)
     end
     
     %sample covariances at each step
-    s = size(S,2);
+    %s = size(S,2);
+    s = n-1;
     for i=1:interleave:s
-        act = weightedSampleCovariance(S{i},ge.k,ge.B);
+        if exist('pCC')
+            act_S = S{i};
+        else
+            act_S = state_sequence{i+1}.samples;
+        end
+        act = weightedSampleCovariance(act_S,ge.k,ge.B);
         for j=1:k
             subplot(vertical,horizontal,(j-1+k)*horizontal+ceil(i/interleave));
             viewImage(act{j},'magnif',false)

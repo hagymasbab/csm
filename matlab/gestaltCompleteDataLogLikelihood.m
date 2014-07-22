@@ -1,4 +1,12 @@
-function ll = gestaltCompleteDataLogLikelihood(ge,samples,cholesky)
+function ll = gestaltCompleteDataLogLikelihood(ge,samples,cholesky,varargin)
+    
+    parser = inputParser;
+    addParamValue(parser,'verbose',0,@isnumeric);
+    addParamValue(parser,'precision',false,@islogical);
+    parse(parser,varargin{:});
+    verb = parser.Results.verbose;    
+    precision = parser.Results.precision;    
+
     L = size(samples,2);
     N = size(samples,1);
     ll = 0;

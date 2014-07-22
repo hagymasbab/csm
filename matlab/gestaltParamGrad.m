@@ -21,6 +21,19 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     if verb > 0
         fprintf('Sample %d/', N*L);
     end
+    
+    % calculate U_hat
+    U_hat = cell(ge.k,ge.Dv,ge.Dv);
+    for kk=1:ge.k
+        for i=1:ge.Dv
+            % this is an upper triangle matrix
+            for j=i:ge.Dv
+                U_hat{kk,i,j} = derivQuadByElement(cholesky{kk},i,j);
+            end
+        end
+    end
+    
+    
     for n=1:N
         if verb > 0
             printCounter(n);
@@ -48,15 +61,16 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
                 end
                 dLdC = (-1/(2*L)) * (ge.B * iCv - quad);                
             else                        
-                dLdC = (ge.B * eye(ge.Dv)) / CvP - VV;                
+                dLdC = (1/L) * (ge.B * eye(ge.Dv)) / CvP - VV;                
             end          
             % calculate the derivative of the covariance matrix w.r.t. each
             % element of each covariance component
             for kk=1:ge.k
                 for i=1:ge.Dv
-                    for j=1:ge.Dv
-                        U_hat = derivQuadByElement(cholesky{kk},i,j);
-                        dCdu = g(kk,:) * U_hat;
+                    % this is an upper triangle matrix
+                    for j=i:ge.Dv
+                        %U_hat = derivQuadByElement(cholesky{kk},i,j);
+                        dCdu = g(kk,:) * U_hat{kk,i,j};
                         
                         % gradient of the log-gaussian w.r.t. the actual
                         % element of the actual component, summed over
