@@ -9,14 +9,10 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     addParamValue(parser,'gbias',true,@islogical);
     addParamValue(parser,'vbias',true,@islogical);
     addParamValue(parser,'plot',false,@islogical);
+    addParamValue(parser,'verbose',false,@islogical);
+    addParamValue(parser,'GDistrib','normal');
     parse(parser,varargin{:});
-    alpha = parser.Results.alpha;    
-    gstep = parser.Results.gstep;    
-    cdstep = parser.Results.cdstep;    
-    initVar = parser.Results.initVar; 
-    gbias = parser.Results.gbias; 
-    vbias = parser.Results.vbias; 
-    plot = parser.Results.plot; 
+    params = parser.Results;    
     
     if strcmp(randseed,'last')
         load lastrandseed;
@@ -35,9 +31,9 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     N = size(X,1);
         
     % initialise W
-    g_bias = randn(ge.k,1) * initVar;
-    v_bias = randn(ge.Dv,1) * initVar;
-    W = randn(ge.Dv,ge.k) * initVar;
+    g_bias = randn(ge.k,1) * params.initVar;
+    v_bias = randn(ge.Dv,1) * params.initVar;
+    W = randn(ge.Dv,ge.k) * params.initVar;
     pA = pinv(ge.A);
 %     data_corr = zeros(ge.Dv,ge.k);
 %     fantasy_corr = zeros(ge.Dv,ge.k);
@@ -45,16 +41,22 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
 %     fantasy_hiddenact = zeros(1,ge.k);
 %     samples = cell(1,steps);
     winc = zeros(ge.Dv * ge.k,steps);
-    gbiasinc = zeros(ge.k,steps);
-    vbiasinc = zeros(ge.Dv,steps);
+    params.gbiasinc = zeros(ge.k,steps);
+    params.vbiasinc = zeros(ge.Dv,steps);
     
     % transform each line of X into a V by the pseudoinverse of A
     V_data = pA * X'; % TODO check whether we have to transpose
 
+    if params.verbose
+        fprintf('Step %d/',steps);
+    end
     for s = 1:steps
+        if params.verbose
+            printCounter(s);
+        end
         V = V_data;
         % take one sample for each v from fake-G
-        G = gibbsG(V,W,gstep,gbias,g_bias);
+        G = gibbsG(V,W,params.gstep,params.gbias,g_bias,params.GDistrib);
         % record G activity
         data_gact = sum(G,2);
         % record V activity
@@ -62,16 +64,16 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
         % record positive phase correlations        
         data_corr = correlate(V,G);
         
-        for cds=1:cdstep
+        for cds=1:params.cdstep
             % update V 
-            if vbias
+            if params.vbias
                 V_bias_input = repmat(v_bias,1,N);
             else
                 V_bias_input = 0;
             end
             V = W * G + V_bias_input + randn(ge.Dv,N);
             % update G
-            G = gibbsG(V,W,gstep,gbias,g_bias);
+            G = gibbsG(V,W,params.gstep,params.gbias,g_bias,params.GDistrib);
         end
         % record negative phase correlations
         fantasy_corr = correlate(V,G);
@@ -81,18 +83,22 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
         fantasy_vact = sum(V,2);
         
         % update W      
-        W = W + alpha * (data_corr - fantasy_corr);
+        W = W + params.alpha * (data_corr - fantasy_corr);
         winc(:,s) = W(:)';
         % update bias
-        if gbias
-            g_bias = g_bias + alpha * (data_gact - fantasy_gact) / N; 
-            gbiasinc(:,s) = g_bias;
+        if params.gbias
+            g_bias = g_bias + params.alpha * (data_gact - fantasy_gact) / N; 
+            params.gbiasinc(:,s) = g_bias;
         end
-        if vbias
-            v_bias = v_bias + alpha * (data_vact - fantasy_vact) / N; 
-            vbiasinc(:,s) = v_bias;
+        if params.vbias
+            v_bias = v_bias + params.alpha * (data_vact - fantasy_vact) / N; 
+            params.vbiasinc(:,s) = v_bias;
         end
         
+    end
+    
+    if params.verbose
+        fprintf('\n');
     end
     
     % construct covariance components from W
@@ -106,14 +112,14 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
             end
         end
         cc{k} = actc;
-        if plot
+        if params.plot
             figure;
             viewImage(cc{k},'usemax',true);
         end
     end        
 end
 
-function G = gibbsG(V,W,gstep,gbias,g_bias)
+function G = gibbsG(V,W,gstep,gbias,g_bias,distrib)
     k = size(W,2);
     N = size(V,2);
     if gbias
@@ -122,15 +128,28 @@ function G = gibbsG(V,W,gstep,gbias,g_bias)
         G_bias_input = 0;
     end
     G_mean = W' * V + G_bias_input;
-    G = G_mean + randn(k,N);
+    G = updateG(G_mean,N,distrib);
+    %G = G_mean + randn(k,N);
     % updating all G-s alternatingly with negative weight between each
     % other
     for i=1:gstep
         for j = 1:k
             restG = G;
             restG(j,:) = [];
-            G(j,:) = G_mean(j,:) - sum(restG,1) + randn(1,N);
+            %G(j,:) = G_mean(j,:) - sum(restG,1) + randn(1,N);
+            G = updateG(G_mean(j,:) - sum(restG,1),N,distrib);
         end
+    end
+end
+
+function G = updateG(mu,N,distrib)
+    k = size(mu,1);
+    if strcmp(distrib,'normal')
+        G = mu + randn(k,N);
+    elseif strcmp(distrib,'lognormal')
+        G = lognrnd(mu,1,k,N);
+    else
+        exit(1);
     end
 end
 
