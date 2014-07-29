@@ -47,7 +47,7 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.cc{1} = var*eye(4) + covar*[0 0 1 0; 0 0 0 0; 1 0 0 0; 0 0 0 0];
         gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
     else        
-        gestalt.cc = gestaltCovariances(gestalt.k,gestalt.A',0);
+        gestalt.cc = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,0);
     end
     
     if gestalt.precision

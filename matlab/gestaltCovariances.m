@@ -1,16 +1,16 @@
-function cc = gestaltCovariances(k,R,plusShift)
+function cc = gestaltCovariances(k,Dx,Dv,plusShift)
     fprintf('Calculating covariance components\n');
     % vertical lines
-    Dx = size(R,2);
     imsizex = floor(sqrt(Dx));
     imsizey = ceil(sqrt(Dx));
-    Dv = size(R,1);
     %fprintf('Calculating R\n');
     % R = pinv(A'*A)*A';
     % the gestalts should be placed over or watermarked onto natural images
     shift = floor(imsizex/(k+1));
-    width = max(1,floor(shift/2));
-    margin = width;
+    %width = max(1,floor(shift/2));
+    width = 1;
+    %margin = width;
+    margin = 2;
     N = max(Dx,Dv) + 1;
     for g = 1:k
         fprintf('..Component %d\n', g);
