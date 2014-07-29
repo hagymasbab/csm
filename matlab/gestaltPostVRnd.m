@@ -1,4 +1,7 @@
-function V = gestaltPostVRnd(ge,xind,g,precision,approx)
+function V = gestaltPostVRnd(ge,xind,g,precision)
+    % there could be an approximation, but it's assumptions are not met, so
+    % it doesn't work
+    approx = false;
     % construct the covariance and mean of the conditional posterior over v
     sAA = (1/ge.obsVar) * ge.AA;
     if ~precision

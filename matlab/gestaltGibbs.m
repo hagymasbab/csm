@@ -7,17 +7,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'plot',0,@isnumeric);
     addParamValue(parser,'sampleRetry',10,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
-    addParamValue(parser,'approximatePostCov',false,@islogical);
+    addParamValue(parser,'initG',[]);
     parse(parser,varargin{:});
-    verb = parser.Results.verbose;    
-    pl = parser.Results.plot;    
-    retry = parser.Results.sampleRetry;    
-    precision = parser.Results.precision;
-    burn = parser.Results.burnin;
-    thin = parser.Results.thin;
-    N = nSamp*thin + burn;
-    stepsize = parser.Results.stepsize;
-    approx = parser.Results.approximatePostCov;    
+    params = parser.Results;
+
+    N = nSamp*params.thin + params.burnin;        
     
     s = zeros(N,ge.k + ge.B*ge.Dv);
     rr = 0;
@@ -25,58 +19,62 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     valid = false;
     tries = 0;
     %fprintf(' looking for a valid g');
-    while ~valid
-        g = symmetricDirichlet(0.2,ge.k,1)';
-        valid = checkG(g,ge,precision);
-        tries = tries + 1;
-        % if we cannot find a valid g, return an error code
-        if tries > retry
-            rr = -1;
-            return;
+    if isempty(params.initG)
+        while ~valid
+            g = symmetricDirichlet(0.2,ge.k,1)';
+            valid = checkG(g,ge,params.precision);
+            tries = tries + 1;
+            % if we cannot find a valid g, return an error code
+            if tries > params.sampleRetry
+                rr = -1;
+                return;
+            end
         end
+    else
+        g = params.initG;
     end
     %fprintf(repmat('\b',1,22));
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
         
-    if verb==1
+    if params.verbose==1
         fprintf('Sample %d/',N);
     end
     for i=1:N
-        if verb==1
+        if params.verbose==1
             printCounter(i);
         end
         
         % generate a direct sample from the conditional posterior over v        
-        V = gestaltPostVRnd(ge,xind,g,precision,approx);
+        V = gestaltPostVRnd(ge,xind,g,params.precision);
         
-        if pl > 0
+        if params.plot > 0
             clf;
-            gestaltPlotCondPostG(ge,V,precision);
+            gestaltPlotCondPostG(ge,V,params.precision);
             hold on;
             plot(ge.G(xind,1),0,'go');
             pause
         end
         
         % slice sampling for g
-        logpdf = @(g) gestaltLogPostG(g,V,ge,precision); 
+        logpdf = @(g) gestaltLogPostG(g,V,ge,params.precision); 
         
         valid = false;
         tries = 0;
         while ~valid
-            if tries > retry                
+            if tries > params.sampleRetry                
                 rr = -i -1;
                 return;
             end
-            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,stepsize,'plot',pl>1);
+            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1);
             g = [g_part; 1-sum(g_part)];
-            valid = checkG(g,ge,precision);
+            valid = checkG(g,ge,params.precision);
             tries = tries + 1;
         end
         rr = rr + rr_act;
 
         % uncomment this and comment out the similar line in the beginning if
         % you want to reverse the order of sampling from the conditionals
-        % if ~precision
+        % if ~params.precision
         %     V = gestaltPostVRnd(ge,xind,g);
         % else
         %     V = gestaltPostVRndPrec(ge,xind,g);
@@ -86,7 +84,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
         vlong = reshape(V,1,ge.B*ge.Dv);
         s(i,:) = [g' vlong];
     end
-%     if verb==1
+%     if params.verbose==1
 %         fprintf('\n');
 %     end
     
@@ -94,11 +92,11 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     rr = rr / (rr + N);
     
     % discard burn-in stage
-    if burn > 0
-        s = s(burn+1:N,:);
+    if params.burnin > 0
+        s = s(params.burnin+1:N,:);
     end
-    if thin > 1
-        indices = 1:thin:nSamp*thin;
+    if params.thin > 1
+        indices = 1:params.thin:nSamp*params.thin;
         s = s(indices,:);
     end
 end
