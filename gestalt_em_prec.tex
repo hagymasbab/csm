@@ -94,7 +94,7 @@ where $A^{+}$ is the Moore-Penrose pseudoinverse of $A$, with $D_x = D_v \righta
 The denominator of Eq. \ref{eq:condpost} is the integral of this formula, which evaluates to $c_1c_2$, as the Gaussian integrates to one. This cancels the constants in the numerator, making the conditional posterior equal to the combined Gaussian over $v$, which, after expanding $\mu_{post}$ and $C_{post}$, is
 
 \begin{equation}
-p(v \mid x,g) = \mathcal{N}\left(v; \frac{1}{\sigma_x} \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1}\right)
+p(v \mid x,g) = \mathcal{N}\left(v; \left( A^T A + \sigma_x C_v^{-1}\right)^{-1} A^T x, \left(\frac{1}{\sigma_x} A^T A + C_v^{-1}\right)^{-1}\right)
 \end{equation}
 %
 If we can assume that $\frac{1}{\sigma_x}$ is small compared to elements of the matrices (i.e. observation variance is large), then we may use the following approximation
