@@ -1,4 +1,4 @@
-function V = gestaltPostVRnd(ge,xind,g,precision)
+function [V,mu] = gestaltPostVRnd(ge,xind,g,precision)
     % there could be an approximation, but it's assumptions are not met, so
     % it doesn't work
     approx = false;
@@ -19,8 +19,9 @@ function V = gestaltPostVRnd(ge,xind,g,precision)
     
     V = zeros(ge.B,ge.Dv);
     for b=1:ge.B
-        Ax = reshape(ge.tX(xind,b,:),1,ge.Dv)';
-        m = (1/ge.obsVar) * cov * Ax;
+        %Ax = reshape(ge.tX(xind,b,:),1,ge.Dv)';
+        ATx = ge.A' * reshape(ge.X(xind,b,:),ge.Dv,1);
+        m = (1/ge.obsVar) * cov * ATx;
         V(b,:) = mvnrnd(m',cov);
     end
 end
