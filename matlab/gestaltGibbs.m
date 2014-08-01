@@ -66,9 +66,12 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
                 return;
             end
             [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1);
-            g = [g_part; 1-sum(g_part)];
-            valid = checkG(g,ge,params.precision);
             tries = tries + 1;
+            if rr_act == -1
+                continue
+            end
+            g = [g_part; 1-sum(g_part)];
+            valid = checkG(g,ge,params.precision);            
         end
         rr = rr + rr_act;
 

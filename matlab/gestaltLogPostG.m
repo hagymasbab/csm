@@ -9,7 +9,7 @@ function lp = gestaltLogPostG(g,V,ge,precision)
     B = size(V,1);
     if ~precision
         Cv = componentSum(g,ge.cc);
-        [U,err] = chol(Cv);
+        [~,err] = chol(Cv);
         if err > 0
             lp = -Inf;
             return;

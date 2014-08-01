@@ -2,8 +2,10 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     parser = inputParser;
     addParamValue(parser,'plot',false,@islogical);
     addParamValue(parser,'verbose',false,@islogical);
+    addParamValue(parser,'sampleRetry',100,@isnumeric);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;
+    retry = parser.Results.sampleRetry;
     
     dim = size(init,1);
     pl = parser.Results.plot && dim == 1;   % only works in 1D     
@@ -73,5 +75,9 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
                     bounds(1,1) = x;
                 end
             end
+        end
+        if rr > retry
+           rr = -1;
+           return;
         end
     end

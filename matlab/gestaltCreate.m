@@ -31,6 +31,10 @@ function gestalt = gestaltCreate(name,varargin)
     gestalt.AA = (gestalt.A)'*gestalt.A;
     %fprintf('Calculating R\n');
     %gestalt.R = pinv(gestalt.AA)*(gestalt.A)';
+    %gestalt.tX = zeros(gestalt.N,gestalt.B,gestalt.Dv);
+    %for n=1:gestalt.N
+    %    gestalt.tX(n,:,:) = reshape(gestalt.X(n,:,:),gestalt.B,gestalt.Dx) * gestalt.A;
+    %end
         
     if gestalt.Dx == 1
         gestalt.cc{1} = 1;
@@ -57,13 +61,7 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    %gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B);
-    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision);
-    fprintf('Transforming synthetic data\n');
-    gestalt.tX = zeros(gestalt.N,gestalt.B,gestalt.Dv);
-    for n=1:gestalt.N
-        gestalt.tX(n,:,:) = reshape(gestalt.X(n,:,:),gestalt.B,gestalt.Dx) * gestalt.A;
-    end
+    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision);    
     
     fprintf('Saving results\n');
     save(strcat('gestalt_',name,'.mat'),'gestalt');
