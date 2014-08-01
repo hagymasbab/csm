@@ -51,7 +51,7 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.cc{1} = var*eye(4) + covar*[0 0 1 0; 0 0 0 0; 1 0 0 0; 0 0 0 0];
         gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
     else        
-        gestalt.cc = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,0);
+        gestalt.cc = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv);
     end
     
     if gestalt.precision
@@ -61,7 +61,7 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision);    
+    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar);    
     
     fprintf('Saving results\n');
     save(strcat('gestalt_',name,'.mat'),'gestalt');

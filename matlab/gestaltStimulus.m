@@ -11,7 +11,7 @@ function X = gestaltStimulus(Dx,B,left,half)
         if half
             verend = floor(imd/2);
         end
-        act(2:verend,horcoord) = 2;
+        act(2:verend,horcoord) = 1;
         X(b,:) = act(:)';
     end
 end
