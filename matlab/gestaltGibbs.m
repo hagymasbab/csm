@@ -15,7 +15,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     
     s = zeros(N,ge.k + ge.B*ge.Dv);
     rr = 0;
-    %g = 0.5 * ones(ge.k,1);
+    %g = (1/k) * ones(ge.k,1);
     valid = false;
     tries = 0;
     %fprintf(' looking for a valid g');
