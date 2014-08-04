@@ -117,7 +117,7 @@ which can be sampled by a  slice sampling scheme with the following target
 \end{equation}
 
 
-\section{M-step}
+\section{Gradient descent as the M-step}
 
 The complete-data likelihood with respect to a set of batch observations of size $B$ is the following
 
@@ -215,7 +215,7 @@ p(z \mid X,V,g) = \frac{p(X \mid g,z,V) p(z \mid V,g)}{p(X \mid V,g)} \sim p(X \
 the log-posterior being
 
 \begin{equation} 
-\log p(z \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(C_x)) + \sum_{b=1}^B (x_b - zAv_b)^T C_x^{-1} (x_b - zAv_b)\right] + \log p(z)
+\log p(z \mid X,V) \sim -\frac{1}{2} \left[B D_x\log(\delta_x) + \frac{1}{\delta_x} \sum_{b=1}^B (x_b - zAv_b)^T (x_b - zAv_b)\right] + \log p(z)
 \end{equation}
 %
 the prior density $p(z)$ can be chosen from multiple families, e.g. a Gamma distribution.

@@ -1,4 +1,4 @@
-function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
+function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     parser = inputParser;
     addParamValue(parser,'verbose',0,@isnumeric);
     addParamValue(parser,'stepsize',0.05,@isnumeric);
@@ -7,6 +7,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'plot',0,@isnumeric);
     addParamValue(parser,'sampleRetry',10,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
+    addParamValue(parser,'contrast',false,@islogical);
     addParamValue(parser,'initG',[]);
     parse(parser,varargin{:});
     params = parser.Results;
@@ -14,6 +15,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     N = nSamp*params.thin + params.burnin;        
     
     s = zeros(N,ge.k + ge.B*ge.Dv);
+    zsamp = zeros(N,1);
     rr = 0;
     %g = (1/k) * ones(ge.k,1);
     valid = false;
@@ -35,6 +37,8 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     end
     %fprintf(repmat('\b',1,22));
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
+    z = 1; % remains unchanged if we do not use a contrast variable
+    % TODO we might sample z from its prior
         
     if params.verbose==1
         fprintf('Sample %d/',N);
@@ -45,7 +49,7 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
         end
         
         % generate a direct sample from the conditional posterior over v        
-        V = gestaltPostVRnd(ge,xind,g,params.precision);
+        V = gestaltPostVRnd(ge,xind,g,z,params.precision);
         
         if params.plot > 0
             clf;
@@ -74,18 +78,30 @@ function [s,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
             valid = checkG(g,ge,params.precision);            
         end
         rr = rr + rr_act;
-
-        % uncomment this and comment out the similar line in the beginning if
-        % you want to reverse the order of sampling from the conditionals
-        % if ~params.precision
-        %     V = gestaltPostVRnd(ge,xind,g);
-        % else
-        %     V = gestaltPostVRndPrec(ge,xind,g);
-        % end
+        
+        % slice sampling for z
+        if params.contrast            
+            zlogpdf = @(z) gestaltLogPostZ(z,xind,V,ge); 
+            valid = false;
+            tries = 0;
+            while ~valid
+                if tries > params.sampleRetry                
+                    rr = -i -1;
+                    return;
+                end
+                [z,rr_act] = sliceSample(z,zlogpdf,params.stepsize,'plot',params.plot>1);
+                tries = tries + 1;
+                if rr_act ~= -1
+                    valid = true;
+                end          
+            end
+            rr = rr + rr_act;
+        end
         
         % store the combined sample
         vlong = reshape(V,1,ge.B*ge.Dv);
         s(i,:) = [g' vlong];
+        zsamp(i,1) = z;
     end
 %     if params.verbose==1
 %         fprintf('\n');

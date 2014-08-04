@@ -81,3 +81,4 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
            return;
         end
     end
+end

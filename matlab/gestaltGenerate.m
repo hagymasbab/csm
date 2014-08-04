@@ -16,8 +16,13 @@ function ge = gestaltGenerate(ge,N,varargin)
     if verbose
         fprintf('Generating synthetic data\n');
         fprintf('..Generating g values from a Dirichlet prior with concentration parameter %.2f\n',ge.sparsity);
-    end
+    end        
     ge.G = symmetricDirichlet(ge.sparsity,ge.k,ge.N);
+    
+    if ge.contrast
+        % sample z from a Gamma prior
+        ge.Z = gamrnd(ge.z_shape,ge.z_scale,ge.N,1);
+    end
     
     if verbose
         fprintf('..Generating v and x values %d/',ge.N);
@@ -33,10 +38,14 @@ function ge = gestaltGenerate(ge,N,varargin)
         else
             Cv = inv(componentSum(ge.G(n,:)',ge.pc));
         end
-        ge.V(n,:,:) = mvnrnd(zeros(ge.B,ge.Dv),Cv);    
+        ge.V(n,:,:) = mvnrnd(zeros(ge.B,ge.Dv),Cv);                                
+        
         
         means = reshape(ge.V(n,:,:),ge.B,ge.Dv);
         means = means * ge.A';
+        if ge.contrast
+            means = ge.Z(n,1) * means;
+        end
         ge.X(n,:,:) = mvnrnd(means,ge.obsVar*eye(ge.Dx));
     end
     if verbose
