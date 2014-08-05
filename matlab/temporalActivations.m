@@ -2,7 +2,10 @@ function temporalActivations()
     ge = gestaltCreate('nyolc','Dx',64,'filters','eye','B',10,'obsVar',0.1,'contrast',false);    
     ge.obsVar = 1;
     halfstim = gestaltStimulus(ge.Dx,ge.B,true,true);
-    ge.X(1,:,:) = halfstim;
+    ge.X(2,:,:) = halfstim;
+    ge.X(1,:,:) = rand(ge.B,ge.Dx);
+    ge.X(3,:,:) = rand(ge.B,ge.Dx);
+    ge.X(4,:,:) = rand(ge.B,ge.Dx);
     
     ps = zeros(sqrt(ge.Dx));
     ps(2:4,3) = 1;
@@ -18,26 +21,34 @@ function temporalActivations()
     
     nSamp = 4;
     nRestarts = 10;
-    avg_stim = zeros(1,nSamp);
-    avg_gest = zeros(1,nSamp);
-    avg_other = zeros(1,nSamp);
-    avg_g = zeros(1,nSamp);
-    for rest=1:nRestarts
-        s = gestaltGibbs(ge,1,nSamp);
-        for samp=1:nSamp
-            v = reshape(s(samp,ge.k+1:ge.k+ ge.B * ge.Dv),ge.B,ge.Dv);
+    avg_stim = zeros(1,nSamp*2);
+    avg_gest = zeros(1,nSamp*2);
+    avg_other = zeros(1,nSamp*2);
+    avg_g = zeros(1,nSamp*2);
+    for rest=1:nRestarts        
+        for samp=1:nSamp            
+            s = gestaltGibbs(ge,samp,1);
+            g = s(1,1);
+            while samp~=2 || g < 0.7
+                s = gestaltGibbs(ge,samp,1);
+            end
+            g = s(1,1);
+            v = reshape(s(1,ge.k+1:ge.k+ ge.B * ge.Dv),ge.B,ge.Dv);
             v_mean = mean(v);
-            avg_stim(1,samp) = avg_stim(1,samp) + mean(v_mean(part));
-            avg_gest(1,samp) = avg_gest(1,samp) + mean(v_mean(gestaltBound));
-            avg_other(1,samp) = avg_other(1,samp) + mean(v_mean(other));
-            avg_g(1,samp) = avg_g(1,samp) + s(samp,1);
+            idx = zeros(1,nSamp*2);
+            idx(1,2 * samp - 1:2 * samp) = 1;
+            idx = logical(idx);            
+            avg_stim(idx) = avg_stim(idx) + mean(v_mean(part));            
+            avg_gest(idx) = avg_gest(idx) + mean(v_mean(gestaltBound));
+            avg_other(idx) = avg_other(idx) + mean(v_mean(other));
+            avg_g(idx) = avg_g(idx) + g;
         end                    
     end
     
     avg_stim = avg_stim / nRestarts;
     avg_gest = avg_gest / nRestarts;
     avg_other = avg_other / nRestarts;
-    avg_g = [0.5*nRestarts avg_g(1,2:nSamp)] / nRestarts;    
+    avg_g = [0.5*nRestarts avg_g(1,2:nSamp*2)] / nRestarts;    
     
     plot([avg_stim;avg_gest;avg_other;avg_g]');
     legend('stimulated V1','gestalt V1','other V1','higher');
