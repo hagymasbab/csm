@@ -9,6 +9,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'contrast',false,@islogical);
     addParamValue(parser,'initG',[]);
+    addParamValue(parser,'priorG','dirichlet');
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -60,7 +61,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         end
         
         % slice sampling for g
-        logpdf = @(g) gestaltLogPostG(g,V,ge,params.precision); 
+        logpdf = @(g) gestaltLogPostG(g,V,ge,params.priorG,params.precision); 
         
         valid = false;
         tries = 0;
@@ -69,13 +70,21 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                 rr = -i -1;
                 return;
             end
-            [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1);
+            if strcmp(params.priorG,'dirichlet')
+                [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1);
+                g_temp = [g_part; 1-sum(g_part)];
+            else
+                [g_temp,rr_act] = sliceSample(g,logpdf,params.stepsize,'plot',params.plot>1);
+            end
             tries = tries + 1;
             if rr_act == -1
+                fprintf('e')
                 continue
-            end
-            g = [g_part; 1-sum(g_part)];
+            end            
             valid = checkG(g,ge,params.precision);            
+            if valid
+                g = g_temp;
+            end
         end
         rr = rr + rr_act;
         
