@@ -1,10 +1,49 @@
-function gestaltBowtie()
-    picNum = 9;
-    nSamp = 10;
+function gestaltBowtie(nSamp,loadfile)
+    close all;
+    picNum = 1;
     delta_x = 1;
-    ge = gestaltCreate('jaguar','Dx',1024,'B',10,'obsVar',delta_x,'filters','eye','N',picNum);
+    plotnum = 12;
+    Dx = 1024;
+    firstPlotted = chooseKfromN(plotnum,Dx);
+    fprintf('With contrast\n');
+    plotSamples(picNum,delta_x,firstPlotted,true,loadfile,nSamp,plotnum,Dx);
+    figure;
+    fprintf('Without contrast\n');
+    plotSamples(picNum,delta_x,firstPlotted,false,loadfile,nSamp,plotnum,Dx);
+end
+
+function plotSamples(picNum,delta_x,firstPlotted,contrast,loadfile,nSamp,plotnum,Dx)
+
+    contstring = '';
+    if contrast
+        contstring = '_cont';
+    end
+    model_name = sprintf('jaguar%s',contstring);
+    filename = sprintf('gestalt_%s.mat',model_name);
+    if loadfile && exist(filename,'file') == 2
+        load(filename);
+        ge = gestalt;
+    else
+        ge = gestaltCreate(model_name,'Dx',Dx,'B',10,'obsVar',delta_x,'filters','eye','N',picNum,'contrast',contrast);
+    end
     s = zeros(picNum,nSamp,ge.k+ge.B*ge.Dx);
     zs = zeros(picNum,nSamp);
+    fprintf('Sampling for image %d/',picNum);
     for p=1:picNum
-        ge.X(p,:,:) = gestaltImageStimulus(p,B,delta_x);
+        printCounter(p);
+        ge.X(p,:,:) = gestaltImageStimulus(p,ge.B,delta_x);
+        [s(p,:,:),~,zs(p,:)] = gestaltGibbs(ge,p,nSamp,'contrast',contrast);
     end
+    fprintf('\n');
+    v = reshape(s(:,:,ge.k+1:ge.k+ge.B*ge.Dx),picNum,nSamp,ge.B,ge.Dx);
+    for i = 1:plotnum
+        secondPlotted = firstPlotted(1,i) + 1;
+        if secondPlotted > ge.Dv
+            secondPlotted = firstPlotted(1,i) - 1;
+        end
+        hor = v(:,:,:,firstPlotted(1,i));
+        ver = v(:,:,:,secondPlotted);
+        subplot(4,plotnum/4,i);
+        scatter(hor(:),ver(:));
+    end
+end
