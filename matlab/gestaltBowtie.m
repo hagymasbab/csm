@@ -1,6 +1,6 @@
 function gestaltBowtie(nSamp,loadfile)
     close all;
-    picNum = 1;
+    picNum = 9;
     delta_x = 0.1;
     plotnum = 12;
     Dx = 1024;

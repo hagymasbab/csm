@@ -5,10 +5,7 @@ function [X,images,whitened] = gestaltImageStimulus(number,B,obsVar)
     Dx = imdim^2;
     images = zeros(number,imdim,imdim);
     for i=1:number
-        im = imread(sprintf('../natural_images/nat%d.png',i));
-        if i==1
-            imshow(im);
-        end
+        im = imread(sprintf('../natural_images/nat%d.png',i));        
         % transform the image to a real-valued [-5:5] vector from 0-255 uint8
         images(i,:,:) = double(im) / (255/10) - 5;
     end
