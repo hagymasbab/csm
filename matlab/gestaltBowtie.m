@@ -24,7 +24,7 @@ function plotSamples(picNum,delta_x,firstPlotted,contrast,loadfile,nSamp,plotnum
         load(filename);
         ge = gestalt;
     else
-        ge = gestaltCreate(model_name,'Dx',Dx,'B',10,'obsVar',delta_x,'filters','eye','N',picNum,'contrast',contrast);
+        ge = gestaltCreate(model_name,'Dx',Dx,'B',10,'obsVar',delta_x,'filters','gabor','N',picNum,'contrast',contrast);
     end
     s = zeros(picNum,nSamp,ge.k+ge.B*ge.Dx);
     zs = zeros(picNum,nSamp);
