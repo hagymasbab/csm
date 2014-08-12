@@ -1,7 +1,7 @@
 function gestaltBowtie(nSamp,loadfile)
     close all;
     picNum = 1;
-    delta_x = 1;
+    delta_x = 0.1;
     plotnum = 12;
     Dx = 1024;
     firstPlotted = chooseKfromN(plotnum,Dx);
@@ -28,10 +28,10 @@ function plotSamples(picNum,delta_x,firstPlotted,contrast,loadfile,nSamp,plotnum
     end
     s = zeros(picNum,nSamp,ge.k+ge.B*ge.Dx);
     zs = zeros(picNum,nSamp);
+    ge.X = gestaltImageStimulus(picNum,ge.B,delta_x);
     fprintf('Sampling for image %d/',picNum);
     for p=1:picNum
         printCounter(p);
-        ge.X(p,:,:) = gestaltImageStimulus(p,ge.B,delta_x);
         [s(p,:,:),~,zs(p,:)] = gestaltGibbs(ge,p,nSamp,'contrast',contrast);
     end
     fprintf('\n');
