@@ -1,4 +1,12 @@
 function cc = gestaltCovariances(k,Dx,Dv)
+    covering = false;
+    if k == Dv/2 + 1;
+        % we will generate a component set that covers the whole field in a
+        % way that every V-unit belongs to 2 vertical components of length
+        % 4 or 2 on the edges
+        covering = true;
+    end                
+
     fprintf('Calculating covariance components\n');
     % vertical lines
     imsizex = floor(sqrt(Dx));
@@ -21,9 +29,17 @@ function cc = gestaltCovariances(k,Dx,Dv)
         fprintf('....%d/', N);
         for i=1:N
             printCounter(i);
-            x = reshape(X(i,:),imsizex,imsizey);
-            x(vermargin+1:imsizex-vermargin,act_shift:act_shift+width-1) = x(vermargin+1,act_shift);
-            x = reshape(x,1,Dx);                        
+            x = X(i,:);
+            if covering
+                startpixel = max((g-2) * 2,1);
+                endpixel = min((g-2) * 2+4,Dx);
+                x(1,startpixel:endpixel) = x(1,startpixel);
+            else
+                x = reshape(x,imsizex,imsizey);
+                x(vermargin+1:imsizex-vermargin,act_shift:act_shift+width-1) = x(vermargin+1,act_shift);
+                x = reshape(x,1,Dx);
+            end
+                                    
             %vs(i,:) = x * R';      
             vs(i,:) = x;
         end
