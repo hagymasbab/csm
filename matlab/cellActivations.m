@@ -7,7 +7,11 @@ function cellActivations(ge)
     nStim = 1;    
     
     fullStim = zeros(sqrt(ge.Dv));
-    fullStim(2:7,3) = 1;
+    if ge.k > 10
+        fullStim(2:6,1) = 1;
+    else
+        fullStim(2:7,3) = 1;
+    end
     fullStim = fullStim(:)';
     partStim = zeros(nStim,ge.Dx);        
     
@@ -15,7 +19,7 @@ function cellActivations(ge)
     
     % draw samples for each, start over 10 times
     nSamp = 50;
-    nRestarts = 10;
+    nRestarts = 100;
     samples = zeros(nStim,nRestarts,nSamp,ge.k + ge.B * ge.Dv);
     
     % average rates and variances of stimulated, gestalt-bound and
@@ -33,14 +37,26 @@ function cellActivations(ge)
         
         % TODO do the rest of possible partial stimuli
         ps = zeros(sqrt(ge.Dx));
-        ps(2:4,3) = 1;
+        if ge.k>10
+            ps(3:5,1) = 1;
+        else
+            ps(2:4,3) = 1;
+        end
         partStim(stim,:) = ps(:)';
         randPartStim(stim,:,:) = gestaltStimulus(ge.Dx,ge.B,true,true);
         ge.X(1,:,:) = randPartStim(stim,:,:);
         
+        fprintf('Restart %d/',nRestarts);
         for samp=1:nRestarts
-            
-            act_samp = gestaltGibbs(ge,1,nSamp,'initG',[0.5;0.5],'contrast',false);
+            printCounter(samp);
+            initG = (1/ge.k) * ones(ge.k,1);
+            valid = false;
+            while ~valid
+                [act_samp,rr] = gestaltGibbs(ge,1,nSamp,'initG',initG,'contrast',false);
+                if rr ~= -1
+                    valid = true;
+                end
+            end
             samples(stim,samp,:,:) = act_samp;
             
             g = reshape(act_samp(:,1:ge.k),nSamp,ge.k);
@@ -73,7 +89,11 @@ function cellActivations(ge)
             all_vstds = all_vstds + vstds;
             
             [~,max_sample] = max(mean(g));
-            max_truth = 1;
+            if ge.k > 10
+                max_truth = 3;
+            else
+                max_truth = 1;
+            end
             if max_sample == max_truth
                 correct_num = correct_num + 1;
                 correct_vmean = correct_vmean + vmeans;
@@ -84,6 +104,7 @@ function cellActivations(ge)
             end
         end
     end
+    fprintf('\n');
     
     N = nStim*nRestarts;
     all_vmean = all_vmean / N;
@@ -100,7 +121,7 @@ function cellActivations(ge)
     subplot(2,3,1);
     barwitherr(all_vmean(2,:),all_vmean(1,:));
     set(gca,'XTickLabel',labels);
-    title('All samples mean');
+    title(sprintf('All samples mean (%d)',N));
     
     subplot(2,3,4);
     barwitherr(all_vstds(2,:),all_vstds(1,:));
@@ -110,7 +131,7 @@ function cellActivations(ge)
     subplot(2,3,2);
     barwitherr(correct_vmean(2,:),correct_vmean(1,:));
     set(gca,'XTickLabel',labels);
-    title('Correct samples mean');
+    title(sprintf('Correct samples mean (%d)',correct_num));
     
     subplot(2,3,5);
     barwitherr(correct_vstds(2,:),correct_vstds(1,:));

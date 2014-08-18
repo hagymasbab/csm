@@ -99,7 +99,8 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
                 % Gibbs sampling
-                [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision);            
+                initG = (1/ge.k) * ones(ge.k,1);
+                [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG);            
                 % if couldn't find a valid g-sample in 10 steps, skip
                 if rr < 0                
                     if params.verbose==2
