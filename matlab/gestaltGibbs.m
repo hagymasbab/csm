@@ -71,14 +71,14 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                 return;
             end
             if strcmp(params.priorG,'dirichlet')
-                [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1);
+                [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1,'limits',[0,1]);
                 g_temp = [g_part; 1-sum(g_part)];
             else
                 [g_temp,rr_act] = sliceSample(g,logpdf,params.stepsize,'plot',params.plot>1);
             end
             tries = tries + 1;
             if rr_act == -1
-                fprintf('e')
+                %fprintf('Sample %d omitted due to too many retries in slice sampling\n',i);
                 continue
             end            
             valid = checkG(g,ge,params.precision);            

@@ -63,7 +63,7 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     minperm = [];
     
     state_sequence = cell(1,maxStep+1);   
-    state.difference_to_truth = covcompRootMeanSquare(ccInit,cc_old,minperm);
+    %state.difference_to_truth = covcompRootMeanSquare(ccInit,cc_old,minperm);
     state.relative_difference = 0;        
     state.estimated_components = ccInit;
     state.samples = samples;
@@ -71,7 +71,8 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     
     microstate_sequence = cell(1,(maxStep*ge.N+1));
     if strcmp(params.method,'iterative')
-        microstate.difference_to_truth = state.difference_to_truth;
+        %microstate.difference_to_truth = state.difference_to_truth;
+        microstate.placeholder = 0;
         microstate_sequence{1} = microstate;
     end                     
             
@@ -133,7 +134,7 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                     % PRINT AND SAVE DATA            
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                                  
 
-                    microstate.difference_to_truth = covcompRootMeanSquare(cc_next,cc_old,[]);                    
+                    %microstate.difference_to_truth = covcompRootMeanSquare(cc_next,cc_old,[]);                    
                     microstate_sequence{step*ge.N+n+1} = microstate;
                 end
 
@@ -161,8 +162,10 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
         end
         
         
-        state.relative_difference = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
-        [state.difference_to_truth,minperm] = covcompRootMeanSquare(cc_next,cc_old,[]);   
+        %state.relative_difference = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
+        % TEST
+        state.relative_difference = 1;
+        %[state.difference_to_truth,minperm] = covcompRootMeanSquare(cc_next,cc_old,[]);   
         state.estimated_components = extractComponents(ge,params.precision);
         state.samples = samples;
         state_sequence{step+1} = state;                
@@ -186,8 +189,16 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     end        
 
     if params.plot>0
-        ge = replaceComponents(ge,cc_old,params.precision);
-        plotCovariances(ge,ge.N,params.precision,[]);
+        if ge.k > 5
+            plotsize = ceil(sqrt(ge.k));
+            for act_k=1:ge.k
+                subplot(plotsize,plotsize,act_k);
+                viewImage(cc_next{act_k});
+            end
+        else
+            ge = replaceComponents(ge,cc_old,params.precision);
+            plotCovariances(ge,ge.N,params.precision,[]);
+        end
     end    
 end
 

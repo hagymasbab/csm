@@ -64,7 +64,7 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar);    
+    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar,'sparsity',gestalt.sparsity);    
     
     fprintf('Saving results\n');
     save(strcat('gestalt_',name,'.mat'),'gestalt');

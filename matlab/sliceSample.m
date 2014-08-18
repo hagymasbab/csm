@@ -3,9 +3,16 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     addParamValue(parser,'plot',false,@islogical);
     addParamValue(parser,'verbose',false,@islogical);
     addParamValue(parser,'sampleRetry',100,@isnumeric);
+    addParamValue(parser,'limits',[],@isnumeric);
     parse(parser,varargin{:});
-    verb = parser.Results.verbose;
-    retry = parser.Results.sampleRetry;
+    params = parser.Results;
+    
+    maxval = Inf;
+    minval = -Inf;
+    if ~isempty(params.limits)
+        minval = params.limits(1);
+        maxval = params.limits(2);
+    end
     
     dim = size(init,1);
     pl = parser.Results.plot && dim == 1;   % only works in 1D     
@@ -33,7 +40,10 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
                 pause
             end
             %if exp(logpdf(actpoint)) <= u
-            if logpdf(actpoint) <= log_u
+            if actpoint(d,1) < minval
+                bounds(d,1) = minval;
+                inside = false;
+            elseif logpdf(actpoint) <= log_u
                 bounds(d,1) = actpoint(d,1);
                 inside = false;
             end
@@ -49,7 +59,10 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
                 pause
             end
             %if exp(logpdf(actpoint)) <= u
-            if logpdf(actpoint) <= log_u
+            if actpoint(d,1) > maxval
+                bounds(d,2) = maxval;
+                inside = false;
+            elseif logpdf(actpoint) <= log_u
                 bounds(d,2) = actpoint(d,1);
                 inside = false;
             end
@@ -76,7 +89,7 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
                 end
             end
         end
-        if rr > retry
+        if rr > params.sampleRetry
            rr = -1;
            return;
         end
