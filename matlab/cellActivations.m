@@ -1,4 +1,4 @@
-function cellActivations(ge)
+function cellActivations(ge,nRestarts)
     ge.obsVar = 1;
 
     % create partial stimuli
@@ -18,8 +18,8 @@ function cellActivations(ge)
     randPartStim = zeros(nStim,ge.B,ge.Dx);
     
     % draw samples for each, start over 10 times
-    nSamp = 50;
-    nRestarts = 100;
+    nSamp = 100;
+    %nRestarts = 100;
     samples = zeros(nStim,nRestarts,nSamp,ge.k + ge.B * ge.Dv);
     
     % average rates and variances of stimulated, gestalt-bound and
@@ -60,14 +60,14 @@ function cellActivations(ge)
             samples(stim,samp,:,:) = act_samp;
             
             g = reshape(act_samp(:,1:ge.k),nSamp,ge.k);
-            v = reshape(act_samp(:,ge.k+1:ge.k+ ge.B * ge.Dv),nSamp*ge.B,ge.Dv);
-            
-            v_mean = mean(v);
-            v_std = std(v);
+            v = reshape(act_samp(:,ge.k+1:ge.k+ ge.B * ge.Dv),nSamp*ge.B,ge.Dv);                       
             
             gestaltBound = logical(fullStim - partStim(stim));
             other = logical(ones(1,ge.Dv) - fullStim);
             part = logical(partStim(stim,:));
+            
+            v_mean = mean(v);
+            v_std = std(v);
             
             stimulated_mean_mean = mean(v_mean(part));
             gestalt_mean_mean = mean(v_mean(gestaltBound));

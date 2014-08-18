@@ -30,7 +30,7 @@ function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
         for r=1:nRun
             printCounter(r);
             ge = gestaltGenerate(ge,actparam.dataPoints,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
-            [diffs(r,:),like(r,:)] = gestaltIEM(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'rateMethod',actparam.rateMethod,'learningRate',actparam.learningRate,'multistep',actparam.multistep,'increaseLikelihood',actparam.increaseLikelihood,'fullLikelihood',actparam.fullLikelihood,'likelihoodSamples',actparam.likelihoodSamples);
+            [diffs(r,:),like(r,:)] = gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'rateMethod',actparam.rateMethod,'learningRate',actparam.learningRate,'multistep',actparam.multistep,'increaseLikelihood',actparam.increaseLikelihood,'fullLikelihood',actparam.fullLikelihood,'likelihoodSamples',actparam.likelihoodSamples);
             save(sprintf('%s_diffs_param%d.mat',name,hp),'diffs','like');
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));
         end

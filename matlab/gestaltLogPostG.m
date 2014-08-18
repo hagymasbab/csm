@@ -1,5 +1,5 @@
 function lp = gestaltLogPostG(g,V,ge,prior,precision)
-    if (sum(g<0) > 0) || (strcmp(prior,'dirichlet') && (sum(g>1) > 0))
+    if (sum(g<0) > 0) || (strcmp(prior,'dirichlet') && ( (sum(g>1) > 0) || (sum(g) > 1) ))
         lp=-Inf;
         return
     end
