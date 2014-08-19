@@ -15,8 +15,11 @@ function [mindiff,minperm] = covcompRootMeanSquare(cc1,cc2,minperm)
     for p=1:size(permutations,1)
         si = permutations(p,:);
         diff = 0;
-        for j=1:k
-            diff = diff + sum(sum((cc2{j}-cc1{si(1,j)})^2));           
+        for j=1:k            
+            other_index = si(1,j);
+%             size(cc2{j})
+%             size(cc1{other_index})
+            diff = diff + sum(sum((cc2{j}-cc1{other_index})^2));           
         end
         diff = diff / (k*d^2);
         if diff < mindiff

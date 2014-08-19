@@ -85,67 +85,66 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                         
         cc_prev = extractComponents(ge,params.precision);
                 
+        if params.verbose == 2
+            fprintf('EM cycle %d datapoint %d/',step,ge.N);            
+        end
 
-            if params.verbose == 2
-                fprintf('EM cycle %d datapoint %d/',step,ge.N);            
+        skipped = 0;
+        for n=1:ge.N
+            if params.verbose==2
+                printCounter(n);
+                fprintf(' ');
             end
 
-            skipped = 0;
-            for n=1:ge.N
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+            % E - step            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+            % Gibbs sampling
+            initG = (1/ge.k) * ones(ge.k,1);
+            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG);            
+            % if couldn't find a valid g-sample in 10 steps, skip
+            if rr < 0                
                 if params.verbose==2
-                    printCounter(n);
-                    fprintf(' ');
+                    if rr == -1
+                        fprintf('\b');                
+                    else
+                        delPrint(-rr-1);
+                    end
                 end
+                skipped = skipped + 1;
+                continue;
+            end
+
+            if strcmp(params.method,'iterative')
 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-                % E - step            
+                % M - step            
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-                % Gibbs sampling
-                initG = (1/ge.k) * ones(ge.k,1);
-                [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG);            
-                % if couldn't find a valid g-sample in 10 steps, skip
-                if rr < 0                
-                    if params.verbose==2
-                        if rr == -1
-                            fprintf('\b');                
-                        else
-                            delPrint(-rr-1);
-                        end
-                    end
-                    skipped = skipped + 1;
-                    continue;
+                % gradient of the parameters of the complete-data log-likelihood            
+                grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',params.precision);                        
+
+                % update cholesky components
+                for j=1:ge.k
+                    cholesky{j} = cholesky{j} + params.learningRate .* grad{j};
+                    cc_next{j} = cholesky{j}' * cholesky{j};                                             
                 end
 
-                if strcmp(params.method,'iterative')
-                    
-                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-                    % M - step            
-                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                ge = replaceComponents(ge,cc_next,params.precision);      
 
-                    % gradient of the parameters of the complete-data log-likelihood            
-                    grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',params.precision);                        
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+                % PRINT AND SAVE DATA            
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                                  
 
-                    % update cholesky components
-                    for j=1:ge.k
-                        cholesky{j} = cholesky{j} + params.learningRate .* grad{j};
-                        cc_next{j} = cholesky{j}' * cholesky{j};                                             
-                    end
+                microstate.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);                    
+                microstate_sequence{step*ge.N+n+1} = microstate;
+            end
 
-                    ge = replaceComponents(ge,cc_next,params.precision);      
-
-                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-                    % PRINT AND SAVE DATA            
-                    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                                  
-
-                    microstate.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);                    
-                    microstate_sequence{step*ge.N+n+1} = microstate;
-                end
-
-                if params.verbose==2
-                    delPrint(nSamples);
-                end
-            end %for n=1:ge.N           
+            if params.verbose==2
+                delPrint(nSamples);
+            end
+        end %for n=1:ge.N           
         if strcmp(params.method,'block')
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % M - step            
@@ -164,14 +163,17 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
 
             ge = replaceComponents(ge,cc_next,params.precision);      
         end
-        
-        
+                
         state.relative_difference = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         % TEST
         %state.relative_difference = 1;
         state.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);
         state.estimated_components = extractComponents(ge,params.precision);
         state.samples = samples;
+        state.matrix_norms = {};
+        for i=1:ge.k
+            state.matrix_norms{i} = norm(cc_next{i});
+        end
         state_sequence{step+1} = state;                
         
         S{step} = samples;
