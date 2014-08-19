@@ -10,6 +10,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'contrast',false,@islogical);
     addParamValue(parser,'initG',[]);
     addParamValue(parser,'priorG','dirichlet');
+    addParamValue(parser,'gSampler','slice');
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -70,12 +71,19 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                 rr = -i -1;
                 return;
             end
-            if strcmp(params.priorG,'dirichlet')
-                [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1,'limits',[0,1]);
-                g_temp = [g_part; 1-sum(g_part)];
-            else
-                [g_temp,rr_act] = sliceSample(g,logpdf,params.stepsize,'plot',params.plot>1);
+            if strcmp(params.gSampler,'slice')
+                if strcmp(params.priorG,'dirichlet')
+                    [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1,'limits',[0,1]);
+                    g_temp = [g_part; 1-sum(g_part)];
+
+                else
+                    [g_temp,rr_act] = sliceSample(g,logpdf,params.stepsize,'plot',params.plot>1);
+                end
+            elseif strcmp(params.gSampler,'mh')
+                    [g_temp,rr_act] = metropolisHastings(g,logpdf,0.1*eye(ge.k),1,0,0);
+                    g_temp = g_temp';
             end
+            
             tries = tries + 1;
             if rr_act == -1
                 %fprintf('Sample %d omitted due to too many retries in slice sampling\n',i);
