@@ -1,5 +1,9 @@
 function [mindiff,minperm] = covcompRootMeanSquare(cc1,cc2,minperm)
-    % we should take the minimum over all possible permutations
+    % we should take the minimum over all possible permutations    
+    if ~iscell(cc1)
+        cc1 = {cc1};
+        cc2 = {cc2};
+    end
     k = size(cc1,2);
     d = size(cc1{1},1);
     if isempty(minperm);

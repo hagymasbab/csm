@@ -59,11 +59,15 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     
     samples = zeros(ge.N,nSamples,sdim);    
     
-    % the best permutation for comparing estimated components to truth
-    minperm = [];
-    
+    % the best permutation for comparing estimated components to truth    
     state_sequence = cell(1,maxStep+1);   
-    %state.difference_to_truth = covcompRootMeanSquare(ccInit,cc_old,minperm);
+    true_c = cov(reshape(ge.V(1:ge.N,:,:),ge.B*ge.N,ge.Dv));
+    act_c = componentSum(ones(ge.k,1),ccInit);
+    state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
+    state.matrix_norms = {};
+    for i=1:ge.k
+        state.matrix_norms{i} = norm(ccInit{i});
+    end
     state.relative_difference = 0;        
     state.estimated_components = ccInit;
     state.samples = samples;
@@ -71,8 +75,7 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     
     microstate_sequence = cell(1,(maxStep*ge.N+1));
     if strcmp(params.method,'iterative')
-        %microstate.difference_to_truth = state.difference_to_truth;
-        microstate.placeholder = 0;
+        microstate.difference_to_truth = state.difference_to_truth;
         microstate_sequence{1} = microstate;
     end                     
             
@@ -135,7 +138,7 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                     % PRINT AND SAVE DATA            
                     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                                  
 
-                    %microstate.difference_to_truth = covcompRootMeanSquare(cc_next,cc_old,[]);                    
+                    microstate.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);                    
                     microstate_sequence{step*ge.N+n+1} = microstate;
                 end
 
@@ -163,10 +166,10 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
         end
         
         
-        %state.relative_difference = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
+        state.relative_difference = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         % TEST
-        state.relative_difference = 1;
-        %[state.difference_to_truth,minperm] = covcompRootMeanSquare(cc_next,cc_old,[]);   
+        %state.relative_difference = 1;
+        state.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);
         state.estimated_components = extractComponents(ge,params.precision);
         state.samples = samples;
         state_sequence{step+1} = state;                
