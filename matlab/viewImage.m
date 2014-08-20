@@ -11,6 +11,9 @@ function viewImage(data,varargin)
         range = [-maxval maxval];
     end
     
+    if ndims(data) > 2
+        data = squeeze(data);
+    end
     if min(size(data)) == 1
         imdim = sqrt(max(size(data)));
         data = reshape(data,imdim,imdim);

@@ -21,8 +21,8 @@ function lp = gestaltLogPostG(g,V,ge,prior,precision)
     if strcmp(prior,'dirichlet')
         logprior = (ge.sparsity - 1) * sum(log(g));
     elseif strcmp(prior,'gamma')
-        shape = 4;
-        scale = 0.1;
+        shape = 1;
+        scale = 0.003;
         logprior = 0;
         for d = 1:ge.k
             logprior = logprior + log(gampdf(g(d,1),shape,scale));
