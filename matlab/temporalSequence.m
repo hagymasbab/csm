@@ -2,9 +2,10 @@ function temporalSequence(ge,halfstim)
     randstim = randn(ge.B,ge.Dx);
     
     ge.obsVar = 1;
+    sAA = (1/ge.obsVar) * ge.AA;
     
     ps = zeros(sqrt(ge.Dx));
-    ps(2:6,3) = 1;
+    ps(2:5,3) = 1;
     ps = ps(:)';
     
     fullStim = zeros(sqrt(ge.Dv));
@@ -19,6 +20,21 @@ function temporalSequence(ge,halfstim)
     stim_idx = logical(ps);
     conf_idx = logical(confound);
     other_idx = logical(ones(1,ge.Dv) - fullStim - confound);
+    idxs = {stim_idx,gest_idx,conf_idx,other_idx};
+    groupnum = 4;
+    
+    covidxs = cell{1,groupnum};
+    for i=1:groupnum
+        act = zeros(ge.Dv);
+        for j=1:ge.Dv
+            for k=j+1:ge.Dv
+                if idxs{i}(j) == 1 && idxs{i}(k) ==1
+                    act(j,k) = 1;
+                end
+            end
+        end
+        covidxs{i} = act;
+    end
     
     
     v_means = []; % sim will be 4xT (stimulus,gestalt,confound,other)
@@ -42,10 +58,18 @@ function temporalSequence(ge,halfstim)
     ge.X(1,:,:) = halfstim;
     v_samp_batch = gestaltPostVRnd(ge,1,g_init,1,false);
     v_samp = mean(v_samp_batch);
-    v_stim = mean(v_samp(stim_idx));
-    v_gest = mean(v_samp(gest_idx));
-    v_conf = mean(v_samp(conf_idx));
-    v_other = mean(v_samp(other_idx));
+%     v_stim = mean(v_samp(stim_idx));
+%     v_gest = mean(v_samp(gest_idx));
+%     v_conf = mean(v_samp(conf_idx));
+%     v_other = mean(v_samp(other_idx));
+    
+    cv = componentSum(g_init,ge.cc);
+    actcorr = corrcov(inv(sAA + inv(cv)));
+    v_stim = meanCorr(v_samp_batch(:,stim_idx));
+    v_gest = meanCorr(v_samp_batch(:,gest_idx));
+    v_conf = meanCorr(v_samp_batch(:,conf_idx));
+    v_other = meanCorr(v_samp_batch(:,other_idx));
+    
     v_act = [v_stim;v_gest;v_conf;v_other];
     v_means = [v_means v_act];
     
@@ -71,10 +95,16 @@ function temporalSequence(ge,halfstim)
     ge.X(1,:,:) = halfstim;
     v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
     v_samp = mean(v_samp_batch);
-    v_stim = mean(v_samp(stim_idx));
-    v_gest = mean(v_samp(gest_idx));
-    v_conf = mean(v_samp(conf_idx));
-    v_other = mean(v_samp(other_idx));
+%     v_stim = mean(v_samp(stim_idx));
+%     v_gest = mean(v_samp(gest_idx));
+%     v_conf = mean(v_samp(conf_idx));
+%     v_other = mean(v_samp(other_idx));
+
+    v_stim = meanCorr(v_samp_batch(:,stim_idx));
+    v_gest = meanCorr(v_samp_batch(:,gest_idx));
+    v_conf = meanCorr(v_samp_batch(:,conf_idx));
+    v_other = meanCorr(v_samp_batch(:,other_idx));
+
     v_act = [v_stim;v_gest;v_conf;v_other];
     v_means = [v_means v_act];
     
@@ -85,3 +115,9 @@ function temporalSequence(ge,halfstim)
     h=legend('stimulated V1','gestalt V1','confound V1','other V1','higher');
     set(h,'Location','NorthEastOutside');
 end    
+
+function mr = meanCorr(X)
+%     co = corrcoef(X);
+%     ut = triu(co) - diag(diag(co));
+    mr = mean(X(:));
+end
