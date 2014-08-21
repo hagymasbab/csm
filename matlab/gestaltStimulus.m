@@ -7,11 +7,11 @@ function X = gestaltStimulus(Dx,B,left,half,addIrrel)
         horcoord = 3;        
         verend = imd - 1;
         if half
-            verend = floor(imd/2);
+            verend = floor(imd-2);
         end
-        %act(2:verend,horcoord) = 2;
+        act(2:verend,horcoord) = 2 + randn(1);
         %act(2:verend,horcoord) = act(2:verend,horcoord) + 1;
-        act(2:verend,horcoord) = act(2,horcoord);
+        %act(2:verend,horcoord) = act(2,horcoord);
         
         if addIrrel
             act(2:verend,horcoord+1) = act(2,horcoord+1);

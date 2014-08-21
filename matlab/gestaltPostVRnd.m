@@ -1,7 +1,7 @@
 function [V,mu] = gestaltPostVRnd(ge,xind,g,z,precision)
 
     % construct the covariance and mean of the conditional posterior over v
-    sAA = (z*z/ge.obsVar) * ge.AA;
+    sAA = ((z*z)/ge.obsVar) * ge.AA;
     if ~precision
         Cv = componentSum(g,ge.cc);
         cov = inv(sAA + inv(Cv));       

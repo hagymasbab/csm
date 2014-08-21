@@ -62,6 +62,8 @@ function lp = gestaltPlotCondPostG(ge,V,prior,precision)
 %         plot([xval xval], ylim);
 %         hold all;
 %     end
-%     
-    legend(handles,legends);
+%   
+    if nInput > 1
+        legend(handles,legends);
+    end
 end

@@ -1,8 +1,8 @@
-function temporalActivations()
-    ge = gestaltCreate('nyolc','Dx',64,'filters','eye','B',10,'obsVar',0.1,'contrast',false);    
+function temporalActivations(ge,halfstim)
+    %ge = gestaltCreate('nyolc','Dx',64,'filters','eye','B',10,'obsVar',0.1,'contrast',false,'k',2);    
     ge.obsVar = 1;
-    halfstim = gestaltStimulus(ge.Dx,ge.B,true,true);
-    ge.X(1,:,:) = rand(ge.B,ge.Dx);
+    %halfstim = gestaltStimulus(ge.Dx,ge.B,true,true,false);
+    ge.X(1,:,:) = randn(ge.B,ge.Dx);
     ge.X(2,:,:) = halfstim;    
     ge.X(3,:,:) = halfstim;
     ge.X(4,:,:) = halfstim;
@@ -28,11 +28,12 @@ function temporalActivations()
     avg_g = zeros(1,nSamp*2);
     
     act_g = (1/ge.k) * ones(ge.k,1);
+    %act_g = 0.1 * ones(ge.k,1);
     %act_g = abs(rand(ge.k,1));
     for rest=1:nRestarts        
         for samp=1:nSamp          
             %fprintf('Samp %d\n',samp);
-            s = gestaltGibbs(ge,samp,sampsteps,'initG',act_g,'priorG','gamma','verbose',0);
+            s = gestaltGibbs(ge,samp,sampsteps,'initG',act_g,'priorG','dirichlet','verbose',0);
             act_g = s(sampsteps,1:ge.k)';
             % TEST
 %             if samp < 3
