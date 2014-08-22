@@ -61,9 +61,11 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     
     % the best permutation for comparing estimated components to truth    
     state_sequence = cell(1,maxStep+1);   
-    true_c = cov(reshape(ge.V(1:ge.N,:,:),ge.B*ge.N,ge.Dv));
+    v_cov = cov(reshape(ge.V(1:ge.N,:,:),ge.B*ge.N,ge.Dv));
+    true_c = componentSum(ones(ge.k,1),cc_old);
     act_c = componentSum(ones(ge.k,1),ccInit);
     state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
+    state.difference_to_vcov = covcompRootMeanSquare(act_c,v_cov,1);
     state.matrix_norms = {};
     for i=1:ge.k
         state.matrix_norms{i} = norm(ccInit{i});
@@ -167,7 +169,9 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
         state.relative_difference = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         % TEST
         %state.relative_difference = 1;
-        state.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);
+        act_c = componentSum(ones(ge.k,1),cc_next);
+        state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
+        state.difference_to_vcov = covcompRootMeanSquare(act_c,v_cov,1);
         state.estimated_components = extractComponents(ge,params.precision);
         state.samples = samples;
         state.matrix_norms = {};

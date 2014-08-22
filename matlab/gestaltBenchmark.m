@@ -25,22 +25,16 @@ function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
         parametrisations{hp} = actparam;
         save(sprintf('%s_params.mat',name),'parametrisations');
         
-        diffs = zeros(nRun,maxStep+1);
-        like = zeros(nRun,maxStep+1);
         fprintf('Run %d/',nRun);
         for r=1:nRun
             printCounter(r);
             ge = gestaltGenerate(ge,actparam.dataPoints,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
             gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'learningRate',actparam.learningRate,'initCond',actparam.initCond);
-            %save(sprintf('%s_diffs_param%d.mat',name,hp),'diffs','like');
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));
         end
         fprintf('\n');
-%         h=plotConvergence(ge,diffs,0);
-%         saveas(h,sprintf('%s_convergence_param%d.fig',name,hp),'fig');
-%         h=plotConvergence(ge,like,actparam.likelihoodSamples);
-%         saveas(h,sprintf('%s_convergence_like%d.fig',name,hp),'fig');
     end
+    plotDifferences(name,nRun,nParams);
 end
 
 function us = updateStruct(structure,cellArray)
