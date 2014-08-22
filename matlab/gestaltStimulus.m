@@ -14,12 +14,12 @@ function X = gestaltStimulus(Dx,B,left,half,addIrrel)
         %act(2:verend,horcoord) = act(2,horcoord);
         
         if addIrrel
-            act(2:verend,horcoord+1) = act(2,horcoord+1);
+            act(2:verend,horcoord+1) = 2 + randn(1);
         end
         
         if ~left
             horcoord = imd-2;
-            act(2:verend,horcoord) = act(2,horcoord);
+            act(2:verend,horcoord) = 2 + randn(1);
         end
         
         X(b,:) = act(:)';
