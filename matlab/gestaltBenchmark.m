@@ -7,6 +7,7 @@ function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
     defaults.learningRate           = 0.01;
 %     defaults.multistep              = false;
     defaults.initCond               = 'random';
+    defaults.priorG                 = 'gamma';
     
     defaults.dataPoints             = 20;
     defaults.batchSize              = 10;
@@ -29,7 +30,7 @@ function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
         for r=1:nRun
             printCounter(r);
             ge = gestaltGenerate(ge,actparam.dataPoints,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
-            gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'learningRate',actparam.learningRate,'initCond',actparam.initCond);
+            gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'learningRate',actparam.learningRate,'initCond',actparam.initCond,'priorG',actparam.priorG);
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));
         end
         fprintf('\n');

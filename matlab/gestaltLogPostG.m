@@ -23,9 +23,15 @@ function lp = gestaltLogPostG(g,V,ge,prior,precision)
     elseif strcmp(prior,'gamma')
         shape = 1;
         scale = 0.003;
+        null_shape = 2;
+        null_scale = 1;
         logprior = 0;
-        for d = 1:ge.k
-            logprior = logprior + log(gampdf(g(d,1),shape,scale));
+        for d = 1:ge.k            
+            if ge.nullComponent && d == ge.k
+                logprior = logprior + log(gampdf(g(d,1),null_shape,null_scale));
+            else
+                logprior = logprior + log(gampdf(g(d,1),shape,scale));
+            end
         end
     end
     
