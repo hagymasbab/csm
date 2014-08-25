@@ -3,8 +3,13 @@ function lp = gestaltLogPostG(g,V,ge,prior,precision)
         lp=-Inf;
         return
     end
+    
     if size(g,1) == ge.k-1
         g = [g;1-sum(g)];
+    end
+    
+    if ndims(V) == 3
+        V = reshape(V,ge.B,ge.Dv);
     end
     B = size(V,1);
     if ~precision

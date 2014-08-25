@@ -66,4 +66,5 @@ function lp = gestaltPlotCondPostG(ge,V,prior,precision)
     if nInput > 1
         legend(handles,legends);
     end
+    hold off;
 end
