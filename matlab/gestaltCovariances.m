@@ -1,9 +1,10 @@
 function cc = gestaltCovariances(k,Dx,Dv,nullComponent)
     covering = false;
-    if k == Dv/2 + 1;
+    if k == 0;
         % we will generate a component set that covers the whole field in a
         % way that every V-unit belongs to 2 vertical components of length
         % 4 or 2 on the edges
+        k = Dv;
         covering = true;
     end                
 
@@ -28,8 +29,8 @@ function cc = gestaltCovariances(k,Dx,Dv,nullComponent)
         vs = zeros(N,Dv);
         X = mvnrnd(zeros(N,Dx),eye(Dx));
         if covering
-            startpixel = max((g-2) * 2,1);
-            endpixel = min((g-2) * 2+4,Dx);            
+            startpixel = max(g-1,1);
+            endpixel = min(g+1,Dv);            
         else
             startpixel = (act_shift - 1) * imsizey + vermargin + 1;
             endpixel = act_shift * imsizey - vermargin;

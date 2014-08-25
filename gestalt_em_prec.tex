@@ -115,6 +115,15 @@ which can be sampled by a  slice sampling scheme with the following target
 \begin{equation} \label{eq:g_cond_logpost}
 \log p(g \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(C_v)) + \sum_{b=1}^B v_b^T C_v^{-1} v_b\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
 \end{equation}
+%
+or by a Hamiltonian Monte Carlo scheme using the gradient (in case of a Gamma prior over $g$ with parameters shape $k$ and scale $\theta$):
+
+\begin{equation}
+\begin{split}
+\frac{\partial \log p(g \mid X,V)}{\partial g_j} = -\frac{1}{2} \textrm{Tr} \left[ \left( B C_v^{-1} + \sum_{b=1}^B C_v^{-1} v_b v_b^T C_v^{-1} \right) C_j \right] + \\
++ \frac{1}{\Gamma(k_j) \theta_j^{k_j}} e^{-\frac{g_j}{\theta_j}} \left[ g_j^{k_j-2} (k_j -1) - \frac{g_j^{k_j-1}}{\theta_j} \right]
+\end{split}
+\end{equation}
 
 
 \section{Gradient descent as the M-step}

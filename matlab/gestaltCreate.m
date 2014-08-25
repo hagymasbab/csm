@@ -60,9 +60,10 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
     else        
         gestalt.cc = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,gestalt.nullComponent);
-        if gestalt.nullComponent
-            gestalt.k = gestalt.k + 1;
-        end
+        gestalt.k = size(gestalt.cc,2);
+%         if gestalt.nullComponent
+%             gestalt.k = gestalt.k + 1;
+%         end
     end
     
     if gestalt.precision
