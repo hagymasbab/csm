@@ -1,5 +1,5 @@
-function temporalSequence(ge,stim,quantity,remove)
-    randstim = randn(ge.B,ge.Dx);
+function temporalSequence(ge,quantity,remove,trials)
+    randstim = randn(ge.B,ge.Dx);    
     
     ge.obsVar = 1;
     sAA = (1/ge.obsVar) * ge.AA;
@@ -37,111 +37,95 @@ function temporalSequence(ge,stim,quantity,remove)
         covidxs{i} = logical(act);
     end
     
+    sequence_length = 4;
+    v_all = zeros(trials,groupnum,sequence_length);
+    g_all = zeros(trials,ge.k,sequence_length);
     
-    v_means = []; % sim will be 4xT (stimulus,gestalt,confound,other)
-    v_stds = [];
-    g_seq = [];
-    
-    % T0
-    % calculate baseline mean and variance of g from the prior
-    % calculate mean and variance of v if there is no signal in the input
-    g_act = (1/ge.k) * ones(ge.k,1);
-    % TEST
-    g_act = [0.1;0.9];
-    g_seq = [g_seq g_act];
-    v_means = [v_means zeros(4,1)];
-    
-    % T1
-    % set the input to a partial activation of a gestalt plus unexplained
-    % confounding variance
-    % calculate mean and variance of v conditioned on the input and g
-    g_seq = [g_seq g_act];
-    ge.X(1,:,:) = stim;
-    v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
-    v_samp = mean(v_samp_batch);
-    
-    if strcmp(quantity,'mean')
-        v_stim = mean(v_samp(stim_idx));
-        v_gest = mean(v_samp(gest_idx));
-        v_conf = mean(v_samp(conf_idx));
-        v_other = mean(v_samp(other_idx));
-        v_act = [v_stim;v_gest;v_conf;v_other];
-    elseif strcmp(quantity,'noisecorr')
-        cv = componentSum(g_act,ge.cc);
-        actcorr = corrcov(inv(sAA + inv(cv)));
+    for t=1:trials
+        stim = gestaltStimulus(ge.Dx,ge.B,true,true,true);
         
-        v_act = [];
-        for i = 1:groupnum
-            selected_corr = actcorr(covidxs{i});
-            v_act = [v_act; mean(selected_corr(:))];
-        end
-    elseif strcmp(quantity,'allcorr')
-        v_act = [];
-        for i = 1:groupnum
-            mc = meanCorr(v_samp_batch(:,idxs{i}));
-            v_act = [v_act; mc];
-        end
-    end
-    v_means = [v_means v_act];        
-    
-    % T2
-    % calculate mean and variance of g conditioned on v
-    logpdf = @(g) gestaltLogPostG(g,v_samp_batch,ge,'dirichlet',false); 
-    g_part = g_act(1:ge.k-1,1);
-    for i=1:5
-        [g_part,~] = sliceSample(g_part,logpdf,0.05,'limits',[0,1]);
-    end
-    g_act = [g_part; 1-sum(g_part)];
-    % TEST
-    %g_act = [1;0];
-    g_seq = [g_seq g_act];
-    v_means = [v_means v_act];
-    
-    % T3
-    % set the input signal back to nothing
-    % update v
-    g_seq = [g_seq g_act];
-    if remove
-        ge.X(1,:,:) = randstim;
-    else
-        ge.X(1,:,:) = stim;
-    end
-    v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
-    v_samp = mean(v_samp_batch);
+        v_means = []; % sim will be 4xT (stimulus,gestalt,confound,other)
+        v_stds = [];
+        g_seq = [];
 
-    if strcmp(quantity,'mean')
-        v_stim = mean(v_samp(stim_idx));
-        v_gest = mean(v_samp(gest_idx));
-        v_conf = mean(v_samp(conf_idx));
-        v_other = mean(v_samp(other_idx));
-        v_act = [v_stim;v_gest;v_conf;v_other];
-    elseif strcmp(quantity,'noisecorr')
-        cv = componentSum(g_act,ge.cc);
-        actcorr = corrcov(inv(sAA + inv(cv)));
+        % T0
+        % calculate baseline mean and variance of g from the prior
+        % calculate mean and variance of v if there is no signal in the input
+        if ge.nullComponent
+            g_act = zeros(ge.k,1);
+            for d = 1:ge.k            
+                if ge.nullComponent && d == ge.k
+                    g_act(d,1) = gamrnd(ge.null_shape,ge.null_scale);
+                else
+                    g_act(d,1) = gamrnd(ge.g_shape,ge.g_scale);
+                end
+            end
+            cv = componentSum(g_act,ge.cc);
+            v_samp_batch = mvnrnd(zeros(ge.B,ge.Dv),cv);
+            v_act = sortV(v_samp_batch,idxs,covidxs,quantity);
+        else
+            g_act = (1/ge.k) * ones(ge.k,1);
+            % TEST
+            g_act = [0.1;0.9];
+            v_act = zeros(4,1);
+        end        
+
+        g_seq = [g_seq g_act];
+        v_means = [v_means v_act];
+
+        % T1
+        % set the input to a partial activation of a gestalt plus unexplained
+        % confounding variance
+        % calculate mean and variance of v conditioned on the input and g
+        g_seq = [g_seq g_act];
+        ge.X(1,:,:) = stim;
+        v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
+        v_act = sortV(v_samp_batch,idxs,covidxs,quantity);
+        v_means = [v_means v_act];        
+
+        % T2
+        % calculate mean and variance of g conditioned on v
+        logpdf = @(g) gestaltLogPostG(g,v_samp_batch,ge,'dirichlet',false); 
+        g_part = g_act(1:ge.k-1,1);
+        for i=1:5
+            [g_part,~] = sliceSample(g_part,logpdf,0.05,'limits',[0,1]);
+        end
+        g_act = [g_part; 1-sum(g_part)];
+        % TEST
+        %g_act = [1;0];
+        g_seq = [g_seq g_act];
+        v_means = [v_means v_act];
+
+        % T3
+        % set the input signal back to nothing
+        % update v
+        g_seq = [g_seq g_act];
+        if remove
+            ge.X(1,:,:) = randstim;
+        else
+            ge.X(1,:,:) = stim;
+        end
+        v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
+        v_act = sortV(v_samp_batch,idxs,covidxs,quantity);
+        v_means = [v_means v_act];   
+
+        % T4
+        % update g
         
-        v_act = [];
-        for i = 1:groupnum
-            selected_corr = actcorr(covidxs{i});
-            v_act = [v_act; mean(selected_corr(:))];
-        end
-    elseif strcmp(quantity,'allcorr')
-        v_act = [];
-        for i = 1:groupnum
-            mc = meanCorr(v_samp_batch(:,idxs{i}));
-            v_act = [v_act; mc];
-        end
+        v_all(t,:,:) = v_means;
+        g_all(t,:,:) = g_seq;
     end
-    v_means = [v_means v_act];   
     
-    % T4
-    % update g
+    v_plot = squeeze(mean(v_all,1));
+    g_plot = squeeze(mean(g_all,1));
     
-    ph = plot([v_means;g_seq(1,:)]','LineWidth',1.5);
+    ph = plot([v_plot;g_plot(1,:)]','LineWidth',1.5);
     set(ph(5),'linewidth',3);
     hold on;
     lh=legend('stimulated V1','gestalt V1','confound V1','other V1','higher');
     set(lh,'Location','NorthEastOutside');
     
+    % plot stimulus onset
     if remove
         areaxlim = [2 3];
     else
@@ -151,6 +135,7 @@ function temporalSequence(ge,stim,quantity,remove)
     H = area([areaxlim fliplr(areaxlim)],[yl(2) yl(2) yl(1) yl(1)],'LineStyle','none');
     h=get(H,'children');
     set(h,'FaceAlpha',0.05,'FaceColor',[0 0 1]);
+    hold off;
 end
 
 
@@ -159,4 +144,32 @@ function mr = meanCorr(X)
     co = corrcoef(X);
     ut = triu(co) - diag(diag(co));
     mr = mean(ut(:)) * (dim^2 / (dim^2 / 2 + dim / 2));
+end
+
+function v_act = sortV(v_samp_batch,idxs,covidxs,quantity)
+    v_samp = mean(v_samp_batch,1);
+    groupnum = size(idxs,2);
+    
+    if strcmp(quantity,'mean')
+        v_act = [];
+        for i = 1:groupnum
+            mc = mean(v_samp(idxs{i}));
+            v_act = [v_act; mc];
+        end
+    elseif strcmp(quantity,'noisecorr')
+        cv = componentSum(g_act,ge.cc);
+        actcorr = corrcov(inv(sAA + inv(cv)));
+        
+        v_act = [];
+        for i = 1:groupnum
+            selected_corr = actcorr(covidxs{i});
+            v_act = [v_act; mean(selected_corr(:))];
+        end
+    elseif strcmp(quantity,'allcorr')
+        v_act = [];
+        for i = 1:groupnum
+            mc = meanCorr(v_samp_batch(:,idxs{i}));
+            v_act = [v_act; mc];
+        end
+    end
 end
