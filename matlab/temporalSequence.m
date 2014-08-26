@@ -1,4 +1,4 @@
-function temporalSequence(ge,quantity,remove,trials,shift,plot_bars)
+function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_bars)
     randstim = randn(ge.B,ge.Dx);    
     
     ge.obsVar = 1;
@@ -37,7 +37,7 @@ function temporalSequence(ge,quantity,remove,trials,shift,plot_bars)
         covidxs{i} = logical(act);
     end
     
-    sequence_length = 6;
+    sequence_length = 2*cycles + 1;
     v_all = zeros(trials,groupnum,sequence_length);
     g_all = zeros(trials,ge.k,sequence_length);
     
@@ -73,62 +73,64 @@ function temporalSequence(ge,quantity,remove,trials,shift,plot_bars)
         g_seq = [g_seq g_act];
         v_means = [v_means v_act];
 
-        % T1
-        % set the input to a partial activation of a gestalt plus unexplained
-        % confounding variance
-        % calculate mean and variance of v conditioned on the input and g
-        g_seq = [g_seq g_act];
-        ge.X(1,:,:) = stim;
-        v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
-        v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
-        v_means = [v_means v_act];        
+        for c=1:cycles
+            % T1
+            % set the input to a partial activation of a gestalt plus unexplained
+            % confounding variance
+            % calculate mean and variance of v conditioned on the input and g
+            g_seq = [g_seq g_act];
+            ge.X(1,:,:) = stim;
+            v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
+            v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
+            v_means = [v_means v_act];        
 
-        % T2
-        % calculate mean and variance of g conditioned on v
-        logpdf = @(g) gestaltLogPostG(g,v_samp_batch,ge,'dirichlet',false); 
-        g_part = g_act(1:ge.k-1,1);
-        for i=1:5
-            [g_part,~] = sliceSample(g_part,logpdf,0.05,'limits',[0,1]);
+            % T2
+            % calculate mean and variance of g conditioned on v
+            logpdf = @(g) gestaltLogPostG(g,v_samp_batch,ge,'gamma',false); 
+            %g_part = g_act(1:ge.k-1,1);
+            %for i=1:1
+            [g_act,~] = sliceSample(g_act,logpdf,0.05,'limits',[0 Inf]);
+            %end
+            %g_act = [g_part; 1-sum(g_part)];
+            g_seq = [g_seq g_act];
+            v_means = [v_means v_act];
         end
-        g_act = [g_part; 1-sum(g_part)];
-        g_seq = [g_seq g_act];
-        v_means = [v_means v_act];
 
         % T3
         % set the input signal back to nothing
         % update v
-        g_seq = [g_seq g_act];
-        if remove
-            ge.X(1,:,:) = randstim;
-        else
-            ge.X(1,:,:) = stim;
-        end
-        v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
-        v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
-        v_means = [v_means v_act];   
-
-        % T4
-        % update g
-        logpdf = @(g) gestaltLogPostG(g,v_samp_batch,ge,'dirichlet',false); 
-        g_part = g_act(1:ge.k-1,1);
-        for i=1:1
-            [g_part,~] = sliceSample(g_part,logpdf,0.05,'limits',[0,1]);
-        end
-        g_act = [g_part; 1-sum(g_part)];
-        g_seq = [g_seq g_act];
-        v_means = [v_means v_act];
-        
-        % T5
-        % update v
-        g_seq = [g_seq g_act];
-        if remove
-            ge.X(1,:,:) = randstim;
-        else
-            ge.X(1,:,:) = stim;
-        end
-        v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
-        v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
-        v_means = [v_means v_act];   
+%         g_seq = [g_seq g_act];
+%         if remove
+%             ge.X(1,:,:) = randstim;
+%         else
+%             ge.X(1,:,:) = stim;
+%         end
+%         v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
+%         v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
+%         v_means = [v_means v_act];   
+% 
+%         % T4
+%         % update g
+%         logpdf = @(g) gestaltLogPostG(g,v_samp_batch,ge,'dirichlet',false); 
+%         g_part = g_act(1:ge.k-1,1);
+%         for i=1:1
+%             [g_part,~] = sliceSample(g_part,logpdf,0.05,'limits',[0,1]);
+%         end
+%         g_act = [g_part; 1-sum(g_part)];
+%         g_seq = [g_seq g_act];
+%         v_means = [v_means v_act];
+%         
+%         % T5
+%         % update v
+%         g_seq = [g_seq g_act];
+%         if remove
+%             ge.X(1,:,:) = randstim;
+%         else
+%             ge.X(1,:,:) = stim;
+%         end
+%         v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
+%         v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
+%         v_means = [v_means v_act];   
         
         % store values
         v_all(t,:,:) = v_means;
@@ -137,6 +139,7 @@ function temporalSequence(ge,quantity,remove,trials,shift,plot_bars)
     
     v_plot = squeeze(mean(v_all,1));
     g_plot = squeeze(mean(g_all,1));
+    to_plot = [v_plot;g_plot];
     
     if shift
         v_plot = v_plot + repmat((0:groupnum-1)*0.001,sequence_length,1)';
@@ -146,7 +149,10 @@ function temporalSequence(ge,quantity,remove,trials,shift,plot_bars)
         v_plot = [v_plot(:,1) v_plot(:,2:2:sequence_length)];
         bar(v_plot');
         hold on;
-        gx = [0.5 1.5 2.45 2.55 3.45 3.55 4.5]; % only valid for sequence_length = 6
+        gx = [0.5 1.5]; % 2.45 2.55 3.45 3.55 4.45 4.55]; % only valid for sequence_length = 7
+        for i = 1:cycles
+            gx = [gx i+1.45 i+1.55];
+        end
         plot(gx',[g_plot(1,1) g_plot(1,:)]','LineWidth',3)
     else
         ph = plot([v_plot;g_plot(1,:)]','LineWidth',1.5);
@@ -164,7 +170,12 @@ function temporalSequence(ge,quantity,remove,trials,shift,plot_bars)
     end
     if plot_bars
         areaxlim(1) = areaxlim(1) - 0.5;
-        areaxlim(2) = areaxlim(2) - 1.5;
+        if remove
+            areaxlim(2) = 2.5;
+        else
+            areaxlim(2) = cycles + 1.5;
+        end
+        xlim([0.5 areaxlim(2)]);
     end
         
     yl = ylim;
