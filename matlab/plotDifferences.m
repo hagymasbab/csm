@@ -25,8 +25,8 @@ function plotDifferences(name,nRun,nParam)
         end
         
         errorbar(mean(diff),std(diff))
-        hold on;
-        errorbar(mean(diffv),std(diffv),'r')
-        legend({'truth','vcov'})
+        %hold on;
+        %errorbar(mean(diffv),std(diffv),'r')
+        %legend({'truth','vcov'})
     end
 end
