@@ -1,7 +1,10 @@
 function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_bars)
     randstim = randn(ge.B,ge.Dx);    
     
+    % set the right parameters for sampling
     ge.obsVar = 1;
+    ge.g_shape = 0.01;
+    ge.g_scale = 0.02;
     sAA = (1/ge.obsVar) * ge.AA;
     
     ps = zeros(sqrt(ge.Dx));
@@ -41,7 +44,9 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
     v_all = zeros(trials,groupnum,sequence_length);
     g_all = zeros(trials,ge.k,sequence_length);
     
+    fprintf('Trial %d/',trials);
     for t=1:trials
+        printCounter(t);
         stim = gestaltStimulus(ge.Dx,ge.B,true,true,true);
         
         v_means = []; % sim will be 4xT (stimulus,gestalt,confound,other)
@@ -136,6 +141,7 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
         v_all(t,:,:) = v_means;
         g_all(t,:,:) = g_seq;
     end
+    fprintf('\n');
     
     v_plot = squeeze(mean(v_all,1));
     g_plot = squeeze(mean(g_all,1));
@@ -144,7 +150,7 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
     if shift
         v_plot = v_plot + repmat((0:groupnum-1)*0.001,sequence_length,1)';
     end
-    
+    figure;
     if plot_bars
         v_plot = [v_plot(:,1) v_plot(:,2:2:sequence_length)];
         bar(v_plot');
@@ -182,7 +188,7 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
     H = area([areaxlim fliplr(areaxlim)],[yl(2) yl(2) yl(1) yl(1)],'LineStyle','none');
     h=get(H,'children');
     set(h,'FaceAlpha',0.05,'FaceColor',[0 0 1]);
-    hold off;
+    hold off;    
 end
 
 
