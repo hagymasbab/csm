@@ -1,6 +1,6 @@
 function template = gestaltExtractTemplate(ge,compNum)
     cc = ge.cc{compNum};
-    thresh = (mean(cc(:)) + max(cc(:))) / 2;
+    thresh = (mean(cc(:)) + max(cc(:))) / 2 -1;
     template = zeros(ge.Dv,1);
     for i=1:ge.Dv
         for j=i+1:ge.Dv
