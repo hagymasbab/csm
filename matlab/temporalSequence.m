@@ -4,7 +4,7 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
     % set the right parameters for sampling
     ge.obsVar = 1;
     ge.g_shape = 0.01;
-    ge.g_scale = 0.02;
+    ge.g_scale = 1;
     sAA = (1/ge.obsVar) * ge.AA;
     
     ps = zeros(sqrt(ge.Dx));
