@@ -224,7 +224,7 @@ p(z \mid X,V,g) = \frac{p(X \mid g,z,V) p(z \mid V,g)}{p(X \mid V,g)} \sim p(X \
 the log-posterior being
 
 \begin{equation} 
-\log p(z \mid X,V) \sim -\frac{1}{2} \left[B D_x\log(\delta_x) + \frac{1}{\delta_x} \sum_{b=1}^B (x_b - zAv_b)^T (x_b - zAv_b)\right] + \log p(z)
+\log p(z \mid X,V) \sim -\frac{1}{2} \left[B D_x\log(\sigma_x) + \frac{1}{\sigma_x} \sum_{b=1}^B (x_b - zAv_b)^T (x_b - zAv_b)\right] + \log p(z)
 \end{equation}
 %
 the prior density $p(z)$ can be chosen from multiple families, e.g. a Gamma distribution.

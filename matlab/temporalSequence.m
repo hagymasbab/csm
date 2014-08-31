@@ -44,10 +44,15 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
     v_all = zeros(trials,groupnum,sequence_length);
     g_all = zeros(trials,ge.k,sequence_length);
     
+    stim_series = [];
+    conf_series = [];
+    
+    stim = gestaltStimulus(ge.Dx,ge.B,true,true,true);
     fprintf('Trial %d/',trials);
     for t=1:trials
         printCounter(t);
         stim = gestaltStimulus(ge.Dx,ge.B,true,true,true);
+
         
         v_means = []; % sim will be 4xT (stimulus,gestalt,confound,other)
         v_stds = [];
@@ -67,6 +72,7 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
             end
             cv = componentSum(g_act,ge.cc);
             v_samp_batch = mvnrnd(zeros(ge.B,ge.Dv),cv);
+            
             v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
         else
 %             g_act = (1/ge.k) * ones(ge.k,1);
@@ -77,7 +83,10 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
 
         g_seq = [g_seq g_act];
         v_means = [v_means v_act];
-
+        
+        act_stim = zeros(1,cycles);
+        act_conf = zeros(1,cycles);
+        
         for c=1:cycles
             % T1
             % set the input to a partial activation of a gestalt plus unexplained
@@ -86,6 +95,14 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
             g_seq = [g_seq g_act];
             ge.X(1,:,:) = stim;
             v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
+            if strcmp(quantity,'reliability')
+                % B needs to be 1
+                stimunits = v_samp_batch(1,stim_idx);
+                confunits = v_samp_batch(1,conf_idx);
+                act_stim(1,c) = stimunits(1,1);
+                act_conf(1,c) = confunits(1,1);                
+            end
+                
             v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
             v_means = [v_means v_act];        
 
@@ -100,48 +117,26 @@ function to_plot = temporalSequence(ge,quantity,cycles,remove,trials,shift,plot_
             g_seq = [g_seq g_act];
             v_means = [v_means v_act];
         end
-
-        % T3
-        % set the input signal back to nothing
-        % update v
-%         g_seq = [g_seq g_act];
-%         if remove
-%             ge.X(1,:,:) = randstim;
-%         else
-%             ge.X(1,:,:) = stim;
-%         end
-%         v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
-%         v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
-%         v_means = [v_means v_act];   
-% 
-%         % T4
-%         % update g
-%         logpdf = @(g) gestaltLogPostG(g,v_samp_batch,ge,'dirichlet',false); 
-%         g_part = g_act(1:ge.k-1,1);
-%         for i=1:1
-%             [g_part,~] = sliceSample(g_part,logpdf,0.05,'limits',[0,1]);
-%         end
-%         g_act = [g_part; 1-sum(g_part)];
-%         g_seq = [g_seq g_act];
-%         v_means = [v_means v_act];
-%         
-%         % T5
-%         % update v
-%         g_seq = [g_seq g_act];
-%         if remove
-%             ge.X(1,:,:) = randstim;
-%         else
-%             ge.X(1,:,:) = stim;
-%         end
-%         v_samp_batch = gestaltPostVRnd(ge,1,g_act,1,false);
-%         v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,ge.cc,sAA);
-%         v_means = [v_means v_act];   
+        
+        stim_series = [stim_series act_stim'];
+        conf_series = [conf_series act_conf'];
         
         % store values
-        v_all(t,:,:) = v_means;
-        g_all(t,:,:) = g_seq;
+        if ~strcmp(quantity,'reliability')  
+            v_all(t,:,:) = v_means;
+            g_all(t,:,:) = g_seq;
+        end
     end
     fprintf('\n');
+    
+    if strcmp(quantity,'reliability')        
+        sr = corr(stim_series');
+        stim_r = upperTriangleValues(sr);
+        cr = corr(conf_series');
+        conf_r = upperTriangleValues(cr);
+        to_plot = [stim_r conf_r];
+        return;
+    end
     
     v_plot = squeeze(mean(v_all,1));
     g_plot = squeeze(mean(g_all,1));
@@ -199,12 +194,18 @@ function mr = meanCorr(X)
     mr = mean(ut(:)) * (dim^2 / (dim^2 / 2 + dim / 2));
 end
 
+function B = upperTriangleValues(A)
+    A = A-diag(diag(A));
+    B = A(triu(true(size(A))));
+    B = B(B~=0);
+end
+
 function v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,cc,sAA)
     v_samp = mean(v_samp_batch,1);
     groupnum = size(idxs,2);
+    v_act = [];
     
-    if strcmp(quantity,'mean')
-        v_act = [];
+    if strcmp(quantity,'mean')        
         for i = 1:groupnum
             mc = mean(v_samp(idxs{i}));
             v_act = [v_act; mc];
@@ -213,13 +214,11 @@ function v_act = sortV(v_samp_batch,idxs,covidxs,quantity,g_act,cc,sAA)
         cv = componentSum(g_act,cc);
         actcorr = corrcov(inv(sAA + inv(cv)));
         
-        v_act = [];
         for i = 1:groupnum
             selected_corr = actcorr(covidxs{i});
             v_act = [v_act; mean(selected_corr(:))];
         end
     elseif strcmp(quantity,'allcorr')
-        v_act = [];
         for i = 1:groupnum
             mc = meanCorr(v_samp_batch(:,idxs{i}));
             v_act = [v_act; mc];
