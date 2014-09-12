@@ -20,7 +20,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'filters','line');
     addParamValue(p,'precision',true,@islogical);
     addParamValue(p,'contrast',false,@islogical);
-    addParamValue(p,'nullComponent',false,@islogical);
+    addParamValue(p,'nullComponent',true,@islogical);
     parse(p,varargin{:});
     gestalt = p.Results;        
     
@@ -59,7 +59,7 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.cc{1} = var*eye(4) + covar*[0 0 1 0; 0 0 0 0; 1 0 0 0; 0 0 0 0];
         gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
     else        
-        gestalt.cc = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,gestalt.nullComponent);
+        [gestalt.cc, gestalt.gRF] = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,gestalt.nullComponent);
         gestalt.k = size(gestalt.cc,2);
 %         if gestalt.nullComponent
 %             gestalt.k = gestalt.k + 1;

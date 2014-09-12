@@ -1,4 +1,4 @@
-function cc = gestaltCovariances(k,Dx,Dv,nullComponent)
+function [cc,receptiveFields] = gestaltCovariances(k,Dx,Dv,nullComponent)
     covering = false;
     two = false;
     if k == 0;
@@ -39,6 +39,10 @@ function cc = gestaltCovariances(k,Dx,Dv,nullComponent)
             startpixel = (act_shift - 1) * imsizey + vermargin + 1;
             endpixel = act_shift * imsizey - vermargin;
         end
+        act_rf = zeros(Dv,1);
+        act_rf(startpixel:endpixel) = 1;
+        receptiveFields{g} = act_rf;
+        
         if nullComponent
             cc{g} = 0.01*eye(Dv);
             length = endpixel-startpixel + 1;
