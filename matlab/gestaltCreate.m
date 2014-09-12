@@ -73,7 +73,9 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar,'sparsity',gestalt.sparsity);    
+    if gestalt.N > 0
+        gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar,'sparsity',gestalt.sparsity);    
+    end
     
     fprintf('Saving results\n');
     save(strcat('gestalt_',name,'.mat'),'gestalt');

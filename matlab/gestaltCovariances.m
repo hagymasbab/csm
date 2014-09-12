@@ -1,37 +1,41 @@
 function cc = gestaltCovariances(k,Dx,Dv,nullComponent)
     covering = false;
+    two = false;
     if k == 0;
         % we will generate a component set that covers the whole field in a
         % way that every V-unit belongs to 2 vertical components of length
         % 4 or 2 on the edges
         k = Dv;
         covering = true;
+    elseif k == 2
+        two = true;
     end                
 
     fprintf('Calculating covariance components\n');
     % vertical lines
     imsizex = floor(sqrt(Dx));
     imsizey = ceil(sqrt(Dx));
-    %fprintf('Calculating R\n');
-    % R = pinv(A'*A)*A';
-    % the gestalts should be placed over or watermarked onto natural images
-    %shift = floor(imsizex/(k+1));
-    shift = 2;
-    %width = max(1,floor(shift/2));
-    width = 1;
-    %margin = width;
+    
+    width = 1;    
     vermargin = 1;
+   
     N = max(Dx,Dv) + 1;
     for g = 1:k
         fprintf('..Component %d\n', g);
-        
-        act_shift = 1 + g*shift + (g-1)*width;
+                
         vs = zeros(N,Dv);
         X = mvnrnd(zeros(N,Dx),eye(Dx));
         if covering
             startpixel = max(g-1,1);
             endpixel = min(g+1,Dv);            
+        elseif two
+            shift = 2;                
+            act_shift = 1 + g*shift + (g-1)*width;
+            startpixel = (act_shift - 1) * imsizey + vermargin + 1;
+            endpixel = act_shift * imsizey - vermargin;
         else
+            shift = floor((imsizex - k) / (k+1));
+            act_shift = 1 + g*shift + (g-1)*width;
             startpixel = (act_shift - 1) * imsizey + vermargin + 1;
             endpixel = act_shift * imsizey - vermargin;
         end
