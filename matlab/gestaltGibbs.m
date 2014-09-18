@@ -9,7 +9,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'contrast',false,@islogical);
     addParamValue(parser,'initG',[]);
-    addParamValue(parser,'priorG','dirichlet');
+    addParamValue(parser,'priorG','gamma');
     addParamValue(parser,'gSampler','slice');
     parse(parser,varargin{:});
     params = parser.Results;
