@@ -75,18 +75,21 @@ function lp = gestaltPlotCondPostG(ge,V,prior,precision)
                 priors = priors + repmat((0:2)*step,size(gx,2),1)';
                 
                 plot(gx,priors,'--');
+                
+                % TODO: nem jok itt a szinek!
                 legend({'comp1post','comp2post','comp0post'})
                 
                 
                 hold off;
                 return;
+                % TODO this is disgusting
             end
         else
             lp1 = lp;
             lp2 = ones(1,size(gx,2)) - lp1; 
         end
         
-        if ge.k == 3
+        %if ge.k == 3
             
             
         [~,maxindices(i)] = max(lp1);
