@@ -105,16 +105,10 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
 
             % Gibbs sampling
             initG = (1/ge.k) * ones(ge.k,1);
-            [samples(n,:,:),rr] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG,'priorG',params.priorG);            
-            % if couldn't find a valid g-sample in 10 steps, skip
-            if rr < 0                
-                if params.verbose==2
-                    if rr == -1
-                        fprintf('\b\b');                
-                    else
-                        delPrint(-rr-1);
-                    end
-                end
+            try
+                [samples(n,:,:),~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG,'priorG',params.priorG);            
+            catch
+                % if couldn't find a valid g-sample in 10 steps, skip
                 skipped = skipped + 1;
                 continue;
             end
@@ -230,11 +224,5 @@ function comps = extractComponents(ge,precision)
         comps = ge.cc;        
     else
         comps = ge.pc;        
-    end
-end
-
-function delPrint(num)
-    for b=1:9+2*(floor(log10(num))+1)
-        fprintf('\b');
     end
 end

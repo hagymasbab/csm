@@ -19,35 +19,25 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     s = zeros(N,ge.k + ge.B*ge.Dv);
     zsamp = zeros(N,1);
     rr = 0;
-    %g = (1/k) * ones(ge.k,1);
-    valid = false;
-    tries = 0;
-    %fprintf(' looking for a valid g');
+
     if isempty(params.initG)
-        while ~valid
-            g = symmetricDirichlet(0.2,ge.k,1)';
-            valid = checkG(g,ge,params.precision);
-            tries = tries + 1;
-            % if we cannot find a valid g, return an error code
-            if tries > params.sampleRetry
-                rr = -1;
-                return;
-            end
-        end
+        % sample g from the prior distribution
+        try
+            g = gestaltPriorG(ge,params.priorG,'sampleRetry',params.sampleRetry);                   
+        catch err
+            rethrow(err);
+        end      
     else
         g = params.initG;
     end
-    %fprintf(repmat('\b',1,22));
+
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
     z = 1; % remains unchanged if we do not use a contrast variable
     % TODO we might sample z from its prior
         
-    if params.verbose==1
-        fprintf('Sample %d/',N);
-    end
     for i=1:N
         if params.verbose==1
-            printCounter(i);
+            printCounter(i,'stringVal','Sample','maxVal',N);
         end
         
         % generate a direct sample from the conditional posterior over v        
@@ -67,9 +57,11 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         valid = false;
         tries = 0;
         while ~valid
-            if tries > params.sampleRetry                
-                rr = -i -1;
-                return;
+            if tries > params.sampleRetry
+                if params.verbose == 1
+                    delPrint(i);
+                end
+                throw(MException('Gestalt:Gibbs:TooManyTries','Number of tries to sample a valid g vector from the conditional posterior exceeded %d at sampling step %d',params.sampleRetry,i));
             end
             if strcmp(params.gSampler,'slice')
                 if strcmp(params.priorG,'dirichlet')
@@ -89,7 +81,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                 %fprintf('Sample %d omitted due to too many retries in slice sampling\n',i);
                 continue
             end            
-            valid = checkG(g,ge,params.precision);            
+            valid = gestaltCheckG(g,ge,params.precision);            
             if valid
                 g = g_temp;
             end
@@ -120,9 +112,6 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         s(i,:) = [g' vlong];
         zsamp(i,1) = z;
     end
-%     if params.verbose==1
-%         fprintf('\n');
-%     end
     
     % calculate the rejection rate
     rr = rr / (rr + N);
@@ -134,34 +123,5 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     if params.thin > 1
         indices = 1:params.thin:nSamp*params.thin;
         s = s(indices,:);
-    end
-end
-
-function good = checkG(g,ge,precision)
-    good = true;
-    if ~precision
-        CvP = componentSum(g,ge.cc);
-    else
-        CvP = componentSum(g,ge.pc);
-    end
-    if rcond(CvP) < 1e-15
-        good = false;
-        return;
-    end
-    if ~precision
-        postP = (1/ge.obsVar) * ge.AA + inv(CvP);                
-    else
-        postP = (1/ge.obsVar) * ge.AA + CvP;                
-    end
-    if rcond(postP) < 1e-15
-        good = false;
-        return;
-    end
-    
-    %postC = inv(postP);
-    [~,err] = cholcov(postP);
-    %if det(CvP) > 0 && det(postC) > 0 && err == 0                
-    if err ~= 0                
-        good = false;                
     end
 end
