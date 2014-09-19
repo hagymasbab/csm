@@ -23,19 +23,7 @@ function lp = gestaltLogPostG(g,V,ge,prior,precision)
         P = componentSum(g,ge.pc);
     end
     
-    if strcmp(prior,'dirichlet')
-        logprior = (ge.sparsity - 1) * sum(log(g));
-    elseif strcmp(prior,'gamma')
-        logprior = 0;
-        for d = 1:ge.k            
-            if ge.nullComponent && d == ge.k
-                logprior = logprior + log(gampdf(g(d,1),ge.null_shape,ge.null_scale));
-            else
-                logprior = logprior + log(gampdf(g(d,1),ge.g_shape,ge.g_scale));
-            end
-        end
-    end
-    
+    logprior = gestaltLogPriorG(g,ge,prior);        
     
     quad = 0;
     for b=1:B

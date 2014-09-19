@@ -5,7 +5,7 @@ function printCounter(i,varargin)
     parse(parser,varargin{:});
     params = parser.Results;
     
-    if ~isempty(params.stringVal) && params.maxVal > 0
+    if ~isempty(params.stringVal) && params.maxVal > 0 && i == 1
         fprintf('%s %d/',params.stringVal,params.maxVal);
     end
     
