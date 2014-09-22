@@ -1,7 +1,7 @@
 function ge = gestaltGenerate(ge,N,varargin)
     parser = inputParser;
     addParamValue(parser,'precision',false,@islogical);
-    addParamValue(parser,'verbose',true,@islogical);
+    addParamValue(parser,'verbose',false,@islogical);
     addParamValue(parser,'batchSize',10,@isnumeric);
     addParamValue(parser,'obsVar',0.1,@isnumeric);
     addParamValue(parser,'sparsity',0.2,@isnumeric);

@@ -2,6 +2,7 @@ function [cc,receptiveFields] = gestaltCovariances(k,Dx,Dv,varargin)
     parser = inputParser;
     addParamValue(parser,'nullComponent',true,@islogical);    
     addParamValue(parser,'overlapping',false,@islogical);    
+    addParamValue(parser,'verbose',false,@islogical);    
     parse(parser,varargin{:});        
     params = parser.Results;
     
@@ -16,8 +17,10 @@ function [cc,receptiveFields] = gestaltCovariances(k,Dx,Dv,varargin)
     elseif k == 2
         two = true;
     end                
-
-    fprintf('Calculating covariance components\n');
+    
+    if params.verbose
+        fprintf('Calculating covariance components\n');
+    end
     % vertical lines
     imsizex = floor(sqrt(Dx));
     imsizey = ceil(sqrt(Dx));
@@ -27,7 +30,9 @@ function [cc,receptiveFields] = gestaltCovariances(k,Dx,Dv,varargin)
    
     N = max(Dx,Dv) + 1;
     for g = 1:k
-        fprintf('..Component %d\n', g);
+        if params.verbose
+            fprintf('..Component %d\n', g);
+        end
                 
         vs = zeros(N,Dv);
         X = mvnrnd(zeros(N,Dx),eye(Dx));

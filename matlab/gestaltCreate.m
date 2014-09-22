@@ -13,9 +13,9 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'z_shape',1,@isnumeric);
     addParamValue(p,'z_scale',2,@isnumeric);
     addParamValue(p,'g_shape',1,@isnumeric);
-    addParamValue(p,'g_scale',0.01,@isnumeric);
+    addParamValue(p,'g_scale',0.2,@isnumeric);
     addParamValue(p,'null_shape',2,@isnumeric);
-    addParamValue(p,'null_scale',1,@isnumeric);
+    addParamValue(p,'null_scale',0.2,@isnumeric);
     addParamValue(p,'B',10,@isnumeric);
     addParamValue(p,'filters','line');
     addParamValue(p,'precision',true,@islogical);
@@ -36,7 +36,7 @@ function gestalt = gestaltCreate(name,varargin)
     gestalt.Dv = size(gestalt.A,2);   
     
     % compute some additional matrices to speed up inference
-    fprintf('Calculating A^TA\n');
+    %fprintf('Calculating A^TA\n');
     gestalt.AA = (gestalt.A)'*gestalt.A;
     %fprintf('Calculating R\n');
     %gestalt.R = pinv(gestalt.AA)*(gestalt.A)';
@@ -78,5 +78,5 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar,'sparsity',gestalt.sparsity);    
     end
     
-    fprintf('Saving results\n');
+    %fprintf('Saving results\n');
     save(strcat('gestalt_',name,'.mat'),'gestalt');

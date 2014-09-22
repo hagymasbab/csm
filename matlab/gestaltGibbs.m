@@ -72,7 +72,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                     [g_temp,rr_act] = sliceSample(g,logpdf,params.stepsize,'plot',params.plot>1);
                 end
             elseif strcmp(params.gSampler,'mh')
-                    [g_temp,rr_act] = metropolisHastings(g,logpdf,0.1*eye(ge.k),1,0,0);
+                    [g_temp,rr_act] = metropolisHastings(g,logpdf,0.001*eye(ge.k),1,0,0,'verbose',0);
                     g_temp = g_temp';
             end
             
