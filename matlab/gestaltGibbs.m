@@ -63,24 +63,36 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                 end
                 throw(MException('Gestalt:Gibbs:TooManyTries','Number of tries to sample a valid g vector from the conditional posterior exceeded %d at sampling step %d',params.sampleRetry,i));
             end
-            if strcmp(params.gSampler,'slice')
-                if strcmp(params.priorG,'dirichlet')
-                    [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1,'limits',[0,1]);
-                    g_temp = [g_part; 1-sum(g_part)];
-
-                else
-                    [g_temp,rr_act] = sliceSample(g,logpdf,params.stepsize,'plot',params.plot>1);
-                end
-            elseif strcmp(params.gSampler,'mh')
-                    [g_temp,rr_act] = metropolisHastings(g,logpdf,0.001*eye(ge.k),1,0,0,'verbose',0);
-                    g_temp = g_temp';
-            end
-            
             tries = tries + 1;
-            if rr_act == -1
+            
+            try
+                if strcmp(params.gSampler,'slice')
+                    if strcmp(params.priorG,'dirichlet')
+                        [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plot>1,'limits',[0,1]);
+                        g_temp = [g_part; 1-sum(g_part)];
+
+                    else
+                        [g_temp,rr_act] = sliceSample(g,logpdf,params.stepsize,'plot',params.plot>1);
+                    end
+                elseif strcmp(params.gSampler,'mh')
+                        [g_temp,rr_act] = metropolisHastings(g,logpdf,0.001*eye(ge.k),1,0,0,'verbose',0);
+                        g_temp = g_temp';
+                elseif strcmp(params.gSampler,'gibbs-slice')
+                    if strcmp(params.priorG,'dirichlet')
+                        throw(MException('Gestalt:Gibbs:InvalidParameterCombination','Gibbs-slice sampling is only implemented for independent (e.g. Gamma) priors.'));
+                    else
+                        g_temp = g;
+                        for j = 1:ge.k
+                            condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,params.priorG,params.precision); 
+                            [g_temp(j,1),rr_act] = sliceSample(g(j,1),condlogpdf,params.stepsize,'plot',params.plot>1);
+                        end
+                    end
+                end
+            catch err
                 %fprintf('Sample %d omitted due to too many retries in slice sampling\n',i);
                 continue
-            end            
+            end
+                               
             valid = gestaltCheckG(g,ge,params.precision);            
             if valid
                 g = g_temp;
@@ -94,7 +106,8 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
             valid = false;
             tries = 0;
             while ~valid
-                if tries > params.sampleRetry                
+                if tries > params.sampleRetry    
+                    % TODO replace this with exception handling
                     rr = -i -1;
                     return;
                 end

@@ -90,8 +90,7 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
             end
         end
         if rr > params.sampleRetry
-           rr = -1;
-           return;
+           throw(MException('Gestalt:SliceSample:TooManyTries','Number of tries to produce a slice sample exceeded %d',params.sampleRetry));
         end
     end
 end
