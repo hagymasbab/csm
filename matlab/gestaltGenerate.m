@@ -17,7 +17,16 @@ function ge = gestaltGenerate(ge,N,varargin)
         fprintf('Generating synthetic data\n');
         fprintf('..Generating g values from a Dirichlet prior with concentration parameter %.2f\n',ge.sparsity);
     end        
-    ge.G = symmetricDirichlet(ge.sparsity,ge.k,ge.N);
+    
+    % heuristically, we are better of with a dirichlet for small k
+    if ge.k < 10
+        ge.G = symmetricDirichlet(ge.sparsity,ge.k,ge.N);
+    else
+        ge.G = zeros(ge.N,ge.k);
+        for i = 1:N
+            ge.G(i,:) = gestaltSamplePriorG(ge,'gamma')';
+        end
+    end
     
     if ge.contrast
         % sample z from a Gamma prior

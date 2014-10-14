@@ -23,8 +23,8 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     %u = p_init * rand();
     log_u = logp_init + log(rand());
     if pl
-        %plot(init,u,'r-',init,u,'ro');
-        plot(init,log_u,'r-',init,log_u,'ro');
+        plot(init,exp(log_u),'r-',init,exp(log_u),'ro');
+        %plot(init,log_u,'r-',init,log_u,'ro');
         pause
     end
     bounds = repmat(init,1,2);
@@ -35,8 +35,8 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
         while inside
             actpoint(d,1) = actpoint(d,1) - stepsize;
             if pl
-                %plot(actpoint,u,'r-',actpoint,u,'ro');
-                plot(actpoint,log_u,'r-',actpoint,log_u,'ro');
+                plot(actpoint,exp(log_u),'r-',actpoint,exp(log_u),'ro');
+                %plot(actpoint,log_u,'r-',actpoint,log_u,'ro');
                 pause
             end
             %if exp(logpdf(actpoint)) <= u
@@ -54,8 +54,8 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
         while inside
             actpoint(d,1) = actpoint(d,1) + stepsize;
             if pl
-                %plot(actpoint,u,'r-',actpoint,u,'ro');
-                plot(actpoint,log_u,'r-',actpoint,log_u,'ro');
+                plot(actpoint,exp(log_u),'r-',actpoint,exp(log_u),'ro');
+                %plot(actpoint,log_u,'r-',actpoint,log_u,'ro');
                 pause
             end
             %if exp(logpdf(actpoint)) <= u
@@ -74,6 +74,10 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     rr = 0;
     while reject
         x = bounds(:,1) + rand(dim,1) .* (bounds(:,2)-bounds(:,1));
+        if pl
+            plot(x,0,'bx');
+            pause
+        end
         %if exp(logpdf(x)) >= u
         if logpdf(x) >= log_u
             reject = false;

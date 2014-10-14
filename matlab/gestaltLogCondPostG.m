@@ -1,5 +1,9 @@
 function lcp = gestaltLogCondPostG(gi,g,compIdx,V,ge,prior,precision)
-
+    if (gi < 0 || sum(g<0) > 0)
+        lcp=-Inf;
+        return
+    end
+    
     g(compIdx,1) = gi;
 
     loglike = gestaltLogLikeV(V,g,ge,precision);
@@ -15,4 +19,6 @@ function lcp = gestaltLogCondPostG(gi,g,compIdx,V,ge,prior,precision)
     end
     
     lcp = loglike + lp;
+    %lcp = loglike;
+    %lcp = lp;
 end

@@ -1,6 +1,6 @@
 function g_act = gestaltSamplePriorG(ge,distribution,varargin)
     parser = inputParser;
-    addParamValue(parser,'sampleRetry',0,@isnumeric);
+    addParamValue(parser,'sampleRetry',10,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
     parse(parser,varargin{:});
     params = parser.Results;
