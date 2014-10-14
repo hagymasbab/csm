@@ -5,7 +5,7 @@ function all_G = testSampling(ge,L,sampler,prior)
     fprintf('Datum %d/',ge.N);
     for n=1:ge.N
         printCounter(n);
-        s = gestaltGibbs(ge,n,L,'gSampler',sampler,'priorG',prior,'sampleRetry',10);
+        s = gestaltGibbs(ge,n,L,'gSampler',sampler,'priorG',prior,'sampleRetry',10,'plot',0,'repeatCycle',100);
         all_G(n,:,:) = s(:,1:ge.k);
         meanG = mean(s(:,1:ge.k));
         [~,sampind] = max(meanG);

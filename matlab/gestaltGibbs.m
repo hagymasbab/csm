@@ -11,6 +11,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'initG',[]);
     addParamValue(parser,'priorG','gamma');
     addParamValue(parser,'gSampler','slice');
+    addParamValue(parser,'repeatCycle',1,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -83,19 +84,21 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                     else
                         rr_act = 0;
                         g_temp = g;
-                        for j = 1:ge.k
-                            %g_temp
-                            if params.plot > 0
-                                clf;
-                                gestaltPlotConditional(g,j,V,ge,params.priorG,0.1);
-                                hold on;
-                                plot(ge.G(xind,j),0,'go');
-                                pause
+                        for cycle = 1:params.repeatCycle
+                            for j = 1:ge.k
+                                %g_temp
+                                if params.plot > 0
+                                    clf;
+                                    gestaltPlotConditional(g,j,V,ge,params.priorG,0.1);
+                                    hold on;
+                                    plot(ge.G(xind,j),0,'go');
+                                    pause
+                                end
+                                condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,params.priorG,params.precision); 
+                                [g_temp(j,1),rr_part] = sliceSample(g_temp(j,1),condlogpdf,params.stepsize,'plot',params.plot>1);
+
+                                rr_act = rr_act + rr_part;
                             end
-                            condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,params.priorG,params.precision); 
-                            [g_temp(j,1),rr_part] = sliceSample(g_temp(j,1),condlogpdf,params.stepsize,'plot',params.plot>1);
-                            
-                            rr_act = rr_act + rr_part;
                         end
                     end
                 end
