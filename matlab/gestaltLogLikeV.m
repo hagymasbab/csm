@@ -8,7 +8,7 @@ function loglike = gestaltLogLikeV(V,g,ge,precision)
         Cv = componentSum(g,ge.cc);
         [~,err] = chol(Cv);
         if err > 0
-            lp = -Inf;
+            loglike = -Inf;
             return;
         end
     else
