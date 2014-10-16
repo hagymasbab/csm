@@ -2,6 +2,7 @@ function printCounter(i,varargin)
     parser = inputParser;    
     addParamValue(parser,'maxVal',0,@isnumeric);
     addParamValue(parser,'stringVal','');
+    addParamValue(parser,'newLine',true,@islogical);
     parse(parser,varargin{:});
     params = parser.Results;
     
@@ -16,7 +17,11 @@ function printCounter(i,varargin)
     end
     fprintf('%d', i);
     
-    if params.maxVal > 0 && i == params.maxVal
-        fprintf('\n');
-    end        
+    if i == params.maxVal
+        if params.newLine
+            fprintf('\n');
+        else
+            fprintf(' ');
+        end        
+    end
 end

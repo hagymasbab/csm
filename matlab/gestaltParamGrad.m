@@ -17,14 +17,14 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     for i=1:ge.k
         grad{i} = zeros(ge.Dv);
         cc{i} = cholesky{i}' * cholesky{i};
-    end
-    if verb > 0
-        fprintf('datapoint %d/', N);
-    end
+    end    
     
     % calculate U_hat
     U_hat = cell(ge.k,ge.Dv,ge.Dv);
     for kk=1:ge.k
+        if verb > 0
+            printCounter(kk,'stringVal','gradComp','maxVal',ge.k,'newLine',false);
+        end
         for i=1:ge.Dv
             % this is an upper triangle matrix
             for j=i:ge.Dv
@@ -36,7 +36,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     
     for n=1:N
         if verb > 0
-            printCounter(n);
+            printCounter(n,'stringVal','gradData','maxVal',N,'newLine',false);
         end
         GG = reshape(samples(n,:,1:ge.k),L,ge.k); % squeeze doesn't work for L=1
         for l=1:L
@@ -82,8 +82,5 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         end
     end
 
-%     if verb > 0
-%         fprintf('\n');
-%     end
 end
                 

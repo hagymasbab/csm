@@ -10,7 +10,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'contrast',false,@islogical);
     addParamValue(parser,'initG',[]);
     addParamValue(parser,'priorG','gamma');
-    addParamValue(parser,'gSampler','slice');
+    addParamValue(parser,'gSampler','gibbs-slice');
     addParamValue(parser,'repeatCycle',1,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
@@ -38,7 +38,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         
     for i=1:N
         if params.verbose==1
-            printCounter(i,'stringVal','Sample','maxVal',N);
+            printCounter(i,'stringVal','Sample','maxVal',N,'newLine',false);
         end
         
         % generate a direct sample from the conditional posterior over v        

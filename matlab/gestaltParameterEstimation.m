@@ -120,7 +120,7 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
                 % gradient of the parameters of the complete-data log-likelihood            
-                grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',params.precision);                        
+                grad = gestaltParamGrad(ge,samples(n,:,:),cholesky,'precision',params.precision,'verbose',params.verbose);                        
 
                 % update cholesky components
                 for j=1:ge.k

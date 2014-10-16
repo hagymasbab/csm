@@ -1,4 +1,4 @@
-function all_G = testSampling(ge,L,sampler,prior)
+function all_G = testSampling(ge,L,sampler,prior,plotsamples)
     right = 0;
     all_G = zeros(ge.N,L,ge.k);
     rightindices = [];
@@ -17,11 +17,12 @@ function all_G = testSampling(ge,L,sampler,prior)
             %ge.G(n,:)
         end
         
-        if ge.k == 3
+        if ge.k >= 3 && plotsamples
             % we condition the posterior over g to the truth for the sake of plotting
             clf;
-            posterior = @(g1,g2,g3) exp( gestaltLogPostG([g1;g2;g3],ge.V(n,:,:),ge,prior,false) );
+            posterior = @(g1,g2,g3) exp( gestaltLogPostG([g1;g2;g3;ge.G(n,4:end)'],ge.V(n,:,:),ge,prior,false) );
             plotFunctionProjections(posterior,0.1);                        
+            
             subplot(1,3,1);
             hold on;
             scatter(s(:,1),s(:,2));
