@@ -34,12 +34,12 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     end
     
     
-    for n=1:N
-        if verb > 0
-            printCounter(n,'stringVal','gradData','maxVal',N,'newLine',false);
-        end
+    for n=1:N        
         GG = reshape(samples(n,:,1:ge.k),L,ge.k); % squeeze doesn't work for L=1
         for l=1:L
+            if verb > 0
+                printCounter((n-1)*L+l,'stringVal','gradSample','maxVal',N*L,'newLine',false);
+            end
             % retrieve g^m
             g = GG(l,:)';
             % calculate \sum_{b=1}^B v^{m,b} v^{(m,b)T}

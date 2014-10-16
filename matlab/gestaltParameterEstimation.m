@@ -88,16 +88,13 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                         
         cc_prev = extractComponents(ge,params.precision);
                 
-        if params.verbose == 2
-            fprintf('EM cycle %d datapoint %d/',step,ge.N);            
-        end
-
+       
         skipped = 0;
         for n=1:ge.N
-            if params.verbose==2
-                printCounter(n);
-                fprintf(' ');
-            end
+            
+             if params.verbose == 2
+                fprintf('EM cycle %d datapoint %d/%d ',step,ge.N,n);            
+             end
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
             % E - step            
