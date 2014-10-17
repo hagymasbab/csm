@@ -135,9 +135,9 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                 microstate_sequence{step*ge.N+n+1} = microstate;
             end
 
-            if params.verbose==2
-                delPrint(nSamples);
-            end
+%             if params.verbose==2
+%                 delPrint(nSamples);
+%             end
         end %for n=1:ge.N           
         if strcmp(params.method,'block')
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -188,6 +188,8 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
             end
             break;
         end
+        
+        %whos
     end        
 
     if params.plot>0

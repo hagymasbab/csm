@@ -162,7 +162,7 @@ where $J^{ij}$ is the single-entry matrix so that its element at index $(i,j)$ i
 \begin{split}
 &\frac{\partial \mathcal{L}}{\partial \left[ U_k \right]_{i,j}} = -\frac{1}{2L} \sum_{m=1}^{NL} \textrm{Tr} \left[ \frac{\partial \mathcal{L}^m}{\partial C_v^m} \frac{\partial C_v^m}{\partial \left[ U_k \right]_{i,j}} \right] = \\
 & -\frac{1}{2L} \sum_{m=1}^{LN} \textrm{Tr} \left[  \left[ B \left( C_v^m \right)^{-1} - \sum_{b=1}^B \left( C_v^m \right)^{-1} v^{m,b} v^{(m,b)T} \left( C_v^m \right)^{-1} \right] g_k^{m} \hat U_k^{ij} \right] = \\
-& -\frac{1}{2L} \sum_{m=1}^{LN} g_k^{m} \textrm{Tr} \left[ \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right] \hat U_k^{ij} \right]
+& -\frac{1}{2L} \textrm{Tr} \left[ \sum_{m=1}^{LN} g_k^{m} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right] \hat U_k^{ij} \right]
 \end{split}
 \end{equation}
 %

@@ -20,19 +20,24 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     end    
     
     % calculate U_hat
-    U_hat = cell(ge.k,ge.Dv,ge.Dv);
-    for kk=1:ge.k
-        if verb > 0
-            printCounter(kk,'stringVal','gradComp','maxVal',ge.k,'newLine',false);
-        end
-        for i=1:ge.Dv
-            % this is an upper triangle matrix
-            for j=i:ge.Dv
-                U_hat{kk,i,j} = derivQuadByElement(cholesky{kk},i,j);
-            end
-        end
-    end
+%     U_hat = cell(ge.k,ge.Dv,ge.Dv);    
+%     for kk=1:ge.k
+%         if verb > 0
+%             printCounter(kk,'stringVal','gradComp','maxVal',ge.k,'newLine',false);
+%         end
+%         whos
+%         for i=1:ge.Dv
+%             % this is an upper triangle matrix
+%             for j=i:ge.Dv
+%                 U_hat{kk,i,j} = derivQuadByElement(cholesky{kk},i,j);
+%             end
+%         end
+%     end
     
+    dLdC = cell(1,ge.k);
+    for kk = 1: ge.k
+        dLdC{kk} = zeros(ge.Dv);
+    end
     
     for n=1:N        
         GG = reshape(samples(n,:,1:ge.k),L,ge.k); % squeeze doesn't work for L=1
@@ -58,29 +63,38 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
                     v = V(b,:)';
                     %size(v)
                     quad = quad + iCv * (v * v') * iCv;
+                end                
+                actmat = (ge.B * iCv - quad);
+                for kk = 1:ge.k
+                    dLdC{kk} = dLdC{kk} + g(kk,:) * actmat;               
                 end
-                dLdC = (-1/(2*L)) * (ge.B * iCv - quad);                
-            else                        
-                dLdC = (1/L) * (ge.B * eye(ge.Dv)) / CvP - VV;                
-            end          
-            % calculate the derivative of the covariance matrix w.r.t. each
-            % element of each covariance component
-            for kk=1:ge.k
-                for i=1:ge.Dv
-                    % this is an upper triangle matrix
-                    for j=i:ge.Dv
-                        %U_hat = derivQuadByElement(cholesky{kk},i,j);
-                        dCdu = g(kk,:) * U_hat{kk,i,j};
-                        
-                        % gradient of the log-gaussian w.r.t. the actual
-                        % element of the actual component, summed over
-                        % samples
-                        grad{kk}(i,j) = grad{kk}(i,j) + trace(dLdC' * dCdu);
-                    end
-                end
-            end
+            else    
+                % TODO replace this with writing to stored matrices
+                dLdC = dLdC + (1/L) * (ge.B * eye(ge.Dv)) / CvP - VV;                
+            end      
         end
     end
+        
+    % calculate the derivative of the covariance matrix w.r.t. each
+    % element of each covariance component
+    for kk=1:ge.k
+        if verb > 0
+            printCounter(kk,'stringVal','gradComp','maxVal',ge.k,'newLine',true);
+        end
+        for i=1:ge.Dv
+            % this is an upper triangle matrix
+            for j=i:ge.Dv
+                U_hat = derivQuadByElement(cholesky{kk},i,j);
+                %dCdu = U_hat{kk,i,j};
 
+                % gradient of the log-gaussian w.r.t. the actual
+                % element of the actual component, summed over
+                % samples
+                grad{kk}(i,j) = trace(dLdC{kk}' * U_hat);
+            end
+        end
+        grad{kk} = (-1/(2*L)) * grad{kk};
+    end
+            
 end
                 
