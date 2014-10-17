@@ -41,7 +41,8 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
         ge.X = repmat(data,floor(1000/size(data,1)),1);
         ccInit = gestaltPretrain(ge,1000,pre_seed,'plot',false);
         for kk = 1:ge.k
-            ccInit{kk} = 10 * ccInit{kk} + eye(ge.Dv);
+            ccInit{kk} = 10 * ccInit{kk};
+            ccInit{kk} = max(ccInit{kk}(:)) * eye(ge.Dv);
         end
     end
     
@@ -93,7 +94,10 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
         for n=1:ge.N
             
              if params.verbose == 2
-                fprintf('EM cycle %d datapoint %d/%d ',step,ge.N,n);            
+                 if strcmp(params.method,'block')
+                     fprintf('\n');
+                 end
+                 fprintf('EM cycle %d datapoint %d/%d ',step,ge.N,n);            
              end
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
