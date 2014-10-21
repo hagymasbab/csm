@@ -1,6 +1,6 @@
 function patchDB = createPatchDB(patchSize,maxOrigSize)
-    %path = '/home/banmi/sejnowski_images';
-    path = '/home/banmi/botswana/keves';
+    path = '/home/banmi/imageDB/sejnowski_images';
+    %path = '/home/banmi/botswana/keves';
     files = dir(path);
     files = files(~[files.isdir]);
     %files = files(3:end);
@@ -10,7 +10,7 @@ function patchDB = createPatchDB(patchSize,maxOrigSize)
     for i=1:picNum
         printCounter(i);
         % load image
-        mat_file = true;
+        mat_file = false;
         if mat_file
             load(strcat(path,'/',files(i).name));
             act_image = LUM_Image;
@@ -19,12 +19,13 @@ function patchDB = createPatchDB(patchSize,maxOrigSize)
         end
 
         % subsample image   
-        if maxOrigSize > 0
-            sub_step = ceil(max(size(act_image)) / maxOrigSize);
-        else
-            sub_step = 1;
-        end
-        subsampled = act_image(1:sub_step:end,1:sub_step:end);
+%         if maxOrigSize > 0
+%             sub_step = ceil(max(size(act_image)) / maxOrigSize);
+%         else
+%             sub_step = 1;
+%         end
+%         subsampled = act_image(1:sub_step:end,1:sub_step:end);
+        subsampled = act_image;
         
 %         if i == 1
 %             fprintf('Original dims %d %d, sampling step %d, new dims %d %d\n',size(LUM_Image,1),size(LUM_Image,2),sub_step,size(subsampled,1),size(subsampled,2));
@@ -44,8 +45,8 @@ function patchDB = createPatchDB(patchSize,maxOrigSize)
     fprintf('\n');
         
     % whiten patches 
-    %patchDB = whitenImages(patches);
-    patchDB = patches;
-    save(sprintf('botswana_patches_%d_sub%d.mat',patchSize,sub_step),'patchDB');
+    patchDB = whitenImages(patches);
+    %patchDB = patches;
+    save(sprintf('sejnowski_patches_%d.mat',patchSize),'patchDB');
     
 end
