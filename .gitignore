@@ -8,3 +8,7 @@
 
 # OSX folder property files
 .DS_store
+
+# NFS bullshit
+.nfs*
+

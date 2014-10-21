@@ -32,6 +32,10 @@ function gestalt = gestaltCreate(name,varargin)
         gestalt.A = lineFilters(imSize);
     elseif strcmp(gestalt.filters,'eye')
         gestalt.A = eye(gestalt.Dx);
+    else
+        % load filters from file
+        load(gestalt.filters);
+        gestalt.A = A;
     end
     gestalt.Dv = size(gestalt.A,2);   
     

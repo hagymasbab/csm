@@ -110,13 +110,22 @@ which can be sampled directly from a Gaussian of dimension $D_v \times B$. The c
 p(g \mid X,V) = \frac{p(X \mid g,V) p(g \mid V)}{p(X \mid V)} = \frac{p(V \mid g) p(g)}{p(V)}
 \end{equation}
 %
-which can be sampled by a  slice sampling scheme with the following target
+which can be sampled by an MCMC sampling scheme with the following target
 
 \begin{equation} \label{eq:g_cond_logpost}
 \log p(g \mid X,V) \sim -\frac{1}{2} \left[B\log(\det(C_v)) + \sum_{b=1}^B v_b^T C_v^{-1} v_b\right] + (\alpha-1) \sum_{k=1}^K \log(g_k)
 \end{equation}
 %
-or by a Hamiltonian Monte Carlo scheme using the gradient (in case of a Gamma prior over $g$ with parameters shape $k$ and scale $\theta$):
+We can cycle over elements of $g$ with a Gibbs sampling scheme too. The unnormalised conditionals, assuming an independent (e.g. Gamma) prior look as follows
+
+\begin{equation} 
+\begin{split}
+\log p(g_j \mid g_{\neg j},X,V) = \frac{p(V \mid g_j,g_{\neg j},X) p(g_j \mid g_{\neg j},X)}{p(V \mid g_{\neg_j},X)} = \\
+= \frac{ p(V \mid g) p(g_j) }{ p(V \mid g_{\neg_j}) } \sim p(V \mid g) p(g_j)
+\end{split}
+\end{equation}
+%
+These one-dimensional targets have to be sampled by MCMC too. Alternatively, one can use a a Hamiltonian Monte Carlo scheme using the gradient (in case of a Gamma prior over $g$ with parameters shape $k$ and scale $\theta$):
 
 \begin{equation}
 \begin{split}
