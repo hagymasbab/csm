@@ -34,7 +34,12 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     if strcmp(params.initCond,'random') 
         ccInit = randomCovariances(ge.k,ge.Dv,'precision',params.precision);        
     elseif strcmp(params.initCond,'shifted') 
-        ccInit = gestaltCovariances(ge.k,ge.A',floor(sqrt(ge.Dx)/4));     
+        ccInit = gestaltCovariances(ge.k,ge.A',floor(sqrt(ge.Dx)/4));  
+    elseif strcmp(params.initCond,'empty') 
+        ccInit = cell(1,ge.k);
+        for kk = 1:ge.k
+            ccInit{kk} = 0.001 * eye(ge.Dv);
+        end
     elseif strcmp(params.initCond,'pretrain')
         pre_seed = randi(intmax);
         data = reshape(X,size(X,1)*size(X,2),size(X,3));

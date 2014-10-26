@@ -1,5 +1,5 @@
-function patchDB = createPatchDB(patchSize,maxOrigSize)
-    path = '/home/banmi/imageDB/sejnowski_images';
+function patchDB = createPatchDB(path,patchSize,maxOrigSize)
+    %path = '/home/banmi/imageDB/sejnowski_images';
     %path = '/home/banmi/botswana/keves';
     files = dir(path);
     files = files(~[files.isdir]);
