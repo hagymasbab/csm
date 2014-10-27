@@ -1,15 +1,16 @@
 function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
-    defaults.samples                = 10;
+    defaults.samples                = 20;
 %     defaults.increaseLikelihood     = false;
 %     defaults.fullLikelihood         = false;
 %     defaults.likelihoodSamples      = 10;
 %     defaults.rateMethod             = 'componentwise_goal';
-    defaults.learningRate           = 0.01;
+    defaults.learningRate           = 1;
 %     defaults.multistep              = false;
-    defaults.initCond               = 'random';
+    defaults.initCond               = 'empty';
     defaults.priorG                 = 'gamma';
+    defaults.method                 = 'block';
     
-    defaults.dataPoints             = 20;
+    defaults.dataPoints             = 50;
     defaults.batchSize              = 10;
     defaults.obsVar                 = 0.01;
     defaults.sparsity               = 0.2;
@@ -30,7 +31,7 @@ function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
         for r=1:nRun
             printCounter(r);
             ge = gestaltGenerate(ge,actparam.dataPoints,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
-            gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'learningRate',actparam.learningRate,'initCond',actparam.initCond,'priorG',actparam.priorG);
+            gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'learningRate',actparam.learningRate,'initCond',actparam.initCond,'priorG',actparam.priorG,'method',actparam.method);
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));
         end
         fprintf('\n');
