@@ -1,12 +1,13 @@
 function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,varargin)        
     parser = inputParser;
-    addParamValue(parser,'learningRate',0.02,@isnumeric);    
-    addParamValue(parser,'plot',1,@isnumeric);
+    addParamValue(parser,'learningRate',1,@isnumeric);    
+    addParamValue(parser,'plot',0,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);   
     addParamValue(parser,'verbose',2,@isnumeric);
-    addParamValue(parser,'initCond','random');
-    addParamValue(parser,'method','iterative');
+    addParamValue(parser,'initCond','empty');
+    addParamValue(parser,'method','block');
     addParamValue(parser,'priorG','gamma');
+    addParamValue(parser,'detailedDiff',false,@islogical); 
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -73,6 +74,9 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     act_c = componentSum(ones(ge.k,1),ccInit);
     state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
     state.difference_to_vcov = covcompRootMeanSquare(act_c,v_cov,1);
+    if params.detailedDiff
+        state.detailed_difference = covcompRootMeanSquare(ccInit,cc_old,[],'verbose',true);
+    end
     state.matrix_norms = {};
     for i=1:ge.k
         state.matrix_norms{i} = norm(ccInit{i});

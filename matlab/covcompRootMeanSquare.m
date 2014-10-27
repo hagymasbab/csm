@@ -1,4 +1,8 @@
-function [mindiff,minperm] = covcompRootMeanSquare(cc1,cc2,minperm)
+function [mindiff,minperm] = covcompRootMeanSquare(cc1,cc2,minperm,varargin)
+    parser = inputParser;
+    addParamValue(parser,'verbose',false,@islogical);
+    parse(parser,varargin{:});        
+    params = parser.Results;     
     % we should take the minimum over all possible permutations    
     if ~iscell(cc1)
         cc1 = {cc1};
@@ -13,6 +17,9 @@ function [mindiff,minperm] = covcompRootMeanSquare(cc1,cc2,minperm)
     end
     mindiff = Inf;
     for p=1:size(permutations,1)
+        if params.verbose
+            printCounter(p,'stringVal','RMS permuataion','maxVal',size(permutations,1),'newLine',true);
+        end
         si = permutations(p,:);
         diff = 0;
         for j=1:k            
