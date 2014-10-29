@@ -13,7 +13,8 @@ function [means,stds,legends] = plotLearningCurves(names)
             end            
             differences = [];
             for f = 1:size(runfiles,1)
-                load(sprintf('%s_iter_param%d_run%d.mat',names{n},act_param,f));
+                filename = sprintf('%s_iter_param%d_run%d.mat',names{n},act_param,f)
+                load(filename);
                 stepnum = size(state_sequence,2);
                 actdiff = zeros(1,stepnum);
                 for s = 1:stepnum
