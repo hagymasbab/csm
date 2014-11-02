@@ -4,11 +4,12 @@ function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
 %     defaults.fullLikelihood         = false;
 %     defaults.likelihoodSamples      = 10;
 %     defaults.rateMethod             = 'componentwise_goal';
-    defaults.learningRate           = 1;
+    defaults.learningRate           = 0.1;
 %     defaults.multistep              = false;
     defaults.initCond               = 'empty';
     defaults.priorG                 = 'gamma';
     defaults.method                 = 'block';
+    defaults.dataSource             = 'synthetic';
     
     defaults.dataPoints             = 50;
     defaults.batchSize              = 10;
@@ -27,16 +28,36 @@ function diffs = gestaltBenchmark(ge,nRun,maxStep,name,hyperparams)
         parametrisations{hp} = actparam;
         save(sprintf('%s_params.mat',name),'parametrisations');
         
+        if ~strcmp(actparam.dataSource,'synthetic')           
+            load(actparam.dataSource); 
+            if ~exist('patchDB')
+                throw(MException('Gestalt:Benchmark:EmptySource','The data source %s does not contain a variable called patchDB',actparam.dataSource));
+            end
+            if ge.B ~= 1
+                ge.B = 1;
+                fprintf('Batch size is set to 1 as sampling conditioned in non-synthetic data is not implemented for observation batches.\n');
+            end
+            ge.N = actparam.dataPoints;
+            ge.X = reshape(patchDB(:,1:actparam.dataPoints)',actparam.dataPoints,1,ge.Dv); % B needs to be 1
+            ge.obsVar = actparam.obsVar;
+        end
+        
         fprintf('Run %d/',nRun);
         for r=1:nRun
             printCounter(r);
-            ge = gestaltGenerate(ge,actparam.dataPoints,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
-            gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1,'learningRate',actparam.learningRate,'initCond',actparam.initCond,'priorG',actparam.priorG,'method',actparam.method);
+            if strcmp(actparam.dataSource,'synthetic')
+                ge = gestaltGenerate(ge,actparam.dataPoints,'verbose',false,'batchSize',actparam.batchSize,'obsVar',actparam.obsVar,'sparsity',actparam.sparsity);
+            end
+            
+            gestaltParameterEstimation(ge,ge.X,actparam.samples,maxStep,'shuffle','plot',0,'verbose',1, ... 
+                'learningRate',actparam.learningRate,'initCond',actparam.initCond,'priorG',actparam.priorG, ... 
+                'method',actparam.method,'syntheticData',strcmp(actparam.dataSource,'synthetic'));
+            
             copyfile('iter.mat',sprintf('%s_iter_param%d_run%d.mat',name,hp,r));
         end
         fprintf('\n');
     end
-    plotDifferences(name,nRun,nParams);
+    %plotDifferences(name,nRun,nParams);
 end
 
 function us = updateStruct(structure,cellArray)

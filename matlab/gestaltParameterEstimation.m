@@ -7,7 +7,8 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     addParamValue(parser,'initCond','empty');
     addParamValue(parser,'method','block');
     addParamValue(parser,'priorG','gamma');
-    addParamValue(parser,'detailedDiff',false,@islogical); 
+    addParamValue(parser,'detailedDiff',false,@islogical);
+    addParamValue(parser,'syntheticData',true,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -72,10 +73,12 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     v_cov = cov(reshape(ge.V(1:ge.N,:,:),ge.B*ge.N,ge.Dv));
     true_c = componentSum(ones(ge.k,1),cc_old);
     act_c = componentSum(ones(ge.k,1),ccInit);
-    state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
-    state.difference_to_vcov = covcompRootMeanSquare(act_c,v_cov,1);
-    if params.detailedDiff
-        state.detailed_difference = covcompRootMeanSquare(ccInit,cc_old,[],'verbose',true);
+    if params.syntheticData
+        state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
+        state.difference_to_vcov = covcompRootMeanSquare(act_c,v_cov,1);
+        if params.detailedDiff
+            state.detailed_difference = covcompRootMeanSquare(ccInit,cc_old,[],'verbose',true);
+        end
     end
     state.matrix_norms = {};
     for i=1:ge.k
@@ -88,7 +91,9 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
     
     microstate_sequence = cell(1,(maxStep*ge.N+1));
     if strcmp(params.method,'iterative')
-        microstate.difference_to_truth = state.difference_to_truth;
+        if params.syntheticData
+            microstate.difference_to_truth = state.difference_to_truth;
+        end
         microstate_sequence{1} = microstate;
     end                     
             
@@ -143,8 +148,9 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
                 % PRINT AND SAVE DATA            
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                                  
-
-                microstate.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);                    
+                if params.syntheticData
+                    microstate.difference_to_truth = covcompRootMeanSquare(componentSum(ones(ge.k,1),cc_next),true_c,1);                    
+                end
                 microstate_sequence{step*ge.N+n+1} = microstate;
             end
 
@@ -175,8 +181,10 @@ function cholesky = gestaltParameterEstimation(ge,X,nSamples,maxStep,randseed,va
         % TEST
         %state.relative_difference = 1;
         act_c = componentSum(ones(ge.k,1),cc_next);
-        state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
-        state.difference_to_vcov = covcompRootMeanSquare(act_c,v_cov,1);
+        if params.syntheticData
+            state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
+            state.difference_to_vcov = covcompRootMeanSquare(act_c,v_cov,1);
+        end
         state.estimated_components = extractComponents(ge,params.precision);
         state.samples = samples;
         state.matrix_norms = {};
