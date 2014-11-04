@@ -2,7 +2,7 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
     parser = inputParser;
     addParamValue(parser,'learningRate',1,@isnumeric);    
     addParamValue(parser,'plot',0,@isnumeric);
-    addParamValue(parser,'precision',false,@islogical);   
+    addParamValue(parser,'precision',false,@islogical);      
     addParamValue(parser,'verbose',2,@isnumeric);
     addParamValue(parser,'initCond','empty');
     addParamValue(parser,'priorG','gamma');
@@ -115,7 +115,7 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
             % Gibbs sampling
             initG = (1/ge.k) * ones(ge.k,1);
             try
-                [samples(n,:,:),~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG,'priorG',params.priorG);            
+                [samples(n,:,:),~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG,'priorG',params.priorG,'contrast',ge.contrast);            
             catch
                 % if couldn't find a valid g-sample in 10 steps, skip
                 skipped = skipped + 1;
