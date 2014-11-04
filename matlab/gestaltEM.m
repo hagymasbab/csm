@@ -53,7 +53,7 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
     end
     
     cholesky = cellchol(ccInit);                  
-    cc_old = extractComponents(ge,params.precision);    
+    goal_cc = extractComponents(ge,params.precision);    
     ge = replaceComponents(ge,ccInit,params.precision);
 
     sdim = ge.k+(ge.Dv*ge.B);
@@ -73,13 +73,13 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
     
     % the best permutation for comparing estimated components to truth    
     state_sequence = cell(1,maxStep+1);   
-    true_c = componentSum(ones(ge.k,1),cc_old);
+    true_c = componentSum(ones(ge.k,1),goal_cc);
     act_c = componentSum(ones(ge.k,1),ccInit);
     if params.syntheticData
         state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);        
-        if params.detailedDiff
-            state.detailed_difference = covcompRootMeanSquare(ccInit,cc_old,[],'verbose',true);
-        end
+%         if params.detailedDiff
+%             state.detailed_difference = covcompRootMeanSquare(ccInit,goal_cc,[],'verbose',true);
+%         end
     end
     state.matrix_norms = {};
     for i=1:ge.k
@@ -93,7 +93,9 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
     cc_next = cell(1,ge.k);
     
     for step=1:maxStep
-        fprintf('EM step %d/%d',maxStep,step)
+        if params.verbose == 2
+            fprintf('EM step %d/%d',maxStep,step)
+        end
         
         cc_prev = extractComponents(ge,params.precision);
              
@@ -128,7 +130,7 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         % gradient of the parameters of the complete-data log-likelihood            
-        grad = gestaltParamGrad(ge,samples,cholesky,'precision',params.precision,'verbose',params.verbose);                        
+        grad = gestaltParamGrad(ge,samples,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
 
         % update cholesky components
         for j=1:ge.k
@@ -157,8 +159,11 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
         end
         state_sequence{step+1} = state;                
         
-        S{step} = samples;
-        save('iter.mat','state_sequence');
+        if params.syntheticData
+            save('iter.mat','state_sequence','goal_cc');
+        else
+            save('iter.mat','state_sequence');
+        end
         if params.verbose == 2
             fprintf(' diff %.2e skipped %d\n',state.relative_difference,skipped);
         end
@@ -185,7 +190,7 @@ function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargi
                 viewImage(cc_next{act_k});
             end
         else
-            ge = replaceComponents(ge,cc_old,params.precision);
+            ge = replaceComponents(ge,goal_cc,params.precision);
             plotCovariances(ge,ge.N,params.precision,[]);
         end
     end    
