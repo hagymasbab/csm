@@ -127,15 +127,15 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
             tries = 0;
             while ~valid
                 if tries > params.sampleRetry    
-                    % TODO replace this with exception handling
-                    rr = -i -1;
-                    return;
+                    throw(MException('Gestalt:Gibbs:TooManyTries','Number of tries to sample a valid z from the conditional posterior exceeded %d at sampling step %d',params.sampleRetry,i));
                 end
-                [z,rr_act] = sliceSample(z,zlogpdf,params.stepsize,'plot',params.plot>1,'limits',[0,Inf]);
-                tries = tries + 1;
-                if rr_act ~= -1
+                try
                     valid = true;
-                end          
+                    [z,rr_act] = sliceSample(z,zlogpdf,params.stepsize,'plot',params.plot>1,'limits',[0,Inf]);
+                catch err
+                    valid = false;
+                end
+                tries = tries + 1;                       
             end
             rr = rr + rr_act;
         end

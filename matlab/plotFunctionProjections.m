@@ -1,4 +1,4 @@
-function values = plotFunctionProjections(func,stepsize)
+function [values,figureHandle] = plotFunctionProjections(func,stepsize,inputFigureHandle)
     % plot 3 contours of 2D projections of a 3D function
     xgrid = 0:stepsize:1;
     dimsize = size(xgrid,2);
@@ -17,6 +17,13 @@ function values = plotFunctionProjections(func,stepsize)
     
     clines = 10;
     
+    if isnan(inputFigureHandle)
+        figureHandle = figure();
+    else
+        figure(inputFigureHandle);
+        figureHandle = inputFigureHandle;
+    end
+    clf;
     subplot(1,3,1);
     contour(xgrid,xgrid,proj12,clines);
     subplot(1,3,2);
