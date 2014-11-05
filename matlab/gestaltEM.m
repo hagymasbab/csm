@@ -1,4 +1,4 @@
-function cholesky = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargin)        
+function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargin)        
     parser = inputParser;
     addParamValue(parser,'learningRate',1,@isnumeric);    
     addParamValue(parser,'plot',0,@isnumeric);

@@ -19,7 +19,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'B',10,@isnumeric);
     addParamValue(p,'filters','line');
     addParamValue(p,'precision',true,@islogical);
-    addParamValue(p,'contrast',false,@islogical);
+    addParamValue(p,'contrast',true,@islogical);
     addParamValue(p,'nullComponent',true,@islogical);
     addParamValue(p,'overlapping',false,@islogical);
     parse(p,varargin{:});

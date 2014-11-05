@@ -33,32 +33,20 @@ function ge = gestaltGenerate(ge,N,varargin)
         ge.Z = gamrnd(ge.z_shape,ge.z_scale,ge.N,1);
     end
     
-    if verbose
-        fprintf('..Generating v and x values %d/',ge.N);
-    end
     ge.V = zeros(ge.N,ge.B,ge.Dv);
     ge.X = zeros(ge.N,ge.B,ge.Dx);
     for n=1:ge.N 
         if verbose
-            printCounter(n);
+            printCounter(n,'stringVal','..Generating v and x values','maxVal',ge.N,'newLine',true);
         end
-        if ~precision
-            Cv = componentSum(ge.G(n,:)',ge.cc);
-        else
-            Cv = inv(componentSum(ge.G(n,:)',ge.pc));
-        end
-        ge.V(n,:,:) = mvnrnd(zeros(ge.B,ge.Dv),Cv);                                
         
-        
-        means = reshape(ge.V(n,:,:),ge.B,ge.Dv);
-        means = means * ge.A';
         if ge.contrast
-            means = ge.Z(n,1) * means;
+            z = ge.Z(n,1);
+        else
+            z = 1;
         end
-        ge.X(n,:,:) = mvnrnd(means,ge.obsVar*eye(ge.Dx));
-    end
-    if verbose
-        fprintf('\n');
+        
+        [ge.X(n,:,:),ge.V(n,:,:)] = gestaltAncestralSample(ge,ge.G(n,:)',z,precision);
     end
 end
         
