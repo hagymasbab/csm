@@ -8,13 +8,22 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
     precision = parser.Results.precision;    
-
+        
+    if ge.nullComponent
+        effective_k = ge.k-1;
+    else
+        effective_k = ge.k;
+    end
+    
     %size(samples)
     L = size(samples,2);
     N = size(samples,1);
-    grad = cell(1,ge.k);
+    grad = cell(1,effective_k);
     cc = cell(1,ge.k);
-    for i=1:ge.k
+    if ge.nullComponent
+        cc{end} = ge.cc{end};
+    end
+    for i=1:effective_k
         grad{i} = zeros(ge.Dv);
         cc{i} = cholesky{i}' * cholesky{i};
     end    
@@ -34,8 +43,8 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
 %         end
 %     end
     
-    dLdC = cell(1,ge.k);
-    for kk = 1: ge.k
+    dLdC = cell(1,effective_k);
+    for kk = 1:effective_k
         dLdC{kk} = zeros(ge.Dv);
     end
     
@@ -65,7 +74,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
                     quad = quad + iCv * (v * v') * iCv;
                 end                
                 actmat = (ge.B * iCv - quad);
-                for kk = 1:ge.k
+                for kk = 1:effective_k
                     dLdC{kk} = dLdC{kk} + g(kk,:) * actmat;               
                 end
             else    
@@ -77,9 +86,9 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         
     % calculate the derivative of the covariance matrix w.r.t. each
     % element of each covariance component
-    for kk=1:ge.k
+    for kk=1:effective_k
         if verb > 0
-            printCounter(kk,'stringVal','gradComp','maxVal',ge.k,'newLine',true);
+            printCounter(kk,'stringVal','gradComp','maxVal',effective_k,'newLine',true);
         end
         for i=1:ge.Dv
             % this is an upper triangle matrix

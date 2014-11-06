@@ -39,7 +39,12 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     elseif strcmp(params.initCond,'empty') 
         ccInit = cell(1,ge.k);
         for kk = 1:ge.k
-            ccInit{kk} = 0.001 * eye(ge.Dv);
+            if ge.nullComponent && kk == ge.k
+                varScale = 1;
+            else
+                varScale = 0.001;
+            end
+            ccInit{kk} = varScale * eye(ge.Dv);
         end
     elseif strcmp(params.initCond,'pretrain')
         pre_seed = randi(intmax);
@@ -134,8 +139,12 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
         % update cholesky components
         for j=1:ge.k
-            cholesky{j} = cholesky{j} + params.learningRate .* grad{j};
-            cc_next{j} = cholesky{j}' * cholesky{j};                                             
+            if ge.nullComponent && j==ge.k
+                cc_next{j} = ccInit{j};
+            else
+                cholesky{j} = cholesky{j} + params.learningRate .* grad{j};
+                cc_next{j} = cholesky{j}' * cholesky{j};                                             
+            end
         end
 
         ge = replaceComponents(ge,cc_next,params.precision);      

@@ -8,6 +8,9 @@ function viewImage(data,varargin)
     range = [-2 2];
     if usemax
         maxval = max(max(abs(data)));
+        if maxval == 0
+            maxval = 1;
+        end
         range = [-maxval maxval];
     end
     
@@ -23,5 +26,5 @@ function viewImage(data,varargin)
     else
         IM = 1;
     end
-    imshow(data,'InitialMAgnification',IM,'colormap',jet,'DisplayRange',range);
+    imshow(data,'InitialMAgnification',IM,'colormap',gray,'DisplayRange',range);
 end

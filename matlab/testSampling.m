@@ -34,18 +34,21 @@ function all_G = testSampling(ge,L,sampler,prior,plotsamples)
             scatter(s(:,1),s(:,2));
             xlabel('comp1');
             ylabel('comp2');
+            scatter(ge.G(n,1),ge.G(n,2),140,'rx','LineWidth',3);
             
             subplot(1,3,2);
             hold on;
             scatter(s(:,1),s(:,3));
             xlabel('comp1');
             ylabel('comp3');
+            scatter(ge.G(n,1),ge.G(n,3),140,'rx','LineWidth',3);
             
             subplot(1,3,3);
             hold on;
             scatter(s(:,2),s(:,3));
             xlabel('comp2');
             ylabel('comp3');
+            scatter(ge.G(n,2),ge.G(n,3),140,'rx','LineWidth',3);
             
             if ge.contrast
                 if n==1
