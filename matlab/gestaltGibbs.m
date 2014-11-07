@@ -4,7 +4,8 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'stepsize',0.05,@isnumeric);
     addParamValue(parser,'burnin',0,@isnumeric);
     addParamValue(parser,'thin',1,@isnumeric);
-    addParamValue(parser,'plot',0,@isnumeric);
+    addParamValue(parser,'plotG',false,@islogical);
+    addParamValue(parser,'plotZ',false,@islogical);
     addParamValue(parser,'sampleRetry',10,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'contrast',false,@islogical);
@@ -86,16 +87,15 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                         g_temp = g;
                         for cycle = 1:params.repeatCycle
                             for j = 1:ge.k
-                                %g_temp
-                                if params.plot > 0
+                                if params.plotG
                                     clf;
                                     gestaltPlotConditional(g,j,V,ge,params.priorG,0.1);
                                     hold on;
-                                    plot(ge.G(xind,j),0,'go');
+                                    scatter(ge.G(xind,j),0,140,'go','LineWidth',3);
                                     pause
                                 end
                                 condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,params.priorG,params.precision); 
-                                [g_temp(j,1),rr_part] = sliceSample(g_temp(j,1),condlogpdf,params.stepsize,'plot',params.plot>1);
+                                [g_temp(j,1),rr_part] = sliceSample(g_temp(j,1),condlogpdf,params.stepsize,'plot',params.plotG);
 
                                 rr_act = rr_act + rr_part;
                             end
@@ -129,11 +129,24 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                 if tries > params.sampleRetry    
                     throw(MException('Gestalt:Gibbs:TooManyTries','Number of tries to sample a valid z from the conditional posterior exceeded %d at sampling step %d',params.sampleRetry,i));
                 end
+                
+                valid = true;                
+                if params.plotZ
+                    clf;                    
+                    gestaltPlotZCond(ge,xind,V);
+                    title(sprintf('N=%d L=%d try %d',xind,i,tries+1));
+                    hold on;
+                    %scatter(ge.Z(xind,1),0,140,'go','LineWidth',3);
+                    pause
+                end
                 try
-                    valid = true;
-                    [z,rr_act] = sliceSample(z,zlogpdf,params.stepsize,'plot',params.plot>1,'limits',[0,Inf]);
+                    [z,rr_act] = sliceSample(z,zlogpdf,params.stepsize,'plot',params.plotZ,'limits',[0,Inf]);
                 catch err
-                    valid = false;
+                    if strcmp(err.identifier,'Gestalt:SliceSample:TooManyTries')
+                        valid = false;
+                    else
+                        throw(err);
+                    end
                 end
                 tries = tries + 1;                       
             end

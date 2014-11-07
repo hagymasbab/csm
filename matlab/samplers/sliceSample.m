@@ -75,7 +75,7 @@ function [x,rr] = sliceSample(init,logpdf,stepsize,varargin)
     while reject
         x = bounds(:,1) + rand(dim,1) .* (bounds(:,2)-bounds(:,1));
         if pl
-            plot(x,0,'bx');
+            scatter(x,0,140,'bx','LineWidth',3);
             pause
         end
         %if exp(logpdf(x)) >= u
