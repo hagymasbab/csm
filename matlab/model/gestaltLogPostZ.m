@@ -4,6 +4,10 @@ function lp = gestaltLogPostZ(z,xind,V,ge)
         return
     end
     
+    if ndims(V) == 3
+        V = reshape(V,ge.B,ge.Dv);
+    end
+    
     logprior = log( gampdf(z,ge.z_shape,ge.z_scale) );
     
     X = reshape(ge.X(xind,:,:),ge.B,ge.Dx);

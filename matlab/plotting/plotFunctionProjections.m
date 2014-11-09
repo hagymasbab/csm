@@ -17,12 +17,6 @@ function [values,figureHandle] = plotFunctionProjections(func,stepsize,inputFigu
     
     clines = 10;
     
-    if isnan(inputFigureHandle)
-        figureHandle = figure();
-    else
-        figure(inputFigureHandle);
-        figureHandle = inputFigureHandle;
-    end
     clf;
     subplot(1,3,1);
     contour(xgrid,xgrid,proj12,clines);
@@ -30,5 +24,7 @@ function [values,figureHandle] = plotFunctionProjections(func,stepsize,inputFigu
     contour(xgrid,xgrid,proj13,clines);
     subplot(1,3,3);
     contour(xgrid,xgrid,proj23,clines);
+    
+    figureHandle = inputFigureHandle;
     
 end
