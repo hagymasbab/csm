@@ -1,4 +1,4 @@
-function all_G = testSampling(ge,L,gsampler,zsampler,plotLevel)
+function all_G = testSampling(ge,L,gsampler,zsampler,vsampler,plotLevel)
     if ge.k >= 3 && plotLevel > 0
         close all;
     end
@@ -15,7 +15,7 @@ function all_G = testSampling(ge,L,gsampler,zsampler,plotLevel)
                 figure(sliceHandle);
             end
         end
-        [s,~,zs] = gestaltGibbs(ge,n,L,'gSampler',gsampler,'zSampler',zsampler,'priorG','gamma', ...
+        [s,~,zs] = gestaltGibbs(ge,n,L,'gSampler',gsampler,'zSampler',zsampler,'vSampler',vsampler,'priorG','gamma', ...
             'sampleRetry',100,'plotZ',plotLevel>1,'contrast',ge.contrast,'verbose',1,'stepsize',0.2);
         all_G(n,:,:) = s(:,1:ge.k);
         meanG = mean(s(:,1:ge.k));

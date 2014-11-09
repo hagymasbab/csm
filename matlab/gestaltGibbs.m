@@ -13,6 +13,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'priorG','gamma');
     addParamValue(parser,'gSampler','gibbs-slice');
     addParamValue(parser,'zSampler','slice');
+    addParamValue(parser,'vSampler','direct');
     addParamValue(parser,'repeatCycle',1,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
@@ -47,8 +48,12 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         % SAMPLE V       
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        % generate a direct sample from the conditional posterior over v        
-        V = gestaltPostVRnd(ge,xind,g,z,params.precision);
+        % generate a direct sample from the conditional posterior over v  
+        if strcmp(params.vSampler,'direct')
+            V = gestaltPostVRnd(ge,xind,g,z,params.precision);
+        elseif strcmp(params.vSampler,'test')
+            V = ge.V(xind,:,:);
+        end
         
 %         if params.plot > 0
 %             clf;
