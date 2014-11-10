@@ -93,13 +93,16 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         for i=1:ge.Dv
             % this is an upper triangle matrix
             for j=i:ge.Dv
-                U_hat = derivQuadByElement(cholesky{kk},i,j);
-                %dCdu = U_hat{kk,i,j};
+%                 U_hat = derivQuadByElement(cholesky{kk},i,j);
+%                 %dCdu = U_hat{kk,i,j};
+% 
+%                 % gradient of the log-gaussian w.r.t. the actual
+%                 % element of the actual component, summed over
+%                 % samples
+%                 grad{kk}(i,j) = trace(dLdC{kk}' * U_hat);
 
-                % gradient of the log-gaussian w.r.t. the actual
-                % element of the actual component, summed over
-                % samples
-                grad{kk}(i,j) = trace(dLdC{kk}' * U_hat);
+                % the computation above is equivalent with this much faster one
+                grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* dLdC{kk}(j,:) + cholesky{kk}(i,:) .* dLdC{kk}(:,j)');
             end
         end
         grad{kk} = (-1/(2*L)) * grad{kk};
