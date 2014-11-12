@@ -22,6 +22,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'contrast',true,@islogical);
     addParamValue(p,'nullComponent',true,@islogical);
     addParamValue(p,'overlapping',false,@islogical);
+    addParamValue(p,'generate',false,@islogical);
     parse(p,varargin{:});
     gestalt = p.Results;        
     
@@ -48,28 +49,33 @@ function gestalt = gestaltCreate(name,varargin)
     %for n=1:gestalt.N
     %    gestalt.tX(n,:,:) = reshape(gestalt.X(n,:,:),gestalt.B,gestalt.Dx) * gestalt.A;
     %end
-        
-    if gestalt.Dx == 1
-        gestalt.cc{1} = 1;
-        gestalt.k = 1;
-    elseif gestalt.Dx == 2
-        gestalt.cc{1} = [0.9 0.5;0.5 0.3];
-        gestalt.k = 1;
-    elseif gestalt.Dx == 3
-        gestalt.cc{1} = 0.5*[1 0.9 0;0.9 1 0;0 0 1];
-        gestalt.cc{2} = 0.5*[1 0 0.9;0 1 0;0.9 0 1];
-    elseif gestalt.Dx == 4
-        var = 1;
-        covar = 1;
-        gestalt.cc{1} = var*eye(4) + covar*[0 0 1 0; 0 0 0 0; 1 0 0 0; 0 0 0 0];
-        gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
-    else        
-        [gestalt.cc, gestalt.gRF] = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,'nullComponent',gestalt.nullComponent,'overlapping',gestalt.overlapping);
-        gestalt.k = size(gestalt.cc,2);
-%         if gestalt.nullComponent
-%             gestalt.k = gestalt.k + 1;
-%         end
+    
+    if gestalt.generate
+        if gestalt.Dx == 1
+            gestalt.cc{1} = 1;
+            gestalt.k = 1;
+        elseif gestalt.Dx == 2
+            gestalt.cc{1} = [0.9 0.5;0.5 0.3];
+            gestalt.k = 1;
+        elseif gestalt.Dx == 3
+            gestalt.cc{1} = 0.5*[1 0.9 0;0.9 1 0;0 0 1];
+            gestalt.cc{2} = 0.5*[1 0 0.9;0 1 0;0.9 0 1];
+        elseif gestalt.Dx == 4
+            var = 1;
+            covar = 1;
+            gestalt.cc{1} = var*eye(4) + covar*[0 0 1 0; 0 0 0 0; 1 0 0 0; 0 0 0 0];
+            gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
+        else        
+            [gestalt.cc, gestalt.gRF] = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,'nullComponent',gestalt.nullComponent,'overlapping',gestalt.overlapping);            
+    %         if gestalt.nullComponent
+    %             gestalt.k = gestalt.k + 1;
+    %         end
+        end
+    else
+        gestalt.cc = cell(1,gestalt.k+1);
     end
+    
+    gestalt.k = size(gestalt.cc,2);
     
     if gestalt.precision
         gestalt.pc = cell(1,gestalt.k);
@@ -78,7 +84,7 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    if gestalt.N > 0
+    if gestalt.generate && gestalt.N > 0
         gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar,'sparsity',gestalt.sparsity);    
     end
     

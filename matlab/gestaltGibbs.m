@@ -8,7 +8,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'plotZ',false,@islogical);
     addParamValue(parser,'sampleRetry',10,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);
-    addParamValue(parser,'contrast',false,@islogical);
+    addParamValue(parser,'contrast',true,@islogical);
     addParamValue(parser,'initG',[]);
     addParamValue(parser,'priorG','gamma');
     addParamValue(parser,'gSampler','gibbs-slice');

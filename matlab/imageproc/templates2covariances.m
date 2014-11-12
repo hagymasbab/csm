@@ -12,7 +12,7 @@ function [cc,coeffs] = templates2covariances(templates,A)
                 c_act(i,j) = min(act_coeff(i,1),act_coeff(j,1));
                 c_act(j,i) = c_act(i,j);
             end
-            %c_act(i,i) = sum(c_act(i,:)) + 0.1;
+            c_act(i,i) = sum(c_act(i,:)) + 0.1;
         end
         cc{t} = c_act;
         coeffs(t,:) = act_coeff';
