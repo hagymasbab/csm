@@ -19,26 +19,46 @@ function reliabilty(nTrials,nSamples,k,Dx,OF)
     
     % create covariance components that reflect linear shapes
     [~,tmp] = lineImages(100,Dx,k);
-    [cc,~] = templates2covariances(tmp,ge.A);
-    viewImageSet(cc);
+    [cc,coeffs] = templates2covariances(tmp,ge.A);
+    %viewImageSet(cc);
     cc{k+1} = eye(Dx);
     ge.cc = cc;
             
     rel_crf = zeros(k,1);
     rel_nrf = zeros(k,1);      
-    sHandle = figure('Units','normalized','OuterPosition',[0.1 0.6 0.8 0.4]);
-    fHandle = figure();
+    sHandle = figure('Units','normalized','OuterPosition',[0.1 0.4 0.8 0.4]);
+    pfHandle = figure('Units','normalized','OuterPosition',[0.1 0.1 0.4 0.8]);
+    nfHandle = figure('Units','normalized','OuterPosition',[0.6 0.1 0.4 0.8]);
     for c = 1:k
         ge.obsVar = generating_sigma;
         fprintf('Component %d/%d ',k,c);
+        
         % select the neurons that are activated by the component
-        actFilters = gestaltExtractTemplate(ge,k);
+        actFilters = covariance2template(cc{k});
         cell = find(actFilters);
-        figure(fHandle);
-        viewImageSet(ge.A(:,cell)');
+        activatedFilters = ge.A(:,cell)';
+        activatedCoeffs = coeffs(c,cell)';
+        positiveFilters = activatedFilters(activatedCoeffs>0,:);
+        negativeFilters = activatedFilters(activatedCoeffs<0,:);
+        positiveCoeffs = activatedCoeffs(activatedCoeffs>0,1);
+        negativeCoeffs = activatedCoeffs(activatedCoeffs<0,1);
+        positiveTitles = {};
+        negativeTitles = {};
+        for i=1:length(positiveCoeffs)
+            positiveTitles{i} = num2str(positiveCoeffs(i,1));
+        end
+        for i=1:length(negativeCoeffs)
+            negativeTitles{i} = num2str(negativeCoeffs(i,1));
+        end        
+        figure(pfHandle);        
+        viewImageSet(positiveFilters,'titles',positiveTitles);
+        figure(nfHandle);
+        viewImageSet(negativeFilters,'titles',negativeTitles);
         numfilter = length(cell);
-        % choose a cell         
-        cell = cell(1);
+        
+        % choose a cell     
+        [~,maxact] = max(activatedCoeffs);
+        cell = cell(maxact);
         
         % create a stimulus that lies in the receptive field of the neuron
         v = zeros(ge.Dv,1);

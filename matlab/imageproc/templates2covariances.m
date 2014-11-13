@@ -6,16 +6,15 @@ function [cc,coeffs] = templates2covariances(templates,A)
     coeffs = zeros(k,Dx);
     for t = 1:k
         act_coeff = iA * templates{t}(:);
-        mean_coeff = mean(act_coeff)
+        mean_coeff = mean(act_coeff);
+        %threshold = abs(mean_coeff);
+        threshold = (max(abs(act_coeff)) + abs(mean_coeff)) / 2;
         c_act = zeros(Dx);
         for i = 1:Dx            
             for j = i+1:Dx
 %                 c_act(i,j) = abs(abs(act_coeff(i,1)) - abs(act_coeff(j,1)));
-%                 if act_coeff(i,1)*act_coeff(j,1) < 0
-%                     c_act(i,j) = -c_act(i,j);
-%                 end
                 
-                if abs(act_coeff(i,1)) > abs(mean_coeff) && abs(act_coeff(i,1)) > abs(mean_coeff)
+                if (abs(act_coeff(i,1)) > threshold) && (abs(act_coeff(j,1)) > threshold)
                     c_act(i,j) = 1;
                 end
                 
