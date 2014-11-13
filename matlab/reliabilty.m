@@ -1,62 +1,114 @@
-function reliabilty(nTrials,nSamples,k,Dx)
+function reliabilty(nTrials,nSamples,k,Dx,OF)
     % reproducing the effect of non-classical stimulation on spike count or 
     % membrane potenital evoked response reliabilities from Haider et al.,
     % Neuron, 2010.
     close all;
     
+    % model parameters for generation and sampling
+    generating_sigma = 0.001;
+    sampling_sigma = 1;
+    g_scale = 2;
+    
     % create model
-    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'filters','eye','obsVar',0.001,'N',2);
+    if OF
+        filters = sprintf('OF_%d.mat',Dx);
+    else
+        filters = 'eye';
+    end
+    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'filters',filters,'obsVar',generating_sigma,'N',2,'g_scale',g_scale);
     
     % create covariance components that reflect linear shapes
     [~,tmp] = lineImages(100,Dx,k);
     [cc,~] = templates2covariances(tmp,ge.A);
-    %viewImageSet(cc);
+    viewImageSet(cc);
     cc{k+1} = eye(Dx);
     ge.cc = cc;
             
     rel_crf = zeros(k,1);
     rel_nrf = zeros(k,1);      
-    figure('Units','normalized','OuterPosition',[0.1 0.6 0.8 0.4]);
+    sHandle = figure('Units','normalized','OuterPosition',[0.1 0.6 0.8 0.4]);
+    fHandle = figure();
     for c = 1:k
-        ge.obsVar = 0.01;
-        fprintf('Component %d/%d',k,c);
+        ge.obsVar = generating_sigma;
+        fprintf('Component %d/%d ',k,c);
         % select the neurons that are activated by the component
         actFilters = gestaltExtractTemplate(ge,k);
-        % choose a cell 
         cell = find(actFilters);
+        figure(fHandle);
+        viewImageSet(ge.A(:,cell)');
+        numfilter = length(cell);
+        % choose a cell         
         cell = cell(1);
+        
         % create a stimulus that lies in the receptive field of the neuron
         v = zeros(ge.Dv,1);
         v(cell,1) = 1;
         crf_stim = mvnrnd((ge.A*v)',ge.obsVar*eye(ge.Dx))';        
         ge.X(1,:,:) = reshape(crf_stim,1,ge.Dx);
+        
         % choose a stimulus that also lies in the extraclassical field
         % colinearly with the preferred direction
-%         g = zeros(ge.k,1);
-%         g(c,1) = 1;        
-%         [nrf_stim,~] = gestaltAncestralSample(ge,g,1,false);
-        nrf_stim = createImageStimulus(tmp(c),1);
+        g = zeros(ge.k,1);
+        g(c,1) = 1;        
+        [nrf_stim,~] = gestaltAncestralSample(ge,g,1,false);
+%         nrf_stim = createImageStimulus(tmp(c),1);
         ge.X(2,:,:) = reshape(nrf_stim,1,ge.Dx);
         
         crf_samples = zeros(nTrials,nSamples);
         nrf_samples = zeros(nTrials,nSamples);
+        crf_gsamp = zeros(nTrials,nSamples);
+        nrf_gsamp = zeros(nTrials,nSamples);
+        fprintf('%d/%d activated filters ',numfilter,ge.Dv);
         for t = 1:nTrials
-            fprintf('\nTrial %d/%d\n',nTrials,t);
+            %fprintf('\nTrial %d/%d\n',nTrials,t);
+            printCounter(t,'stringVal','Trial','maxVal',nTrials,'newLine',true);
             % crf samples
-            ge.obsVar = 1;
-            cs = gestaltGibbs(ge,1,nSamples,'verbose',1);
+            ge.obsVar = sampling_sigma;
+            cs = gestaltGibbs(ge,1,nSamples,'verbose',0);
             crf_samples(t,:) = cs(:,ge.k+cell)';
+            crf_gsamp(t,:) = cs(:,c);
             % nrf samples
-            ns = gestaltGibbs(ge,2,nSamples,'verbose',1);
+            ns = gestaltGibbs(ge,2,nSamples,'verbose',0);
             nrf_samples(t,:) = ns(:,ge.k+cell)';
-        end
-                        
-        subplot(1,2,1);
+            nrf_gsamp(t,:) = ns(:,c);
+        end        
+        
+        figure(sHandle);
+        clf;
+        subplot(2,4,1);
         plot(crf_samples');
         xlim([1,nSamples]);
-        subplot(1,2,2);
+        subplot(2,4,2);
         plot(nrf_samples');
         xlim([1,nSamples]);
+        subplot(2,4,5);
+        plot(crf_gsamp');
+        xlim([1,nSamples]);
+        hold on;
+        plot(mean(crf_gsamp)','LineWidth',3);
+        subplot(2,4,6);
+        plot(nrf_gsamp');
+        xlim([1,nSamples]);
+        hold on;
+        plot(mean(nrf_gsamp)','LineWidth',3);
+        
+        % plot the stimuli along with cell and gestalt receptive fields        
+        subplot(2,4,3);
+        viewImage(ge.A(:,cell),'useMax',true);
+        title('Example cell RF');
+        subplot(2,4,4);
+        viewImage(tmp{c});
+        title('Gestalt RF');
+        subplot(2,4,7);
+        viewImage(crf_stim,'useMax',true);
+        title('CRF stimulus');
+        subplot(2,4,8);
+        viewImage(nrf_stim,'useMax',true);
+        title('nCRF stimulus');
+        
+        if k>1 && c<k
+            pause;
+        end
         
         corr_crf = corr(crf_samples');
         %size(corr_crf)
@@ -67,25 +119,11 @@ function reliabilty(nTrials,nSamples,k,Dx)
     fprintf('\n');
     % plot results
     figure();
-    subplot(2,3,1);
     barwitherr([std(rel_crf) std(rel_nrf)],[mean(rel_crf) mean(rel_nrf)]);
-    set(gca,'XTickLabel',{'CRF','CRF+nCRF'});
+    set(gca,'XTickLabel',{'CRF','nCRF'});
     title(sprintf('N = %d',k));
     ylabel('reliability');
-    % plot example stimuli along with cell and gestalt receptive fields
-    % we will plot the last one computed
-    subplot(2,3,2);
-    viewImage(ge.A(:,cell));
-    title('Example cell RF');
-    subplot(2,3,3);
-    viewImage(tmp{k});
-    title('Gestalt RF');
-    subplot(2,3,4);
-    viewImage(crf_stim);
-    title('CRF stimulus');
-    subplot(2,3,5);
-    viewImage(nrf_stim);
-    title('nCRF stimulus');
+   
 end
 
 function B = upperTriangleValues(A)

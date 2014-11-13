@@ -1,11 +1,14 @@
 function template = gestaltExtractTemplate(ge,compNum)
     cc = ge.cc{compNum};
-    %thresh = (mean(cc(:)) + max(cc(:))) / 2 -1;
-    thresh = 0.01;
+    cc = cc .* (ones(ge.Dv)-eye(ge.Dv));
+    %thresh = mean(cc(:));
+    %thresh = (mean(cc(:)) + max(abs(cc(:)))) / 2;
+    thresh = max(abs(cc(:))) / -0.1;
+    %thresh = 0.01;
     template = zeros(ge.Dv,1);
     for i=1:ge.Dv
         for j=i+1:ge.Dv
-            if cc(i,j) > thresh
+            if abs(cc(i,j)) > thresh
                 template(i,1) = 1;
                 template(j,1) = 1;
             end
