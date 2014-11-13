@@ -5,8 +5,8 @@ function [patchDB,templates] = lineImages(N,Dx,k)
     imdim = sqrt(Dx);
     shifting = imdim/2;
     for i=1:k
-        % TODO sample a random integer parameter set for lines
-        a = randi([-2 2]);
+        % sample a random integer parameter set for lines
+        a = randi([-1 1]);
         if a==0
             a=1;
         end

@@ -5,8 +5,8 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'k',2,@isnumeric);
     addParamValue(p,'Dx',1024,@isnumeric);
     addParamValue(p,'filterShift',2,@isnumeric);
-    addParamValue(p,'nOrients',2,@isnumeric);
-    addParamValue(p,'nWLengths',2,@isnumeric);
+    addParamValue(p,'nOrients',4,@isnumeric);
+    addParamValue(p,'nWLengths',1,@isnumeric);
     addParamValue(p,'N',100,@isnumeric);
     addParamValue(p,'obsVar',0.1,@isnumeric);
     addParamValue(p,'sparsity',0.2,@isnumeric);
@@ -28,7 +28,7 @@ function gestalt = gestaltCreate(name,varargin)
     
     imSize = sqrt(gestalt.Dx); % TODO figure out something if it's not a square
     if strcmp(gestalt.filters,'gabor')        
-        gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[0;pi/2],[4;8]);
+        gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[0;pi/4;pi/2;3*pi/4],[4]);
     elseif strcmp(gestalt.filters,'line')        
         gestalt.A = lineFilters(imSize);
     elseif strcmp(gestalt.filters,'eye')

@@ -1,4 +1,4 @@
-function reliabilty(nTrials,nSamples,k,Dx,OF)
+function reliabilty(nTrials,nSamples,k,Dx,filters)
     % reproducing the effect of non-classical stimulation on spike count or 
     % membrane potenital evoked response reliabilities from Haider et al.,
     % Neuron, 2010.
@@ -10,10 +10,8 @@ function reliabilty(nTrials,nSamples,k,Dx,OF)
     g_scale = 2;
     
     % create model
-    if OF
+    if strcmp(filters,'OF')
         filters = sprintf('OF_%d.mat',Dx);
-    else
-        filters = 'eye';
     end
     ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'filters',filters,'obsVar',generating_sigma,'N',2,'g_scale',g_scale);
     
@@ -34,7 +32,7 @@ function reliabilty(nTrials,nSamples,k,Dx,OF)
         fprintf('Component %d/%d ',k,c);
         
         % select the neurons that are activated by the component
-        actFilters = covariance2template(cc{k});
+        actFilters = covariance2template(cc{k},ge.A);
         cell = find(actFilters);
         activatedFilters = ge.A(:,cell)';
         activatedCoeffs = coeffs(c,cell)';
