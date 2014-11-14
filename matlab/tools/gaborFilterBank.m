@@ -7,7 +7,8 @@ function A = gaborFilterBank(sizex,sizey,dx,dy,orients,wavelengths)
         wavelengths = wavelengths';
     end
     D = sizex * sizey;
-    sigma = floor(sizex/10);
+    %sigma = floor(sizex/9);
+    sigma = 1.5;
     xsteps = floor(sizex/dx);
     ysteps = floor(sizey/dy);
     orNum = size(orients,1);
@@ -25,6 +26,7 @@ function A = gaborFilterBank(sizex,sizey,dx,dy,orients,wavelengths)
                 for f=1:freqNum    
                     index = (x-1)*xindexStep + (y-1)*yindexStep + (o-1)*freqNum + f;
                     printCounter(index);
+                    %sigma = wavelengths(f) / 2;
                     [~,~,F] = gabor('theta',orients(o),'lambda',wavelengths(f),'width',sizex,'height',sizey,'px',px,'py',py,'Sigma',sigma);         
                     A(:,index) = reshape(F,D,1);
                 end

@@ -1,5 +1,6 @@
 function [cc,coeffs] = templates2covariances(templates,A)
-    iA = pinv(A);
+    %iA = pinv(A);
+    iA = A';
     k = size(templates,2);
     Dx = size(templates{1},1)^2;
     cc = cell(1,k);

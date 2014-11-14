@@ -96,19 +96,32 @@ function reliabilty(nTrials,nSamples,k,Dx,filters)
         subplot(2,4,1);
         plot(crf_samples');
         xlim([1,nSamples]);
+        yl1 = ylim();
         subplot(2,4,2);
         plot(nrf_samples');
         xlim([1,nSamples]);
+        yl2 = ylim();
+        subplot(2,4,1);
+        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
+        subplot(2,4,2);
+        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
+        
         subplot(2,4,5);
         plot(crf_gsamp');
         xlim([1,nSamples]);
+        yl1 = ylim();
         hold on;
         plot(mean(crf_gsamp)','LineWidth',3);
         subplot(2,4,6);
         plot(nrf_gsamp');
         xlim([1,nSamples]);
+        yl2 = ylim();
         hold on;
         plot(mean(nrf_gsamp)','LineWidth',3);
+        subplot(2,4,5);
+        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
+        subplot(2,4,6);
+        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
         
         % plot the stimuli along with cell and gestalt receptive fields        
         subplot(2,4,3);
