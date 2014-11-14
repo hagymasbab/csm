@@ -1,4 +1,4 @@
-function reliabilty(nTrials,nSamples,k,Dx,filters)
+function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,filters)
     % reproducing the effect of non-classical stimulation on spike count or 
     % membrane potenital evoked response reliabilities from Haider et al.,
     % Neuron, 2010.
@@ -148,9 +148,14 @@ function reliabilty(nTrials,nSamples,k,Dx,filters)
         rel_nrf(c,1) = mean(upperTriangleValues(corr_nrf));
     end
     fprintf('\n');
+    mean_crf = mean(rel_crf);
+    std_crf = std(rel_crf);
+    mean_nrf = mean(rel_nrf);
+    std_nrf = std(rel_nrf);
     % plot results
     figure();
-    barwitherr([std(rel_crf) std(rel_nrf)],[mean(rel_crf) mean(rel_nrf)]);
+    barwitherr([std_crf std_nrf],[mean_crf mean_nrf]);
+    ylim([min([0,mean_crf,mean_nrf]) 0.35]);
     set(gca,'XTickLabel',{'CRF','nCRF'});
     title(sprintf('N = %d',k));
     ylabel('reliability');
