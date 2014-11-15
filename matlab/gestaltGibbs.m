@@ -53,6 +53,21 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
             V = gestaltPostVRnd(ge,xind,g,z,params.precision);
         elseif strcmp(params.vSampler,'test')
             V = ge.V(xind,:,:);
+        elseif strcmp(params.vSampler,'mh')
+            if ge.B ~= 1
+                throw(MException('Gestalt:Gibbs:NotImplemented','Gibbs-MH sampling for V is not implemented for B > 0'));
+            end
+            %act_v = reshape(V,1,ge.Dv);
+            sAA = ((z*z)/ge.obsVar) * ge.AA;
+            Cv = componentSum(g,ge.cc);
+            cov = inv(sAA + inv(Cv));  
+            ATx = ge.A' * reshape(ge.X(xind,1,:),ge.Dv,1);
+            m = ((z/ge.obsVar) * cov * ATx)';
+            vlogpdf = @(v) log( mvnpdf(v',m,cov) );
+            propcov = 0.005 * cov;
+            [v_temp,rr_act] = metropolisHastings(V',vlogpdf,propcov,1,0,0,'verbose',0);
+            V = reshape(v_temp,1,ge.Dv);
+            rr = rr + rr_act;
         end
         
 %         if params.plot > 0

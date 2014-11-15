@@ -10,7 +10,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'N',100,@isnumeric);
     addParamValue(p,'obsVar',0.1,@isnumeric);
     addParamValue(p,'sparsity',0.2,@isnumeric);
-    addParamValue(p,'z_shape',1,@isnumeric);
+    addParamValue(p,'z_shape',2,@isnumeric);
     addParamValue(p,'z_scale',1,@isnumeric);
     addParamValue(p,'g_shape',1,@isnumeric);
     addParamValue(p,'g_scale',0.2,@isnumeric);
