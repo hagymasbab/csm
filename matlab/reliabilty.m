@@ -8,10 +8,10 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
     generating_sigma = 0.001;
     sampling_sigma = 1;
     g_scale = 2;
-    z_shape = 2;
-    z_scale = 2;
+    z_shape = 1;
+    z_scale = 0.1;
     v_sampler = 'direct';
-    sample_z = false;
+    sample_z = true;
     
     % create model
     if strcmp(filters,'OF')
@@ -31,7 +31,7 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
     rel_nrf = zeros(k,1);      
     rel_crf_std = zeros(k,1);
     rel_nrf_std = zeros(k,1);      
-    sHandle = figure('Units','normalized','OuterPosition',[0.1 0.4 0.8 0.6]);
+    sHandle = figure('Units','normalized','OuterPosition',[0.1 0.4 0.8 0.8]);
     pfHandle = figure('Units','normalized','OuterPosition',[0.05 0.1 0.4 0.8]);
     nfHandle = figure('Units','normalized','OuterPosition',[0.55 0.1 0.4 0.8]);
     for c = 1:k
@@ -82,10 +82,33 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
 %         nrf_stim = createImageStimulus(tmp(c),1);
         ge.X(2,:,:) = reshape(nrf_stim,1,ge.Dx);
         
+        figure(sHandle);
+        clf;        
+        nrow = 4;
+        ncol = 4;
+        
+        % plot the stimuli along with cell and gestalt receptive fields        
+        subplot(nrow,ncol,3);
+        viewImage(ge.A(:,cell),'useMax',true);
+        title('Example cell RF');
+        subplot(nrow,ncol,4);
+        viewImage(tmp{c});
+        title('Gestalt RF');
+        subplot(nrow,ncol,7);
+        viewImage(crf_stim,'useMax',true);
+        title('CRF stimulus');
+        xlabel(sprintf('mu = %.3f sigma = %.3f',mean(crf_stim(:)),std(crf_stim(:))));
+        subplot(nrow,ncol,8);        
+        viewImage(nrf_stim,'useMax',true);
+        title('nCRF stimulus');
+        xlabel(sprintf('mu = %.3f sigma = %.3f',mean(nrf_stim(:)),std(nrf_stim(:))));
+        
         crf_samples = zeros(nTrials,nSamples);
         nrf_samples = zeros(nTrials,nSamples);
         crf_gsamp = zeros(nTrials,nSamples);
         nrf_gsamp = zeros(nTrials,nSamples);
+        crf_gnullsamp = zeros(nTrials,nSamples);
+        nrf_gnullsamp = zeros(nTrials,nSamples);
         crf_zsamp = zeros(nTrials,nSamples);
         nrf_zsamp = zeros(nTrials,nSamples);
         fprintf('%d/%d activated filters ',numfilter,ge.Dv);
@@ -97,84 +120,24 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
             [cs,~,cz] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z);
             crf_samples(t,:) = cs(:,ge.k+cell)';
             crf_gsamp(t,:) = cs(:,c);
+            crf_gnullsamp(t,:) = cs(:,k+1);
             crf_zsamp(t,:) = cz;
             % nrf samples
             [ns,~,nz] = gestaltGibbs(ge,2,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z);
             nrf_samples(t,:) = ns(:,ge.k+cell)';
             nrf_gsamp(t,:) = ns(:,c);
+            nrf_gnullsamp(t,:) = ns(:,k+1);
             nrf_zsamp(t,:) = nz;
-        end        
+        end                        
         
-        figure(sHandle);
-        clf;
+        plotPair(crf_samples,nrf_samples,nrow,ncol,1,false,'V');
+        plotPair(crf_gsamp,nrf_gsamp,nrow,ncol,1+ncol,true,'G');
+        plotPair(crf_gnullsamp,nrf_gnullsamp,nrow,ncol,1+2*ncol,true,'G0');
+        plotPair(crf_zsamp,nrf_zsamp,nrow,ncol,1+3*ncol,true,'Z');                        
         
-        % plot V samples
-        subplot(3,4,1);
-        plot(crf_samples');
-        xlim([1,nSamples]);
-        yl1 = ylim();
-        subplot(3,4,2);
-        plot(nrf_samples');
-        xlim([1,nSamples]);
-        yl2 = ylim();
-        subplot(3,4,1);
-        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-        subplot(3,4,2);
-        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-        
-        % plot G samples
-        subplot(3,4,5);
-        plot(crf_gsamp');
-        xlim([1,nSamples]);
-        yl1 = ylim();
-        hold on;
-        plot(mean(crf_gsamp)','LineWidth',3);
-        subplot(3,4,6);
-        plot(nrf_gsamp');
-        xlim([1,nSamples]);
-        yl2 = ylim();
-        hold on;
-        plot(mean(nrf_gsamp)','LineWidth',3);
-        subplot(3,4,5);
-        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-        subplot(3,4,6);
-        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-        
-        % plot Z samples
-        subplot(3,4,9);
-        plot(crf_zsamp');
-        xlim([1,nSamples]);
-        yl1 = ylim();
-        hold on;
-        plot(mean(crf_zsamp)','LineWidth',3);
-        subplot(3,4,10);
-        plot(nrf_zsamp');
-        xlim([1,nSamples]);
-        yl2 = ylim();
-        hold on;
-        plot(mean(nrf_zsamp)','LineWidth',3);
-        subplot(3,4,9);
-        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-        subplot(3,4,10);
-        ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-        
-        % plot the stimuli along with cell and gestalt receptive fields        
-        subplot(3,4,3);
-        viewImage(ge.A(:,cell),'useMax',true);
-        title('Example cell RF');
-        subplot(3,4,4);
-        viewImage(tmp{c});
-        title('Gestalt RF');
-        subplot(3,4,7);
-        viewImage(crf_stim,'useMax',true);
-        title('CRF stimulus');
-        subplot(3,4,8);
-        viewImage(nrf_stim,'useMax',true);
-        title('nCRF stimulus');
-        
-        if k>1 && c<k
+%         if k>1 && c<k
 %             pause;
-        end
+%         end
         
         corr_crf = corr(crf_samples');
         crf_corrvals = upperTriangleValues(corr_crf);
@@ -190,6 +153,7 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
     std_crf = mean(rel_crf_std);
     mean_nrf = mean(rel_nrf);
     std_nrf = mean(rel_nrf_std);
+    
     % plot results
     figure(sHandle);
     subplot(3,4,11);
@@ -210,4 +174,31 @@ function B = upperTriangleValues(A)
     A = A-diag(diag(A));
     B = A(triu(true(size(A))));
     B = B(B~=0);
+end
+
+function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean,titleString)
+    subplot(plotRows,plotColumns,leftPlotIndex);
+    plot(leftData');
+    xlim([1,size(leftData,2)]);
+    yl1 = ylim();
+    if plotMean
+        hold on;
+        plot(mean(leftData)','LineWidth',3);
+    end
+    title(strcat('CRF-',titleString));
+    
+    subplot(plotRows,plotColumns,leftPlotIndex+1);
+    plot(rightData');
+    xlim([1,size(rightData,2)]);
+    yl2 = ylim();
+    if plotMean
+        hold on;
+        plot(mean(rightData)','LineWidth',3);
+    end
+    title(strcat('nCRF-',titleString));
+    
+    subplot(plotRows,plotColumns,leftPlotIndex);
+    ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
+    subplot(plotRows,plotColumns,leftPlotIndex+1);
+    ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
 end

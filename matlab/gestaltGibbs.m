@@ -36,7 +36,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     end
 
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
-    z = 1; % remains unchanged if we do not use a contrast variable
+    z = 0.1; % remains unchanged if we do not use a contrast variable
     % TODO we might sample z from its prior
         
     for i=1:N
