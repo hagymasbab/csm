@@ -1,6 +1,5 @@
 function [patchDB,templates] = lineImages(N,Dx,k)
     templates = cell(1,k);
-%     temp_bool = cell(1,k);
     patchDB = zeros(N,Dx);
     imdim = sqrt(Dx);
     shifting = imdim/2;
@@ -30,24 +29,12 @@ function [patchDB,templates] = lineImages(N,Dx,k)
             prev_val = val;
         end
         templates{i} = temp_img;
-%         temp_bool{i} = logical(temp_img);
     end
     
     coeffs = symmetricDirichlet(0.1,k,N); 
     %coeffs = ones(N,k);
     for i=1:N
         img = createImageStimulus(templates,coeffs(i,:)');
-%        img = 0.1 * randn(imdim,imdim) - 1;       
-%        % the order of occlusion should be random
-%        order = chooseKfromN(k,k);
-%        for j=1:k
-%            % select the pixels belonging to the templates 
-%            temppix = img(temp_bool{order(j)});
-%            % reduce their dynamic range to the extent of their coefficients
-%            meanpix = mean(temppix(:));
-%            act_coeff = min(coeffs(i,order(j)),1);
-%            img(temp_bool{order(j)}) = img(temp_bool{order(j)}) + act_coeff * (meanpix - img(temp_bool{order(j)})) + act_coeff;           
-%        end
-       patchDB(i,:) = reshape(img,1,Dx);
+        patchDB(i,:) = reshape(img,1,Dx);
     end
 end
