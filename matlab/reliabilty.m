@@ -1,4 +1,4 @@
-function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,filters)
+function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,try_k,k,Dx,filters)
     % reproducing the effect of non-classical stimulation on spike count or 
     % membrane potenital evoked response reliabilities from Haider et al.,
     % Neuron, 2010.
@@ -27,22 +27,22 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
     cc{k+1} = eye(Dx);
     ge.cc = cc;
             
-    rel_crf = zeros(k,1);
-    rel_nrf = zeros(k,1);      
-    rel_crf_std = zeros(k,1);
-    rel_nrf_std = zeros(k,1);      
+    rel_crf = zeros(try_k,1);
+    rel_nrf = zeros(try_k,1);      
+    rel_crf_std = zeros(try_k,1);
+    rel_nrf_std = zeros(try_k,1);      
     sHandle = figure('Units','normalized','OuterPosition',[0.1 0.4 0.8 0.8]);
     pfHandle = figure('Units','normalized','OuterPosition',[0.05 0.1 0.4 0.8]);
     nfHandle = figure('Units','normalized','OuterPosition',[0.55 0.1 0.4 0.8]);
-    for c = 1:k
+    for c = 1:try_k
         ge.obsVar = generating_sigma;
-        fprintf('Component %d/%d ',k,c);
+        fprintf('Component %d/%d ',try_k,c);
         
         % select the neurons that are activated by the component
         actFilters = covariance2template(cc{k},ge.A);
-        cell = find(actFilters);
-        activatedFilters = ge.A(:,cell)';
-        activatedCoeffs = coeffs(c,cell)';
+        cells = find(actFilters);
+        activatedFilters = ge.A(:,cells)';
+        activatedCoeffs = coeffs(c,cells)';
         positiveFilters = activatedFilters(activatedCoeffs>0,:);
         negativeFilters = activatedFilters(activatedCoeffs<0,:);
         [positiveCoeffs,posperm] = sort(activatedCoeffs(activatedCoeffs>0,1),1,'descend');
@@ -61,25 +61,31 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
         viewImageSet(positiveFilters,'titles',positiveTitles);
         figure(nfHandle);
         viewImageSet(negativeFilters,'titles',negativeTitles);
-        numfilter = length(cell);
+        numfilter = length(cells);
         
         % choose a cell     
         [~,maxact] = max(activatedCoeffs);
-        cell = cell(maxact);
+        cell = cells(maxact);
         
         % create a stimulus that lies in the receptive field of the neuron
+        z = 1;
         v = zeros(ge.Dv,1);
         v(cell,1) = 1;
-        z = 1;
         crf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))';        
+%         g = gestaltSamplePriorG(ge,'gamma');
+%         [crf_stim,~] = gestaltAncestralSample(ge,g,z,false);        
         ge.X(1,:,:) = reshape(crf_stim,1,ge.Dx);
         
         % choose a stimulus that also lies in the extraclassical field
         % colinearly with the preferred direction
         g = zeros(ge.k,1);
-        g(c,1) = 1;        
+        g(c,1) = 100;        
         [nrf_stim,~] = gestaltAncestralSample(ge,g,z,false);
+        nrf_stim = nrf_stim + crf_stim';
 %         nrf_stim = createImageStimulus(tmp(c),1);
+%         v = zeros(ge.Dv,1);
+%         v(cells) = activatedCoeffs;
+%         nrf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))'; 
         ge.X(2,:,:) = reshape(nrf_stim,1,ge.Dx);
         
         figure(sHandle);
@@ -165,7 +171,7 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,k,Dx,
     ymax = max([0.35,mean_crf + std_crf + 0.1,mean_nrf + std_nrf + 0.1]);
     ylim([ymin ymax]);
     set(gca,'XTickLabel',{'CRF','nCRF'});
-    title(sprintf('K = %d',k));
+    title(sprintf('K = %d',try_k));
     ylabel('reliability');
    
 end
