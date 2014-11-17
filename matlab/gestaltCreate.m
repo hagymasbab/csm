@@ -29,7 +29,8 @@ function gestalt = gestaltCreate(name,varargin)
     imSize = sqrt(gestalt.Dx); % TODO figure out something if it's not a square
     if strcmp(gestalt.filters,'gabor')        
         %gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[0;pi/4;pi/2;3*pi/4],[4]);
-        gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[pi/4;3*pi/4],[2,4]);
+        %gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[pi/4;3*pi/4],[2,4]);
+        gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift/2,gestalt.filterShift,[pi/4;3*pi/4],[4]);
     elseif strcmp(gestalt.filters,'line')        
         gestalt.A = lineFilters(imSize);
     elseif strcmp(gestalt.filters,'eye')

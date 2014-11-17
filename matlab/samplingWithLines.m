@@ -1,4 +1,4 @@
-function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,randseed,stimFunc,compFunc)
+function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,v_sampler,randseed,stimFunc,compFunc)
     % reproducing the effect of non-classical stimulation on spike count or 
     % membrane potenital evoked response reliabilities from Haider et al.,
     % Neuron, 2010.
@@ -36,7 +36,7 @@ function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,randseed,stimFunc
     g_scale = 2;
     z_shape = 1;
     z_scale = 0.1;
-    v_sampler = 'direct';
+    %v_sampler = 'mh';
     sample_z = true;
     
     % create model
@@ -62,9 +62,10 @@ function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,randseed,stimFunc
     sHandle = figure('Units','normalized','OuterPosition',[0.1 0.4 0.8 0.8]);
     handles = [];
     for c = 1:try_k
+        act_coeffs = diag(cc{c});
         ge.obsVar = generating_sigma;
         fprintf('Component %d/%d ',try_k,c);
-        [activatedIndices,activatedCoeffs,handles] = plotActivatedFilters(cc{c},ge.A,coeffs(c,:)',handles);               
+        [activatedIndices,activatedCoeffs,handles] = getActivatedFilters(cc{c},ge.A,act_coeffs,handles,false);               
         
         [crf_stim,nrf_stim,cell] = createStimulus(ge,activatedIndices,activatedCoeffs,c);
         
@@ -91,6 +92,7 @@ function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,randseed,stimFunc
         viewImage(nrf_stim,'useMax',true);
         title('nCRF stimulus');
         xlabel(sprintf('mu = %.3f sigma = %.3f',mean(nrf_stim(:)),std(nrf_stim(:))));
+        pause;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
         % SAMPLING
@@ -120,7 +122,8 @@ function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,randseed,stimFunc
             nrf_zsamp(t,:) = nz;
         end                        
         
-        plotPair(squeeze(crf_samples(c,:,:)),squeeze(nrf_samples(c,:,:)),nrow,ncol,1,false,'V');
+        figure(sHandle);
+        plotPair(squeeze(crf_samples(c,:,:)),squeeze(nrf_samples(c,:,:)),nrow,ncol,1,true,'V');
         plotPair(crf_gsamp,nrf_gsamp,nrow,ncol,1+ncol,true,'G');
         plotPair(crf_gnullsamp,nrf_gnullsamp,nrow,ncol,1+2*ncol,true,'G0');
         plotPair(crf_zsamp,nrf_zsamp,nrow,ncol,1+3*ncol,true,'Z');                        
@@ -168,19 +171,26 @@ function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean
 end
 
 function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activatedCoeffs,compNum)
-    [~,maxact] = max(activatedCoeffs);
-    cell = activatedIndices(maxact);
+%     [~,maxact] = max(activatedCoeffs);
+%     cell = activatedIndices(maxact);
     
     z = 1;
-    g = zeros(ge.k,1);
-    g(compNum,1) = 100;        
-    [crf_stim,gen_v] = gestaltAncestralSample(ge,g,z,false);
+%     g = zeros(ge.k,1);
+%     g(compNum,1) = 100;        
+%     [crf_stim,gen_v] = gestaltAncestralSample(ge,g,z,false);
+    
+    v = zeros(ge.Dv,1);
+    v(activatedIndices) = activatedCoeffs;
+    crf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))'; 
+    
+    
+    [~,cell] = max(v);
 %     
 %     v = zeros(ge.Dv,1);
 %     v(cell,1) = 1;
 %     nrf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))';     
     
-    nrf_stim = crf_stim' - gen_v(1,cell) * ge.A(:,cell);
+    nrf_stim = crf_stim - v(cell,1) * ge.A(:,cell);
     
 end
 

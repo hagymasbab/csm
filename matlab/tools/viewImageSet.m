@@ -1,7 +1,7 @@
 function viewImageSet(images,varargin)
     p = inputParser;
     addParamValue(p,'sum',false,@islogical);
-    addParamValue(p,'max',true,@islogical);
+    addParamValue(p,'max',true,@islogical);    
     addParamValue(p,'titles',{});
     parse(p,varargin{:});
     
@@ -34,6 +34,7 @@ function viewImageSet(images,varargin)
         images = images(1:maxim,:);
         N = maxim;
     end
+        
     xdim = floor(sqrt(N));
     ydim = ceil(N/xdim);
     

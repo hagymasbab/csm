@@ -1,4 +1,4 @@
-function [activatedIndices,activatedCoeffs,handles] = plotActivatedFilters(cc,A,coeffs,handles)
+function [activatedIndices,activatedCoeffs,handles] = getActivatedFilters(cc,A,coeffs,handles,plotFilters)
     actFilters = covariance2template(cc,A);
     activatedIndices = find(actFilters);
     activatedFilters = A(:,activatedIndices)';
@@ -19,12 +19,15 @@ function [activatedIndices,activatedCoeffs,handles] = plotActivatedFilters(cc,A,
     for i=1:length(negativeCoeffs)
         negativeTitles{i} = num2str(negativeCoeffs(i,1));
     end
-    if isempty(handles)
-        handles(1) = figure('Units','normalized','OuterPosition',[0.05 0.1 0.4 0.8]);    
-        handles(2) = figure('Units','normalized','OuterPosition',[0.55 0.1 0.4 0.8]);
+    
+    if plotFilters
+        if isempty(handles)
+            handles(1) = figure('Units','normalized','OuterPosition',[0.05 0.1 0.4 0.8]);    
+            handles(2) = figure('Units','normalized','OuterPosition',[0.55 0.1 0.4 0.8]);
+        end
+        figure(handles(1));
+        viewImageSet(positiveFilters,'titles',positiveTitles);
+        figure(handles(2));
+        viewImageSet(negativeFilters,'titles',negativeTitles);
     end
-    figure(handles(1));
-    viewImageSet(positiveFilters,'titles',positiveTitles);
-    figure(handles(2));
-    viewImageSet(negativeFilters,'titles',negativeTitles);
 end
