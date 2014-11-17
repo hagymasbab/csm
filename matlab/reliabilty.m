@@ -4,6 +4,10 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,try_k
     % Neuron, 2010.
     close all;
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
+    % MODEL CREATION
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     % model parameters for generation and sampling
     generating_sigma = 0.001;
     sampling_sigma = 1;
@@ -26,46 +30,25 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,try_k
     %viewImageSet(cc);
     cc{k+1} = eye(Dx);
     ge.cc = cc;
-            
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
+    % STIMULUS CREATION
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     rel_crf = zeros(try_k,1);
     rel_nrf = zeros(try_k,1);      
     rel_crf_std = zeros(try_k,1);
     rel_nrf_std = zeros(try_k,1);      
     sHandle = figure('Units','normalized','OuterPosition',[0.1 0.4 0.8 0.8]);
-    pfHandle = figure('Units','normalized','OuterPosition',[0.05 0.1 0.4 0.8]);
-    nfHandle = figure('Units','normalized','OuterPosition',[0.55 0.1 0.4 0.8]);
+    handles = [];
     for c = 1:try_k
         ge.obsVar = generating_sigma;
         fprintf('Component %d/%d ',try_k,c);
-        
-        % select the neurons that are activated by the component
-        actFilters = covariance2template(cc{k},ge.A);
-        cells = find(actFilters);
-        activatedFilters = ge.A(:,cells)';
-        activatedCoeffs = coeffs(c,cells)';
-        positiveFilters = activatedFilters(activatedCoeffs>0,:);
-        negativeFilters = activatedFilters(activatedCoeffs<0,:);
-        [positiveCoeffs,posperm] = sort(activatedCoeffs(activatedCoeffs>0,1),1,'descend');
-        [negativeCoeffs,negperm] = sort(activatedCoeffs(activatedCoeffs<0,1),1,'ascend');        
-        positiveFilters = positiveFilters(posperm,:);
-        negativeFilters = negativeFilters(negperm,:);
-        positiveTitles = {};
-        negativeTitles = {};
-        for i=1:length(positiveCoeffs)
-            positiveTitles{i} = num2str(positiveCoeffs(i,1));
-        end
-        for i=1:length(negativeCoeffs)
-            negativeTitles{i} = num2str(negativeCoeffs(i,1));
-        end        
-        figure(pfHandle);        
-        viewImageSet(positiveFilters,'titles',positiveTitles);
-        figure(nfHandle);
-        viewImageSet(negativeFilters,'titles',negativeTitles);
-        numfilter = length(cells);
+        [activatedIndices,activatedCoeffs,handles] = plotActivatedFilters(cc{c},ge.A,coeffs(c,:)',handles);               
         
         % choose a cell     
         [~,maxact] = max(activatedCoeffs);
-        cell = cells(maxact);
+        cell = activatedIndices(maxact);
         
         % create a stimulus that lies in the receptive field of the neuron
         z = 1;
@@ -109,6 +92,10 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,try_k
         title('nCRF stimulus');
         xlabel(sprintf('mu = %.3f sigma = %.3f',mean(nrf_stim(:)),std(nrf_stim(:))));
         
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+        % SAMPLING
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
         crf_samples = zeros(nTrials,nSamples);
         nrf_samples = zeros(nTrials,nSamples);
         crf_gsamp = zeros(nTrials,nSamples);
@@ -117,7 +104,7 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,try_k
         nrf_gnullsamp = zeros(nTrials,nSamples);
         crf_zsamp = zeros(nTrials,nSamples);
         nrf_zsamp = zeros(nTrials,nSamples);
-        fprintf('%d/%d activated filters ',numfilter,ge.Dv);
+        fprintf('%d/%d activated filters ',length(activatedCoeffs),ge.Dv);
         for t = 1:nTrials
             %fprintf('\nTrial %d/%d\n',nTrials,t);
             printCounter(t,'stringVal','Trial','maxVal',nTrials,'newLine',true);
@@ -145,6 +132,10 @@ function [mean_crf,std_crf,mean_nrf,std_nrf] = reliabilty(nTrials,nSamples,try_k
 %             pause;
 %         end
         
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+        % RELIABILITY COMPUTATION
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
         corr_crf = corr(crf_samples');
         crf_corrvals = upperTriangleValues(corr_crf);
         rel_crf(c,1) = mean(crf_corrvals);
