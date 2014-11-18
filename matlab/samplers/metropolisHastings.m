@@ -4,6 +4,7 @@ function [samples,rr] = metropolisHastings(init,logpdf,propCov,nSamp,burnIn,thin
     addParamValue(p,'adapt',false,@islogical);
     addParamValue(p,'adaptStep',1.01,@isnumeric);
     addParamValue(p,'adaptSmooth',1,@isnumeric);
+    addParamValue(p,'maxReject',100,@isnumeric);
     p.KeepUnmatched = true;
     parse(p,varargin{:});
     v = p.Results.verbose;
@@ -35,6 +36,9 @@ function [samples,rr] = metropolisHastings(init,logpdf,propCov,nSamp,burnIn,thin
         accept = lp_next > lp_act || log(a) < lp_next - lp_act;
         act_rej = 0;
         while ~accept
+            if act_rej > p.Results.maxReject
+                throw(MException('Gestalt:MetropolisHastings:TooManyTries','MH sampler exceeded %d tries to produce a sample',p.Results.maxReject));
+            end
             if p.Results.adapt && act_rej > 5
                 propScale = propScale / p.Results.adaptStep;
             end

@@ -15,10 +15,13 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'zSampler','slice');
     addParamValue(parser,'vSampler','direct');
     addParamValue(parser,'repeatCycle',1,@isnumeric);
+    addParamValue(parser,'prestimSamples',0,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
 
     N = nSamp*params.thin + params.burnin;        
+    
+    % TODO do something when there is burn-in and prestim at the same time
     
     s = zeros(N,ge.k + ge.B*ge.Dv);
     zsamp = zeros(N,1);
@@ -34,14 +37,25 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     else
         g = params.initG;
     end
-
+    
+    
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
     z = 0.1; % remains unchanged if we do not use a contrast variable
     % TODO we might sample z from its prior
-        
+    
+    nullStimulus = ge.obsVar * randn([1,ge.B,ge.Dx]);
+    storedStimulus = ge.X(xind,:,:);
+    ge.X(xind,:,:) = nullStimulus;
+    
+    switched = false;
     for i=1:N
         if params.verbose==1
             printCounter(i,'stringVal','Sample','maxVal',N,'newLine',false);
+        end
+        
+        if i > params.prestimSamples && ~switched
+            ge.X(xind,:,:) = storedStimulus;
+            switched = true;
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
@@ -65,6 +79,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
             m = ((z/ge.obsVar) * cov * ATx)';
             vlogpdf = @(v) log( mvnpdf(v',m,cov) );
             propcov = 0.005 * cov;
+            %propcov = 0.00005 * eye(ge.Dv);
             [v_temp,rr_act] = metropolisHastings(V',vlogpdf,propcov,1,0,0,'verbose',0);
             V = reshape(v_temp,1,ge.Dv);
             rr = rr + rr_act;

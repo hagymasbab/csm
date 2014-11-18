@@ -4,7 +4,8 @@ function [X,V] = gestaltAncestralSample(ge,g,z,precision)
     else
         Cv = inv(componentSum(g,ge.pc));
     end
-    V = mvnrnd(zeros(ge.B,ge.Dv),Cv);                                
+    %V = mvnrnd(zeros(ge.B,ge.Dv),Cv);                                
+    V = abs(mvnrnd(zeros(ge.B,ge.Dv),Cv));
 
     means = reshape(V,ge.B,ge.Dv);
     means = z * means * ge.A';

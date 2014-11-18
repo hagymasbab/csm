@@ -1,4 +1,4 @@
-function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,v_sampler,randseed,stimFunc,compFunc)
+function samplingWithLines(nTrials,nSamples,prestimSamp,try_k,k,Dx,filters,v_sampler,randseed,stimFunc,compFunc)
     % reproducing the effect of non-classical stimulation on spike count or 
     % membrane potenital evoked response reliabilities from Haider et al.,
     % Neuron, 2010.
@@ -32,12 +32,16 @@ function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,v_sampler,randsee
     
     % model parameters for generation and sampling
     generating_sigma = 0.001;
-    sampling_sigma = 1;
+    sampling_sigma = 0.1;
     g_scale = 2;
     z_shape = 1;
     z_scale = 0.1;
     %v_sampler = 'mh';
     sample_z = true;
+    sampler_verb = 0;
+    if strcmp(v_sampler,'mh')
+        sampler_verb = 1;
+    end
     
     % create model
     if strcmp(filters,'OF')
@@ -104,29 +108,54 @@ function samplingWithLines(nTrials,nSamples,try_k,k,Dx,filters,v_sampler,randsee
         nrf_gnullsamp = zeros(nTrials,nSamples);
         crf_zsamp = zeros(nTrials,nSamples);
         nrf_zsamp = zeros(nTrials,nSamples);
+        
+        crf_activated = zeros(nTrials,length(activatedIndices),nSamples);
+        nrf_activated = zeros(nTrials,length(activatedIndices),nSamples);
+        crf_allgsamp = zeros(nTrials,ge.k,nSamples);
+        nrf_allgsamp = zeros(nTrials,ge.k,nSamples);
         fprintf('%d/%d activated filters ',length(activatedCoeffs),ge.Dv);
         for t = 1:nTrials
             printCounter(t,'stringVal','Trial','maxVal',nTrials,'newLine',true);
             % crf samples
             ge.obsVar = sampling_sigma;
-            [cs,~,cz] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z);
+            [cs,~,cz] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z,'prestimSamples',prestimSamp,'verbose',sampler_verb);
             crf_samples(c,t,:) = cs(:,ge.k+cell)';
             crf_gsamp(t,:) = cs(:,c);
             crf_gnullsamp(t,:) = cs(:,k+1);
             crf_zsamp(t,:) = cz;
+            crf_activated(t,:,:) = cs(:,ge.k+activatedIndices)'; 
+            crf_allgsamp(t,:,:) = cs(:,1:ge.k)';
             % nrf samples
-            [ns,~,nz] = gestaltGibbs(ge,2,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z);
+            [ns,~,nz] = gestaltGibbs(ge,2,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z,'prestimSamples',prestimSamp,'verbose',sampler_verb);
             nrf_samples(c,t,:) = ns(:,ge.k+cell)';
             nrf_gsamp(t,:) = ns(:,c);
             nrf_gnullsamp(t,:) = ns(:,k+1);
             nrf_zsamp(t,:) = nz;
-        end                        
+            nrf_activated(t,:,:) = ns(:,ge.k+activatedIndices)';
+            nrf_allgsamp(t,:,:) = ns(:,1:ge.k)';
+        end                                
         
         figure(sHandle);
-        plotPair(squeeze(crf_samples(c,:,:)),squeeze(nrf_samples(c,:,:)),nrow,ncol,1,true,'V');
-        plotPair(crf_gsamp,nrf_gsamp,nrow,ncol,1+ncol,true,'G');
-        plotPair(crf_gnullsamp,nrf_gnullsamp,nrow,ncol,1+2*ncol,true,'G0');
-        plotPair(crf_zsamp,nrf_zsamp,nrow,ncol,1+3*ncol,true,'Z');                        
+        plotPair(squeeze(crf_samples(c,:,:)),squeeze(nrf_samples(c,:,:)),nrow,ncol,1,true,'V',prestimSamp,{});
+        plotPair(crf_gsamp,nrf_gsamp,nrow,ncol,1+ncol,true,'G',prestimSamp,{});
+        plotPair(crf_gnullsamp,nrf_gnullsamp,nrow,ncol,1+2*ncol,true,'G0',prestimSamp,{});
+        plotPair(crf_zsamp,nrf_zsamp,nrow,ncol,1+3*ncol,true,'Z',prestimSamp,{});                        
+        
+        left_act = squeeze(mean(crf_activated,1));        
+        right_act = squeeze(mean(nrf_activated,1));
+        labels = {};
+        for ii = 1:length(activatedIndices)
+            labels{ii} = sprintf('%d',activatedIndices(ii));
+        end
+        plotPair(left_act,right_act,nrow,ncol,1+2*ncol+2,false,'act-V',prestimSamp,{});                        
+        
+        left_g = squeeze(mean(crf_allgsamp,1));        
+        right_g = squeeze(mean(nrf_allgsamp,1));
+        labels = {};
+        for ii = 1:ge.k
+            labels{ii} = sprintf('%d',ii);
+        end
+        plotPair(left_g,right_g,nrow,ncol,1+3*ncol+2,false,'all-G',prestimSamp,labels);                        
         
 %         if k>1 && c<k
 %             pause;
@@ -143,31 +172,38 @@ function B = upperTriangleValues(A)
     B = B(B~=0);
 end
 
-function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean,titleString)
+function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean,titleString,redLine,labels)
     subplot(plotRows,plotColumns,leftPlotIndex);
     plot(leftData');
+    hold on;
     xlim([1,size(leftData,2)]);
     yl1 = ylim();
-    if plotMean
-        hold on;
+    if plotMean        
         plot(mean(leftData)','LineWidth',3);
     end
     title(strcat('CRF-',titleString));
     
     subplot(plotRows,plotColumns,leftPlotIndex+1);
     plot(rightData');
+    hold on;
     xlim([1,size(rightData,2)]);
     yl2 = ylim();
-    if plotMean
-        hold on;
+    if plotMean        
         plot(mean(rightData)','LineWidth',3);
     end
     title(strcat('nCRF-',titleString));
+    if ~isempty(labels)
+        legend(labels);
+    end
     
     subplot(plotRows,plotColumns,leftPlotIndex);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
+    plot([redLine;redLine],ylim(),'r-');
+    plot([1; size(rightData,2)],[0;0],'k--');
     subplot(plotRows,plotColumns,leftPlotIndex+1);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
+    plot([redLine;redLine],ylim(),'r-');
+    plot([1; size(rightData,2)],[0;0],'k--');
 end
 
 function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activatedCoeffs,compNum)
@@ -175,22 +211,26 @@ function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activate
 %     cell = activatedIndices(maxact);
     
     z = 1;
-%     g = zeros(ge.k,1);
-%     g(compNum,1) = 100;        
-%     [crf_stim,gen_v] = gestaltAncestralSample(ge,g,z,false);
+    g = zeros(ge.k,1);
+    g(compNum,1) = 100;        
+    [crf_stim,v] = gestaltAncestralSample(ge,g,z,false);
     
-    v = zeros(ge.Dv,1);
-    v(activatedIndices) = activatedCoeffs;
-    crf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))'; 
+%     
+%     v = zeros(ge.Dv,1);
+%     v(activatedIndices) = activatedCoeffs;
+%     crf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))'; 
     
-    
-    [~,cell] = max(v);
+     v = v(:);
+     [~,maxidx] = max(v(activatedIndices,1));
+     cell = activatedIndices(maxidx);
 %     
 %     v = zeros(ge.Dv,1);
 %     v(cell,1) = 1;
 %     nrf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))';     
     
-    nrf_stim = crf_stim - v(cell,1) * ge.A(:,cell);
+   
+    fprintf(' cell idx: %d act: %f ',cell,v(cell,1));
+    nrf_stim = crf_stim(:) - v(cell,1) * ge.A(:,cell);
     
 end
 
@@ -254,4 +294,8 @@ function computeReliability(crf_samples,nrf_samples,plotHandle,freeSubplots)
     set(gca,'XTickLabel',{'CRF','nCRF'});
     title(sprintf('K = %d',try_k));
     ylabel('reliability');
+end
+
+function computeIC(crf_samples,nrf_samples,plotHandle,freeSubplots)
+    
 end
