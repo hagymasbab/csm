@@ -16,6 +16,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'vSampler','direct');
     addParamValue(parser,'repeatCycle',1,@isnumeric);
     addParamValue(parser,'prestimSamples',0,@isnumeric);
+    addParamValue(parser,'fixedZ',1,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -40,7 +41,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     
     
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
-    z = 0.1; % remains unchanged if we do not use a contrast variable
+    z = params.fixedZ; % remains unchanged if we do not use a contrast variable
     % TODO we might sample z from its prior
     
     nullStimulus = ge.obsVar * randn([1,ge.B,ge.Dx]);
