@@ -99,14 +99,14 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
         title('Example cell RF');
         subplot(nrow,ncol,4);
         viewImage(tmp{c});
-        title('Gestalt RF');
+        title('Gestalt');
         subplot(nrow,ncol,ncol+3);
         viewImage(crf_stim,'useMax',true);
-        title('CRF stimulus');
+        title('Full stimulus');
         xlabel(sprintf('mu = %.3f sigma = %.3f',mean(crf_stim(:)),std(crf_stim(:))));
         subplot(nrow,ncol,ncol+4);        
         viewImage(nrf_stim,'useMax',true);
-        title('nCRF stimulus');
+        title('IC stimulus');
         xlabel(sprintf('mu = %.3f sigma = %.3f',mean(nrf_stim(:)),std(nrf_stim(:))));
         pause;
         
@@ -150,7 +150,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
         end                                
         
         figure(sHandle);
-        plotPair(squeeze(crf_samples(c,:,:)),squeeze(nrf_samples(c,:,:)),nrow,ncol,1,true,'V',prestimSamp,{});
+        plotPair(squeeze(crf_samples(c,:,:)),squeeze(nrf_samples(c,:,:)),nrow,ncol,1,true,'V1',prestimSamp,{});
         plotPair(crf_gsamp,nrf_gsamp,nrow,ncol,1+ncol,true,'G',prestimSamp,{});
         plotPair(crf_gnullsamp,nrf_gnullsamp,nrow,ncol,1+2*ncol,true,'G0',prestimSamp,{});
         plotPair(crf_zsamp,nrf_zsamp,nrow,ncol,1+3*ncol,true,'Z',prestimSamp,{});                        
@@ -195,7 +195,7 @@ function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean
     if plotMean        
         plot(mean(leftData)','LineWidth',3);
     end
-    title(strcat('CRF-',titleString));
+    title(strcat('Full stim.-',titleString),'FontSize',16);
     
     subplot(plotRows,plotColumns,leftPlotIndex+1);
     plot(rightData');
@@ -205,7 +205,7 @@ function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean
     if plotMean        
         plot(mean(rightData)','LineWidth',3);
     end
-    title(strcat('nCRF-',titleString));
+    title(strcat('IC-',titleString),'FontSize',16);
     if ~isempty(labels)
         legend(labels);
     end
@@ -213,10 +213,14 @@ function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean
     subplot(plotRows,plotColumns,leftPlotIndex);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
     plot([redLine;redLine],ylim(),'r-');
+    plot([redLine+1;redLine+1],ylim(),'k.');
+    plot([redLine+2;redLine+2],ylim(),'k.');
     plot([1; size(rightData,2)],[0;0],'k--');
     subplot(plotRows,plotColumns,leftPlotIndex+1);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
     plot([redLine;redLine],ylim(),'r-');
+    plot([redLine+1;redLine+1],ylim(),'k.');
+    plot([redLine+2;redLine+2],ylim(),'k.');
     plot([1; size(rightData,2)],[0;0],'k--');
 end
 
