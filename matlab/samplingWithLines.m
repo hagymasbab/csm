@@ -21,9 +21,11 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
     end
     
     if strcmp(compFunc,'reliability')
-        computeFunction = @(a,b,c,d) computeReliability(a,b,c,d);
+        computeFunction = @(a,b,c,d,e) computeReliability(a,b,c,d,e);
+    elseif strcmp(stimFunc,'IC')
+        computeFunction = @(a,b,c,d,e) computeIC(a,b,c,d,e);
     else
-        computeFunction = @(a,b,c,d) 1;        
+        computeFunction = @(a,b,c,d,e) 1;        
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
@@ -31,17 +33,18 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % model parameters for generation and sampling
-    generating_sigma = 0.001;
+    generating_sigma = 1;
     z_gen = 1;
     g_gen = 10;
         
-    sampling_sigma = 10;
+    sampling_sigma = 1;
     g_scale = 2;
     z_shape = 1;
-    z_scale = 0.0001;
+    z_scale = 0.1;
     sample_z = true;
     fixedZ = 0.1; %in case we don't sample  
-    filter_scaling = 1;
+    filter_scaling = 10;
+    g_init = [zeros(k,1);1];
     
     sampler_verb = 0;
     if strcmp(v_sampler,'mh')
@@ -55,7 +58,9 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
     ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',2, ...
         'filters',filters,'obsVar',generating_sigma,'g_scale',g_scale,'z_shape',z_shape,'z_scale',z_scale);
     
-    ge.A = filter_scaling*(ge.A);
+    avg_eigenval = mean(abs(eig(ge.A)));
+    %ge.A = filter_scaling*(ge.A);
+    ge.A = filter_scaling*(1/avg_eigenval)*(ge.A);
     
     % create covariance components that reflect linear shapes
     [~,tmp] = lineImages(100,Dx,k);
@@ -70,7 +75,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
     
     crf_samples = zeros(try_k,nTrials,nSamples);
     nrf_samples = zeros(try_k,nTrials,nSamples);
-    sHandle = figure('Units','normalized','OuterPosition',[0.1 0.4 0.8 0.8]);
+    sHandle = figure('Units','normalized','OuterPosition',[0.05 0.4 0.95 0.8]);
     handles = [];
     for c = 1:try_k
         act_coeffs = diag(cc{c});
@@ -86,7 +91,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
         figure(sHandle);
         clf;        
         nrow = 4;
-        ncol = 4;
+        ncol = 5;
         
         % plot the stimuli along with cell and gestalt receptive fields        
         subplot(nrow,ncol,3);
@@ -95,15 +100,15 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
         subplot(nrow,ncol,4);
         viewImage(tmp{c});
         title('Gestalt RF');
-        subplot(nrow,ncol,7);
+        subplot(nrow,ncol,ncol+3);
         viewImage(crf_stim,'useMax',true);
         title('CRF stimulus');
         xlabel(sprintf('mu = %.3f sigma = %.3f',mean(crf_stim(:)),std(crf_stim(:))));
-        subplot(nrow,ncol,8);        
+        subplot(nrow,ncol,ncol+4);        
         viewImage(nrf_stim,'useMax',true);
         title('nCRF stimulus');
         xlabel(sprintf('mu = %.3f sigma = %.3f',mean(nrf_stim(:)),std(nrf_stim(:))));
-        pause;
+        %pause;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
         % SAMPLING
@@ -126,7 +131,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
             % crf samples
             ge.obsVar = sampling_sigma;
             [cs,~,cz] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z, ...
-                'prestimSamples',prestimSamp,'verbose',sampler_verb,'fixedZ',fixedZ);
+                'prestimSamples',prestimSamp,'verbose',sampler_verb,'fixedZ',fixedZ,'initG',g_init);
             crf_samples(c,t,:) = cs(:,ge.k+cell)';
             crf_gsamp(t,:) = cs(:,c);
             crf_gnullsamp(t,:) = cs(:,k+1);
@@ -135,7 +140,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
             crf_allgsamp(t,:,:) = cs(:,1:ge.k)';
             % nrf samples
             [ns,~,nz] = gestaltGibbs(ge,2,nSamples,'verbose',0,'vSampler',v_sampler,'contrast',sample_z, ...
-                'prestimSamples',prestimSamp,'verbose',sampler_verb,'fixedZ',fixedZ);
+                'prestimSamples',prestimSamp,'verbose',sampler_verb,'fixedZ',fixedZ,'initG',g_init);
             nrf_samples(c,t,:) = ns(:,ge.k+cell)';
             nrf_gsamp(t,:) = ns(:,c);
             nrf_gnullsamp(t,:) = ns(:,k+1);
@@ -172,7 +177,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
         
     end
     fprintf('\n');
-    computeFunction(crf_samples,nrf_samples,sHandle,[11 12]);   
+    computeFunction(crf_samples,nrf_samples,prestimSamp,sHandle,ncol);   
 end
 
 function B = upperTriangleValues(A)
@@ -219,11 +224,13 @@ function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activate
 %     [~,maxact] = max(activatedCoeffs);
 %     cell = activatedIndices(maxact);
     
+    signal_multiplier = 2;
+
     g = zeros(ge.k,1);
     g(compNum,1) = g_gen;        
     [crf_stim,v] = gestaltAncestralSample(ge,g,z_gen,false,true);
     for i=1:length(activatedIndices)
-        crf_stim = crf_stim + activatedCoeffs(i) * ge.A(:,activatedIndices(i))';
+        crf_stim = crf_stim + signal_multiplier * activatedCoeffs(i) * ge.A(:,activatedIndices(i))';
     end
     
 %     
@@ -241,7 +248,7 @@ function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activate
     
    
     fprintf(' cell idx: %d act: %f ',cell,v(cell,1));
-    nrf_stim = crf_stim(:) - (z_gen * v(cell,1) + activatedCoeffs(maxidx)) * ge.A(:,cell);
+    nrf_stim = crf_stim(:) - (z_gen * v(cell,1) + signal_multiplier*activatedCoeffs(maxidx)) * ge.A(:,cell);
     
 end
 
@@ -270,7 +277,7 @@ function [crf_stim,nrf_stim,cell] = createReliabilityStimuli(ge,activatedIndices
 %   nrf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))'; 
 end
 
-function computeReliability(crf_samples,nrf_samples,plotHandle,freeSubplots)
+function computeReliability(crf_samples,nrf_samples,prestimSamp,plotHandle,freeSubplots)
     try_k = size(crf_samples,1);
     rel_crf = zeros(try_k,1);
     rel_nrf = zeros(try_k,1);      
@@ -307,6 +314,19 @@ function computeReliability(crf_samples,nrf_samples,plotHandle,freeSubplots)
     ylabel('reliability');
 end
 
-function computeIC(crf_samples,nrf_samples,plotHandle,freeSubplots)
+function computeIC(crf_samples,nrf_samples,prestimSamp,plotHandle,freeSubplots)
+    real = squeeze(mean(crf_samples,1));
+    ic = squeeze(mean(nrf_samples,1));
+    real_mean = mean(real,1);
+    real_std = std(real,1);
+    ic_mean = mean(ic,1);
+    ic_std = std(ic,1);
+    
+    first = prestimSamp + 1;
+    last = prestimSamp + 3;
+    
+    figure(plotHandle);
+    subplot(4,5,freeSubplots(1));
+    barwitherr([real_std(first:last)' ic_std(first:last)'],[real_mean(first:last)' ic_mean(first:last)']);
     
 end
