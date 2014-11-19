@@ -43,7 +43,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
     z_scale = 0.1;
     sample_z = true;
     fixedZ = 0.1; %in case we don't sample  
-    filter_scaling = 10;
+    filter_scaling = 1;
     g_init = [zeros(k,1);1];
     
     sampler_verb = 0;
@@ -108,7 +108,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
         viewImage(nrf_stim,'useMax',true);
         title('nCRF stimulus');
         xlabel(sprintf('mu = %.3f sigma = %.3f',mean(nrf_stim(:)),std(nrf_stim(:))));
-        %pause;
+        pause;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
         % SAMPLING
@@ -239,8 +239,19 @@ function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activate
 %     crf_stim = mvnrnd((z*ge.A*v)',ge.obsVar*eye(ge.Dx))'; 
     
      v = v(:);
+     
      [~,maxidx] = max(v(activatedIndices,1));
      cell = activatedIndices(maxidx);
+     actCoeff = activatedCoeffs(maxidx);
+     
+     % TEST
+     %maxidx = floor(length(activatedIndices)/2)-4;
+     [sortedCoeffs,sorting] = sort(activatedCoeffs,'descend');
+     sortedIndices = activatedIndices(sorting);
+     idx = 2;
+     cell = sortedIndices(idx);
+     actCoeff = sortedCoeffs(idx);          
+     
 %     
 %     v = zeros(ge.Dv,1);
 %     v(cell,1) = 1;
@@ -248,7 +259,7 @@ function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activate
     
    
     fprintf(' cell idx: %d act: %f ',cell,v(cell,1));
-    nrf_stim = crf_stim(:) - (z_gen * v(cell,1) + signal_multiplier*activatedCoeffs(maxidx)) * ge.A(:,cell);
+    nrf_stim = crf_stim(:) - (z_gen * v(cell,1) + signal_multiplier*actCoeff) * ge.A(:,cell);
     
 end
 
@@ -323,7 +334,7 @@ function computeIC(crf_samples,nrf_samples,prestimSamp,plotHandle,freeSubplots)
     ic_std = std(ic,1);
     
     first = prestimSamp + 1;
-    last = prestimSamp + 3;
+    last = prestimSamp + 5;
     
     figure(plotHandle);
     subplot(4,5,freeSubplots(1));
