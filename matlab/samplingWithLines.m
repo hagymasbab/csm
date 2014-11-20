@@ -169,7 +169,7 @@ function [nrf_stim,nrf_allgsamp,cc] = samplingWithLines(nTrials,nSamples,prestim
         for ii = 1:ge.k
             labels{ii} = sprintf('%d',ii);
         end
-        plotPair(left_g,right_g,nrow,ncol,1+3*ncol+2,false,'all-G',prestimSamp,labels);                        
+        plotPair(left_g,right_g,nrow,ncol,1+3*ncol+2,false,'all-G',prestimSamp,{});                        
         
 %         if k>1 && c<k
 %             pause;
@@ -213,14 +213,14 @@ function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean
     subplot(plotRows,plotColumns,leftPlotIndex);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
     plot([redLine;redLine],ylim(),'r-');
-    plot([redLine+1;redLine+1],ylim(),'k.');
-    plot([redLine+2;redLine+2],ylim(),'k.');
+    plot([redLine+1;redLine+1],ylim(),'k--');
+    plot([redLine+2;redLine+2],ylim(),'k--');
     plot([1; size(rightData,2)],[0;0],'k--');
     subplot(plotRows,plotColumns,leftPlotIndex+1);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
     plot([redLine;redLine],ylim(),'r-');
-    plot([redLine+1;redLine+1],ylim(),'k.');
-    plot([redLine+2;redLine+2],ylim(),'k.');
+    plot([redLine+1;redLine+1],ylim(),'k--');
+    plot([redLine+2;redLine+2],ylim(),'k--');
     plot([1; size(rightData,2)],[0;0],'k--');
 end
 
