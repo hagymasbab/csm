@@ -186,49 +186,12 @@ function B = upperTriangleValues(A)
     B = B(B~=0);
 end
 
-function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean,titleString,redLine,labels)
-    subplot(plotRows,plotColumns,leftPlotIndex);
-    plot(leftData');
-    hold on;
-    xlim([1,size(leftData,2)]);
-    yl1 = ylim();
-    if plotMean        
-        plot(mean(leftData)','LineWidth',3);
-    end
-    title(strcat('Full stim.-',titleString),'FontSize',16);
-    
-    subplot(plotRows,plotColumns,leftPlotIndex+1);
-    plot(rightData');
-    hold on;
-    xlim([1,size(rightData,2)]);
-    yl2 = ylim();
-    if plotMean        
-        plot(mean(rightData)','LineWidth',3);
-    end
-    title(strcat('IC-',titleString),'FontSize',16);
-    if ~isempty(labels)
-        legend(labels);
-    end
-    
-    subplot(plotRows,plotColumns,leftPlotIndex);
-    ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-    plot([redLine;redLine],ylim(),'r-');
-    plot([redLine+1;redLine+1],ylim(),'k--');
-    plot([redLine+2;redLine+2],ylim(),'k--');
-    plot([1; size(rightData,2)],[0;0],'k--');
-    subplot(plotRows,plotColumns,leftPlotIndex+1);
-    ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-    plot([redLine;redLine],ylim(),'r-');
-    plot([redLine+1;redLine+1],ylim(),'k--');
-    plot([redLine+2;redLine+2],ylim(),'k--');
-    plot([1; size(rightData,2)],[0;0],'k--');
-end
 
 function [crf_stim,nrf_stim,cell] = createICStimuli(ge,activatedIndices,activatedCoeffs,compNum,z_gen,g_gen)
 %     [~,maxact] = max(activatedCoeffs);
 %     cell = activatedIndices(maxact);
     
-    signal_multiplier = 2;
+    signal_multiplier = 2000;
 
     g = zeros(ge.k,1);
     g(compNum,1) = g_gen;        
