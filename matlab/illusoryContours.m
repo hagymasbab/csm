@@ -1,4 +1,4 @@
-function illusoryContours(randseed,nTrials)
+function illusoryContours(randseed,nTrials,nSamples,pre_cs)
     close all;
     Dx = 1024;
     k = 2;
@@ -49,8 +49,9 @@ function illusoryContours(randseed,nTrials)
         'filters','gabor_1024.mat','obsVar',generating_sigma,'g_scale',g_scale,'z_shape',z_shape,'z_scale',z_scale);
     ge.cc = cc;
     
-    nSamples = 13;
+    %nSamples = 13;
     prestimSamp = 3;
+    poststimSamp = 5;
     g_stim = [g_gen;0;0];
     [ic_stim,gen_v] = gestaltAncestralSample(ge,g_stim,z_gen,false,false);
     ic_stim = ic_stim' - gen_v(1,omitted_cell) * ge.A(:,omitted_cell);
@@ -69,24 +70,29 @@ function illusoryContours(randseed,nTrials)
     final_v = zeros(nTrials,ge.Dv);
     allsamp = zeros(nTrials,nSamples,ge.k+ge.Dv);
     for t = 1:nTrials
-        [cs,~,cz] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler','direct','contrast',sample_z, ...
-                    'prestimSamples',prestimSamp,'verbose',1,'fixedZ',fixedZ,'initG',g_init);
+        if isempty(pre_cs)
+            [cs,~,~] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler','direct','contrast',sample_z, ...
+                    'prestimSamples',prestimSamp,'poststimSamples',poststimSamp,'verbose',1,'fixedZ',fixedZ,'initG',g_init);
+        else
+            cs = squeeze(pre_cs(t,:,:));
+        end
+        
         central_samples(t,:) = cs(:,ge.k + central_cell)';
         omitted_samples(t,:) = cs(:,ge.k + omitted_cell)';
         other_samples(t,:) = cs(:,ge.k + other_cell)';
         g1_samples(t,:) = cs(:,1)';
         g2_samples(t,:) = cs(:,2)';
-        final_v(t,:) = cs(end,ge.k+1:end);
+        final_v(t,:) = cs(end-poststimSamp-1,ge.k+1:end);
         allsamp(t,:,:) = cs;
-        save('ic_samp.mat',allsamp);
+        save('ic_samp.mat','allsamp');
         fprintf('\n');
     end
     figure();
     row = 3;
     col = 2;
-    plotPair(central_samples,omitted_samples,row,col,1,true,{'stimulated v','gestalt activated v'},prestimSamp,{});
-    plotPair(other_samples,omitted_samples,row,col,3,true,{'other gestalt v','gestalt activated v'},prestimSamp,{});
-    plotPair(g1_samples,g2_samples,row,col,5,true,{'activated g','non-activated g'},prestimSamp,{});
+    plotPair(central_samples,omitted_samples,row,col,1,true,{'stimulated v','gestalt activated v'},{prestimSamp,poststimSamp},{});
+    plotPair(other_samples,omitted_samples,row,col,3,true,{'other gestalt v','gestalt activated v'},{prestimSamp,poststimSamp},{});
+    plotPair(g1_samples,g2_samples,row,col,5,true,{'activated g','non-activated g'},{prestimSamp,poststimSamp},{});
     
     figure();
     final_percept = ge.A * mean(final_v)';

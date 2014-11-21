@@ -16,6 +16,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'vSampler','direct');
     addParamValue(parser,'repeatCycle',1,@isnumeric);
     addParamValue(parser,'prestimSamples',0,@isnumeric);
+    addParamValue(parser,'poststimSamples',0,@isnumeric);
     addParamValue(parser,'fixedZ',1,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
@@ -48,15 +49,18 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     storedStimulus = ge.X(xind,:,:);
     ge.X(xind,:,:) = nullStimulus;
     
-    switched = false;
+    switched = 0;
     for i=1:N
         if params.verbose==1
             printCounter(i,'stringVal','Sample','maxVal',N,'newLine',false);
         end
         
-        if i > params.prestimSamples && ~switched
+        if i > params.prestimSamples && switched == 0
             ge.X(xind,:,:) = storedStimulus;
-            switched = true;
+            switched = 1;
+        elseif i > N - params.poststimSamples && switched == 1
+            ge.X(xind,:,:) = nullStimulus;
+            switched = 2;
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           

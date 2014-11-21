@@ -1,4 +1,4 @@
-function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean,titleStrings,redLine,labels)
+function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean,titleStrings,redLines,labels)
     subplot(plotRows,plotColumns,leftPlotIndex);
     plot(leftData');
     hold on;
@@ -24,14 +24,16 @@ function plotPair(leftData,rightData,plotRows,plotColumns,leftPlotIndex,plotMean
     
     subplot(plotRows,plotColumns,leftPlotIndex);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-    plot([redLine;redLine],ylim(),'r-');
-    plot([redLine+1;redLine+1],ylim(),'k--');
-    plot([redLine+2;redLine+2],ylim(),'k--');
+    plot([redLines{1};redLines{1}],ylim(),'r-');
+    plot([redLines{1}+1;redLines{1}+1],ylim(),'k--');
+    plot([size(rightData,2)-redLines{2};size(rightData,2)-redLines{2}],ylim(),'r-');
+    plot([size(rightData,2)-redLines{2}-1;size(rightData,2)-redLines{2}-1],ylim(),'k--');
     plot([1; size(rightData,2)],[0;0],'k--');
     subplot(plotRows,plotColumns,leftPlotIndex+1);
     ylim([min(yl1(1),yl2(1)) max(yl1(2),yl2(2))]);
-    plot([redLine;redLine],ylim(),'r-');
-    plot([redLine+1;redLine+1],ylim(),'k--');
-    plot([redLine+2;redLine+2],ylim(),'k--');
+    plot([redLines{1};redLines{1}],ylim(),'r-');
+    plot([redLines{1}+1;redLines{1}+1],ylim(),'k--');
+    plot([size(rightData,2)-redLines{2};size(rightData,2)-redLines{2}],ylim(),'r-');
+    plot([size(rightData,2)-redLines{2}-1;size(rightData,2)-redLines{2}-1],ylim(),'k--');
     plot([1; size(rightData,2)],[0;0],'k--');
 end
