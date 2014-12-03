@@ -31,16 +31,18 @@ function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_f
     nStim = size(allsamp,1);
     nOrient = size(central_field,1);
     Dv = size(allsamp,5) - model_k;
-    cov_images = cell(nStim,nOrient);    
+    cov_images = cell(nStim,nOrient);   
+    covtitles = {};
     for stim = 1:nStim
         for ori = 1:nOrient
             coeffs = reshape(within_cov_means(stim,ori,:),Dv,1);
             cov_images{stim,ori} = A * coeffs;
+            covtitles{end+1} = sprintf('Stim: %s RF: %s',orstrings{stim},orstrings{ori});
         end
     end
     
     figure();
-    viewImageSet(cov_images);
+    viewImageSet(cov_images,'max',false,'titles',covtitles);
         
     vsamples = squeeze(allsamp(:,z,:,:,model_k+central_field')); % nStim x nTrial x nSamp x nOrient
     figure();
