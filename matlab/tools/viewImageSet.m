@@ -6,11 +6,19 @@ function viewImageSet(images,varargin)
     parse(p,varargin{:});
     
     subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
+    forcexdim = 0;
+    forceydim = 0;
     if iscell(images)
         temp = [];
         % we assume it to be a row cell
-        for c=1:size(images,2)
-            temp = [temp; images{c}(:)'];
+        if size(images,1) > 1 && size(images,2) > 1
+            forcexdim = size(images,1);
+            forceydim = size(images,2);
+        end
+        for r=1:size(images,1)
+            for c=1:size(images,2)
+                temp = [temp; images{r,c}(:)'];
+            end
         end
         images = temp;
     end
@@ -34,8 +42,11 @@ function viewImageSet(images,varargin)
         images = images(1:maxim,:);
         N = maxim;
     end
-        
+           
     xdim = floor(sqrt(N));
+    if forcexdim > 0
+        xdim = forcexdim;
+    end
     ydim = ceil(N/xdim);
     
     clf;
