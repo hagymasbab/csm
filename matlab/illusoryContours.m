@@ -53,8 +53,8 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
         'filters','ic.mat','obsVar',generating_sigma,'g_scale',g_scale,'z_shape',z_shape,'z_scale',z_scale);
     ge.cc = cc;
     
-    prestimSamp = 3;
-    poststimSamp = 5;
+    prestimSamp = 2;
+    poststimSamp = 3;
 %     g_stim = [g_gen;0;0];
 %     [ic_stim,gen_v] = gestaltAncestralSample(ge,g_stim,z_gen,false,false);
 %     ic_stim = ic_stim' - gen_v(1,omitted_cell) * ge.A(:,omitted_cell);
@@ -104,7 +104,8 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
 %                 fprintf('\n');
             end
             trial_to_trial_variance(stim,cont,:,:) = var(allsamp(stim,cont,:,:,:),0,3);
-            save('ic_samp.mat','allsamp','trial_to_trial_variance','within_trial_variance','within_trial_covariance','central_field','A','k');
+            save('ic_samp.mat','allsamp','trial_to_trial_variance','within_trial_variance','within_trial_covariance', ...
+                'central_field','A','k','prestimSamp','poststimSamp');
             
 %             figure();
 %             row = 3;

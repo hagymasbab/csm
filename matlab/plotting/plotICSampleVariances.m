@@ -1,12 +1,12 @@
-function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_field,A,k)
+function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_field,A,k,prestim,poststim)
     
     close all;
     model_k = k+1;
     
     z = 2;
     orstrings = {'|','/','-','\\'};
-
-    within_var_cells = squeeze(within_var(:,z,:,model_k+central_field'));
+    within_var_cells = squeeze(var(allsamp(:,z,:,prestim+1:end-poststim,model_k+central_field'),0,3));
+    %within_var_cells = squeeze(within_var(:,z,:,model_k+central_field'));
     within_var_means = squeeze(mean(within_var_cells,2));
     within_var_stds = squeeze(std(within_var_cells,0,2));
     %test
