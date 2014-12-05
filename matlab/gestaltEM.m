@@ -30,32 +30,48 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
     % CREATE INITAL PARAMETER MATRICES AND MODEL STRUCTURE     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     
-    if strcmp(params.initCond,'random') 
-        ccInit = randomCovariances(ge.k,ge.Dv,'precision',params.precision);        
-    elseif strcmp(params.initCond,'shifted') 
-        ccInit = gestaltCovariances(ge.k,ge.A',floor(sqrt(ge.Dx)/4));  
-    elseif strcmp(params.initCond,'empty') 
-        ccInit = cell(1,ge.k);
-        for kk = 1:ge.k
-            if ge.nullComponent && kk == ge.k
-                varScale = 1;
-            else
-                varScale = 0.001;
+    savingCode = randi(1000000);
+
+    if ischar(params.initCond)
+        if strcmp(params.initCond,'random') 
+            ccInit = randomCovariances(ge.k,ge.Dv,'precision',params.precision);        
+        elseif strcmp(params.initCond,'shifted') 
+            ccInit = gestaltCovariances(ge.k,ge.A',floor(sqrt(ge.Dx)/4));  
+        elseif strcmp(params.initCond,'empty') 
+            ccInit = cell(1,ge.k);
+            for kk = 1:ge.k
+                if ge.nullComponent && kk == ge.k
+                    varScale = 1;
+                else
+                    varScale = 0.001;
+                end
+                ccInit{kk} = varScale * eye(ge.Dv);
             end
-            ccInit{kk} = varScale * eye(ge.Dv);
+        elseif strcmp(params.initCond,'pretrain')
+            pre_seed = randi(intmax);
+            data = reshape(X,size(X,1)*size(X,2),size(X,3));
+            ge.X = repmat(data,floor(1000/size(data,1)),1);
+            ccInit = gestaltPretrain(ge,1000,pre_seed,'plot',false);
+            for kk = 1:ge.k
+                ccInit{kk} = 10 * ccInit{kk};
+                ccInit{kk} = max(ccInit{kk}(:)) * eye(ge.Dv);
+            end
         end
-    elseif strcmp(params.initCond,'pretrain')
-        pre_seed = randi(intmax);
-        data = reshape(X,size(X,1)*size(X,2),size(X,3));
-        ge.X = repmat(data,floor(1000/size(data,1)),1);
-        ccInit = gestaltPretrain(ge,1000,pre_seed,'plot',false);
-        for kk = 1:ge.k
-            ccInit{kk} = 10 * ccInit{kk};
-            ccInit{kk} = max(ccInit{kk}(:)) * eye(ge.Dv);
-        end
+    elseif iscell(params.initCond) && size(params.initCond) == ge.k
+        ccInit = params.initCond;
+    elseif isnumeric(params.initCond) && length(params.initCond) == 1
+        savingCode = params.initCond;
+        load(sprintf('cc_%d.mat',savingCode))
+        ccInit = cc_next;
+    else
+        fprintf('not implemented');
+        return;
     end
+    
+    fprintf('The saving code for this run is %d\n',savingCode);
+    savename = sprintf('cc_%d.mat',savingCode);
     
     cholesky = cellchol(ccInit);                  
     goal_cc = extractComponents(ge,params.precision);    
@@ -64,7 +80,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     sdim = ge.k+(ge.Dv*ge.B);
     % correct learning rate for data set size
     params.learningRate = params.learningRate * (10 / emBatchSize);
-    ge.N = size(ge.X,1);  
+%     ge.N = size(ge.X,1);  
     if ndims(X) == 2
         if ge.B > 1
             throw(MException('Gestalt:EM:WrongBatchSize','The data is not organised to batches while the model is specified for batches of observarions of size %d',ge.B));
@@ -122,7 +138,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             % Gibbs sampling
             initG = (1/ge.k) * ones(ge.k,1);
             try
-                [samples(n,:,:),~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision,'initG',initG,'priorG',params.priorG,'contrast',ge.contrast);            
+                [samples(n,:,:),~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
+                    'initG',initG,'priorG',params.priorG,'contrast',ge.contrast);            
             catch
                 % if couldn't find a valid g-sample in 10 steps, skip
                 skipped = skipped + 1;
@@ -171,8 +188,9 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         if params.syntheticData
             save('iter.mat','state_sequence','goal_cc');
         else
-            save('iter.mat','state_sequence');
+            save('iter.mat','state_sequence');            
         end
+        save(savename,'cc_next');
         if params.verbose == 2
             fprintf(' diff %.2e skipped %d\n',state.relative_difference,skipped);
         end
