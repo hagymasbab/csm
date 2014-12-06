@@ -57,7 +57,7 @@ function plotICSampleVariances(filename,nullComp,z)
             subplot(nStim,nOrient,(stim-1)*nOrient+ori);
             actdata = squeeze(vsamples(stim,:,:,ori)); % nTrial x nSamp
             plot(actdata');
-            ylim([-5 10]);
+            ylim([-1 2]);
             xlim([1,size(allsamp,4)]);
             hold on;
             plot(mean(actdata)','LineWidth',3);
