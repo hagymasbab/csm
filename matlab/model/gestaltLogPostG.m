@@ -6,7 +6,7 @@ function lp = gestaltLogPostG(g,V,ge,prior,precision)
         return
     end
     
-    if size(g,1) == ge.k-1
+    if size(g,1) == ge.k-1 && strcmp(prior,'dirichlet')
         g = [g;1-sum(g)];
     end
     

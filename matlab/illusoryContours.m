@@ -14,8 +14,9 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
     [stimuli,A,gestalts] = ICstimuli(nCont,2);
     
     % using fewer stimuli
-    stimuli = stimuli(2:3,1:2);
-    gestalts = gestalts(1:2,:);
+    numstim = 3;
+    stimuli = stimuli(2:3,1:numstim);
+    gestalts = gestalts(1:numstim,:);
     
     save('ic.mat','A');
     k = size(gestalts,1);
