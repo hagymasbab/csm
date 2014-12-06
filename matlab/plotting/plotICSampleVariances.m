@@ -1,11 +1,17 @@
-function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_field,A,k,prestim,poststim)
+function plotICSampleVariances(filename,nullComp,z)
+%function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_field,A,k,prestim,poststim,nullComp)
     
     close all;
-    model_k = k+1;
+    load(filename);
     
-    z = 2;
+    if nullComp
+        model_k = k+1;
+    else
+        model_k = k;
+    end        
+    
     orstrings = {'|','/','-','\\'};
-    within_var_cells = squeeze(var(allsamp(:,z,:,prestim+1:end-poststim,model_k+central_field'),0,3));
+    within_var_cells = squeeze(var(allsamp(:,z,:,prestimSamp+1:end-poststimSamp,model_k+central_field'),0,3));
     %within_var_cells = squeeze(within_var(:,z,:,model_k+central_field'));
     within_var_means = squeeze(mean(within_var_cells,2));
     within_var_stds = squeeze(std(within_var_cells,0,2));
@@ -13,7 +19,7 @@ function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_f
     %within_var_means = within_var_means(1:3,:);
     %within_var_stds = within_var_stds(1:3,:);
     
-    trial_var_cells = squeeze(trial_var(:,z,:,model_k+central_field'));
+    trial_var_cells = squeeze(trial_to_trial_variance(:,z,:,model_k+central_field'));
     trial_var_means = squeeze(mean(trial_var_cells,2));
     trial_var_stds = squeeze(std(trial_var_cells,0,2));               
     
@@ -26,7 +32,7 @@ function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_f
     barwitherr(trial_var_stds,trial_var_means);
     title('Trial-to-trial variance of samples averaged over sampling steps','FontSize',16);
     
-    within_cov_cells = squeeze(within_cov(:,z,:,model_k+central_field,model_k+1:end));
+    within_cov_cells = squeeze(within_trial_covariance(:,z,:,model_k+central_field,model_k+1:end));
     within_cov_means = squeeze(mean(within_cov_cells,2)); % -> nStim x nOrient x Dv
     nStim = size(allsamp,1);
     nOrient = size(central_field,1);
@@ -61,18 +67,33 @@ function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_f
     
     gsamples = squeeze(allsamp(:,z,:,:,1:model_k)); % nStim x nTrial x nSamp x k
     gtitles = orstrings;
-    gtitles{end+1} = '0';
+    if nullComp
+        gtitles{end+1} = '0';
+    end
     figure();
     for stim = 1:nStim
         for gest = 1:model_k
             subplot(nStim,model_k,(stim-1)*model_k+gest);
             actdata = squeeze(gsamples(stim,:,:,gest)); % nTrial x nSamp
             plot(actdata');
-            ylim([0 12]);
+            ylim([0 1]);
             xlim([1,size(allsamp,4)]);
             hold on;
             plot(mean(actdata)','LineWidth',3);
             title(sprintf('Stim: %s Gestalt: %s',orstrings{stim},gtitles{gest}),'FontSize',16);
         end
+    end
+    
+    zsamples = squeeze(allsamp(:,z,:,:)); % nStim x nTrial x nSamp
+    figure();
+    for stim = 1:nStim
+        subplot(nStim,1,stim);
+        actdata = squeeze(zsamples(stim,:,:)); % nTrial x nSamp
+        plot(actdata');
+        ylim([0 1]);
+        xlim([1,size(allsamp,4)]);
+        hold on;
+        plot(mean(actdata)','LineWidth',3);
+        title(sprintf('Z for stim: %s',orstrings{stim}),'FontSize',16);
     end
 end

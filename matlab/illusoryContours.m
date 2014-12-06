@@ -1,6 +1,7 @@
-function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
-    close all;
+function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
+    %close all;
     Dx = 1024;    
+    %nullComp = false;
 
     if strcmp(randseed,'last')
         load lastrandseed;
@@ -11,6 +12,11 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
     save('lastrandseed.mat','randseed');
     
     [stimuli,A,gestalts] = ICstimuli(nCont,2);
+    
+    % using fewer stimuli
+    stimuli = stimuli(2:3,1:2);
+    gestalts = gestalts(1:2,:);
+    
     save('ic.mat','A');
     k = size(gestalts,1);
     central_field = gestalts(:,1);
@@ -32,25 +38,37 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
                cc{kk}(gestalts(kk,j),gestalts(kk,i)) = cc{kk}(gestalts(kk,i),gestalts(kk,j));
             end
         end
+        if ~nullComp
+            cc{kk} = cc{kk} + 0.1*eye(Dx);
+        end
     end
-    cc{end+1} = eye(Dx);
+    if nullComp
+        cc{end+1} = eye(Dx);
+    end
     
-    % model parameters for generation and sampling
+    % model parameters for generation and sampling    
     generating_sigma = 0.1;
     z_gen = 1;
     g_gen = 10;
         
     sampling_sigma = 1;
+    g_shape = 2;
     g_scale = 2;
     z_shape = 1;
     z_scale = 0.1;
     sample_z = true;
     fixedZ = 0.1; %in case we don't sample  
     filter_scaling = 1;
-    g_init = [zeros(k,1);1];
+    g_init = zeros(k,1);
+    if nullComp
+        g_init = [g_init;1];
+    else
+        g_init = g_init + 0.1;
+        %g_init = [];
+    end
     
-    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1, ...
-        'filters','ic.mat','obsVar',generating_sigma,'g_scale',g_scale,'z_shape',z_shape,'z_scale',z_scale);
+    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'nullComponent',nullComp, ...
+        'filters','ic.mat','obsVar',generating_sigma,'g_shape',g_shape,'g_scale',g_scale,'z_shape',z_shape,'z_scale',z_scale);
     ge.cc = cc;
     
     prestimSamp = 2;
@@ -64,10 +82,12 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
 %     save('ic.mat','A','ic_stim','gestalts');
     
     nStim = size(stimuli,2);
+    nCont = size(stimuli,1);
     %nCont = size(stimuli,1);
     ge.obsVar = sampling_sigma;
     
     allsamp = zeros(nStim,nCont,nTrials,nSamples,ge.k+ge.Dv);
+    zsamp = zeros(nStim,nCont,nTrials,nSamples);
     within_trial_variance = zeros(nStim,nCont,nTrials,ge.k+ge.Dv);
     trial_to_trial_variance = zeros(nStim,nCont,nSamples,ge.k+ge.Dv);
     within_trial_covariance = zeros(nStim,nCont,nTrials,ge.k+ge.Dv,ge.k+ge.Dv);
@@ -86,7 +106,7 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
             for t = 1:nTrials
                 printCounter(t,'stringVal','trial','maxVal',nTrials,'newLine',true);
                 if isempty(pre_cs)
-                    [cs,~,~] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler','direct','contrast',sample_z, ...
+                    [cs,~,zs] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler','direct','contrast',sample_z, ...
                             'prestimSamples',prestimSamp,'poststimSamples',poststimSamp,'verbose',1,'fixedZ',fixedZ,'initG',g_init);
                 else
                     cs = squeeze(pre_cs(stim,cont,t,:,:));
@@ -99,12 +119,13 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs)
 %                 g2_samples(t,:) = cs(:,2)';
 %                 final_v(t,:) = cs(end-poststimSamp-1,ge.k+1:end);
                 allsamp(stim,cont,t,:,:) = cs;
+                zsamp(stim,cont,t,:) = zs;
                 within_trial_variance(stim,cont,t,:) = var(cs,0,1);
                 within_trial_covariance(stim,cont,t,:,:) = cov(cs);                
 %                 fprintf('\n');
             end
             trial_to_trial_variance(stim,cont,:,:) = var(allsamp(stim,cont,:,:,:),0,3);
-            save('ic_samp.mat','allsamp','trial_to_trial_variance','within_trial_variance','within_trial_covariance', ...
+            save('ic_samp.mat','allsamp','zsamp','trial_to_trial_variance','within_trial_variance','within_trial_covariance', ...
                 'central_field','A','k','prestimSamp','poststimSamp');
             
 %             figure();

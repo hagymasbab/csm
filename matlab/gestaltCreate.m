@@ -74,7 +74,11 @@ function gestalt = gestaltCreate(name,varargin)
     %         end
         end
     else
-        gestalt.cc = cell(1,gestalt.k+1);
+        if gestalt.nullComponent
+            gestalt.cc = cell(1,gestalt.k+1);
+        else
+            gestalt.cc = cell(1,gestalt.k);
+        end
     end
     
     gestalt.k = size(gestalt.cc,2);
