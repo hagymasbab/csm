@@ -1,4 +1,4 @@
-function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
+function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp,backZ)
     %close all;
     Dx = 1024;    
     %nullComp = false;
@@ -11,7 +11,7 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
     randseed = s.Seed;
     save('lastrandseed.mat','randseed');
     
-    [stimuli,A,gestalts] = ICstimuli(nCont,2);
+    [stimuli,A,gestalts] = ICstimuli(nCont,2,backZ);
     
     % using fewer stimuli
     numstim = 3;
@@ -21,6 +21,8 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
     save('ic.mat','A');
     k = size(gestalts,1);
     central_field = gestalts(:,1);
+    activated_units = gestalts(:,2:end);
+    activated_units = activated_units(:)';
 
 %     %A = gaborFilterBank(32,32,1,2,[pi/4,3*pi/4],[4]);
 %     central_cell = 8*64+17;
@@ -55,10 +57,10 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
     sampling_sigma = 1;
     g_shape = 2;
     g_scale = 2;
-    z_shape = 1;
-    z_scale = 0.1;
+    z_shape = 2;
+    z_scale = 3;
     sample_z = true;
-    fixedZ = 0.1; %in case we don't sample  
+    initZ = 10; %in case we don't sample, this remains the same
     filter_scaling = 1;
     g_init = zeros(k,1);
     if nullComp
@@ -108,7 +110,7 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
                 printCounter(t,'stringVal','trial','maxVal',nTrials,'newLine',true);
                 if isempty(pre_cs)
                     [cs,~,zs] = gestaltGibbs(ge,1,nSamples,'verbose',0,'vSampler','direct','contrast',sample_z, ...
-                            'prestimSamples',prestimSamp,'poststimSamples',poststimSamp,'verbose',1,'fixedZ',fixedZ,'initG',g_init);
+                            'prestimSamples',prestimSamp,'poststimSamples',poststimSamp,'verbose',1,'initZ',initZ,'initG',g_init);
                 else
                     cs = squeeze(pre_cs(stim,cont,t,:,:));
                 end
@@ -127,7 +129,7 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp)
             end
             trial_to_trial_variance(stim,cont,:,:) = var(allsamp(stim,cont,:,:,:),0,3);
             save('ic_samp.mat','allsamp','zsamp','trial_to_trial_variance','within_trial_variance','within_trial_covariance', ...
-                'central_field','A','k','prestimSamp','poststimSamp');
+                'central_field','A','k','prestimSamp','poststimSamp','activated_units','nullComp');
             
 %             figure();
 %             row = 3;

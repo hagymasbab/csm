@@ -1,4 +1,4 @@
-function [stimuli,A,gestalts] = ICstimuli(nContrast,maxCont)
+function [stimuli,A,gestalts] = ICstimuli(nContrast,maxCont,backgroundZ)
     imdim = 32;
     Dx = imdim^2;    
     nOrient = 4;
@@ -11,7 +11,7 @@ function [stimuli,A,gestalts] = ICstimuli(nContrast,maxCont)
     % choose one orientation for each location
     locOrients = randi(nOrient,[nRF,1]);
     
-    backgroundZ = 0.01;
+    %backgroundZ = 1;
     % choose an IC location
     ic_idx = floor(nRF/2 + rfsinarow/2);
     % define gestalts as sets of RF locations and orientation indices

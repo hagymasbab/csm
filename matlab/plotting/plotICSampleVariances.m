@@ -1,4 +1,4 @@
-function plotICSampleVariances(filename,nullComp,z)
+function plotICSampleVariances(filename,z)
 %function plotICSampleVariances(allsamp,within_var,trial_var,within_cov,central_field,A,k,prestim,poststim,nullComp)
     
     close all;
@@ -84,16 +84,31 @@ function plotICSampleVariances(filename,nullComp,z)
         end
     end
     
-    zsamples = squeeze(allsamp(:,z,:,:)); % nStim x nTrial x nSamp
+    zsamples = squeeze(zsamp(:,z,:,:)); % nStim x nTrial x nSamp
     figure();
     for stim = 1:nStim
         subplot(nStim,1,stim);
         actdata = squeeze(zsamples(stim,:,:)); % nTrial x nSamp
         plot(actdata');
-        ylim([0 1]);
+        ylim([0 5]);
         xlim([1,size(allsamp,4)]);
         hold on;
         plot(mean(actdata)','LineWidth',3);
         title(sprintf('Z for stim: %s',orstrings{stim}),'FontSize',16);
+    end
+    
+    actvsamples = squeeze(allsamp(:,z,:,:,model_k+activated_units')); % nStim x nTrial x nSamp x nOrient
+    figure();
+    for stim = 1:nStim
+        for unit = 1:length(activated_units)
+            subplot(nStim,length(activated_units),(stim-1)*length(activated_units)+unit);
+            actdata = squeeze(actvsamples(stim,:,:,unit)); % nTrial x nSamp
+            plot(actdata');
+            ylim([-1 2]);
+            xlim([1,size(allsamp,4)]);
+            hold on;
+            plot(mean(actdata)','LineWidth',3);
+            title(sprintf('Stim: %s',orstrings{stim}),'FontSize',16);
+        end
     end
 end

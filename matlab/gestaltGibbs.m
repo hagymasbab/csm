@@ -17,7 +17,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'repeatCycle',1,@isnumeric);
     addParamValue(parser,'prestimSamples',0,@isnumeric);
     addParamValue(parser,'poststimSamples',0,@isnumeric);
-    addParamValue(parser,'fixedZ',1,@isnumeric);
+    addParamValue(parser,'initZ',1,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -42,7 +42,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     
     
     V = zeros(ge.B,ge.Dv); % unused if we sample the conditional over v first
-    z = params.fixedZ; % remains unchanged if we do not use a contrast variable
+    z = params.initZ; % remains unchanged if we do not use a contrast variable
     % TODO we might sample z from its prior
     
     nullStimulus = ge.obsVar * randn([1,ge.B,ge.Dx]);
@@ -177,7 +177,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % slice sampling for z
-        if params.contrast            
+        if params.contrast                        
             zlogpdf = @(z) gestaltLogPostZ(z,xind,V,ge); 
             valid = false;
             tries = 0;
