@@ -18,8 +18,7 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp,backZ)
     stimuli = stimuli(2:3,1:numstim);
     gestalts = gestalts(1:numstim,:);
     
-    save('ic.mat','A');
-    k = size(gestalts,1);
+    save('ic.mat','A');   
     central_field = gestalts(:,1);
     activated_units = gestalts(:,2:end);
     activated_units = activated_units(:)';
@@ -31,23 +30,27 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp,backZ)
 %     lower_cell = 4*64+25;
 %     other_cell = 6*64+21;
 %     gestalts = [central_cell upper_cell omitted_cell;central_cell lower_cell other_cell];
-    cc = {};
-    for kk=1:k
-        cc{kk} = zeros(Dx);
-        for i = 1:3
-            cc{kk}(gestalts(kk,i),gestalts(kk,i)) = 1;
-            for j =i+1:3
-               cc{kk}(gestalts(kk,i),gestalts(kk,j)) = 0.5; 
-               cc{kk}(gestalts(kk,j),gestalts(kk,i)) = cc{kk}(gestalts(kk,i),gestalts(kk,j));
-            end
-        end
-        if ~nullComp
-            cc{kk} = cc{kk} + 0.1*eye(Dx);
-        end
-    end
-    if nullComp
-        cc{end+1} = eye(Dx);
-    end
+
+    k = size(gestalts,1);
+%     cc = {};
+%     for kk=1:k
+%         cc{kk} = zeros(Dx);
+%         for i = 1:size(gestalts,2)
+%             cc{kk}(gestalts(kk,i),gestalts(kk,i)) = 1;
+%             for j =i+1:size(gestalts,2)
+%                cc{kk}(gestalts(kk,i),gestalts(kk,j)) = 0.5; 
+%                cc{kk}(gestalts(kk,j),gestalts(kk,i)) = cc{kk}(gestalts(kk,i),gestalts(kk,j));
+%             end
+%         end
+%         if ~nullComp
+%             cc{kk} = cc{kk} + 0.1*eye(Dx);
+%         end
+%     end
+%     if nullComp
+%         cc{end+1} = eye(Dx);
+%     end
+    
+    cc = filterList2Components(gestalts,nullComp,Dx);
     
     % model parameters for generation and sampling    
     generating_sigma = 0.1;

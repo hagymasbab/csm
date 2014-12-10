@@ -24,6 +24,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'nullComponent',true,@islogical);
     addParamValue(p,'overlapping',false,@islogical);
     addParamValue(p,'generate',false,@islogical);
+    addParamValue(p,'cc',{});
     parse(p,varargin{:});
     gestalt = p.Results;        
     

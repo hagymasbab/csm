@@ -14,7 +14,14 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials)
     zsamp = zeros(nMod,nTrials,totalSamples);
     for m = 1:nMod
         for t = 1:nTrials
-            
+            % TODO set initial conditions
+            for s = 1:nSamp
+                % TODO call sampler
+                % TODO store results
+                % TODO set endpoint as next initial
+            end
+        end
+    end
 end
     
     
