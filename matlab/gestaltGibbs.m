@@ -10,7 +10,6 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParamValue(parser,'precision',false,@islogical);
     addParamValue(parser,'contrast',true,@islogical);
     addParamValue(parser,'initG',[]);
-    addParamValue(parser,'priorG','gamma');
     addParamValue(parser,'gSampler','gibbs-slice');
     addParamValue(parser,'zSampler','slice');
     addParamValue(parser,'vSampler','direct');
@@ -32,7 +31,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     if isempty(params.initG)
         % sample g from the prior distribution
         try
-            g = gestaltSamplePriorG(ge,params.priorG,'sampleRetry',params.sampleRetry);                   
+            g = gestaltSamplePriorG(ge,ge.prior,'sampleRetry',params.sampleRetry);                   
         catch err
             rethrow(err);
         end      
@@ -92,7 +91,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         
 %         if params.plot > 0
 %             clf;
-%             gestaltPlotCondPostG(ge,V,params.priorG,0.1);
+%             gestaltPlotCondPostG(ge,V,ge.prior,0.1);
 %             hold on;
 %             plot(ge.G(xind,1),0,'go');
 %             pause
@@ -103,7 +102,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         % slice sampling for g
-        logpdf = @(g) gestaltLogPostG(g,V,ge,params.priorG,params.precision); 
+        logpdf = @(g) gestaltLogPostG(g,V,ge,ge.prior,params.precision); 
         
         valid = false;
         tries = 0;
@@ -118,7 +117,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
             
             try
                 if strcmp(params.gSampler,'slice')
-                    if strcmp(params.priorG,'dirichlet')
+                    if strcmp(ge.prior,'dirichlet')
                         [g_part,rr_act] = sliceSample(g(1:ge.k-1,1),logpdf,params.stepsize,'plot',params.plotG,'limits',[0,1]);
                         g_temp = [g_part; 1-sum(g_part)];
 
@@ -129,7 +128,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                         [g_temp,rr_act] = metropolisHastings(g,logpdf,0.001*eye(ge.k),1,0,0,'verbose',0);
                         g_temp = g_temp';
                 elseif strcmp(params.gSampler,'gibbs-slice')
-                    if strcmp(params.priorG,'dirichlet')
+                    if strcmp(ge.prior,'dirichlet')
                         throw(MException('Gestalt:Gibbs:InvalidParameterCombination','Gibbs-slice sampling is only implemented for independent (e.g. Gamma) priors.'));
                     else
                         rr_act = 0;
@@ -138,12 +137,12 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                             for j = 1:ge.k
                                 if params.plotG
                                     clf;
-                                    gestaltPlotConditional(g,j,V,ge,params.priorG,0.1);
+                                    gestaltPlotConditional(g,j,V,ge,ge.prior,0.1);
                                     hold on;
                                     scatter(ge.G(xind,j),0,140,'go','LineWidth',3);
                                     pause
                                 end
-                                condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,params.priorG,params.precision); 
+                                condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,ge.prior,params.precision); 
                                 [g_temp(j,1),rr_part] = sliceSample(g_temp(j,1),condlogpdf,params.stepsize,'plot',params.plotG,'limits',[0,Inf]);
 
                                 rr_act = rr_act + rr_part;

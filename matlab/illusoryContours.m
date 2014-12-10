@@ -55,10 +55,10 @@ function illusoryContours(randseed,nTrials,nSamples,nCont,pre_cs,nullComp,backZ)
     g_gen = 10;
         
     sampling_sigma = 1;
-    g_shape = 2;
+    g_shape = 1;
     g_scale = 2;
-    z_shape = 2;
-    z_scale = 3;
+    z_shape = 1;
+    z_scale = 0.1;
     sample_z = true;
     initZ = 10; %in case we don't sample, this remains the same
     filter_scaling = 1;

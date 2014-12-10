@@ -18,6 +18,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'null_scale',0.2,@isnumeric);
     addParamValue(p,'B',10,@isnumeric);
     addParamValue(p,'filters','line');
+    addParamValue(p,'prior','gamma');
     addParamValue(p,'precision',true,@islogical);
     addParamValue(p,'contrast',true,@islogical);
     addParamValue(p,'nullComponent',true,@islogical);
