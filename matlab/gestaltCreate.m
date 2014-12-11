@@ -19,7 +19,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'B',10,@isnumeric);
     addParamValue(p,'filters','line');
     addParamValue(p,'prior','gamma');
-    addParamValue(p,'precision',true,@islogical);
+    addParamValue(p,'precision',false,@islogical);
     addParamValue(p,'contrast',true,@islogical);
     addParamValue(p,'nullComponent',true,@islogical);
     addParamValue(p,'overlapping',false,@islogical);
@@ -75,7 +75,7 @@ function gestalt = gestaltCreate(name,varargin)
     %             gestalt.k = gestalt.k + 1;
     %         end
         end
-    else
+    elseif isempty(gestalt.cc{1})
         if gestalt.nullComponent
             gestalt.cc = cell(1,gestalt.k+1);
         else
