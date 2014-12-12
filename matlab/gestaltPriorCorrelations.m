@@ -9,7 +9,7 @@ function gestaltPriorCorrelations(nTrials)
     z_shape = 1;
     z_scale = 0.1;
     sigma = 1;
-    g_mean = 1;
+    g_mean = 10;
 
     % create stimuli
     % backgroundZ = 1;
@@ -38,7 +38,7 @@ function gestaltPriorCorrelations(nTrials)
     cumulative_timings = cumsum(timings);
     
     % create covariance components
-    filterlists = ([ic_idx locations] - 1) .* nOrient + 2;
+    filterlists = ([ic_idx locations] - 1) .* nOrient + 4;
     cc = filterList2Components(filterlists,true,Dx);
     k = size(cc,2); 
     %viewImageSet(cc);
