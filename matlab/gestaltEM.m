@@ -129,7 +129,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         
         samples = zeros(emBatchSize,nSamples,sdim);    
         skipped = 0;
-        for n=1:emBatchSize
+        parfor n=1:emBatchSize
             
              if params.verbose == 2
                  fprintf('\nDatapoint %d/%d ',emBatchSize,n);            
