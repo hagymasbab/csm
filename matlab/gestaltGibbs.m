@@ -110,7 +110,7 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
             if tries > params.sampleRetry
                 if params.verbose == 1
                     delPrint(i);
-                end
+                end                
                 throw(MException('Gestalt:Gibbs:TooManyTries','Number of tries to sample a valid g vector from the conditional posterior exceeded %d at sampling step %d',params.sampleRetry,i));
             end
             tries = tries + 1;

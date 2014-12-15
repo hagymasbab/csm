@@ -12,7 +12,7 @@ function gestaltLearnNatural(code,imdim,embatch,samplesize)
     % create model
     % TODO find reasons for parameter values
     ge = gestaltCreate('temp','Dx',imdim^2,'k',imdim^2,'B',1,'N',embatch, ...
-        'filters',filterfile,'obsVar',1,'g_scale',2,'z_shape',1,'z_scale',0.1,'nullComponent',false);        
+        'filters',filterfile,'obsVar',1,'g_scale',2,'z_shape',1,'z_scale',0.1,'nullComponent',true);        
         
     % set initial conditions
     if code == 0

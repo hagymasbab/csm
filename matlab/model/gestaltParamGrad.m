@@ -50,7 +50,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
     
     for n=1:N        
         GG = reshape(samples(n,:,1:ge.k),L,ge.k); % squeeze doesn't work for L=1
-        parfor l=1:L
+        for l=1:L
             if verb > 0
                 printCounter((n-1)*L+l,'stringVal','gradSample','maxVal',N*L,'newLine',false);
             end
@@ -86,7 +86,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         
     % calculate the derivative of the covariance matrix w.r.t. each
     % element of each covariance component
-    parfor kk=1:effective_k
+    for kk=1:effective_k
         if verb > 0
             printCounter(kk,'stringVal','gradComp','maxVal',effective_k,'newLine',true);
         end
