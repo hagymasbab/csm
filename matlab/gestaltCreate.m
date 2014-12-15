@@ -75,7 +75,7 @@ function gestalt = gestaltCreate(name,varargin)
     %             gestalt.k = gestalt.k + 1;
     %         end
         end
-    elseif isempty(gestalt.cc{1})
+    elseif isempty(gestalt.cc)
         if gestalt.nullComponent
             gestalt.cc = cell(1,gestalt.k+1);
         else
