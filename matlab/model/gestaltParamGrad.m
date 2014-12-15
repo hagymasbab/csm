@@ -86,7 +86,7 @@ function grad = gestaltParamGrad(ge,samples,cholesky,varargin)
         
     % calculate the derivative of the covariance matrix w.r.t. each
     % element of each covariance component
-    for kk=1:effective_k
+    parfor kk=1:effective_k
         if verb > 0
             printCounter(kk,'stringVal','gradComp','maxVal',effective_k,'newLine',true);
         end
