@@ -149,8 +149,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
                     rethrow(e);
                 end
             end
-        end
-        fprintf('%d\n',skipped);pause
+        end        
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % M - step            
