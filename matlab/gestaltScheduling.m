@@ -29,7 +29,7 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials)
             for s = 1:nStim
                 % set data
                 models{m}.X(1,1,:) = stimuli{s};
-                %viewImage(stimuli{s});pause
+                %viewImage(models{m}.X(1,1,:));pause
                 % call sampler
                 [cs,~,zs] = gestaltGibbs(models{m},1,timings(s),'verbose',0,'initZ',initZ,'initG',initG,'gSampler',g_sampler);
                 % store results

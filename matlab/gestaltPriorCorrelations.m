@@ -9,7 +9,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo)
     z_shape = 1;
     z_scale = 0.1;
     sigma = 0.1;
-    g_mean = 0.5;
+    g_mean = 0.1;
 
     % create stimuli
     % backgroundZ = 1;
@@ -18,22 +18,22 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo)
     sh1 = 3; % single shift 
     sh2 = 5; % double shift
     locations = [ic_idx-(sh2*rfsinarow)+sh2 ic_idx-(sh1*rfsinarow)+sh1 ic_idx+(sh1*rfsinarow)-sh1 ic_idx+(sh2*rfsinarow)-sh2];
-    %orients = [2 4];
-    orients = [4 2];
+    orients = [2 4];
+    %orients = [4 2];
     stimuli = {};
     stimuli{1} = 0.1 * randn(Dx,1);
     for l=1:size(locations,1)
         for o=1:length(orients)
             coeffs = zeros(Dx,1);
             for loc=1:size(locations,2)
-                coeffs((locations(l,loc)-1)*nOrient+orients(o),1) = 1;
+                coeffs((locations(l,loc)-1)*nOrient+orients(o),1) = 5;
             end
-            stimuli{end+1} = A * coeffs;
+            stimuli{end+1} = A * coeffs + 0.1 * randn(Dx,1);
         end
     end
     stimuli{end+1} = 0.1 * randn(Dx,1);
     
-    exemplar_cells = [(ic_idx-1)*nOrient+2 (ic_idx-1)*nOrient+4 (locations(1)-1)*nOrient+2 (locations(1)-1)*nOrient+4 1];
+    exemplar_cells = [(ic_idx-1)*nOrient+2 (ic_idx-1)*nOrient+4 (locations(1)-1)*nOrient+2 (locations(2)-1)*nOrient+4 1];
     exemplar_titles = {'ic1','ic2','stim1','stim2','none'};
     
     %viewImageSet(stimuli,'max',false);
@@ -43,7 +43,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo)
     cumulative_timings = cumsum(timings);
     
     % create covariance components
-    filterlists = ([ic_idx locations] - 1) .* nOrient + 2;
+    filterlists = [ ([ic_idx locations] - 1) .* nOrient + 2; ([ic_idx locations] - 10) .* nOrient + 3 ];
     cc = filterList2Components(filterlists,true,Dx);
     k = size(cc,2); 
     %viewImageSet(cc);
@@ -67,7 +67,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo)
     
     ge3 = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'nullComponent',true,'prior','dirichlet','cc',cc, ...
         'filters','gabor_4or_32.mat','obsVar',sigma,'sparsity',0.1,'z_shape',z_shape,'z_scale',z_scale);
-    %models{end+1} = ge3;
+    models{end+1} = ge3;
     model_names{end+1} = 'dirichlet';
     
     nModels = size(models,2);        
