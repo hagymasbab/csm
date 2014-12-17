@@ -1,4 +1,4 @@
-function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials)
+function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,obsNoise)
     % models need to have the same dimensions and only differ in their
     % parametrisation
     if ~iscell(models)
@@ -6,19 +6,20 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials)
     end
     nMod = size(models,2);
     Dv = models{1}.Dv;
+    B = models{1}.B;
     k = models{1}.k;
     totalSamples = sum(timings);
     ends = cumsum(timings);
     starts = [1 ends(1:end-1)+1];
     nStim = size(stimuli,2);
-    vsamp = zeros(nMod,nTrials,totalSamples,Dv);
+    vsamp = zeros(nMod,nTrials,totalSamples,B,Dv);
     gsamp = zeros(nMod,nTrials,totalSamples,k);
     zsamp = zeros(nMod,nTrials,totalSamples);
     for m = 1:nMod
         fprintf('Model %d/%d ',nMod,m);
         if strcmp(models{m}.prior,'gamma') 
-            %g_sampler = 'gibbs-slice';
-            g_sampler = 'slice';
+            g_sampler = 'gibbs-slice';
+            %g_sampler = 'slice';
         else
             g_sampler = 'slice';
         end
@@ -29,12 +30,18 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials)
             initG = 0.1 * ones(models{m}.k,1);
             for s = 1:nStim
                 % set data
-                models{m}.X(1,1,:) = stimuli{s};
+                actstim = zeros(models{m}.B,models{m}.Dx);
+                % TODO repmat
+                for bb = 1 : models{m}.B
+                    actstim(bb,:) = stimuli{s} + obsNoise * randn(size(stimuli{s}));
+                end
+                models{m}.X(1,:,:) = actstim;
                 %viewImage(models{m}.X(1,1,:));pause
                 % call sampler
                 [cs,~,zs] = gestaltGibbs(models{m},1,timings(s),'verbose',0,'initZ',initZ,'initG',initG,'gSampler',g_sampler);
                 % store results
-                vsamp(m,t,starts(s):ends(s),:) = cs(:,models{m}.k+1:end);
+                actlength = ends(s) - starts(s) + 1;
+                vsamp(m,t,starts(s):ends(s),:,:) = reshape(cs(:,models{m}.k+1:end),[actlength B Dv]);
                 gsamp(m,t,starts(s):ends(s),:) = cs(:,1:models{m}.k);
                 zsamp(m,t,starts(s):ends(s)) = zs;
                 % set endpoint as next initial

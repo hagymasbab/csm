@@ -49,14 +49,14 @@ p(X \mid V) = \prod_{b=1}^B \mathcal{N}(x_b; zAv_b,C_x)
 An efficient way to collect samples from the joint posterior over all hidden variables is to employ a Gibbs sampling scheme, where we sample from the conditional posteriors. The first is over $v$, and can be defined as follows
 
 \begin{equation} \label{eq:condpost}
-p(v \mid x,g) = \frac{p(x \mid v,z,g) p(v \mid z,g)}{p(x \mid z,g)} = \frac{\mathcal{N}(x;zAv,\sigma_x I) \mathcal{N}(v;0,C_v)}{\int_{-\infty}^{\infty} \mathcal{N}(x;zAv,\sigma_x I) \mathcal{N}(v;0,C_v) \mathrm{d}v}
+p(v \mid x,g,z) = \frac{p(x \mid v,z,g) p(v \mid z,g)}{p(x \mid z,g)} = \frac{\mathcal{N}(x;zAv,\sigma_x I) \mathcal{N}(v;0,C_v)}{\int_{-\infty}^{\infty} \mathcal{N}(x;zAv,\sigma_x I) \mathcal{N}(v;0,C_v) \mathrm{d}v}
 \end{equation}
 %
 The Gaussian over $x$ can be rewritten to a Gaussian over $v$ times a constant $c_1$ in the following way
 
 \begin{equation} \label{eq:gauss_rewrite1}
 \begin{split}
-\mathcal{N}(x;Av,\sigma_x I) = c_1 \mathcal{N}(v; \frac{1}{z} (A^T A)^{-1} A^T x, \frac{\sigma_x}{z^2} (A^T A)^{-1}) = \\
+\mathcal{N}(x;zAv,\sigma_x I) = c_1 \mathcal{N}(v; \frac{1}{z} (A^T A)^{-1} A^T x, \frac{\sigma_x}{z^2} (A^T A)^{-1}) = \\
 = c_1 \mathcal{N}(v; \frac{1}{z} A^{+} x, \frac{\sigma_x}{z^2} (A^T A)^{-1})
 \end{split}
 \end{equation}
@@ -117,6 +117,28 @@ the log-posterior being
 \end{equation}
 %
 also to be sampled by MCMC.
+
+
+\section{Hamiltonian sampling as the M-step}
+
+The complete posterior:
+
+\begin{eqnarray}
+p(v,g,z \mid x) \sim p(x \mid v,g,z) p(v \mid g) p(g) p(z) \\
+\begin{split}
+& \log p(v,g,z \mid x) \sim -\frac{1}{2} \left[ \frac{1}{\sigma_x} (x - zAv)^T (x - zAv) + \log \left( \det \left( C_v \right) \right) + v \left(C_v \right)^{-1} v^T \right] + \\
+& + \sum_{j=1}^K \left[ (sh_g - 1) \log(g_j) - \frac{g_j}{sc_g} \right] + (sh_z - 1) \log(z) - \frac{z}{sc_z}
+\end{split}
+\end{eqnarray}
+
+the gradient with respect to different variable types assuming a Gamma prior over $g$ and $z$:
+
+\begin{eqnarray}
+\frac{\partial \log p(v,g,z \mid x)}{\partial v} = - \frac{z}{\sigma_x} \left[ zA^TA + \left( C_v \right)^{-1} \right] v + \frac{z}{\sigma_x} A^T x \\
+\frac{\partial \log p(v,g,z \mid x)}{\partial g_i} = -\frac{1}{2} \textrm{Tr} \left[ \left( C_v^{-1} - C_v^{-1} v v^T C_v^{-1} \right) C_i \right] + \frac{sh_g - 1}{g_i} - \frac{g_i}{sc_g} \\
+\frac{\partial \log p(v,g,z \mid x)}{\partial z} = 2v^TA^TAvz -x^TAv + \frac{sh_z - 1}{z} - \frac{z}{sc_z}
+\end{eqnarray}
+
 
 \section{Gradient descent as the M-step}
 
