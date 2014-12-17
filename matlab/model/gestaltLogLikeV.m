@@ -1,4 +1,4 @@
-function loglike = gestaltLogLikeV(V,g,ge,precision)
+function loglike = gestaltLogLikeV(V,g,ge,precision,iC)
     if ndims(V) == 3
         V = reshape(V,ge.B,ge.Dv);
     end
@@ -20,7 +20,11 @@ function loglike = gestaltLogLikeV(V,g,ge,precision)
         vb = V(b,:)';
         
         if ~precision
-            quad = quad + vb' * (Cv \ vb);
+            if isempty(iC)
+                quad = quad + vb' * (Cv \ vb);
+            else
+                quad = quad + vb' * iC * vb;
+            end
             %this should be faster
 %             opts.LT = true;
 %             opts.UT = false;

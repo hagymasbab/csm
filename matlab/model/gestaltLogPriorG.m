@@ -1,4 +1,5 @@
-function lp = gestaltLogPriorG(g,ge,distribution)
+function lp = gestaltLogPriorG(g,ge)
+    distribution = ge.prior;
     if strcmp(distribution,'gamma')
         lp = 0;
         for d = 1:ge.k            

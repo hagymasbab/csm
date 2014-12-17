@@ -46,7 +46,7 @@ function ge = gestaltGenerate(ge,N,varargin)
             z = 1;
         end
         
-        [ge.X(n,:,:),ge.V(n,:,:)] = gestaltAncestralSample(ge,ge.G(n,:)',z,precision);
+        [ge.X(n,:,:),ge.V(n,:,:)] = gestaltAncestralSample(ge,ge.G(n,:)',z,precision,false);
     end
 end
         
