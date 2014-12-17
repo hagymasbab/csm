@@ -17,7 +17,8 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials)
     for m = 1:nMod
         fprintf('Model %d/%d ',nMod,m);
         if strcmp(models{m}.prior,'gamma') 
-            g_sampler = 'gibbs-slice';
+            %g_sampler = 'gibbs-slice';
+            g_sampler = 'slice';
         else
             g_sampler = 'slice';
         end

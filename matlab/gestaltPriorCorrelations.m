@@ -24,7 +24,8 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo)
     stimuli{1} = 0.1 * randn(Dx,1);
     for l=1:size(locations,1)
         for o=1:length(orients)
-            coeffs = zeros(Dx,1);
+            %coeffs = zeros(Dx,1);
+            coeffs = randn(Dx,1);
             for loc=1:size(locations,2)
                 coeffs((locations(l,loc)-1)*nOrient+orients(o),1) = 5;
             end
