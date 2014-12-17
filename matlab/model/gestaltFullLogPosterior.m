@@ -3,7 +3,8 @@ function lp = gestaltFullLogPosterior(ge,X,V,g,z,iC)
     % likelihood of X
     scalar = 0;
     for b = 1: ge.B
-        scalar = scalar + (X(b,:)' - z*ge.A*V(b,:)')' * (X(b,:)' - z*ge.A*V(b,:)');
+        zAv = z*ge.A*V(b,:)';
+        scalar = scalar + (X(b,:)' - zAv)' * (X(b,:)' - zAv);
     end
     lx = - scalar / (2 * ge.obsVar);
     % likelihood of V
