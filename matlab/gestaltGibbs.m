@@ -1,22 +1,22 @@
 function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     parser = inputParser;
-    addParamValue(parser,'verbose',0,@isnumeric);
-    addParamValue(parser,'stepsize',0.1,@isnumeric);
-    addParamValue(parser,'burnin',0,@isnumeric);
-    addParamValue(parser,'thin',1,@isnumeric);
-    addParamValue(parser,'plotG',false,@islogical);
-    addParamValue(parser,'plotZ',false,@islogical);
-    addParamValue(parser,'sampleRetry',10,@isnumeric);
-    addParamValue(parser,'precision',false,@islogical);
-    addParamValue(parser,'contrast',true,@islogical);
-    addParamValue(parser,'initG',[]);
-    addParamValue(parser,'gSampler','gibbs-slice');
-    addParamValue(parser,'zSampler','slice');
-    addParamValue(parser,'vSampler','direct');
-    addParamValue(parser,'repeatCycle',1,@isnumeric);
-    addParamValue(parser,'prestimSamples',0,@isnumeric);
-    addParamValue(parser,'poststimSamples',0,@isnumeric);
-    addParamValue(parser,'initZ',1,@isnumeric);
+    addParameter(parser,'verbose',0,@isnumeric);
+    addParameter(parser,'stepsize',0.1,@isnumeric);
+    addParameter(parser,'burnin',0,@isnumeric);
+    addParameter(parser,'thin',1,@isnumeric);
+    addParameter(parser,'plotG',false,@islogical);
+    addParameter(parser,'plotZ',false,@islogical);
+    addParameter(parser,'sampleRetry',10,@isnumeric);
+    addParameter(parser,'precision',false,@islogical);
+    addParameter(parser,'contrast',true,@islogical);
+    addParameter(parser,'initG',[]);
+    addParameter(parser,'gSampler','gibbs-slice');
+    addParameter(parser,'zSampler','slice');
+    addParameter(parser,'vSampler','direct');
+    addParameter(parser,'repeatCycle',1,@isnumeric);
+    addParameter(parser,'prestimSamples',0,@isnumeric);
+    addParameter(parser,'poststimSamples',0,@isnumeric);
+    addParameter(parser,'initZ',1,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -158,7 +158,9 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
                     fprintf('too many retries in sampling of G at datum %d sample %d try %d\n',xind,i,tries);
                     continue
                 else
-                    error(err.message);
+                    %err.stack
+                    error(err.getReport());
+                    
                 end
             end
                                

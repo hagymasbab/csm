@@ -6,7 +6,7 @@ function lcp = gestaltLogCondPostG(gi,g,compIdx,V,ge,prior,precision)
     
     g(compIdx,1) = gi;
 
-    loglike = gestaltLogLikeV(V,g,ge,precision);
+    loglike = gestaltLogLikeV(V,g,ge,precision,[]);
     
     if strcmp(prior,'gamma')
         if ge.nullComponent && (compIdx == ge.k)
