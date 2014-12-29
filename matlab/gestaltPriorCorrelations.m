@@ -1,4 +1,4 @@
-function gestaltPriorCorrelations(nTrials,timings,appendTo)
+function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation)
     close all;
     Dx = 1024;    
     B = 10;
@@ -69,11 +69,12 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo)
     
     ge3 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'prior','dirichlet','cc',cc, ...
         'filters','gabor_4or_32.mat','obsVar',sigma,'sparsity',0.1,'z_shape',z_shape,'z_scale',z_scale);
-    %models{end+1} = ge3;
+    models{end+1} = ge3;
     model_names{end+1} = 'dirichlet';
     
     nModels = size(models,2);        
     
+    %if strcmp(calculation,'transient')
     if isempty(appendTo)
         [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,1);
     else
@@ -81,60 +82,12 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo)
     end
 
     
-    % plot g time series
-    figure();
-    for m = 1:nModels
-        for kk = 1:k
-            actdata = squeeze(gsamp(m,:,:,kk));
-            subplot(k,nModels,(kk-1)*nModels+m);
-            plot(actdata');
-            hold on;
-            xlim([1 sum(timings)]);
-            ylim([0 1]);
-            plot(mean(actdata)','LineWidth',3);            
-            title(sprintf('Model %s comp %d',model_names{m},kk),'FontSize',16);
-            for t=1:length(timings)-1
-                act_t = cumulative_timings(t);
-                plot([act_t;act_t],ylim(),'r-','LineWidth',3);
-            end
-        end
-    end
-    
-    % plot v time series
-    figure();
-    for m = 1:nModels
-        for c = 1:length(exemplar_cells)
-            % average over batch
-            actdata = squeeze(mean(vsamp(m,:,:,:,exemplar_cells(c)),4));
-            subplot(length(exemplar_cells),nModels,(c-1)*nModels+m);
-            plot(actdata');
-            hold on;
-            xlim([1 sum(timings)]);
-            ylim([-4 8]);
-            plot(mean(actdata)','LineWidth',3);            
-            title(sprintf('Model %s %s',model_names{m},exemplar_titles{c}),'FontSize',16);
-            for t=1:length(timings)-1
-                act_t = cumulative_timings(t);
-                plot([act_t;act_t],ylim(),'r-','LineWidth',3);
-            end
-        end
-    end
-    
-    % plot z time series
-    figure();
-    for m = 1:nModels        
-        actdata = squeeze(zsamp(m,:,:));
-        subplot(1,nModels,m);
-        plot(actdata');
-        hold on;
-        xlim([1 sum(timings)]);
-        ylim([0 4]);
-        plot(mean(actdata)','LineWidth',3);            
-        title(sprintf('Model %s',model_names{m}),'FontSize',16);
-        for t=1:length(timings)-1
-            act_t = cumulative_timings(t);
-            plot([act_t;act_t],ylim(),'r-','LineWidth',3);
-        end        
-    end
-    
+    % plot time series
+    gdata = permute(gsamp,[1 4 2 3]);
+    plotGridSeries(gdata,cumulative_timings,model_names,{},'Model','comp');
+    vdata = permute(squeeze(mean(vsamp(:,:,:,:,exemplar_cells),4)),[1 4 2 3]);
+    plotGridSeries(vdata,cumulative_timings,model_names,exemplar_titles,'Model','');
+    zdata = reshape(zsamp,[nModels 1 nTrials sum(timings)]);
+    plotGridSeries(zdata,cumulative_timings,model_names,{'z'},'Model','');
 end
+
