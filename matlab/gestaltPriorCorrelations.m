@@ -46,7 +46,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation)
     
     ge3 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'prior','dirichlet','cc',cc, ...
         'filters','gabor_4or_32.mat','obsVar',sigma,'sparsity',0.1,'z_shape',z_shape,'z_scale',z_scale);
-    models{end+1} = ge3;
+    %models{end+1} = ge3;
     model_names{end+1} = 'dirichlet';
     
     nModels = size(models,2);    
@@ -76,6 +76,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation)
     g_off = 0.01 * ones(k,1);
     g_on = g_off;
     g_on(1,1) = 10;
+    g_off(2,1) = 10;
     X_on = gestaltAncestralSample(ge1,g_on,backgroundZ,false,false);
     X_off = gestaltAncestralSample(ge1,g_off,backgroundZ,false,false);
     stimuli{end+1} = X_on(1,:)';
@@ -92,7 +93,8 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
     if strcmp(calculation,'transient')
-        reset = false;
+        %reset = false;
+        reset = true;
     elseif strcmp(calculation,'stationary')
         reset = true;
     end

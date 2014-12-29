@@ -6,6 +6,7 @@ function loglike = gestaltLogLikeV(V,g,ge,precision,iC)
     
     if ~precision
         Cv = componentSum(g,ge.cc);
+        Cv = sparse(Cv);
         [~,err] = chol(Cv);
         if err > 0
             loglike = -Inf;
