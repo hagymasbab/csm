@@ -46,6 +46,7 @@ function gestalt = gestaltCreate(name,varargin)
     
     % compute some additional matrices to speed up inference
     %fprintf('Calculating A^TA\n');
+    %gestalt.A = sparse(gestalt.A);
     gestalt.AA = (gestalt.A)'*gestalt.A;
     %fprintf('Calculating R\n');
     %gestalt.R = pinv(gestalt.AA)*(gestalt.A)';
