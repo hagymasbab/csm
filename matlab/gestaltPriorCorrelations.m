@@ -1,4 +1,4 @@
-function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation)
+function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype)
     close all;
     Dx = 256;    
     filterfile = sprintf('gabor_4or_%d.mat',sqrt(Dx));
@@ -55,33 +55,35 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % CREATE STIMULI
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
-    load('gabor_4or_32.mat')    
-    orients = [2 4];
-    %orients = [4 2];
+            
     stimuli = {};
     stimuli{1} = 0.1 * randn(Dx,1);
     
-%     for l=1:size(locations,1)
-%         for o=1:length(orients)
-%             %coeffs = zeros(Dx,1);
-%             coeffs = randn(Dx,1);
-%             for loc=1:size(locations,2)
-%                 coeffs((locations(l,loc)-1)*nOrient+orients(o),1) = 5;
-%             end
-%             stimuli{end+1} = A * coeffs;
-%         end
-%     end
-    
-    backgroundZ = 1;
-    g_off = 0.01 * ones(k,1);
-    g_on = g_off;
-    g_on(1,1) = 10;
-    g_off = 1 * ones(k,1);
-    X_on = gestaltAncestralSample(ge1,g_on,backgroundZ,false,false);
-    X_off = gestaltAncestralSample(ge1,g_off,backgroundZ,false,false);
-    stimuli{end+1} = X_on(1,:)';
-    stimuli{end+1} = X_off(1,:)';
+    if strcmp(stimtype,'artificial')
+        load(filterfile);
+        orients = [2 4];
+        %orients = [4 2];
+        for l=1:size(locations,1)
+            for o=1:length(orients)
+                %coeffs = zeros(Dx,1);
+                coeffs = randn(Dx,1);
+                for loc=1:size(locations,2)
+                    coeffs((locations(l,loc)-1)*nOrient+orients(o),1) = 5;
+                end
+                stimuli{end+1} = A * coeffs;
+            end
+        end
+    elseif strcmp(stimtype,'generated')   
+        backgroundZ = 1;
+        g_off = 0.01 * ones(k,1);
+        g_on = g_off;
+        g_on(1,1) = 10;
+        g_off = 1 * ones(k,1);
+        X_on = gestaltAncestralSample(ge1,g_on,backgroundZ,false,false);
+        X_off = gestaltAncestralSample(ge1,g_off,backgroundZ,false,false);
+        stimuli{end+1} = X_on(1,:)';
+        stimuli{end+1} = X_off(1,:)';
+    end
     
     stimuli{end+1} = 0.1 * randn(Dx,1);
     viewImageSet(stimuli);
