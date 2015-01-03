@@ -2,7 +2,12 @@ function grad = gestaltFullLogPosteriorGrad(ge,X,V,g,z,iC)
     if ge.B ~= 1
         error('Gradient is only valid for B=1');
     end
-
+    
+    if isempty(iC)
+        Cv = sparse(componentSum(g,ge.cc));
+        iC = inv(Cv);
+    end
+    
     grad = zeros(ge.k + ge.B * ge.Dv + 1,1);
     
     % grad of g
