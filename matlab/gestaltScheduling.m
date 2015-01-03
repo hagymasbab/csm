@@ -27,7 +27,7 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
             printCounter(t,'stringVal','Trial','maxVal',nTrials,'newLine',true);
             % set initial conditions
             initZ = 0.1;
-            initG = 1 * ones(models{m}.k,1);
+            initG = 0.5 * ones(models{m}.k,1);
             for s = 1:nStim
                 % set data
                 actstim = zeros(models{m}.B,models{m}.Dx);
@@ -42,7 +42,7 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
                 if strcmp(sampler,'gibbs')
                     [vs,gs,zs,~] = gestaltGibbs(models{m},1,timings(s),'verbose',0,'initZ',initZ,'initG',initG,'gSampler',g_sampler);
                 elseif strcmp(sampler,'hamilton')
-                    [vs,gs,zs,~] = gestaltHamiltonian(models{m},actstim,timings(s));
+                    [vs,gs,zs,~] = gestaltHamiltonian(models{m},actstim,timings(s),'sampler','nuts','burnin',timings(s));
                 end
                 
                 % store results

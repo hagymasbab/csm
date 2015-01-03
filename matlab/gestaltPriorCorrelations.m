@@ -1,6 +1,6 @@
 function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,sampler)
     close all;
-    Dx = 1024;    
+    Dx = 64;    
     filterfile = sprintf('gabor_4or_%d.mat',sqrt(Dx));
     B = 1;
     cumulative_timings = cumsum(timings);
@@ -19,8 +19,13 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     ic_idx = floor(Dx / (nOrient*2) + rfsinarow/2);
-    sh1 = 2; % single shift 
-    sh2 = 4; % double shift
+    if Dx > 120
+        sh1 = 2; % single shift 
+        sh2 = 4; % double shift
+    else
+        sh1 = 1;
+        sh2 = 2;
+    end
     locations = [ic_idx-(sh2*rfsinarow)+sh2 ic_idx-(sh1*rfsinarow)+sh1 ic_idx+(sh1*rfsinarow)-sh1 ic_idx+(sh2*rfsinarow)-sh2];
     
     % create covariance components

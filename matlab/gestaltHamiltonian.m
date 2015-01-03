@@ -4,6 +4,7 @@ function [vsamp,gsamp,zsamp,rr] = gestaltHamiltonian(ge,X,nSamp,varargin)
     addParameter(parser,'lfSteps',20,@isnumeric);
     addParameter(parser,'stepSize',1e-4,@isnumeric);
     addParameter(parser,'sampler','own');
+    addParameter(parser,'burnin',500,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -13,7 +14,7 @@ function [vsamp,gsamp,zsamp,rr] = gestaltHamiltonian(ge,X,nSamp,varargin)
     end    
     
     % set initial values for v,g and z
-    initG = ones(ge.k,1) * 0.1;
+    initG = ones(ge.k,1) * 0.2;
     initZ = 0.1;
     initV = ones(ge.B,ge.Dv) * 0.1;
     initvec = [initG;reshape(initV,ge.B*ge.Dv,1);initZ];
@@ -29,7 +30,8 @@ function [vsamp,gsamp,zsamp,rr] = gestaltHamiltonian(ge,X,nSamp,varargin)
     elseif strcmp(params.sampler,'nuts')        
         both = @(inputvec) logp_and_grad(inputvec,ge,X);
 
-        s = nuts_da(both,50,nSamp,initvec');
+        s = nuts_da(both,params.burnin,nSamp,initvec');
+        rr = NaN;
     end
     
     [vsamp,gsamp,zsamp] = splitSamples(s,ge.k,ge.B);    

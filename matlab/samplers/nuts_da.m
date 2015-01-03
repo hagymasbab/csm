@@ -120,7 +120,7 @@ for m = 2:M+Madapt,
     end
 end
 samples = samples(Madapt+1:end, :);
-fprintf('Took %d gradient evaluations.\n', nfevals);
+%fprintf('Took %d gradient evaluations.\n', nfevals);
 end
 
 function [thetaprime, rprime, gradprime, logpprime] = leapfrog(theta, r, grad, epsilon, f)
