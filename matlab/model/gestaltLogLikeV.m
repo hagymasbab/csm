@@ -39,8 +39,15 @@ function loglike = gestaltLogLikeV(V,g,ge,precision,iC)
         end
     end
     if ~precision        
-        %logdet = log(det(Cv)); % this can be numerically very unstable
-        logdet = sum(log(eig(Cv)));
+        dC = det(Cv);
+        if dC == 0 || abs(dC) == Inf 
+            %fprintf('very unstable determinant\n');
+            logdet = sum(log(eig(Cv)));
+        else
+            %fprintf('stable determinant\n');
+            logdet = log(dC); % this can be numerically very unstable
+        end
+        %logdet = sum(log(eig(Cv)));
         loglike = (-1/2) * ( B* logdet + quad );
     else
         loglike = (-1/2) * ( B* log(1/det(P)) + quad );

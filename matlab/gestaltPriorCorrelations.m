@@ -1,6 +1,6 @@
 function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,sampler)
     close all;
-    Dx = 256;    
+    Dx = 1024;    
     filterfile = sprintf('gabor_4or_%d.mat',sqrt(Dx));
     B = 1;
     cumulative_timings = cumsum(timings);
@@ -78,7 +78,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,
         g_off = 0.01 * ones(k,1);
         g_on = g_off;
         g_on(1,1) = 10;
-        g_off = 1 * ones(k,1);
+        %g_off = 1 * ones(k,1);
         X_on = gestaltAncestralSample(ge1,g_on,backgroundZ,false,false);
         X_off = gestaltAncestralSample(ge1,g_off,backgroundZ,false,false);
         stimuli{end+1} = X_on(1,:)';

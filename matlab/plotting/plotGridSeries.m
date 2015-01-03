@@ -29,6 +29,7 @@ function plotGridSeries(data,redlines,verstrings,horstrings,vertitle,hortitle)
                 act_t = redlines(t);
                 plot([act_t;act_t],ylim(),'k-','LineWidth',2);
             end
+            plot([1 slen],[0 0],'k--','LineWidth',1);
         end
     end
 end

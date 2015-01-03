@@ -27,7 +27,7 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
             printCounter(t,'stringVal','Trial','maxVal',nTrials,'newLine',true);
             % set initial conditions
             initZ = 0.1;
-            initG = 0.1 * ones(models{m}.k,1);
+            initG = 1 * ones(models{m}.k,1);
             for s = 1:nStim
                 % set data
                 actstim = zeros(models{m}.B,models{m}.Dx);
