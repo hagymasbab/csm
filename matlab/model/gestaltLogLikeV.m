@@ -38,8 +38,10 @@ function loglike = gestaltLogLikeV(V,g,ge,precision,iC)
             quad = quad + vb' * P * vb;
         end
     end
-    if ~precision
-        loglike = (-1/2) * ( B* log(det(Cv)) + quad );    
+    if ~precision        
+        %logdet = log(det(Cv)); % this can be numerically very unstable
+        logdet = sum(log(eig(Cv)));
+        loglike = (-1/2) * ( B* logdet + quad );
     else
         loglike = (-1/2) * ( B* log(1/det(P)) + quad );
     end

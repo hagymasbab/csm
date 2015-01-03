@@ -2,9 +2,9 @@ function [samples,rr] = hamiltonianMC(init,logpdf,grad,nSamp,lfSteps,stepSize,va
     % grad is the gradient of the logpdf, not of E, so it takes a negative
     % sign relative to Neal 2010.
     parser = inputParser;
-    addParamValue(parser,'verbose',0,@isnumeric);
-    addParamValue(parser,'plot',false,@islogical);
-    addParamValue(parser,'bounds',[]);
+    addParameter(parser,'verbose',0,@isnumeric);
+    addParameter(parser,'plot',false,@islogical);
+    addParameter(parser,'bounds',[]);
     parse(parser,varargin{:});
     v = parser.Results.verbose;
     pl = parser.Results.plot;
@@ -20,9 +20,6 @@ function [samples,rr] = hamiltonianMC(init,logpdf,grad,nSamp,lfSteps,stepSize,va
     rr = 0;
     q_act = init;
     lp_act = logpdf(q_act);
-    if v==1
-        fprintf('Sample %d/',nSamp);
-    end
     
     i = 1;
     while i<=nSamp
@@ -53,7 +50,8 @@ function [samples,rr] = hamiltonianMC(init,logpdf,grad,nSamp,lfSteps,stepSize,va
         a = rand(); 
         if v==2
             %fprintf('lp1 %.2e lp2 %.2e difflp %.2e m1 %.2e m2 %.2e diffm %.2e, diff %.2e ap. %.4f rand %.4f',lp_act,lp_next,lp_act-lp_next,m_act,m_next,m_act-m_next,lp_act+m_act-lp_next-m_next,exp(H_act-H_next),a);
-            fprintf('lp1 %.2f lp2 %.2f difflp %.2f m1 %.2f m2 %.2f diffm %.2f, diff %.2f ap. %.4f rand %.4f',lp_act,lp_next,lp_act-lp_next,m_act,m_next,m_act-m_next,lp_act+m_act-lp_next-m_next,exp(H_act-H_next),a);
+            %fprintf('lp1 %.2f lp2 %.2f difflp %.2f m1 %.2f m2 %.2f diffm %.2f, diff %.2f ap. %.4f rand %.4f',lp_act,lp_next,lp_act-lp_next,m_act,m_next,m_act-m_next,lp_act+m_act-lp_next-m_next,exp(H_act-H_next),a);
+            fprintf('lp1 %.2f lp2 %.2f ap. %.4f rand %.4f',lp_act,lp_next,exp(H_act-H_next),a);
         end
         if a < exp(H_act - H_next)
             samples(i,:) = q';
@@ -61,7 +59,7 @@ function [samples,rr] = hamiltonianMC(init,logpdf,grad,nSamp,lfSteps,stepSize,va
             lp_act = lp_next;
             
             if v==1
-                printCounter(i);
+                printCounter(i,'stringVal','Sample','maxVal',nSamp,'newLine',true);
             elseif v==2
                 fprintf(' accepted \n');
             end
@@ -73,9 +71,6 @@ function [samples,rr] = hamiltonianMC(init,logpdf,grad,nSamp,lfSteps,stepSize,va
             end
             rr = rr+1;
         end
-    end
-    if v==1
-        fprintf('\n');
     end
 end
         
