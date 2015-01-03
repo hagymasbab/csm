@@ -1,4 +1,4 @@
-function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype)
+function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,sampler)
     close all;
     Dx = 256;    
     filterfile = sprintf('gabor_4or_%d.mat',sqrt(Dx));
@@ -103,7 +103,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype)
     end
     
     if isempty(appendTo)
-        [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,0,reset);
+        [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,0,reset,sampler);
     else
         load(appendTo);
     end

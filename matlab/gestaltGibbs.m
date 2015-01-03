@@ -1,4 +1,4 @@
-function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
+function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     parser = inputParser;
     addParameter(parser,'verbose',0,@isnumeric);
     addParameter(parser,'stepsize',0.1,@isnumeric);
@@ -232,5 +232,14 @@ function [s,rr,zsamp] = gestaltGibbs(ge,xind,nSamp,varargin)
     if params.thin > 1
         indices = 1:params.thin:nSamp*params.thin;
         s = s(indices,:);
+    end
+    
+    % TODO eliminate this, here because of learning
+    if nargout > 2
+        gsamp = s(:,1:ge.k);
+        vsamp = reshape(s(:,ge.k+1:end),[nSamp ge.B ge.Dv]);    
+    else
+        vsamp = samples;
+        gsamp = rr;
     end
 end

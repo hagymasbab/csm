@@ -1,4 +1,4 @@
-function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,obsNoise,reset)
+function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,obsNoise,reset,sampler)
     % models need to have the same dimensions and only differ in their
     % parametrisation
     if ~iscell(models)
@@ -39,17 +39,26 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
                 %viewImage(models{m}.X(1,1,:));pause
                 
                 % call sampler
-                [cs,~,zs] = gestaltGibbs(models{m},1,timings(s),'verbose',0,'initZ',initZ,'initG',initG,'gSampler',g_sampler);
+                if strcmp(sampler,'gibbs')
+                    [vs,gs,zs,~] = gestaltGibbs(models{m},1,timings(s),'verbose',0,'initZ',initZ,'initG',initG,'gSampler',g_sampler);
+                elseif strcmp(sampler,'hamilton')
+                    [vs,gs,zs,~] = gestaltHamiltonian(models{m},actstim,timings(s));
+                end
                 
                 % store results
-                actlength = ends(s) - starts(s) + 1;
-                vsamp(m,t,starts(s):ends(s),:,:) = reshape(cs(:,models{m}.k+1:end),[actlength B Dv]);
-                gsamp(m,t,starts(s):ends(s),:) = cs(:,1:models{m}.k);
+%                 actlength = ends(s) - starts(s) + 1;
+%                 vsamp(m,t,starts(s):ends(s),:,:) = reshape(cs(:,models{m}.k+1:end),[actlength B Dv]);
+%                 gsamp(m,t,starts(s):ends(s),:) = cs(:,1:models{m}.k);
+%                 zsamp(m,t,starts(s):ends(s)) = zs;
+                
+                vsamp(m,t,starts(s):ends(s),:,:) = vs;
+                gsamp(m,t,starts(s):ends(s),:) = gs;
                 zsamp(m,t,starts(s):ends(s)) = zs;
+                
                 
                 % set endpoint as next initial
                 if ~reset                    
-                    initG = cs(end,1:models{m}.k)';
+                    initG = gs(end,:)';
                     initZ = zs(end);
                 end
             end

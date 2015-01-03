@@ -1,4 +1,4 @@
-function [vsamp,gsamp,zsamp] = gestaltHamiltonian(ge,X,nSamp)
+function [vsamp,gsamp,zsamp,rr] = gestaltHamiltonian(ge,X,nSamp)
     % set X
     if ndims(X) == 3
         X = reshape(X,ge.B,ge.Dv);
@@ -19,8 +19,8 @@ function [vsamp,gsamp,zsamp] = gestaltHamiltonian(ge,X,nSamp)
     
     % call sampler
     lfSteps = 100;
-    stepSize = 0.01;
-    [s,~] = hamiltonianMC(initvec,logpdf,grad,nSamp,lfSteps,stepSize,'bounds',bounds);
+    stepSize = 0.001;
+    [s,rr] = hamiltonianMC(initvec,logpdf,grad,nSamp,lfSteps,stepSize,'bounds',bounds);
     gsamp = s(:,1:ge.k);
     vsamp = reshape(s(:,ge.k+1:end-1),[nSamp ge.B ge.Dv]);
     zsamp = s(:,end);

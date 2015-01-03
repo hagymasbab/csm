@@ -138,7 +138,9 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             % Gibbs sampling
             initG = (1/ge.k) * ones(ge.k,1);
             try
-                [samples(n,:,:),~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
+                % TODO use the newly shaped sample parameters instead of
+                % the old lumped one, maybe in a strucutre
+                samples(n,:,:) = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
                     'initG',initG,'contrast',ge.contrast);            
             catch e
                 % if couldn't find a valid g-sample in 10 steps, skip                

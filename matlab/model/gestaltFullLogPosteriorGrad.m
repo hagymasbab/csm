@@ -11,10 +11,12 @@ function grad = gestaltFullLogPosteriorGrad(ge,X,V,g,z,iC)
     grad = zeros(ge.k + ge.B * ge.Dv + 1,1);
     
     % grad of g
-    vv = V' * V;
-    common = ge.B * iC - iC * vv * iC;
+    vv = V' * V;    
+    common = (ge.B * iC - iC * vv * iC)';
     for i = 1 : ge.k
-        matpart = - trace(common * ge.cc{i}) / 2;
+        % trace computation is more efficient like this
+        matpart = sum(sum(common.*ge.cc{i}));
+        matpart = - matpart / 2;
         if ge.nullComponent && i == ge.k
             shg = ge.null_shape;
             scg = ge.null_scale;
