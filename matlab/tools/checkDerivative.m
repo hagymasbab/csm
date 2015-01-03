@@ -57,7 +57,7 @@ function disc = checkDerivative(formula,deriv,init,builtin)
             disc=[disc discrepancy];
         end
         fprintf('\n');
-        plot(disc)
+        plot(log(disc))
     end
 end
             
