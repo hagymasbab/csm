@@ -1,6 +1,6 @@
 function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargin)        
     parser = inputParser;
-    addParamValue(parser,'learningRate',1,@isnumeric);    
+    addParamValue(parser,'learningRate',1e-2,@isnumeric);    
     addParamValue(parser,'plot',0,@isnumeric);
     addParamValue(parser,'precision',false,@islogical);      
     addParamValue(parser,'verbose',2,@isnumeric);
@@ -129,7 +129,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         
         samples = zeros(emBatchSize,nSamples,sdim);    
         skipped = 0;
-        parfor n=1:emBatchSize
+        %parfor n=1:emBatchSize
+        for n=1:emBatchSize
             
              if params.verbose == 2
                  fprintf('\nDatapoint %d/%d ',emBatchSize,n);            

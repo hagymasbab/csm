@@ -239,7 +239,7 @@ function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
         gsamp = s(:,1:ge.k);
         vsamp = reshape(s(:,ge.k+1:end),[nSamp ge.B ge.Dv]);    
     else
-        vsamp = samples;
+        vsamp = s;
         gsamp = rr;
     end
 end

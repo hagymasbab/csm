@@ -1,18 +1,19 @@
-function gestaltLearnNatural(code,imdim,embatch,samplesize)    
+function gestaltLearnNatural(code,imdim,embatch,samplesize,k)    
     if imdim == 16
         % read patchDB
         load('sejnowski_patches_16.mat');
+        patchDB = patchDB(:,1:100);
         % read filter set
-        filterfile = 'OF_256.mat';
+        %filterfile = 'OF_256.mat';
+        filterfile = 'gabor_4or_16.mat';
     else
         fprintf('Not implemented');
         return;
     end
     
-    % create model
-    % TODO find reasons for parameter values
-    ge = gestaltCreate('temp','Dx',imdim^2,'k',imdim^2,'B',1,'N',embatch, ...
-        'filters',filterfile,'obsVar',1,'g_scale',2,'z_shape',1,'z_scale',0.1,'nullComponent',true);        
+    % create model    
+    ge = gestaltCreate('temp','Dx',imdim^2,'k',k,'B',1,'N',embatch, ...
+        'filters',filterfile,'obsVar',1,'g_shape',1,'g_scale',1,'z_shape',1,'z_scale',0.1,'nullComponent',false);        
         
     % set initial conditions
     if code == 0
