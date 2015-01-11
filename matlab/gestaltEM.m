@@ -1,12 +1,12 @@
 function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargin)        
     parser = inputParser;
-    addParamValue(parser,'learningRate',1e-2,@isnumeric);    
-    addParamValue(parser,'plot',0,@isnumeric);
-    addParamValue(parser,'precision',false,@islogical);      
-    addParamValue(parser,'verbose',2,@isnumeric);
-    addParamValue(parser,'initCond','empty');
-    addParamValue(parser,'priorG','gamma');
-    addParamValue(parser,'syntheticData',true,@islogical);
+    addParameter(parser,'learningRate',1e-2,@isnumeric);    
+    addParameter(parser,'plot',0,@isnumeric);
+    addParameter(parser,'precision',false,@islogical);      
+    addParameter(parser,'verbose',2,@isnumeric);
+    addParameter(parser,'initCond','empty');
+    addParameter(parser,'priorG','gamma');
+    addParameter(parser,'syntheticData',true,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -129,8 +129,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         
         samples = zeros(emBatchSize,nSamples,sdim);    
         skipped = 0;
-        %parfor n=1:emBatchSize
-        for n=1:emBatchSize
+        parfor n=1:emBatchSize
+        %for n=1:emBatchSize
             
              if params.verbose == 2
                  fprintf('\nDatapoint %d/%d ',emBatchSize,n);            
