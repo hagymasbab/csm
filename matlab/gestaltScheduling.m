@@ -7,7 +7,11 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
     nMod = size(models,2);
     Dv = models{1}.Dv;
     B = models{1}.B;
-    k = models{1}.k;
+    ks = zeros(1,nMod);
+    for m = 1:nMod
+        ks(m) = models{m}.k;
+    end
+    k = max(ks);
     totalSamples = sum(timings);
     ends = cumsum(timings);
     starts = [1 ends(1:end-1)+1];
@@ -26,7 +30,7 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
         for t = 1:nTrials            
             printCounter(t,'stringVal','Trial','maxVal',nTrials,'newLine',true);
             % set initial conditions
-            initZ = 0.1;
+            initZ = 1;
             initG = 0.5 * ones(models{m}.k,1);
             for s = 1:nStim
                 % set data
@@ -52,7 +56,7 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
 %                 zsamp(m,t,starts(s):ends(s)) = zs;
                 
                 vsamp(m,t,starts(s):ends(s),:,:) = vs;
-                gsamp(m,t,starts(s):ends(s),:) = gs;
+                gsamp(m,t,starts(s):ends(s),1:models{m}.k) = gs;
                 zsamp(m,t,starts(s):ends(s)) = zs;
                 
                 
