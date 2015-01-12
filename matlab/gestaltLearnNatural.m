@@ -1,4 +1,4 @@
-function gestaltLearnNatural(code,imdim,embatch,samplesize,k)    
+function gestaltLearnNatural(code,imdim,embatch,samplesize,k,learningRate)    
     if imdim == 16
         % read patchDB
         load('sejnowski_patches_16.mat');
@@ -23,5 +23,5 @@ function gestaltLearnNatural(code,imdim,embatch,samplesize,k)
     end        
     
     % start learning
-    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond);
+    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate);
 end

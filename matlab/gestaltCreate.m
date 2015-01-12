@@ -93,7 +93,7 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    if gestalt.generate && gestalt.N > 0
+    if gestalt.N > 0
         gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar,'sparsity',gestalt.sparsity);    
     end
     

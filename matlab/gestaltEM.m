@@ -1,6 +1,6 @@
 function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargin)        
     parser = inputParser;
-    addParameter(parser,'learningRate',1e-2,@isnumeric);    
+    addParameter(parser,'learningRate',5e-2,@isnumeric);    
     addParameter(parser,'plot',0,@isnumeric);
     addParameter(parser,'precision',false,@islogical);      
     addParameter(parser,'verbose',2,@isnumeric);
@@ -79,7 +79,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
     sdim = ge.k+(ge.Dv*ge.B);
     % correct learning rate for data set size
-    params.learningRate = params.learningRate * (10 / emBatchSize);
+    %params.learningRate = params.learningRate * (10 / emBatchSize);
 %     ge.N = size(ge.X,1);  
     if ndims(X) == 2
         if ge.B > 1

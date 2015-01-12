@@ -1,5 +1,5 @@
 function [stimuli,A,gestalts] = ICstimuli(nContrast,maxCont,backgroundZ)
-    imdim = 32;
+    imdim = 16;
     Dx = imdim^2;    
     nOrient = 4;
     shift = nOrient / 2;
@@ -16,8 +16,8 @@ function [stimuli,A,gestalts] = ICstimuli(nContrast,maxCont,backgroundZ)
     ic_idx = floor(nRF/2 + rfsinarow/2);
     % define gestalts as sets of RF locations and orientation indices
     % now they have to be of equal length
-    sh1 = 3; % single shift 
-    sh2 = 5; % double shift
+    sh1 = 1; % single shift 
+    sh2 = 3; % double shift
     templates = [ic_idx-sh2                 ic_idx-sh1                 ic_idx+sh1                 ic_idx+sh2;                 ...
                  ic_idx-(sh2*rfsinarow)+sh2 ic_idx-(sh1*rfsinarow)+sh1 ic_idx+(sh1*rfsinarow)-sh1 ic_idx+(sh2*rfsinarow)-sh2; ...
                  ic_idx-(sh2*rfsinarow)     ic_idx-(sh1*rfsinarow)     ic_idx+(sh1*rfsinarow)     ic_idx+(sh2*rfsinarow);     ...
