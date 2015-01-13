@@ -72,7 +72,9 @@ function gestalt = gestaltCreate(name,varargin)
             gestalt.cc{1} = var*eye(4) + covar*[0 0 1 0; 0 0 0 0; 1 0 0 0; 0 0 0 0];
             gestalt.cc{2} = var*eye(4) + covar*[0 0 0 0; 0 0 0 1; 0 0 0 0; 0 1 0 0];
         else        
-            [gestalt.cc, gestalt.gRF] = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,'nullComponent',gestalt.nullComponent,'overlapping',gestalt.overlapping);            
+            % TODO this is only valid if we have 4-orient 1-frequency
+            % gabors with 2-by-2 grid layout
+            [gestalt.cc, gestalt.gRF] = gestaltCovariances(gestalt.k,gestalt.Dx,gestalt.Dv,'nullComponent',gestalt.nullComponent,'overlapping',gestalt.overlapping,'nOrient',4);            
     %         if gestalt.nullComponent
     %             gestalt.k = gestalt.k + 1;
     %         end

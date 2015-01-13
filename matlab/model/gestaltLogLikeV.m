@@ -1,11 +1,13 @@
-function loglike = gestaltLogLikeV(V,g,ge,precision,iC)
+function loglike = gestaltLogLikeV(V,g,ge,precision,iC,Cv)
     if ndims(V) == 3
         V = reshape(V,ge.B,ge.Dv);
     end
     B = size(V,1);        
     
     if ~precision
-        Cv = componentSum(g,ge.cc);
+        if isempty(Cv)
+            Cv = componentSum(g,ge.cc);
+        end
         Cv = sparse(Cv);
         [~,err] = chol(Cv);
         if err > 0

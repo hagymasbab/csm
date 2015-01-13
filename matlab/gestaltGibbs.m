@@ -134,6 +134,7 @@ function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
                         rr_act = 0;
                         g_temp = g;
                         for cycle = 1:params.repeatCycle
+                            cv = componentSum(g,ge.cc);                                                        
                             for j = 1:ge.k
                                 if params.plotG
                                     clf;
@@ -141,11 +142,15 @@ function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
                                     hold on;
                                     scatter(ge.G(xind,j),0,140,'go','LineWidth',3);
                                     pause
-                                end
-                                condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,ge.prior,params.precision); 
+                                end                                
+                                
+                                prev_g = g_temp;
+                                condlogpdf = @(gi) gestaltLogCondPostG(gi,g_temp,j,V,ge,ge.prior,params.precision,cv,ge.cc); 
                                 [g_temp(j,1),rr_part] = sliceSample(g_temp(j,1),condlogpdf,params.stepsize,'plot',params.plotG,'limits',[0,Inf]);
 
                                 rr_act = rr_act + rr_part;
+                                actdiff = prev_g(j,1) - g_temp(j,1);
+                                cv = cv - actdiff * ge.cc{j};
                             end
                         end
                     end

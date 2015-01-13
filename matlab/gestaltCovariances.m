@@ -3,6 +3,7 @@ function [cc,receptiveFields] = gestaltCovariances(k,Dx,Dv,varargin)
     addParamValue(parser,'nullComponent',true,@islogical);    
     addParamValue(parser,'overlapping',false,@islogical);    
     addParamValue(parser,'verbose',false,@islogical);    
+    addParamValue(parser,'nOrient',0,@isnumeric);    
     parse(parser,varargin{:});        
     params = parser.Results;
     
@@ -28,6 +29,41 @@ function [cc,receptiveFields] = gestaltCovariances(k,Dx,Dv,varargin)
     width = 1;    
     vermargin = 1;
    
+    if params.nOrient > 0 && covering
+        cc = {};
+        sh1 = 1; % single shift 
+        sh2 = 2; % double shift
+        imdim = sqrt(Dx);                  
+        shift = params.nOrient / 2;
+        nRF = Dx / params.nOrient;
+        rfsinarow = imdim/shift;        
+        
+        for ic_idx = 1:nRF
+            % define gestalts as sets of RF locations and orientation indices
+            templates = [ic_idx-sh2                 ic_idx-sh1                 ic_idx+sh1                 ic_idx+sh2;                 ...
+                         ic_idx-(sh2*rfsinarow)+sh2 ic_idx-(sh1*rfsinarow)+sh1 ic_idx+(sh1*rfsinarow)-sh1 ic_idx+(sh2*rfsinarow)-sh2; ...
+                         ic_idx-(sh2*rfsinarow)     ic_idx-(sh1*rfsinarow)     ic_idx+(sh1*rfsinarow)     ic_idx+(sh2*rfsinarow);     ...
+                         ic_idx-(sh2*rfsinarow)-sh2 ic_idx-(sh1*rfsinarow)-sh1 ic_idx+(sh1*rfsinarow)+sh1 ic_idx+(sh2*rfsinarow)+sh2];
+            templates = max(templates,1);
+            templates = min(templates,nRF);
+            gestalts = []; 
+            for o=1:params.nOrient
+                gestaltvec = zeros(Dv,1);
+                gestaltvec(templates(o,:)'+o-1) = 1;
+                act_cc = gestaltvec*gestaltvec';
+                if ~params.nullComponent
+                    act_cc = act_cc + (1/Dv) * eye(Dv);
+                end
+                cc{end+1} = act_cc;
+            end
+        end
+        if params.nullComponent
+            cc{end+1} = eye(Dv);
+        end
+        receptiveFields = [];
+        return;
+    end
+    
     N = max(Dx,Dv) + 1;
     for g = 1:k
         if params.verbose

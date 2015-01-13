@@ -6,6 +6,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'verbose',2,@isnumeric);
     addParameter(parser,'initCond','empty');
     addParameter(parser,'priorG','gamma');
+    addParameter(parser,'sampler','gibbs');
     addParameter(parser,'syntheticData',true,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;      
