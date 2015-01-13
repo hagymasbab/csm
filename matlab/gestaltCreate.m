@@ -23,7 +23,8 @@ function gestalt = gestaltCreate(name,varargin)
     addParamValue(p,'contrast',true,@islogical);
     addParamValue(p,'nullComponent',true,@islogical);
     addParamValue(p,'overlapping',false,@islogical);
-    addParamValue(p,'generate',false,@islogical);
+    addParamValue(p,'generateComponents',false,@islogical);
+    addParamValue(p,'generateData',false,@islogical);
     addParamValue(p,'cc',{});
     parse(p,varargin{:});
     gestalt = p.Results;        
@@ -55,7 +56,7 @@ function gestalt = gestaltCreate(name,varargin)
     %    gestalt.tX(n,:,:) = reshape(gestalt.X(n,:,:),gestalt.B,gestalt.Dx) * gestalt.A;
     %end
     
-    if gestalt.generate
+    if gestalt.generateComponents
         if gestalt.Dx == 1
             gestalt.cc{1} = 1;
             gestalt.k = 1;
@@ -93,7 +94,7 @@ function gestalt = gestaltCreate(name,varargin)
         end
     end
     
-    if gestalt.N > 0
+    if gestalt.N > 0 && gestalt.generateData
         gestalt = gestaltGenerate(gestalt,gestalt.N,'batchSize',gestalt.B,'precision',gestalt.precision,'obsVar',gestalt.obsVar,'sparsity',gestalt.sparsity);    
     end
     

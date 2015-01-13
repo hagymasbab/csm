@@ -177,12 +177,12 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         % PRINT AND SAVE DATA            
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
                 
-        state.relative_difference = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
+        [state.relative_difference,~,maxel_diff] = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         % TEST
         %state.relative_difference = 1;
         act_c = componentSum(ones(ge.k,1),cc_next);
         if params.syntheticData
-            state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);
+            [state.difference_to_truth,~,maxel_diff] = covcompRootMeanSquare(act_c,true_c,1);
         end
         state.estimated_components = extractComponents(ge,params.precision);
         state.samples = samples;
@@ -199,14 +199,14 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         end
         save(savename,'cc_next');
         if params.verbose == 2
-            fprintf(' diff %.2e skipped %d\n',state.relative_difference,skipped);
+            fprintf(' diff %.2e skipped %d\n',maxel_diff,skipped);
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % TEST FOR CONVERGENCE   
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        if state.relative_difference < 1e-6
+        if maxel_diff < 1e-6
             if params.verbose>1
                 fprintf('Convergence achieved in %d steps.\n',step);
             end
