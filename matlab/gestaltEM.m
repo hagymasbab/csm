@@ -186,7 +186,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             [state.difference_to_truth,~,maxel_diff] = covcompRootMeanSquare(act_c,true_c,1);
         end
         state.estimated_components = extractComponents(ge,params.precision);
-        state.samples = samples;
+        %state.samples = samples;
         state.matrix_norms = {};
         for i=1:ge.k
             state.matrix_norms{i} = norm(cc_next{i});
@@ -194,9 +194,9 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         state_sequence{step+1} = state;                
         
         if params.syntheticData
-            save('iter.mat','state_sequence','goal_cc');
+            save('iter.mat','state_sequence','goal_cc','-v7.3');
         else
-            save('iter.mat','state_sequence');            
+            save('iter.mat','state_sequence','-v7.3');            
         end
         save(savename,'cc_next');
         if params.verbose == 2
