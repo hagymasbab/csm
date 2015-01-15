@@ -8,7 +8,9 @@ function loglike = gestaltLogLikeV(V,g,ge,precision,iC,Cv)
         if isempty(Cv)
             Cv = componentSum(g,ge.cc);
         end
-        Cv = sparse(Cv);
+        if ge.sparseComponents
+            Cv = sparse(Cv);
+        end
         [~,err] = chol(Cv);
         if err > 0
             loglike = -Inf;

@@ -93,12 +93,14 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     % INITIALISE ARRAYS FOR SAVING VALUES   
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                            
     
+    truthdiff_diagonals = false;
     % the best permutation for comparing estimated components to truth    
     state_sequence = cell(1,maxStep+1);   
     true_c = componentSum(ones(ge.k,1),goal_cc);
     act_c = componentSum(ones(ge.k,1),ccInit);
     if params.syntheticData
-        state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1);        
+        true_c = cov(squeeze(mean(ge.V,2))); % this is assuming that when we have synthetic data, we generated it using ge.V
+        state.difference_to_truth = covcompRootMeanSquare(act_c,true_c,1,'useDiagonals',truthdiff_diagonals);        
 %         if params.detailedDiff
 %             state.detailed_difference = covcompRootMeanSquare(ccInit,goal_cc,[],'verbose',true);
 %         end
@@ -123,6 +125,9 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
              
         % choose a batch from tha big dataset randomly
         ge.X = X(chooseKfromN(emBatchSize,size(X,1)),:,:);        
+        
+        % check whether current components are sparse         
+        ge.sparseComponents = length(find(componentSum(1,ge.cc))) < ge.Dv^2 / 2;        
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % E - step            
@@ -183,7 +188,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         %state.relative_difference = 1;
         act_c = componentSum(ones(ge.k,1),cc_next);
         if params.syntheticData
-            [state.difference_to_truth,~,maxel_diff] = covcompRootMeanSquare(act_c,true_c,1);
+            [state.difference_to_truth,~,maxel_diff] = covcompRootMeanSquare(act_c,true_c,1,'useDiagonals',truthdiff_diagonals);
         end
         state.estimated_components = extractComponents(ge,params.precision);
         %state.samples = samples;

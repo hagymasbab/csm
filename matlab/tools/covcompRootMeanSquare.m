@@ -1,6 +1,7 @@
 function [mindiff,minperm,maxel_diff] = covcompRootMeanSquare(cc1,cc2,minperm,varargin)
     parser = inputParser;
-    addParamValue(parser,'verbose',false,@islogical);
+    addParameter(parser,'verbose',false,@islogical);
+    addParameter(parser,'useDiagonals',true,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;     
     % we should take the minimum over all possible permutations    
@@ -28,7 +29,10 @@ function [mindiff,minperm,maxel_diff] = covcompRootMeanSquare(cc1,cc2,minperm,va
             other_index = si(1,j);
 %             size(cc2{j})
 %             size(cc1{other_index})
-            squared_diffs = (cc2{j}-cc1{other_index})^2;
+            squared_diffs = (cc2{j}-cc1{other_index}).^2;
+            if ~params.useDiagonals
+                squared_diffs = squared_diffs .* ( ones(size(squared_diffs)) - eye(size(squared_diffs,1)) );
+            end
             act_maxel_diff = max([act_maxel_diff max(squared_diffs(:))]);
             
             diff = diff + sum(sum(squared_diffs));           
