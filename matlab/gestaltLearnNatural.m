@@ -2,7 +2,7 @@ function gestaltLearnNatural(code,imdim,embatch,samplesize,k,learningRate)
     if imdim == 16
         % read patchDB
         load('sejnowski_patches_16.mat');
-        patchDB = patchDB(:,1:100);
+        %patchDB = patchDB(:,1:100);
         % read filter set
         %filterfile = 'OF_256.mat';
         filterfile = 'gabor_4or_16.mat';
