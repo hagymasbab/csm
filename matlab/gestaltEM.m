@@ -7,7 +7,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'initCond','empty');
     addParameter(parser,'priorG','gamma');
     addParameter(parser,'sampler','gibbs');
-    addParameter(parser,'syntheticData',true,@islogical);
+    addParameter(parser,'syntheticData',true,@islogical);    
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -133,7 +133,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         % E - step            
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        samples = zeros(emBatchSize,nSamples,sdim);    
+        vsamp = zeros(emBatchSize,nSamples,ge.B,ge.Dv);
+        gsamp = zeros(emBatchSize,nSamples,ge.k);
         skipped = 0;
         parfor n=1:emBatchSize
         %for n=1:emBatchSize
@@ -142,13 +143,22 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
                  fprintf('\nDatapoint %d/%d ',emBatchSize,n);            
              end         
 
-            % Gibbs sampling
+            % sampling
             initG = (1/ge.k) * ones(ge.k,1);
             try
-                % TODO use the newly shaped sample parameters instead of
-                % the old lumped one, maybe in a strucutre
-                samples(n,:,:) = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
-                    'initG',initG,'contrast',ge.contrast);            
+                if strcmp(params.sampler,'gibbs')
+                    [vsamp(n,:,:,:),gsamp(n,:,:),~,~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
+                        'initG',initG,'contrast',ge.contrast);            
+                elseif strcmp(params.sampler,'test')
+                     % this is assuming that when we have synthetic data,
+                     % we generated it using ge.V, ge.G and ge.Z
+%                     vsamp = permute(repmat(reshape(ge.V(n,:,:),ge.B,ge.Dv),[1,1,nSamples]),[3,1,2]);
+%                     gsamp = repmat(ge.G(n,:),[nSamples,1]);
+%                     %zsamp = repmat(ge.Z(n,1),[nSamples,1]);                    
+%                     zsamp = [];
+%                     merged = mergeSamples(vsamp,gsamp,zsamp);                    
+%                     samples(n,:,:) = merged;
+                end                    
             catch e
                 % if couldn't find a valid g-sample in 10 steps, skip                
                 if (strcmp(e.identifier,'Gestalt:Gibbs:TooManyTries'))
@@ -165,7 +175,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         % gradient of the parameters of the complete-data log-likelihood            
-        grad = gestaltParamGrad(ge,samples,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
+        grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
 
         % update cholesky components
         for j=1:ge.k
