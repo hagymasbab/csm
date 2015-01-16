@@ -139,7 +139,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         parfor n=1:emBatchSize
         %for n=1:emBatchSize
             
-             if params.verbose == 2
+             if params.verbose == 2 && ~strcmp(params.sampler,'test')
                  fprintf('\nDatapoint %d/%d ',emBatchSize,n);            
              end         
 
@@ -152,12 +152,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
                 elseif strcmp(params.sampler,'test')
                      % this is assuming that when we have synthetic data,
                      % we generated it using ge.V, ge.G and ge.Z
-%                     vsamp = permute(repmat(reshape(ge.V(n,:,:),ge.B,ge.Dv),[1,1,nSamples]),[3,1,2]);
-%                     gsamp = repmat(ge.G(n,:),[nSamples,1]);
-%                     %zsamp = repmat(ge.Z(n,1),[nSamples,1]);                    
-%                     zsamp = [];
-%                     merged = mergeSamples(vsamp,gsamp,zsamp);                    
-%                     samples(n,:,:) = merged;
+                     vsamp(n,:,:,:) = permute(repmat(reshape(ge.V(n,:,:),ge.B,ge.Dv),[1,1,nSamples]),[3,1,2]);
+                     gsamp(n,:,:) = repmat(ge.G(n,:),[nSamples,1]);
                 end                    
             catch e
                 % if couldn't find a valid g-sample in 10 steps, skip                
@@ -176,7 +172,13 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
         % gradient of the parameters of the complete-data log-likelihood            
         grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
-
+        
+        if params.learningRate == 0 && step == 1
+            matgrad = cell2mat(grad);
+            maxsq = max(matgrad(:));
+            params.learningRate = 10^(1-floor(log10(maxsq)+log10(ge.Dv)));
+        end
+        
         % update cholesky components
         for j=1:ge.k
             if ge.nullComponent && j==ge.k
@@ -193,9 +195,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         % PRINT AND SAVE DATA            
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
                 
-        [state.relative_difference,~,maxel_diff] = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
-        % TEST
-        %state.relative_difference = 1;
+        [state.relative_difference,~,maxel_diff_rel] = covcompRootMeanSquare(cc_next,cc_prev,1:ge.k);
         act_c = componentSum(ones(ge.k,1),cc_next);
         if params.syntheticData
             [state.difference_to_truth,~,maxel_diff] = covcompRootMeanSquare(act_c,true_c,1,'useDiagonals',truthdiff_diagonals);
@@ -215,14 +215,20 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         end
         save(savename,'cc_next');
         if params.verbose == 2
-            fprintf(' diff %.2e skipped %d\n',maxel_diff,skipped);
+            synstr = '';
+            if params.syntheticData
+                synstr = sprintf('truth_offd %f maxtruth_offd %f',state.difference_to_truth,maxel_diff);
+            end
+            fprintf(' maxreldiff %.2e %s skipped %d\n',maxel_diff_rel,synstr,skipped);
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % TEST FOR CONVERGENCE   
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        if maxel_diff < 1e-6
+        % if the largest (including the diagonal) change is less than one over ten
+        % thousand, we are safe to stop
+        if maxel_diff_rel < 1e-4
             if params.verbose>1
                 fprintf('Convergence achieved in %d steps.\n',step);
             end
