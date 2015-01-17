@@ -2,30 +2,30 @@ function gestalt = gestaltCreate(name,varargin)
     
     % Parse Input
     p = inputParser;
-    addParamValue(p,'k',2,@isnumeric);
-    addParamValue(p,'Dx',1024,@isnumeric);
-    addParamValue(p,'filterShift',2,@isnumeric);
-    addParamValue(p,'nOrients',4,@isnumeric);
-    addParamValue(p,'nWLengths',1,@isnumeric);
-    addParamValue(p,'N',100,@isnumeric);
-    addParamValue(p,'obsVar',0.1,@isnumeric);
-    addParamValue(p,'sparsity',0.2,@isnumeric);
-    addParamValue(p,'z_shape',2,@isnumeric);
-    addParamValue(p,'z_scale',1,@isnumeric);
-    addParamValue(p,'g_shape',1,@isnumeric);
-    addParamValue(p,'g_scale',0.2,@isnumeric);
-    addParamValue(p,'null_shape',2,@isnumeric);
-    addParamValue(p,'null_scale',0.2,@isnumeric);
-    addParamValue(p,'B',10,@isnumeric);
-    addParamValue(p,'filters','line');
-    addParamValue(p,'prior','gamma');
-    addParamValue(p,'precision',false,@islogical);
-    addParamValue(p,'contrast',true,@islogical);
-    addParamValue(p,'nullComponent',true,@islogical);
-    addParamValue(p,'overlapping',false,@islogical);
-    addParamValue(p,'generateComponents',false,@islogical);
-    addParamValue(p,'generateData',false,@islogical);
-    addParamValue(p,'cc',{});
+    addParameter(p,'k',2,@isnumeric);
+    addParameter(p,'Dx',1024,@isnumeric);
+    addParameter(p,'filterShift',2,@isnumeric);
+    addParameter(p,'nOrients',4,@isnumeric);
+    addParameter(p,'nWLengths',1,@isnumeric);
+    addParameter(p,'N',100,@isnumeric);
+    addParameter(p,'obsVar',0.1,@isnumeric);
+    addParameter(p,'sparsity',0.2,@isnumeric);
+    addParameter(p,'z_shape',2,@isnumeric);
+    addParameter(p,'z_scale',1,@isnumeric);
+    addParameter(p,'g_shape',1,@isnumeric);
+    addParameter(p,'g_scale',0.2,@isnumeric);
+    addParameter(p,'null_shape',2,@isnumeric);
+    addParameter(p,'null_scale',0.2,@isnumeric);
+    addParameter(p,'B',10,@isnumeric);
+    addParameter(p,'filters','line');
+    addParameter(p,'prior','gamma');
+    addParameter(p,'precision',false,@islogical);
+    addParameter(p,'contrast',true,@islogical);
+    addParameter(p,'nullComponent',true,@islogical);
+    addParameter(p,'overlapping',false,@islogical);
+    addParameter(p,'generateComponents',false,@islogical);
+    addParameter(p,'generateData',false,@islogical);
+    addParameter(p,'cc',{});
     parse(p,varargin{:});
     gestalt = p.Results;        
     
@@ -33,7 +33,7 @@ function gestalt = gestaltCreate(name,varargin)
     if strcmp(gestalt.filters,'gabor')        
         %gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[0;pi/4;pi/2;3*pi/4],[4]);
         %gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift,gestalt.filterShift,[pi/4;3*pi/4],[2,4]);
-        gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift/2,gestalt.filterShift,[pi/4;3*pi/4],[4]);
+        gestalt.A = gaborFilterBank(imSize,imSize,gestalt.filterShift/2,gestalt.filterShift,[pi/4;3*pi/4],4);
     elseif strcmp(gestalt.filters,'line')        
         gestalt.A = lineFilters(imSize);
     elseif strcmp(gestalt.filters,'eye')

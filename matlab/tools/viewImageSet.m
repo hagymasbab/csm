@@ -1,8 +1,9 @@
 function viewImageSet(images,varargin)
     p = inputParser;
-    addParamValue(p,'sum',false,@islogical);
-    addParamValue(p,'max',true,@islogical);    
-    addParamValue(p,'titles',{});
+    addParameter(p,'sum',false,@islogical);
+    addParameter(p,'max',true,@islogical);  
+    addParameter(p,'positive',false,@islogical);
+    addParameter(p,'titles',{});
     parse(p,varargin{:});
     
     subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
@@ -52,7 +53,7 @@ function viewImageSet(images,varargin)
     clf;
     for i=1:N
         subplot(xdim,ydim,i);
-        viewImage(images(i,:),'useMax',p.Results.max);
+        viewImage(images(i,:),'useMax',p.Results.max,'positive',p.Results.positive);
         if size(p.Results.titles,2) >= i
             title(p.Results.titles{i});
         end

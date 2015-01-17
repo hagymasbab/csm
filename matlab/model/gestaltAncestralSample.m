@@ -1,4 +1,9 @@
-function [X,V] = gestaltAncestralSample(ge,g,z,precision,positive)
+function [X,V] = gestaltAncestralSample(ge,g,z,precision,varargin)
+    parser = inputParser;
+    addParameter(parser,'positive',false,@islogical);
+    parse(parser,varargin{:});
+    params = parser.Results;
+    
     if ~precision
         Cv = componentSum(g,ge.cc);
     else
@@ -6,7 +11,7 @@ function [X,V] = gestaltAncestralSample(ge,g,z,precision,positive)
     end
     
     V = mvnrnd(zeros(ge.B,ge.Dv),Cv);
-    if positive
+    if params.positive
         V = abs(V);        
     end
 

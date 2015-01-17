@@ -1,9 +1,9 @@
 function [cc,receptiveFields] = gestaltCovariances(k,Dx,Dv,varargin)
     parser = inputParser;
-    addParamValue(parser,'nullComponent',true,@islogical);    
-    addParamValue(parser,'overlapping',false,@islogical);    
-    addParamValue(parser,'verbose',false,@islogical);    
-    addParamValue(parser,'nOrient',0,@isnumeric);    
+    addParameter(parser,'nullComponent',true,@islogical);    
+    addParameter(parser,'overlapping',false,@islogical);    
+    addParameter(parser,'verbose',false,@islogical);    
+    addParameter(parser,'nOrient',0,@isnumeric);    
     parse(parser,varargin{:});        
     params = parser.Results;
     

@@ -1,7 +1,8 @@
 function viewImage(data,varargin)
     p = inputParser;
-    addParamValue(p,'magnif',true,@islogical);
-    addParamValue(p,'usemax',false,@islogical);
+    addParameter(p,'magnif',true,@islogical);
+    addParameter(p,'usemax',false,@islogical);
+    addParameter(p,'positive',false,@islogical);
     parse(p,varargin{:});
     magn = p.Results.magnif;
     usemax = p.Results.usemax;
@@ -12,6 +13,9 @@ function viewImage(data,varargin)
             maxval = 1;
         end
         range = [-maxval maxval];
+    end
+    if p.Results.positive
+        range(1) = 0;
     end
     
     if ndims(data) > 2

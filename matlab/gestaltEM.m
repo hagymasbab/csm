@@ -213,7 +213,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         else
             save('iter.mat','state_sequence','-v7.3');            
         end
-        save(savename,'cc_next');
+        save(savename,'cc_next','ge');
         if params.verbose == 2
             synstr = '';
             if params.syntheticData
