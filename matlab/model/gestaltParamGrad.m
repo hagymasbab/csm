@@ -3,8 +3,8 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
     % cholesky decomposition of the covariance components
 
     parser = inputParser;
-    addParamValue(parser,'verbose',0,@isnumeric);
-    addParamValue(parser,'precision',false,@islogical);
+    addParameter(parser,'verbose',0,@isnumeric);
+    addParameter(parser,'precision',false,@islogical);
     parse(parser,varargin{:});
     verb = parser.Results.verbose;    
     precision = parser.Results.precision;    
@@ -32,7 +32,7 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
 
         for l=1:L
             if verb > 0
-                printCounter((n-1)*L+l,'stringVal','gradSample','maxVal',N*L,'newLine',false);
+                printCounter((n-1)*L+l,'stringVal',' gradSample','maxVal',N*L,'newLine',false);
             end
 
             g = reshape(gsamp(n,l,:),ge.k,1);
@@ -68,9 +68,13 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
         
     % calculate the derivative of the covariance matrix w.r.t. each
     % element of each covariance component
+    if verb > 0
+        printProgress(effective_k,'Component');
+    end
     parfor kk=1:effective_k
         if verb > 0
-            printCounter(kk,'stringVal','gradComp','maxVal',effective_k,'newLine',true);
+            %printCounter(kk,'stringVal','gradComp','maxVal',effective_k,'newLine',true);
+            fprintf('I');            
         end
         for i=1:ge.Dv
             % this is an upper triangle matrix

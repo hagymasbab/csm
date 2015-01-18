@@ -3,7 +3,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'learningRate',5e-2,@isnumeric);    
     addParameter(parser,'plot',0,@isnumeric);
     addParameter(parser,'precision',false,@islogical);      
-    addParameter(parser,'verbose',2,@isnumeric);
+    addParameter(parser,'verbose',1,@isnumeric);
     addParameter(parser,'initCond','empty');
     addParameter(parser,'priorG','gamma');
     addParameter(parser,'sampler','gibbs');
@@ -117,8 +117,11 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     cc_next = cell(1,ge.k);
     
     for step=1:maxStep
-        if params.verbose == 2
+        if params.verbose > 0
             fprintf('EM step %d/%d',maxStep,step)
+        end
+        if params.verbose == 1
+            printProgress(emBatchSize,'Datapoint');
         end
         
         cc_prev = extractComponents(ge,params.precision);
@@ -140,8 +143,10 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         %for n=1:emBatchSize
             
              if params.verbose == 2 && ~strcmp(params.sampler,'test')
-                 fprintf('\nDatapoint %d/%d ',emBatchSize,n);            
-             end         
+                 fprintf('\nDatapoint %d/%d ',emBatchSize,n);                   
+             elseif params.verbose ==1    
+                 fprintf('I');
+             end
 
             % sampling
             initG = (1/ge.k) * ones(ge.k,1);
@@ -171,7 +176,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         % gradient of the parameters of the complete-data log-likelihood            
-        grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
+        grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,'precision',params.precision,'verbose',params.verbose);                        
         
         if params.learningRate == 0 && step == 1
             matgrad = cell2mat(grad);
@@ -214,10 +219,10 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             save('iter.mat','state_sequence','-v7.3');            
         end
         save(savename,'cc_next','ge');
-        if params.verbose == 2
+        if params.verbose > 0
             synstr = '';
             if params.syntheticData
-                synstr = sprintf('truth_offd %f maxtruth_offd %f',state.difference_to_truth,maxel_diff);
+                synstr = sprintf(' truth_offd %f maxtruth_offd %f',state.difference_to_truth,maxel_diff);
             end
             fprintf(' maxreldiff %.2e %s skipped %d\n',maxel_diff_rel,synstr,skipped);
         end
@@ -229,7 +234,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         % if the largest (including the diagonal) change is less than one over ten
         % thousand, we are safe to stop
         if maxel_diff_rel < 1e-4
-            if params.verbose>1
+            if params.verbose>0
                 fprintf('Convergence achieved in %d steps.\n',step);
             end
             break;
