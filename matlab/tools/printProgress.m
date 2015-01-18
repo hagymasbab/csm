@@ -4,8 +4,8 @@ function printProgress(n,name)
         if length(name)>=i && i <= n-2
             fprintf(name(i));
         else
-            fprintf(' ');
+            fprintf('.');
         end
     end
-    fprintf(']\n ');
+    fprintf(']\n\n');
 end
