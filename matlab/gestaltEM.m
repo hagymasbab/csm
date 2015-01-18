@@ -71,7 +71,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         return;
     end
     
-    fprintf('The saving code for this run is %d\n',savingCode);
+    %fprintf('The saving code for this run is %d\n',savingCode);
     savename = sprintf('cc_%d.mat',savingCode);
     
     cholesky = cellchol(ccInit);                  
@@ -118,7 +118,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     
     for step=1:maxStep
         if params.verbose > 0
-            fprintf('EM step %d/%d',maxStep,step)
+            fprintf('EM step %d/%d, saving code %d',maxStep,step,savingCode)
         end
         if params.verbose == 1
             printProgress(emBatchSize,'Datapoint');
