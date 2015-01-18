@@ -74,7 +74,7 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
     parfor kk=1:effective_k
         if verb > 0
             %printCounter(kk,'stringVal','gradComp','maxVal',effective_k,'newLine',true);
-            fprintf('I');            
+            printProgress();            
         end
         for i=1:ge.Dv
             % this is an upper triangle matrix

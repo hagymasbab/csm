@@ -1,11 +1,15 @@
 function printProgress(n,name)
-    fprintf('\n');
-    for i = 1:n-1
-        if length(name)>=i && i <= n-2
-            fprintf(name(i));
-        else
-            fprintf('.');
+    if nargin ==2
+        fprintf('\n');
+        for i = 1:n
+            if length(name)>=i && i <= n-1
+                fprintf(name(i));
+            else
+                fprintf('.');
+            end
         end
+        fprintf(']\n\n');
+    else
+        fprintf('\b|\n');
     end
-    fprintf(']\n\n');
 end
