@@ -1,10 +1,11 @@
-function [X,V] = gestaltAncestralSample(ge,g,z,precision,varargin)
+function [X,V] = gestaltAncestralSample(ge,g,z,varargin)
     parser = inputParser;
     addParameter(parser,'positive',false,@islogical);
+    addParameter(parser,'precision',false,@islogical);
     parse(parser,varargin{:});
     params = parser.Results;
     
-    if ~precision
+    if ~params.precision
         Cv = componentSum(g,ge.cc);
     else
         Cv = inv(componentSum(g,ge.pc));

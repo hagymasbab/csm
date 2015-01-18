@@ -1,10 +1,10 @@
 function ge = gestaltGenerate(ge,N,varargin)
     parser = inputParser;
-    addParamValue(parser,'precision',false,@islogical);
-    addParamValue(parser,'verbose',false,@islogical);
-    addParamValue(parser,'batchSize',10,@isnumeric);
-    addParamValue(parser,'obsVar',0.1,@isnumeric);
-    addParamValue(parser,'sparsity',0.2,@isnumeric);
+    addParameter(parser,'precision',false,@islogical);
+    addParameter(parser,'verbose',false,@islogical);
+    addParameter(parser,'batchSize',10,@isnumeric);
+    addParameter(parser,'obsVar',0.1,@isnumeric);
+    addParameter(parser,'sparsity',0.2,@isnumeric);
     parse(parser,varargin{:});
     precision = parser.Results.precision; 
     verbose = parser.Results.verbose;
@@ -47,7 +47,7 @@ function ge = gestaltGenerate(ge,N,varargin)
             z = 1;
         end
         
-        [ge.X(n,:,:),ge.V(n,:,:)] = gestaltAncestralSample(ge,ge.G(n,:)',z,precision,false);
+        [ge.X(n,:,:),ge.V(n,:,:)] = gestaltAncestralSample(ge,ge.G(n,:)',z);
     end
 end
         
