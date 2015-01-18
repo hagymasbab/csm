@@ -7,5 +7,5 @@ function printProgress(n,name)
             fprintf(' ');
         end
     end
-    fprintf(']\n');
+    fprintf(']\n ');
 end

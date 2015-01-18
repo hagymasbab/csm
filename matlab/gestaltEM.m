@@ -145,7 +145,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
              if params.verbose == 2 && ~strcmp(params.sampler,'test')
                  fprintf('\nDatapoint %d/%d ',emBatchSize,n);                   
              elseif params.verbose ==1    
-                 fprintf('I\n\b');
+                 fprintf('\bI\n');
              end
 
             % sampling
