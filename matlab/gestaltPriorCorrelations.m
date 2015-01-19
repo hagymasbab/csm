@@ -1,4 +1,4 @@
-function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,modelset,sampler,Dx)
+function vdata = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,modelset,sampler,Dx)
     close all;        
     
     nOrient = 4; % this is true for gabor_4or_??.mat only
@@ -11,15 +11,15 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,
     
     % a specific covariance component we can base the stimulus on
     ic_idx = floor(Dx / (nOrient*2) + rfsinarow/2);
-    if Dx > 130
+    if Dx > 1000
         sh1 = 2; % single shift 
         sh2 = 4; % double shift
     else
         sh1 = 1;
         sh2 = 2;
     end
-    locations = [ic_idx-(sh2*rfsinarow)+sh2 ic_idx-(sh1*rfsinarow)+sh1 ic_idx+(sh1*rfsinarow)-sh1 ic_idx+(sh2*rfsinarow)-sh2];            
-    filterlists = ([ic_idx locations] - 1) .* nOrient + 2;            
+    locations = [ic_idx-(sh2*rfsinarow)+sh2 ic_idx-(sh1*rfsinarow)+sh1 ic_idx+(sh1*rfsinarow)-sh1 ic_idx+(sh2*rfsinarow)-sh2];    
+    filterlists = ([ic_idx locations] - 1) .* nOrient + 2;
 
     models = {};
     model_names = {};
@@ -30,13 +30,13 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,
     g_shape = 1;
     z_shape = 1;
     z_scale = 0.1;
-    sigma = 0.1;
+    sigma = 1;
     g_mean = 0.1;
     
     if strcmp(modelset,'priors')
     
         % additional covariance components for the base model
-        filterlists = [filterlists; ([ic_idx locations] - 3) .* nOrient + 3];
+        filterlists = [filterlists; ([ic_idx locations] - 1) .* nOrient + 3];
         cc = filterList2Components(filterlists,true,Dx);    
         k = size(cc,2); 
 
@@ -48,17 +48,17 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,
 
 
         % create additional models
-        g_shape = 2;
-        ge_act = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'filters',filterfile,'cc',cc, ...
-            'obsVar',sigma,'z_shape',z_shape,'z_scale',z_scale, ...
-            'prior','gamma','g_shape',g_shape,'g_scale',g_mean/g_shape,'null_shape',g_shape,'null_scale',g_mean/g_shape);
-        models{end+1} = ge_act;
-        model_names{end+1} = 'gamma2';
-
-        ge3 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'prior','dirichlet','cc',cc, ...
-            'filters',filterfile,'obsVar',sigma,'sparsity',0.1,'z_shape',z_shape,'z_scale',z_scale);
-        %models{end+1} = ge3;
-        model_names{end+1} = 'dirichlet';         
+%         g_shape = 2;
+%         ge_act = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'filters',filterfile,'cc',cc, ...
+%             'obsVar',sigma,'z_shape',z_shape,'z_scale',z_scale, ...
+%             'prior','gamma','g_shape',g_shape,'g_scale',g_mean/g_shape,'null_shape',g_shape,'null_scale',g_mean/g_shape);
+%         %models{end+1} = ge_act;
+%         %model_names{end+1} = 'gamma2';
+% 
+%         ge3 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'prior','dirichlet','cc',cc, ...
+%             'filters',filterfile,'obsVar',sigma,'sparsity',0.1,'z_shape',z_shape,'z_scale',z_scale);
+%         %models{end+1} = ge3;
+%         %model_names{end+1} = 'dirichlet';         
         
     elseif strcmp(modelset,'gdim')
         cc = filterList2Components(filterlists,true,Dx);
@@ -100,8 +100,8 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,
         %orients = [4 2];
         for l=1:size(locations,1)
             for o=1:length(orients)
-                %coeffs = zeros(Dx,1);
-                coeffs = randn(Dx,1);
+                coeffs = zeros(Dx,1);
+                %coeffs = randn(Dx,1);
                 for loc=1:size(locations,2)
                     coeffs((locations(l,loc)-1)*nOrient+orients(o),1) = 5;
                 end
@@ -156,7 +156,7 @@ function gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,
         % plot time series
         gdata = permute(gsamp(:,:,:,1:2),[1 4 2 3]);
         plotGridSeries(gdata,cumulative_timings,model_names,{},'Model','comp');
-        vdata = permute(squeeze(mean(vsamp(:,:,:,:,exemplar_cells),4)),[1 4 2 3]);
+        vdata = permute(reshape(mean(vsamp(:,:,:,:,exemplar_cells),4),nModels,nTrials,cumulative_timings(end),length(exemplar_cells)),[1 4 2 3]);
         plotGridSeries(vdata,cumulative_timings,model_names,exemplar_titles,'Model','');
         zdata = reshape(zsamp,[nModels 1 nTrials sum(timings)]);
         plotGridSeries(zdata,cumulative_timings,model_names,{'z'},'Model','');

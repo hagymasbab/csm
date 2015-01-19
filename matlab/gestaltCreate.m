@@ -88,6 +88,7 @@ function gestalt = gestaltCreate(name,varargin)
     end
     
     gestalt.k = size(gestalt.cc,2);
+    gestalt.sparseComponents = length(find(componentSum(1,gestalt.cc))) < gestalt.Dv^2 / 2;
     
     if gestalt.precision
         gestalt.pc = cell(1,gestalt.k);

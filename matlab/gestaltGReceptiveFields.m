@@ -9,7 +9,7 @@ function [gRF,seeds] = gestaltGReceptiveFields(ge,cc,sampleNum)
         act_G(i,1) = 10;
         allX = zeros(sampleNum*ge.B,ge.Dx);
         for s = 1:sampleNum
-            X = gestaltAncestralSample(ge,act_G,z,false);
+            X = gestaltAncestralSample(ge,act_G,z);
             allX((s-1)*ge.B+1:s*ge.B,:) = X;            
         end
         %recField = zeros(ge.Dx,1);
