@@ -114,8 +114,8 @@ function vdata = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,s
         g_on = g_off;
         g_on(1,1) = 10;
         %g_off = 1 * ones(k,1);
-        X_on = gestaltAncestralSample(ge1,g_on,backgroundZ,false,false);
-        X_off = gestaltAncestralSample(ge1,g_off,backgroundZ,false,false);
+        X_on = gestaltAncestralSample(ge1,g_on,backgroundZ);
+        X_off = gestaltAncestralSample(ge1,g_off,backgroundZ);
         stimuli{end+1} = X_on(1,:)';
         stimuli{end+1} = X_off(1,:)';
     end
