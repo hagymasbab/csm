@@ -6,6 +6,10 @@ function plotShiftedSeries(v)
         end
     end
     
+    % increase correlations
+    v(3,:) = mean(v(1:3,:));
+    v(1,:) = mean(v(1:2,:));
+    
     close all;
     nSeries = size(v,1);
     % step should be related to variance of the series
@@ -43,7 +47,7 @@ function plotShiftedSeries(v)
     set(h2, 'LineWidth', 2);
     colormap(copper);
     grid on;
-    set(gca, 'XTickLabel', '');
+    set(gca, 'XTickLabel', ' ');
     set(gca, 'YTickLabel', '');
     xlabel('V_m cell #1','FontSize',24);
     ylabel('V_m cell #2','FontSize',24);

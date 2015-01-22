@@ -1,4 +1,4 @@
-function vdata = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,modelset,sampler,Dx)
+function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,modelset,sampler,Dx)
     close all;        
     
     nOrient = 4; % this is true for gabor_4or_??.mat only
@@ -91,10 +91,10 @@ function vdata = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,s
     % CREATE STIMULI
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
-    stimuli = {};
-    stimuli{1} = 0.1 * randn(Dx,1);
+    stimuli = {};    
     
     if strcmp(stimtype,'artificial')
+        stimuli{1} = 0.1 * randn(Dx,1);
         load(filterfile);
         orients = [2 4];
         %orients = [4 2];
@@ -108,7 +108,9 @@ function vdata = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,s
                 stimuli{end+1} = A * coeffs;
             end
         end
-    elseif strcmp(stimtype,'generated')   
+        stimuli{end+1} = 0.1 * randn(Dx,1);
+    elseif strcmp(stimtype,'generated')
+        stimuli{1} = 0.1 * randn(Dx,1);
         backgroundZ = 1;
         g_off = 0.01 * ones(ge1.k,1);
         g_on = g_off;
@@ -118,10 +120,22 @@ function vdata = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,s
         X_off = gestaltAncestralSample(ge1,g_off,backgroundZ);
         stimuli{end+1} = X_on(1,:)';
         stimuli{end+1} = X_off(1,:)';
+        stimuli{end+1} = 0.1 * randn(Dx,1);
+    elseif strcmp(stimtype,'contrast')
+        contrasts = 1:length(timings);
+        contrasts = exp(contrasts-2);
+        for i = 1:length(timings)
+            load(filterfile);
+            %coeffs = zeros(Dx,1);
+            coeffs = 0.1 * randn(Dx,1);
+            for loc=1:size(locations,2)
+                coeffs((locations(1,loc)-1)*nOrient+2,1) = contrasts(i);
+            end
+            stimuli{end+1} = A * coeffs;
+        end
     end
     
-    stimuli{end+1} = 0.1 * randn(Dx,1);
-    viewImageSet(stimuli);
+    viewImageSet(stimuli,'max',false);
     
     exemplar_cells = [(ic_idx-1)*nOrient+2 (ic_idx-1)*nOrient+4 (locations(1)-1)*nOrient+2 (locations(2)-1)*nOrient+4 1];
     exemplar_titles = {'ic1','ic2','stim1','stim2','none'};            
@@ -131,8 +145,8 @@ function vdata = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,s
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
     if strcmp(calculation,'transient')
-        %reset = false;
-        reset = true;
+        reset = false;
+        %reset = true;
     elseif strcmp(calculation,'stationary')
         reset = true;
     end

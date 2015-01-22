@@ -64,6 +64,7 @@
 %   27/08/2013  Martina F. Callaghan    Ensuring errors are always stored
 %                                       as lowerErrors and upperErrors even
 %                                       if symmetric.
+%   29/10/2014  Martina F. Callaghan    Updated for 2014b graphics
 %
 %**************************************************************************
 
@@ -119,7 +120,13 @@ if nRows > 1
     hErrorbar = zeros(1,nCols);
     for col = 1:nCols
         % Extract the x location data needed for the errorbar plots:
-        x = get(get(handles.bar(col),'children'),'xdata');
+        if verLessThan('matlab', '8.4')
+            % Original graphics:
+            x = get(get(handles.bar(col),'children'),'xdata');
+        else
+            % New graphics:
+            x =  handles.bar(col).XData + [handles.bar(col).XOffset];
+        end
         % Use the mean x values to call the standard errorbar fn; the
         % errorbars will now be centred on each bar; these are in ascending
         % order so use xOrder to ensure y values and errors are too:
@@ -127,7 +134,14 @@ if nRows > 1
         set(hErrorbar(col), 'marker', 'none')
     end
 else
-    x = get(get(handles.bar,'children'),'xdata');
+    if verLessThan('matlab', '8.4')
+        % Original graphics:
+        x = get(get(handles.bar,'children'),'xdata');
+    else
+       % New graphics:
+       x =  handles.bar.XData + [handles.bar.XOffset];
+   end
+    
     hErrorbar = errorbar(mean(x,1), values, lowerErrors, upperErrors, '.k');
     set(hErrorbar, 'marker', 'none')
 end
