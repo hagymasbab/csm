@@ -6,6 +6,16 @@ function viewImage(data,varargin)
     parse(p,varargin{:});
     magn = p.Results.magnif;
     usemax = p.Results.usemax;
+    
+    if iscell(data)
+        if length(data) == 1
+            data = data{1};
+        else
+            viewImageSet(data,'max',usemax);
+            return;
+        end
+    end
+    
     range = [-2 2];
     if usemax
         maxval = max(max(abs(data)));

@@ -41,9 +41,6 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
             last_orients = k - (params.nOrient*(used_rfs-1));
         end
         
-        rfs
-        nRF
-        
         for i = 1:length(rfs);
             ic_idx = rfs(i);
             % define gestalts as sets of RF locations and orientation indices

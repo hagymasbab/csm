@@ -1,4 +1,4 @@
-function gestaltLearnNatural(code,imdim,embatch,samplesize,k,learningRate)    
+function gestaltLearnNatural(code,imdim,embatch,samplesize,burnin,k,learningRate)    
     if imdim == 16
         % read patchDB
         load('sejnowski_patches_16.mat');
@@ -13,7 +13,7 @@ function gestaltLearnNatural(code,imdim,embatch,samplesize,k,learningRate)
     
     % create model    
     ge = gestaltCreate('temp','Dx',imdim^2,'k',k,'B',1,'N',embatch, ...
-        'filters',filterfile,'obsVar',1,'g_shape',1,'g_scale',1,'z_shape',1,'z_scale',0.1,'nullComponent',false);        
+        'filters',filterfile,'obsVar',1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',false,'generateComponents',false,'generateData',false);        
         
     % set initial conditions
     if code == 0
@@ -23,5 +23,5 @@ function gestaltLearnNatural(code,imdim,embatch,samplesize,k,learningRate)
     end        
     
     % start learning
-    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate);
+    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin);
 end

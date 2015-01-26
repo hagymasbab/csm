@@ -8,6 +8,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'priorG','gamma');
     addParameter(parser,'sampler','gibbs');
     addParameter(parser,'syntheticData',true,@islogical);    
+    addParameter(parser,'burnin',0,@isnumeric);
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -34,6 +35,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     
     savingCode = randi(1000000);
+    ge_saved = ge;
 
     if ischar(params.initCond)
         if strcmp(params.initCond,'random') 
@@ -153,7 +155,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             try
                 if strcmp(params.sampler,'gibbs')
                     [vsamp(n,:,:,:),gsamp(n,:,:),~,~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
-                        'initG',initG,'contrast',ge.contrast);            
+                        'initG',initG,'contrast',ge.contrast,'burnin',params.burnin);            
                 elseif strcmp(params.sampler,'test')
                      % this is assuming that when we have synthetic data,
                      % we generated it using ge.V, ge.G and ge.Z
@@ -218,7 +220,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         else
             save('iter.mat','state_sequence','-v7.3');            
         end
-        save(savename,'cc_next','ge');
+        cc_saved = cc_next;        
+        save(savename,'cc_saved','ge_saved');
         if params.verbose > 0
             synstr = '';
             if params.syntheticData
