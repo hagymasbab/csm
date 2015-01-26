@@ -156,8 +156,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
                 if strcmp(params.sampler,'gibbs')
                     [vsamp(n,:,:,:),gsamp(n,:,:),act_zsamp,~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
                         'initG',initG,'contrast',ge.contrast,'burnin',params.burnin);            
-                    mean(gsamp(n,:,:))
-                    mean(act_zsamp)
+                    %mean(gsamp(n,:,:))
+                    %mean(act_zsamp)
                 elseif strcmp(params.sampler,'test')
                      % this is assuming that when we have synthetic data,
                      % we generated it using ge.V, ge.G and ge.Z
