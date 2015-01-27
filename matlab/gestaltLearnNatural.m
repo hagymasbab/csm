@@ -1,18 +1,30 @@
-function gestaltLearnNatural(code,imdim,embatch,samplesize,burnin,k,learningRate,nullcomp)    
-    if imdim == 16
-        % read patchDB
-        load('sejnowski_patches_16.mat');
-        %patchDB = patchDB(:,1:100);
-        % read filter set
-        %filterfile = 'OF_256.mat';
-        filterfile = 'gabor_4or_16.mat';
-    else
-        fprintf('Not implemented');
-        return;
-    end
+function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin,k,nullcomp)    
+
+    % TODO try to create the patch DB and filters if needed
+    
+    datafile = sprintf('patches_%s_%d.mat',dataset,Dx);
+    load(datafile);
+    
+    filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
+
+%     if imdim == 16
+%         % read patchDB
+%         load('sejnowski_patches_16.mat');
+%         %patchDB = patchDB(:,1:100);
+%         % read filter set
+%         %filterfile = 'OF_256.mat';
+%         if strcmp(filterset,'gabor')
+%             filterfile = 'gabor_4or_16.mat';
+%         elseif strcmp(filterset,'OF')
+%             filterfile = 'OF_256.mat';
+%         end
+%     else
+%         fprintf('Not implemented');
+%         return;
+%     end
     
     % create model    
-    ge = gestaltCreate('temp','Dx',imdim^2,'k',k,'B',1,'N',embatch, ...
+    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',embatch, ...
         'filters',filterfile,'obsVar',1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',nullcomp,'generateComponents',false,'generateData',false);        
         
     % set initial conditions
@@ -21,6 +33,9 @@ function gestaltLearnNatural(code,imdim,embatch,samplesize,burnin,k,learningRate
     else
         initCond = code;
     end        
+    
+    % this means automatically adapting the LR after the first gradient computation 
+    learningRate = 0;
     
     % start learning
     gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin);

@@ -1,6 +1,10 @@
-# ignore .mat files as they contain generated data
+# ignore .mat files except for patches and filters
 *.mat
+!patches_*_*.mat
+!filters_*_*.mat
 # ignore generated figures
 *.fig
 # also temporary code files created by matlab
 *~
+# and swap files created by vi
+*.swp
