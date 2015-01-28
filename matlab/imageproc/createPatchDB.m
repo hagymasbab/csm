@@ -47,6 +47,6 @@ function patchDB = createPatchDB(path,patchSize,maxOrigSize)
     % whiten patches 
     patchDB = whitenImages(patches);
     %patchDB = patches;
-    save(sprintf('sejnowski_patches_%d.mat',patchSize),'patchDB');
+    save(sprintf('patches_sejnowski_%d.mat',patchSize^2),'patchDB');
     
 end
