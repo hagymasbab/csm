@@ -5,6 +5,8 @@ function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin
     datafile = sprintf('patches_%s_%d.mat',dataset,Dx);
     load(datafile);
     
+    % TODO subsample patchDB to leave out a test set for crossvalidation
+    
     filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
 
 %     if imdim == 16
