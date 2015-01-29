@@ -43,27 +43,15 @@ p(x \mid v,z) p(v \mid g) =  \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathca
 where $v$ only appears in the second Gaussian, so integrating this formula will set that term to 1 and leave everything else as it is.
 
 \begin{equation}
-p(X \mid C_{1..k}) =  \det(A^T A)^{\frac{N}{2}} \prod_{n=1}^N \int_{-\infty}^{\infty} p(z_n) \frac{1}{z^{D_v}}  \int_{-\infty}^{\infty}  p(g_n) \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} +C_v) \mathrm{d}g_n \mathrm{d}z_n
+p(X \mid C_{1..k}) =  \det(A^T A)^{\frac{N}{2}} \prod_{n=1}^N \int_{0}^{\infty} p(z) \frac{1}{z^{D_v}}  \int_{0}^{\infty}  p(g) \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} + C_v) \mathrm{d}g \mathrm{d}z
 \end{equation}
 
 \section{Approximation with sampling}
 
-The double integral may be approximated by averaging over samples from $p(g)$ and $p(z)$
+The integrals may be approximated by averaging over samples from $p(g)$ and $p(z)$, leaving out terms constant in $g$, $z$ and $x$
 
 \begin{equation}
-p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L^2} \sum_{l_1=1}^L \sum_{l_2=1}^L  \int_{-\infty}^{\infty} p(x_n \mid v,z^{l_2}) p(v \mid g^{l_1}) \mathrm{d}v
+p(X \mid C_{1..k}) \sim \prod_{n=1}^N  \sum_{l_1=1}^L \frac{1}{z_{l_1}^{D_v}}  \sum_{l_2=1}^L \mathcal{N}(\frac{1}{z_{l_1}} A^{+}x_n; 0,\frac{\sigma_x}{z_{l_1}^2} (A^T A)^{-1} + C_v^{l_2})
 \end{equation}
-% 
-%and as samples of $g$ and $z$ are independent from each other we can set $L=L_1L_2$, and thus
-%
-%\begin{equation}
-%\begin{split}
-%p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^L \int_{-\infty}^{\infty} p(x_n \mid v,z^l) p(v \mid g^l) \mathrm{d}v
-%\end{split}
-%\end{equation}
-% 
-
-\begin{equation}
-p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L^2} \sum_{l_1=1}^L \sum_{l_2=1}^L  \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} +C_v)\end{equation}
 
 \end{document}
