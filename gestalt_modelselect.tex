@@ -8,7 +8,7 @@
 \title{Model selection for the gestalt model}
 \maketitle
 
-\section{Approximating the likelihood}
+\section{The likelihood function}
 
 In order to evaluate the log-likelihood for cross validation steps, we have to use an approximation.
 
@@ -19,18 +19,51 @@ p(X \mid C_{1..k}) = \prod_{n=1}^N \iiint_{-\infty}^{\infty} p(x_n \mid v_n,z_n)
 \end{split}
 \end{equation}
 %
-where the double integral may be approximated by averaging over samples from $p(g)$ and $p(z)$
+The Gaussian over $x$ can be rewritten to a Gaussian over $v$  in the following way
 
-\begin{equation}
-p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L_1 L_2} \sum_{l_1=1}^{L_1} \sum_{l_2=1}^{L_2}  \int_{-\infty}^{\infty} p(x_n \mid v,z^{l_2}) p(v \mid g^{l_1}) \mathrm{d}v
+\begin{equation} 
+\mathcal{N}(x;zAv,\sigma_x I) = (2 \pi)^{\frac{D_v-D_x}{2}} \sigma_x^{\frac{D_v-D_x}{2}} \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \mathcal{N}(v; \frac{1}{z}A^{+} x, \frac{\sigma_x}{z^2} (A^T A)^{-1})
 \end{equation}
-% 
-and as samples of $g$ and $z$ are independent from each other we can set $L=L_1L_2$, and thus
+%
+and with $D_x = D_v$
 
-\begin{equation}
+\begin{equation} 
+\mathcal{N}(x;zAv,\sigma_x I) = \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(v; \frac{1}{z}A^{+} x, \frac{\sigma_x}{z^2} (A^T A)^{-1})
+\end{equation}
+
+the product of the two conditionals can be rewritten as a Gaussian over $v$ times another Gaussian
+
+\begin{equation} \label{eq:gaussprod}
 \begin{split}
-p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^L \int_{-\infty}^{\infty} p(x_n \mid v,z^l) p(v \mid g^l) \mathrm{d}v
+p(x \mid v,z) p(v \mid g) =  \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(v; \frac{1}{z}A^{+} x, \frac{\sigma_x}{z^2} (A^T A)^{-1}) \mathcal{N}(v;0,C_v) = \\
+ \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} +C_v) \cdot \mathcal{N}(v; \mu_c,C_c) \\
 \end{split}
 \end{equation}
+%
+where $v$ only appears in the second Gaussian, so integrating this formula will set that term to 1 and leave everything else as it is.
+
+\begin{equation}
+p(X \mid C_{1..k}) =  \det(A^T A)^{\frac{N}{2}} \prod_{n=1}^N \int_{-\infty}^{\infty} p(z_n) \frac{1}{z^{D_v}}  \int_{-\infty}^{\infty}  p(g_n) \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} +C_v) \mathrm{d}g_n \mathrm{d}z_n
+\end{equation}
+
+\section{Approximation with sampling}
+
+The double integral may be approximated by averaging over samples from $p(g)$ and $p(z)$
+
+\begin{equation}
+p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L^2} \sum_{l_1=1}^L \sum_{l_2=1}^L  \int_{-\infty}^{\infty} p(x_n \mid v,z^{l_2}) p(v \mid g^{l_1}) \mathrm{d}v
+\end{equation}
+% 
+%and as samples of $g$ and $z$ are independent from each other we can set $L=L_1L_2$, and thus
+%
+%\begin{equation}
+%\begin{split}
+%p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^L \int_{-\infty}^{\infty} p(x_n \mid v,z^l) p(v \mid g^l) \mathrm{d}v
+%\end{split}
+%\end{equation}
+% 
+
+\begin{equation}
+p(X \mid C_{1..k}) \approx \prod_{n=1}^N \frac{1}{L^2} \sum_{l_1=1}^L \sum_{l_2=1}^L  \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} +C_v)\end{equation}
 
 \end{document}
