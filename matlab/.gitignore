@@ -1,7 +1,8 @@
-# ignore .mat files except for patches and filters
+# ignore .mat files except for patches, RF filters and whitening filters
 *.mat
 !patches_*_*.mat
 !filters_*_*.mat
+!wnodes_*.mat
 # ignore generated figures
 *.fig
 # also temporary code files created by matlab
