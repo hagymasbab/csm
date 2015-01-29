@@ -4,7 +4,7 @@ w=1536;h=1024;
 
 d0=pwd;
 
-cd ../Data/vanhateren
+cd /Users/karaj/csnl/vanhateren
 
 % load -ascii filenames.dat
 
