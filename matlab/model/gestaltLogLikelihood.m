@@ -20,22 +20,30 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky)
         Ax = pA * x;
         act_L = 0;
         for sz=1:L
+            Z(sz,1)
             cov_left = siAA / Z(sz,1)^2;
+            det(ge.AA)
             det(cov_left)
             eval_site = Ax / Z(sz,1);
             act_LG = 0;
-            for sg=1:L
+            %for sg=1:L
+                sg = sz;
                 g = G(sg,:)';
-                g
                 cv = componentSum(g,ge.cc);
-                det(cv)
+                %det(cv)
                 cov_full = cov_left + cv;
-                det(cov_full)
-                act_LG = act_LG + mvnpdf(eval_site',zeros(size(eval_site))',cov_full);
-            end
+                cov_full = cv;
+                %det(cov_full)
+                pdfval = mvnpdf(eval_site',zeros(size(eval_site))',cov_full);
+                %pdfval = stableMvnpdf(eval_site,zeros(size(eval_site)),cov_full);
+                pause
+                act_LG = act_LG + pdfval;
+            %end
             act_L = act_L + act_LG / Z(sz,1)^(ge.Dv);
         end
-        ll = ll + log(act_L);
+        if act_L ~= 0
+            ll = ll + log(act_L);
+        end
     end
 %             batch_coeffs = zeros(1,ge.B);
 %             batch_exps = zeros(1,ge.B);
