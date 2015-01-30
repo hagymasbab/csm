@@ -60,7 +60,8 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
                 gestaltvec(filter_indices) = 1;
                 act_cc = gestaltvec*gestaltvec';
                 if ~params.nullComponent
-                    act_cc = act_cc + (1/ge.Dv) * eye(ge.Dv);
+                    %act_cc = act_cc + (1/ge.Dv) * eye(ge.Dv);
+                    act_cc = act_cc + (1/sqrt(ge.Dv)) * eye(ge.Dv);
                 end
                 cc{end+1} = act_cc;
             end

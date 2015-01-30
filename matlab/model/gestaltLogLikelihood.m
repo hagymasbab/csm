@@ -21,12 +21,17 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky)
         act_L = 0;
         for sz=1:L
             cov_left = siAA / Z(sz,1)^2;
+            det(cov_left)
             eval_site = Ax / Z(sz,1);
             act_LG = 0;
             for sg=1:L
                 g = G(sg,:)';
-                cov_full = cov_left + componentSum(g,ge.cc);
-                act_LG = act_LG + normpdf(eval_site',zeros(size(eval_site)),cov_full);
+                g
+                cv = componentSum(g,ge.cc);
+                det(cv)
+                cov_full = cov_left + cv;
+                det(cov_full)
+                act_LG = act_LG + mvnpdf(eval_site',zeros(size(eval_site))',cov_full);
             end
             act_L = act_L + act_LG / Z(sz,1)^(ge.Dv);
         end

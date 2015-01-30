@@ -14,51 +14,53 @@ function gabors = matchGabors(A,compare,randseed)
     lambdas = zeros(numFilt,1);
     orients = zeros(numFilt,1);
     phases = zeros(numFilt,1);
+    sigmas = zeros(numFilt,1);
     gabors = zeros(numFilt);
-    
-    constraints_A = [1 0 0; -1 0 0; 0 1 0; 0 -1 0; 0 0 1; 0 0 -1];
-    constraints_b = [imSize/2; -3; 180; 0; 1; 0];    
+        
     options = optimoptions('fmincon','Algorithm','interior-point','Display', 'off');
         
     %figure;
     for i = 1:numFilt
         printCounter(i,'stringVal','Filter','maxVal',numFilt);
         filter = A(:,i);
-        %initparam = [randi([3 imSize/2]); randi([0 180]); rand()];
-        initparam = [3; randi([0 180]); rand()];
+        
+        %initparam = [4; randi([0 180]); rand()];
         if strcmp(compare,'grating')
+            constraints_A = [1 0 0; -1 0 0; 0 1 0; 0 -1 0; 0 0 1; 0 0 -1];
+            constraints_b = [imSize/2; -4; 180; 0; 1; 0];    
+            initparam = [randi([4 imSize/2]); randi([0 180]); rand()];
             actfunc = @(x) difference(filter,x(1),x(2),x(3));            
         elseif strcmp(compare,'gabor')
-            actfunc = @(x) difference_gbr(filter,x(1),x(2),maxX(i),maxY(i));
-            initparam = initparam(1:2,:);
-            constraints_A = constraints_A(1:4,1:2);
-            constraints_b = constraints_b(1:4,:);
+            constraints_A = [1 0 0; -1 0 0; 0 1 0; 0 -1 0; 0 0 1; 0 0 -1];
+            constraints_b = [imSize/2; -4; 180; 0; 10; -2];    
+            initparam = [randi([4 imSize/2]); randi([0 180]); randi([2 10])];
+            actfunc = @(x) difference_gbr(filter,x(1),x(2),x(3),maxX(i),maxY(i));            
         end
         x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
         lambdas(i,1) = x_opt(1);
         orients(i,1) = x_opt(2);
         if strcmp(compare,'grating')            
             phases(i,1) = x_opt(3);
-            optgr = grating(lambdas(i,1),orients(i,1),phases(i,1),imSize);
+            %optgr = grating(lambdas(i,1),orients(i,1),phases(i,1),imSize);
+            % act_gabor = 
         elseif strcmp(compare,'gabor')
-            optgr = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i));
-        end
-%         subplot(1,2,1);
-%         viewImage(filter,'useMax',true);
-%         subplot(1,2,2);
-%         viewImage(optgr);
-%         pause
-          act_gabor = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i));
-          gabors(:,i) = reshape(act_gabor,imSize^2,1);
+            sigmas(i,1) = x_opt(3);
+            act_gabor = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i),sigmas(i,1));
+        end        
+        gabors(:,i) = reshape(act_gabor,imSize^2,1);
     end
     figure;
     hist(orients,20);
+    title('Orients');
     figure;
     hist(lambdas-2,20);
     figure;
-    viewImageSet(A(:,1:25)');
+    hist(sigmas,20);
+    title('Sigmas');
     figure;
-    viewImageSet(gabors(:,1:25)');
+    viewImageSet(A(:,1:100)');
+    figure;
+    viewImageSet(gabors(:,1:100)');
     
     figure;
     scatter(maxX,maxY);
@@ -76,8 +78,8 @@ function rms = difference(filter,lambda,theta,phase)
     rms = sum((gr(:) - filter).^2);
 end
 
-function rms = difference_gbr(filter,lambda,theta,xc,yc)
-    gr = gaborfilter(lambda,theta,sqrt(size(filter,1)),xc,yc);
+function rms = difference_gbr(filter,lambda,theta,sigma,xc,yc)
+    gr = gaborfilter(lambda,theta,sqrt(size(filter,1)),xc,yc,sigma);
     rms = sum((gr(:) - filter).^2);
 end
 
@@ -98,10 +100,10 @@ function img = grating(lambda,theta,phase,imSize)
     img = sin( XYf + phaseRad);    
 end
 
-function img = gaborfilter(lambda,theta,imSize,xc,yc) 
+function img = gaborfilter(lambda,theta,imSize,xc,yc,sigma) 
     thetaRad = (theta / 360) * 2*pi;
     lambda = lambda - 1;
     px = xc/imSize;
     py = yc/imSize;
-    [~,~,img] = gabor('theta',thetaRad,'lambda',lambda,'width',imSize,'height',imSize,'px',px,'py',py,'Sigma',2);             
+    [~,~,img] = gabor('theta',thetaRad,'lambda',lambda,'width',imSize,'height',imSize,'px',px,'py',py,'Sigma',sigma);             
 end
