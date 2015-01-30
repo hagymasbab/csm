@@ -14,7 +14,7 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky)
 
     G = gestaltSamplePriorG(ge,L);
     Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
-    for i=1:N
+    for i=1:size(data,1)
         % TODO B > 1
         x = data(i,:)';
         Ax = pA * x;
@@ -26,7 +26,7 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky)
             for sg=1:L
                 g = G(sg,:)';
                 cov_full = cov_left + componentSum(g,ge.cc);
-                act_LG = act_LG + normpdf(eval_site,0,cov_full);
+                act_LG = act_LG + normpdf(eval_site',zeros(size(eval_site)),cov_full);
             end
             act_L = act_L + act_LG / Z(sz,1)^(ge.Dv);
         end
