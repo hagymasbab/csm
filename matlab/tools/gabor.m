@@ -36,13 +36,13 @@ function [x y F] = gabor(varargin)
 
     % Parse Input
     p = inputParser;
-    addParamValue(p,'theta',2*pi*rand,@isnumeric);
-    addParamValue(p,'lambda',20,@isnumeric);
-    addParamValue(p,'Sigma',10,@isnumeric);
-    addParamValue(p,'width',256,@isnumeric);
-    addParamValue(p,'height',256,@isnumeric);
-    addParamValue(p,'px',rand*0.8 + 0.1,@isnumeric);
-    addParamValue(p,'py',rand*0.8 + 0.1,@isnumeric);
+    addParameter(p,'theta',2*pi*rand,@isnumeric);
+    addParameter(p,'lambda',20,@isnumeric);
+    addParameter(p,'Sigma',10,@isnumeric);
+    addParameter(p,'width',256,@isnumeric);
+    addParameter(p,'height',256,@isnumeric);
+    addParameter(p,'px',rand*0.8 + 0.1,@isnumeric);
+    addParameter(p,'py',rand*0.8 + 0.1,@isnumeric);
     p.KeepUnmatched = true;
     parse(p,varargin{:});
 
