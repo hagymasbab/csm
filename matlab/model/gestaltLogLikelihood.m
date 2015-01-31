@@ -9,7 +9,7 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky)
     end
     
     pA = pinv(ge.A);
-    siAA = ge.obsVar * inv(ge.A*ge.A');
+    iAA = ge.AA \ eye(ge.Dv);
     ll = 0;
 
     G = gestaltSamplePriorG(ge,L);
@@ -20,23 +20,25 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky)
         Ax = pA * x;
         act_L = 0;
         for sz=1:L
-            Z(sz,1)
-            cov_left = siAA / Z(sz,1)^2;
-            det(ge.AA)
-            det(cov_left)
+            %ge.obsVar/Z(sz,1)^2
+            cov_left = (ge.obsVar/Z(sz,1)^2) * iAA;
+            %[~,e] = chol(cov_left);
+            %fprintf('siAA/z^2 chol: %d det %E det_stab %E\n',e,det(cov_left),stableLogdet(cov_left));                        
             eval_site = Ax / Z(sz,1);
             act_LG = 0;
             %for sg=1:L
                 sg = sz;
                 g = G(sg,:)';
                 cv = componentSum(g,ge.cc);
-                %det(cv)
+                %[~,e] = chol(cv);
+                %fprintf('Cv chol: %d det %E det_stab %E\n',e,det(cv),stableLogdet(cv));    
                 cov_full = cov_left + cv;
-                cov_full = cv;
-                %det(cov_full)
-                pdfval = mvnpdf(eval_site',zeros(size(eval_site))',cov_full);
-                %pdfval = stableMvnpdf(eval_site,zeros(size(eval_site)),cov_full);
-                pause
+                %cov_full = cv;
+                %[~,e] = chol(cov_full);
+                %fprintf('Full chol: %d det %E det_stab %E\n',e,det(cov_full),stableLogdet(cov_full));    
+                %pdfval = mvnpdf(eval_site',zeros(size(eval_site))',cov_full);
+                pdfval = stableMvnpdf(eval_site,zeros(size(eval_site)),cov_full);
+                %pause
                 act_LG = act_LG + pdfval;
             %end
             act_L = act_L + act_LG / Z(sz,1)^(ge.Dv);
