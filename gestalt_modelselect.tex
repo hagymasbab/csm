@@ -51,7 +51,19 @@ p(X \mid C_{1..k}) =  \det(A^T A)^{\frac{N}{2}} \prod_{n=1}^N \int_{0}^{\infty} 
 The integrals may be approximated by averaging over samples from $p(g)$ and $p(z)$, leaving out terms constant in $g$, $z$ and $x$
 
 \begin{equation}
-p(X \mid C_{1..k}) \sim \prod_{n=1}^N  \sum_{l_1=1}^L \frac{1}{z_{l_1}^{D_v}}  \sum_{l_2=1}^L \mathcal{N}(\frac{1}{z_{l_1}} A^{+}x_n; 0,\frac{\sigma_x}{z_{l_1}^2} (A^T A)^{-1} + C_v^{l_2})
+p(X \mid C_{1..k}) \sim \prod_{n=1}^N  \frac{1}{L^2} \sum_{l_1=1}^L \frac{1}{z_{l_1}^{D_v}}  \sum_{l_2=1}^L \mathcal{N}(\frac{1}{z_{l_1}} A^{+}x_n; 0,\frac{\sigma_x}{z_{l_1}^2} (A^T A)^{-1} + C_v^{l_2})
+\end{equation}
+% 
+as $z$ and $g$ are independent, we can choose a large enough $L$ and merge the sums, and bring the division by $L$ outside of the product
+
+\begin{equation}
+p(X \mid C_{1..k}) \sim \frac{1}{L^N} \prod_{n=1}^N  \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l)
+\end{equation}
+%
+taking the logarithm we get
+
+\begin{equation}
+\log p(X \mid C_{1..k}) \sim - N \log(L) \sum_{n=1}^N \log \left[ \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l) \right]
 \end{equation}
 
 \end{document}
