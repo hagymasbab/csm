@@ -19,31 +19,16 @@ p(X \mid C_{1..k}) = \prod_{n=1}^N \iiint_{-\infty}^{\infty} p(x_n \mid v_n,z_n)
 \end{split}
 \end{equation}
 %
-The Gaussian over $x$ can be rewritten to a Gaussian over $v$  in the following way
-
-\begin{equation} 
-\mathcal{N}(x;zAv,\sigma_x I) = (2 \pi)^{\frac{D_v-D_x}{2}} \sigma_x^{\frac{D_v-D_x}{2}} \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \mathcal{N}(v; \frac{1}{z}A^{+} x, \frac{\sigma_x}{z^2} (A^T A)^{-1})
-\end{equation}
-%
-and with $D_x = D_v$
-
-\begin{equation} 
-\mathcal{N}(x;zAv,\sigma_x I) = \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(v; \frac{1}{z}A^{+} x, \frac{\sigma_x}{z^2} (A^T A)^{-1})
-\end{equation}
-
 the product of the two conditionals can be rewritten as a Gaussian over $v$ times another Gaussian
 
-\begin{equation} \label{eq:gaussprod}
-\begin{split}
-p(x \mid v,z) p(v \mid g) =  \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(v; \frac{1}{z}A^{+} x, \frac{\sigma_x}{z^2} (A^T A)^{-1}) \mathcal{N}(v;0,C_v) = \\
- \frac{1}{z^{D_v}} \sqrt{\det(A^T A)}  \cdot \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} +C_v) \cdot \mathcal{N}(v; \mu_c,C_c) \\
-\end{split}
+\begin{equation} 
+p(x \mid v,z) p(v \mid g) = \frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v) \mathcal{N}(v; \mu_c,C_c)
 \end{equation}
 %
 where $v$ only appears in the second Gaussian, so integrating this formula will set that term to 1 and leave everything else as it is.
 
 \begin{equation}
-p(X \mid C_{1..k}) =  \det(A^T A)^{\frac{N}{2}} \prod_{n=1}^N \int_{0}^{\infty} p(z) \frac{1}{z^{D_v}}  \int_{0}^{\infty}  p(g) \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} + C_v) \mathrm{d}g \mathrm{d}z
+p(X \mid C_{1..k}) =  \det(A^T A)^{-\frac{N}{2}} \prod_{n=1}^N \int_{0}^{\infty} p(z) \frac{1}{z^{D_v}}  \int_{0}^{\infty}  p(g) \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} + C_v) \mathrm{d}g \mathrm{d}z
 \end{equation}
 
 \section{Approximation with sampling}
