@@ -10,6 +10,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'syntheticData',true,@islogical);    
     addParameter(parser,'burnin',0,@isnumeric);
     addParameter(parser,'computeLikelihood',true,@islogical);      
+    addParameter(parser,'likelihoodSamples',50,@isnumeric);   
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -114,18 +115,20 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     end
     state.relative_difference = 0;        
     state.estimated_components = ccInit;
-    state.samples = [];
-    state_sequence{1} = state;                  
-            
-    cc_next = cell(1,ge.k);
+    state.samples = [];    
     
     if params.computeLikelihood
         % calculate log-likelihood on full dataset
-        state.loglike = gestaltLogLikelihood(ge,50,X,'cholesky',cholesky);
+        state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky);
+        best_loglike = state.loglike;
         if params.verbose>0
             fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
         end
     end
+    
+    state_sequence{1} = state;                  
+            
+    cc_next = cell(1,ge.k);
     
     for step=1:maxStep
         if params.verbose > 0
@@ -211,7 +214,12 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
         if params.computeLikelihood
             % calculate log-likelihood on full dataset
-            state.loglike = gestaltLogLikelihood(ge,50,X,'cholesky',cholesky);
+            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky);
+            best_so_far = false;
+            if state.loglike > best_loglike
+                best_loglike = state.loglike;
+                best_so_far = true;
+            end
             if params.verbose>0
                 fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
             end
@@ -239,8 +247,11 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         else
             save('iter.mat','state_sequence','-v7.3');            
         end
-        cc_saved = cc_next;        
-        save(savename,'cc_saved','ge_saved');
+        
+        if ~params.computeLikelihood || best_so_far
+            cc_saved = cc_next;        
+            save(savename,'cc_saved','ge_saved');
+        end
         if params.verbose > 0
             synstr = '';
             if params.syntheticData
