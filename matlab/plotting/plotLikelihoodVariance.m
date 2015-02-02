@@ -15,8 +15,8 @@ function plotLikelihoodVariance(loadData,nTrials,randseed)
             fprintf('NS %d ',LS(l));
             for t=1:nTrials
                 printCounter(t,'maxVal',nTrials,'stringVal','trial');          
-                act_ll_sci = gestaltLogLikelihood(ge,LS(l),ge.X,[],false,'leave',true);
-                act_ll_nosci = gestaltLogLikelihood(ge,LS(l),ge.X,[],false,'leave',false);
+                act_ll_sci = gestaltLogLikelihood(ge,LS(l),ge.X,'scientific',true);
+                act_ll_nosci = gestaltLogLikelihood(ge,LS(l),ge.X);
                 lls_sci(l,t) = act_ll_sci;
                 lls_nosci(l,t) = act_ll_nosci;
                 %pause

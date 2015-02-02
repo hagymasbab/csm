@@ -1,6 +1,6 @@
 function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randseed,varargin)        
     parser = inputParser;
-    addParameter(parser,'learningRate',5e-2,@isnumeric);    
+    addParameter(parser,'learningRate',0,@isnumeric);    
     addParameter(parser,'plot',0,@isnumeric);
     addParameter(parser,'precision',false,@islogical);      
     addParameter(parser,'verbose',1,@isnumeric);
@@ -9,6 +9,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'sampler','gibbs');
     addParameter(parser,'syntheticData',true,@islogical);    
     addParameter(parser,'burnin',0,@isnumeric);
+    addParameter(parser,'computeLikelihood',true,@islogical);      
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -118,6 +119,14 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             
     cc_next = cell(1,ge.k);
     
+    if params.computeLikelihood
+        % calculate log-likelihood on full dataset
+        state.loglike = gestaltLogLikelihood(ge,50,X,'cholesky',cholesky);
+        if params.verbose>0
+            fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
+        end
+    end
+    
     for step=1:maxStep
         if params.verbose > 0
             fprintf('EM step %d/%d, saving code %d',maxStep,step,savingCode)
@@ -200,6 +209,14 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
         ge = replaceComponents(ge,cc_next,params.precision);      
 
+        if params.computeLikelihood
+            % calculate log-likelihood on full dataset
+            state.loglike = gestaltLogLikelihood(ge,50,X,'cholesky',cholesky);
+            if params.verbose>0
+                fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
+            end
+        end
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % PRINT AND SAVE DATA            
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -234,7 +251,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % TEST FOR CONVERGENCE   
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                
         
         % if the largest (including the diagonal) change is less than one over ten
         % thousand, we are safe to stop

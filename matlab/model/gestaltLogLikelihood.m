@@ -41,7 +41,9 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
         Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
     end
     
-    for i=1:N
+    log_act_l = zeros(N,1);
+    
+    parfor i=1:N
         if params.verbose > 0
             printCounter(i,'stringVal','Datapoint','maxVal',N);
         end
@@ -74,11 +76,14 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
             s = sign(act_coeff);
             act_log10 = act_exp + log10(abs(act_coeff));
             act = s * act_log10 / log10(exp(1));
-            ll = ll + act;
+            log_act_l(i,1) = act;
+            %ll = ll + act;
             %ll = ll + log(act_coeff * 10^act_exp)
         else
-            ll = ll + log(act_L);
+            log_act_l(i,1) = log(act_L);
+            %ll = ll + log(act_L);
         end
     end
+    ll = sum(log_act_l);
     ll = ll - N * log(L);
 end
