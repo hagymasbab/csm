@@ -9,6 +9,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'sampler','gibbs');
     addParameter(parser,'syntheticData',true,@islogical);    
     addParameter(parser,'burnin',0,@isnumeric);
+    addParameter(parser,'stoppingDiff',0,@isnumeric);      
     addParameter(parser,'computeLikelihood',true,@islogical);      
     addParameter(parser,'likelihoodSamples',50,@isnumeric);   
     parse(parser,varargin{:});        
@@ -266,7 +267,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         
         % if the largest (including the diagonal) change is less than one over ten
         % thousand, we are safe to stop
-        if maxel_diff_rel < 1e-4
+        if params.stoppingDiff > 0 && maxel_diff_rel < params.stoppingDiff
             if params.verbose>0
                 fprintf('Convergence achieved in %d steps.\n',step);
             end

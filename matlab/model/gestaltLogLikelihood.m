@@ -43,7 +43,7 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
     
     log_act_l = zeros(N,1);
     
-    parfor i=1:N
+    for i=1:N
         if params.verbose > 0
             printCounter(i,'stringVal','Datapoint','maxVal',N);
         end
@@ -67,7 +67,11 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
             else
                 pdfval = stableMvnpdf(eval_site,zeros(size(eval_site)),cov_full,false);
                 zmult = 1 / Z(sz,1)^(ge.Dv);
-                sample_L = pdfval * zmult;
+                if zmult == Inf
+                    sample_L = 0;
+                else
+                    sample_L = pdfval * zmult;
+                end
                 act_L = act_L + sample_L;
             end
         end

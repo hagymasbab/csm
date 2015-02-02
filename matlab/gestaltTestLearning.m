@@ -1,9 +1,17 @@
 function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterset,dataset)    
             
     filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
-       
-    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',N,'filters','filters_OF_64.mat', ...
-        'obsVar',0.1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',false,'generateComponents',true,'generateData',true);
+    
+    if strcmp(dataset,'synthetic')
+        genComps = true;
+        genData = true;
+    else
+        genComps = false;
+        genData = false;
+    end
+    
+    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',N,'filters',filterfile, ...
+        'obsVar',0.1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',false,'generateComponents',genComps,'generateData',genData);
 
     if strcmp(dataset,'synthetic')
         X = ge.X;
@@ -11,7 +19,7 @@ function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterse
     else
         datafile = sprintf('patches_%s_%d.mat',dataset,Dx);
         load(datafile);
-        X = patchDB(:,1:N);
+        X = reshape(patchDB(:,1:N)',N,1,Dx);
         synDat = false;
     end    
         

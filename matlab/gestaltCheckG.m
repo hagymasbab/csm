@@ -1,4 +1,4 @@
-function good = checkG(g,ge,precision)
+function good = gestaltCheckG(g,ge,precision)
     good = true;
     if ~precision
         CvP = componentSum(g,ge.cc);
