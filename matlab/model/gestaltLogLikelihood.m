@@ -1,15 +1,25 @@
-function ll = gestaltLogLikelihood(ge,L,data,cholesky,loadSamples,randseed,scientific)
+function ll = gestaltLogLikelihood(ge,L,data,varargin)
+
+    parser = inputParser;
+    addParameter(parser,'cholesky',[]);    
+    addParameter(parser,'loadSamples',false,@islogical);
+    addParameter(parser,'randseed','leave');      
+    addParameter(parser,'verbose',0,@isnumeric);
+    addParameter(parser,'scientific',false,@islogical);    
+    parse(parser,varargin{:});        
+    params = parser.Results;      
+
     % approximated, up to a constant
     % get L samples from the priors of g and z
     
-    setrandseed(randseed);
+    setrandseed(params.randseed);
     N = size(data,1);
     % TODO nem megy B~=1-re
     data = reshape(data,N,ge.Dx);
         
-    if ~isempty(cholesky)
+    if ~isempty(params.cholesky)
         for j=1:ge.k
-            ge.cc{j} = cholesky{j}' * cholesky{j};                                             
+            ge.cc{j} = params.cholesky{j}' * params.cholesky{j};                                             
         end
     end
     
@@ -19,7 +29,7 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky,loadSamples,randseed,scien
     ll_coeff = 0;
     ll_exp = 0;
     ll = 0;
-    if loadSamples
+    if params.loadSamples
         % TODO check if exists
         load('prior_samples.mat'); % should contain G and Z
         if L < size(Z,1);
@@ -32,6 +42,9 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky,loadSamples,randseed,scien
     end
     
     for i=1:N
+        if params.verbose > 0
+            printCounter(i,'stringVal','Datapoint','maxVal',N);
+        end
         % TODO B > 1
         x = data(i,:)';
         Ax = pA * x;
@@ -44,7 +57,7 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky,loadSamples,randseed,scien
             g = G(sz,:)';
             cv = componentSum(g,ge.cc);           
             cov_full = cov_left + cv;            
-            if scientific
+            if params.scientific
                 [pdf_coeff,pdf_exp] = stableMvnpdf(eval_site,zeros(size(eval_site)),cov_full,true);
                 [z_coeff,z_exp] = sciNot(-ge.Dv * log(Z(sz,1)),true);
                 [sample_coeff,sample_exp] = prodSciNot([pdf_coeff z_coeff],[pdf_exp z_exp]);
@@ -56,7 +69,7 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky,loadSamples,randseed,scien
                 act_L = act_L + sample_L;
             end
         end
-        if scientific            
+        if params.scientific            
             %[ll_coeff,ll_exp] = sumSciNot(act_coeff,act_exp,ll_coeff,ll_exp);
             s = sign(act_coeff);
             act_log10 = act_exp + log10(abs(act_coeff));
@@ -67,5 +80,5 @@ function ll = gestaltLogLikelihood(ge,L,data,cholesky,loadSamples,randseed,scien
             ll = ll + log(act_L);
         end
     end
-    ll = - ll * N * log(L);
+    ll = ll - N * log(L);
 end

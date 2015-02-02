@@ -2,7 +2,7 @@ function plotLikelihoodVariance(loadData,nTrials,randseed)
     setrandseed(randseed);
     %LS = [10 50 100 200 500 1000];
     %LS = [1000 500 200 50];
-    LS = [10 100 1000];
+    LS = [10 20 50 100 200];
     nls = length(LS);    
     %nTrials = 10;
     if ~loadData
@@ -46,9 +46,19 @@ function plotLikelihoodVariance(loadData,nTrials,randseed)
         stds_nosci(l) = std(act);
     end
     
-    barwitherr([stds_sci stds_nosci],[means_sci means_nosci]);
+    %allstds = [stds_sci stds_nosci];
+    allstds = stds_nosci;
+    %allmeans = [-means_sci -means_nosci];
+    allmeans = -means_nosci;
+    
+    %barwitherr([stds_sci stds_nosci],[-means_sci -means_nosci]);
+    barwitherr(allstds,allmeans);
+    colormap summer;
+    ymin = min(allmeans(:)) - max(allstds(:)) - 3;
+    ymax = max(allmeans(:)) + max(allstds(:)) + 3;
+    ylim([ymin ymax]);
     set(gca,'XTickLabel',labels,'FontSize',16);
-    ylabel('Log-likelihood','FontSize',16);
+    ylabel('Negative log-likelihood','FontSize',16);
     xlabel('Number of samples','FontSize',16);
 end
         

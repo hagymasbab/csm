@@ -48,7 +48,7 @@ p(X \mid C_{1..k}) \sim \frac{1}{L^N} \prod_{n=1}^N  \sum_{l=1}^L \frac{1}{z_{l_
 taking the logarithm we get
 
 \begin{equation}
-\log p(X \mid C_{1..k}) \sim - N \log(L) \sum_{n=1}^N \log \left[ \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l) \right]
+\log p(X \mid C_{1..k}) \sim - N \log(L) + \sum_{n=1}^N \log \left[ \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l) \right]
 \end{equation}
 
 \end{document}
