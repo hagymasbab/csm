@@ -39,8 +39,9 @@ function gestalt = gestaltCreate(name,varargin)
     elseif strcmp(gestalt.filters,'eye')
         gestalt.A = eye(gestalt.Dx);
     else
+        filterfile = sprintf('filters_%s_%d.mat',gestalt.filters,gestalt.Dx);
         % load filters from file
-        load(gestalt.filters);
+        load(filterfile);
         gestalt.A = A;
     end
     gestalt.Dv = size(gestalt.A,2);   

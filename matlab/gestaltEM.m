@@ -12,8 +12,17 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'stoppingDiff',0,@isnumeric);      
     addParameter(parser,'computeLikelihood',true,@islogical);      
     addParameter(parser,'likelihoodSamples',50,@isnumeric);   
+    addParameter(parser,'cctComponents',false,@islogical); 
+    addParameter(parser,'savingCode',0,@isnumeric);   
     parse(parser,varargin{:});        
     params = parser.Results;      
+    
+    % VERBOSITY LEVELS
+    % 0 - don't print anything
+    % 1 - only print EM-step number progression
+    % 2 - print progress within EM steps, cycling over data and components
+    % 3 - print progress in sampling too
+    
     
     if params.plot>1
         % redefine plot to make figures more dense
@@ -37,7 +46,11 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     % CREATE INITAL PARAMETER MATRICES AND MODEL STRUCTURE     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     
-    savingCode = randi(1000000);
+    if params.savingCode == 0
+        savingCode = randi(1000000);
+    else
+        savingCode = params.savingCode;
+    end
     ge_saved = ge;
 
     if ischar(params.initCond)
@@ -119,10 +132,14 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     state.samples = [];    
     
     if params.computeLikelihood
+        % likelihoods for real images tend to be smaller, so we have to
+        % calculate the likelihood with recording coefficients and
+        % exponents at every step in that case
+        use_scinot = ~params.syntheticData;
         % calculate log-likelihood on full dataset
-        state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky);
+        state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky,'scientific',use_scinot);
         best_loglike = state.loglike;
-        if params.verbose>0
+        if params.verbose>1
             fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
         end
     end
@@ -132,10 +149,13 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     cc_next = cell(1,ge.k);
     
     for step=1:maxStep
-        if params.verbose > 0
+        if params.verbose == 1
+            printCounter(step,'maxVal',maxStep,'stringVal','EM step')
+        end
+        if params.verbose > 1
             fprintf('EM step %d/%d, saving code %d',maxStep,step,savingCode)
         end
-        if params.verbose == 1
+        if params.verbose == 2
             printProgress(emBatchSize,'Datapoint');
         end
         
@@ -157,9 +177,9 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         parfor n=1:emBatchSize
         %for n=1:emBatchSize
             
-             if params.verbose == 2 && ~strcmp(params.sampler,'test')
+             if params.verbose == 3 && ~strcmp(params.sampler,'test')
                  fprintf('\nDatapoint %d/%d ',emBatchSize,n);                   
-             elseif params.verbose ==1    
+             elseif params.verbose ==2    
                  printProgress()
              end
 
@@ -167,7 +187,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             initG = (1/ge.k) * ones(ge.k,1);
             try
                 if strcmp(params.sampler,'gibbs')
-                    [vsamp(n,:,:,:),gsamp(n,:,:),act_zsamp,~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-1,'precision',params.precision, ...
+                    [vsamp(n,:,:,:),gsamp(n,:,:),act_zsamp,~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-2,'precision',params.precision, ...
                         'initG',initG,'contrast',ge.contrast,'burnin',params.burnin);            
                     %mean(gsamp(n,:,:))
                     %mean(act_zsamp)
@@ -193,7 +213,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         % gradient of the parameters of the complete-data log-likelihood            
-        grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,'precision',params.precision,'verbose',params.verbose);                        
+        grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
         
         if params.learningRate == 0 && step == 1
             matgrad = cell2mat(grad);
@@ -215,13 +235,13 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
         if params.computeLikelihood
             % calculate log-likelihood on full dataset
-            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky);
+            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky,'scientific',use_scinot);
             best_so_far = false;
             if state.loglike > best_loglike
                 best_loglike = state.loglike;
                 best_so_far = true;
             end
-            if params.verbose>0
+            if params.verbose>1
                 fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
             end
         end
@@ -253,7 +273,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             cc_saved = cc_next;        
             save(savename,'cc_saved','ge_saved');
         end
-        if params.verbose > 0
+        if params.verbose > 1
             synstr = '';
             if params.syntheticData
                 synstr = sprintf(' truth_offd %f maxtruth_offd %f',state.difference_to_truth,maxel_diff);
@@ -268,7 +288,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         % if the largest (including the diagonal) change is less than one over ten
         % thousand, we are safe to stop
         if params.stoppingDiff > 0 && maxel_diff_rel < params.stoppingDiff
-            if params.verbose>0
+            if params.verbose>1
                 fprintf('Convergence achieved in %d steps.\n',step);
             end
             break;

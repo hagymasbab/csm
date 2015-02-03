@@ -5,9 +5,9 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
     parser = inputParser;
     addParameter(parser,'verbose',0,@isnumeric);
     addParameter(parser,'precision',false,@islogical);
+    addParameter(parser,'cctComponents',false,@islogical);
     parse(parser,varargin{:});
-    verb = parser.Results.verbose;    
-    precision = parser.Results.precision;    
+    params = parser.Results;
                 
     L = size(vsamp,2);
     N = size(vsamp,1);
@@ -31,7 +31,7 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
     for n=1:N        
 
         for l=1:L
-            if verb > 0
+            if params.verbose > 0
                 printCounter((n-1)*L+l,'stringVal',' gradSample','maxVal',N*L,'newLine',false);
             end
 
@@ -44,7 +44,7 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
             % calculate the covariance matrix
             CvP = componentSum(g,cc);
             
-            if ~precision                
+            if ~params.precision                
                 % derivative of the log-gaussian formula w.r.t the
                 % covariance matrix
                 % dLdC = (-1/(2*L)) * ( (ge.B * eye(ge.Dv)) / CvP - (CvP \ VV) / CvP );
@@ -68,15 +68,19 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
         
     % calculate the derivative of the covariance matrix w.r.t. each
     % element of each covariance component
-    if verb > 0
+    if params.verbose > 0
         printProgress(effective_k,'Component');
     end
     parfor kk=1:effective_k
-        if verb > 0
+        if params.verbose > 0
             %printCounter(kk,'stringVal','gradComp','maxVal',effective_k,'newLine',true);
             printProgress();            
         end
         for i=1:ge.Dv
+            if params.cctComponents && i>1
+                % Karklin & Lewicki-style components
+                break;
+            end
             % this is an upper triangle matrix
             for j=i:ge.Dv
                 % the computation above is equivalent with this much faster one

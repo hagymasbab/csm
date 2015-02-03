@@ -1,4 +1,4 @@
-function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterset,dataset)    
+function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterset,dataset,karklin)    
             
     filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
     
@@ -27,7 +27,7 @@ function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterse
     
     for t=1:nTrials
         printCounter(t,'stringVal','Trial','maxVal',nTrials);
-        gestaltEM(ge,X,emBatchSize,nSteps,nSamples,'shuffle','syntheticData',synDat,'burnin',20,'verbose',0);
+        gestaltEM(ge,X,emBatchSize,nSteps,nSamples,'shuffle','syntheticData',synDat,'burnin',20,'verbose',0,'cctComponents',karklin);
         load iter;
         for s=1:nSteps+1
             ll(t,s) = state_sequence{s}.loglike;
