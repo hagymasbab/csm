@@ -46,10 +46,10 @@ function plotLikelihoodVariance(loadData,nTrials,randseed)
         stds_nosci(l) = std(act);
     end
     
-    %allstds = [stds_sci stds_nosci];
-    allstds = stds_nosci;
-    %allmeans = [-means_sci -means_nosci];
-    allmeans = -means_nosci;
+    allstds = [stds_sci stds_nosci];
+    %allstds = stds_nosci;
+    allmeans = [-means_sci -means_nosci];
+    %allmeans = -means_nosci;
     
     %barwitherr([stds_sci stds_nosci],[-means_sci -means_nosci]);
     barwitherr(allstds,allmeans);

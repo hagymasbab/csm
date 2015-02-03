@@ -1,9 +1,11 @@
 function [coefficient,exponent] = sciNot(a,logarithm)    
     s = sign(a);
     if logarithm
+       % the original number cannot be negative, as we received the
+       % logarithm of it
        a = a / log(10);       
        exponent = floor(a);
-       coefficient = 10^(a+s*exponent);
+       coefficient = 10^(a - exponent);
     else        
         a = abs(a);
         a = log10(a);

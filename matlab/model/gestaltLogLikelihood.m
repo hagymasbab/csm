@@ -60,7 +60,7 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
             cv = componentSum(g,ge.cc);           
             cov_full = cov_left + cv;            
             if params.scientific
-                [pdf_coeff,pdf_exp] = stableMvnpdf(eval_site,zeros(size(eval_site)),cov_full,true);
+                [pdf_coeff,pdf_exp] = stableMvnpdf(eval_site,zeros(size(eval_site)),cov_full,true);                
                 [z_coeff,z_exp] = sciNot(-ge.Dv * log(Z(sz,1)),true);
                 [sample_coeff,sample_exp] = prodSciNot([pdf_coeff z_coeff],[pdf_exp z_exp]);
                 [act_coeff,act_exp] = sumSciNot(act_coeff,act_exp,sample_coeff,sample_exp);
