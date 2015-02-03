@@ -5,7 +5,7 @@ function good = gestaltCheckG(g,ge,precision)
     else
         CvP = componentSum(g,ge.pc);
     end
-    if rcond(CvP) < 1e-15
+    if rcond(CvP) < 1e-15                
         good = false;
         return;
     end

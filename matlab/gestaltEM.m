@@ -107,6 +107,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         X = reshape(X,size(X,1),1,ge.Dv);
     end
     
+    adjustLR = params.learningRate == 0;
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
     % INITIALISE ARRAYS FOR SAVING VALUES   
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                            
@@ -214,12 +216,27 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
 
         % gradient of the parameters of the complete-data log-likelihood            
         grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,'precision',params.precision,'verbose',params.verbose-1);                        
-        
-        if params.learningRate == 0 && step == 1
+                
+        if adjustLR
+%             products = cell(1,ge.k);
+%             for kk = 1:ge.k
+%                 products{kk} = grad{kk}*grad{kk}';
+%             end            
+%             matgrad = cell2mat(products);
+%             maxsq = sqrt(max(matgrad(:)));
+%             
             matgrad = cell2mat(grad);
             maxsq = max(matgrad(:));
-            params.learningRate = 10^(1-floor(log10(maxsq)+log10(ge.Dv)));
+            
+            max_LR = 10^(1-floor(log10(maxsq)+log10(ge.Dv)));                        
+            if step == 1
+                params.learningRate = max_LR;
+            else
+%                 params.learningRate = min(params.learningRate,max_LR);
+            end
         end
+        
+        params.learningRate
         
         % update cholesky components
         for j=1:ge.k
@@ -232,19 +249,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         end
 
         ge = replaceComponents(ge,cc_next,params.precision);      
-
-        if params.computeLikelihood
-            % calculate log-likelihood on full dataset
-            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky,'scientific',use_scinot);
-            best_so_far = false;
-            if state.loglike > best_loglike
-                best_loglike = state.loglike;
-                best_so_far = true;
-            end
-            if params.verbose>1
-                fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
-            end
-        end
+        
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % PRINT AND SAVE DATA            
@@ -262,6 +267,27 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             state.matrix_norms{i} = norm(cc_next{i});
         end
         state_sequence{step+1} = state;                
+                
+        if params.verbose > 1
+            synstr = '';
+            if params.syntheticData
+                synstr = sprintf(' truth_offd %f maxtruth_offd %f',state.difference_to_truth,maxel_diff);
+            end
+            fprintf(' maxreldiff %.2e %s skipped %d\n',maxel_diff_rel,synstr,skipped);
+        end
+        
+        if params.computeLikelihood
+            % calculate log-likelihood on full dataset
+            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky,'scientific',use_scinot);
+            best_so_far = false;
+            if state.loglike > best_loglike
+                best_loglike = state.loglike;
+                best_so_far = true;
+            end
+            if params.verbose>1
+                fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
+            end
+        end
         
         if params.syntheticData
             save('iter.mat','state_sequence','goal_cc','-v7.3');
@@ -272,13 +298,6 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         if ~params.computeLikelihood || best_so_far
             cc_saved = cc_next;        
             save(savename,'cc_saved','ge_saved');
-        end
-        if params.verbose > 1
-            synstr = '';
-            if params.syntheticData
-                synstr = sprintf(' truth_offd %f maxtruth_offd %f',state.difference_to_truth,maxel_diff);
-            end
-            fprintf(' maxreldiff %.2e %s skipped %d\n',maxel_diff_rel,synstr,skipped);
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
