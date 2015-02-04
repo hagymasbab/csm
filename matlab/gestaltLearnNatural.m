@@ -40,5 +40,5 @@ function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin
     learningRate = 0;
     
     % start learning
-    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin);
+    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin,'computeLikelihood',false);
 end
