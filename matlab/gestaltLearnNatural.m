@@ -7,7 +7,7 @@ function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin
     
     % TODO subsample patchDB to leave out a test set for crossvalidation
     
-    filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
+%     filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
 
 %     if imdim == 16
 %         % read patchDB
@@ -27,7 +27,7 @@ function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin
     
     % create model    
     ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',embatch, ...
-        'filters',filterfile,'obsVar',1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',nullcomp,'generateComponents',false,'generateData',false);        
+        'filters',filterset,'obsVar',1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',nullcomp,'generateComponents',false,'generateData',false);        
         
     % set initial conditions
     if code == 0
@@ -40,5 +40,5 @@ function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin
     learningRate = 0;
     
     % start learning
-    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin,'computeLikelihood',false);
+    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin,'computeLikelihood',false,'verbose',2);
 end
