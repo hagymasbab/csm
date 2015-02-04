@@ -24,8 +24,11 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
     end
     
     pA = pinv(ge.A);
-    iAA = ge.AA \ eye(ge.Dv);
-    %iAA = inv(ge.AA);
+    if rcond(ge.AA) < 1e-15
+        iAA = pinv(ge.AA);
+    else
+        iAA = ge.AA \ eye(ge.Dv);
+    end
     ll_coeff = 0;
     ll_exp = 0;
     ll = 0;
@@ -43,7 +46,7 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
     
     log_act_l = zeros(N,1);
     
-    for i=1:N
+    parfor i=1:N
         if params.verbose > 0
             printCounter(i,'stringVal','Datapoint','maxVal',N);
         end
