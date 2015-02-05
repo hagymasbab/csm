@@ -7,7 +7,7 @@ function [p,pexp] = stableMvnpdf(x,mu,C,scientific)
     ld = -ld/2;
     v = x-mu;
     rc = rcond(C);
-    if log10(rc) < -30
+    if log10(rc) < -15
         quad = v' * pinv(C) * v;
     else
         quad = v' * (C \ v);
