@@ -29,7 +29,7 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
     distances = zeros(index,ge.k*(ge.k-1)/2);
     
     for i=1:index
-        printCounter(i,'stringVal','Iteration','maxVal',46);
+        printCounter(i,'stringVal','Iteration','maxVal',index);
         act_cc = state_sequence{i}.estimated_components;
         if strcmp(calculate,'likelihood')
             ge.cc = act_cc;
