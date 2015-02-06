@@ -4,7 +4,12 @@ function [V,m] = gestaltPostVRnd(ge,xind,g,z,precision)
     sAA = ((z*z)/ge.obsVar) * ge.AA;
     if ~precision
         Cv = componentSum(g,ge.cc);        
-        covm = inv(sAA + inv(Cv));       
+        %icv = Cv \ eye(ge.Dv);
+        %icovm = sAA + icv;
+        %icovm = sAA + inv(Cv);
+        %covm = icovm \ eye(ge.Dv);
+        icv = inv(Cv);
+        covm = inv(sAA + icv);       
         % viewImage(cov);
     else
         P = componentSum(g,ge.pc);
