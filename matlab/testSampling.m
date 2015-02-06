@@ -16,7 +16,7 @@ function all_G = testSampling(ge,L,gsampler,zsampler,vsampler,plotLevel)
             end
         end
         [s,~,zs] = gestaltGibbs(ge,n,L,'gSampler',gsampler,'zSampler',zsampler,'vSampler',vsampler, ...
-            'sampleRetry',100,'plotZ',plotLevel>1,'contrast',ge.contrast,'verbose',1,'stepsize',0.2);
+            'sampleRetry',100,'plotZ',plotLevel>1,'contrast',ge.contrast,'verbose',1,'stepsize',0.5);
         all_G(n,:,:) = s(:,1:ge.k);
         meanG = mean(s(:,1:ge.k));
         [~,sampind] = max(meanG);

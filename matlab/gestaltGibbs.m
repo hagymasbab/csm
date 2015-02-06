@@ -32,7 +32,7 @@ function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     if isempty(params.initG)
         % sample g from the prior distribution
         try
-            g = gestaltSamplePriorG(ge,ge.prior,'sampleRetry',params.sampleRetry);                   
+            g = gestaltSamplePriorG(ge,1,'sampleRetry',params.sampleRetry)';                   
         catch err
             rethrow(err);
         end      
