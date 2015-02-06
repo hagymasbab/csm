@@ -10,7 +10,7 @@ function good = gestaltCheckG(g,ge,precision)
         return;
     end
     if ~precision
-        postP = (1/ge.obsVar) * ge.AA + inv(CvP);                
+        postP = (1/ge.obsVar) * ge.AA + CvP\eye(ge.Dv);                
     else
         postP = (1/ge.obsVar) * ge.AA + CvP;                
     end

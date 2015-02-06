@@ -14,6 +14,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'likelihoodSamples',50,@isnumeric);   
     addParameter(parser,'cctComponents',false,@islogical); 
     addParameter(parser,'savingCode',0,@isnumeric);   
+    addParameter(parser,'skipCheck',false,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;      
     
@@ -190,7 +191,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             try
                 if strcmp(params.sampler,'gibbs')
                     [vsamp(n,:,:,:),gsamp(n,:,:),act_zsamp,~] = gestaltGibbs(ge,n,nSamples,'verbose',params.verbose-2,'precision',params.precision, ...
-                        'initG',initG,'contrast',ge.contrast,'burnin',params.burnin);            
+                        'initG',initG,'contrast',ge.contrast,'burnin',params.burnin,'skipCheck',params.skipCheck);            
                     %mean(gsamp(n,:,:))
                     %mean(act_zsamp)
                 elseif strcmp(params.sampler,'test')

@@ -1,13 +1,17 @@
-function [p,pexp] = stableMvnpdf(x,mu,C,scientific)
+function [p,pexp] = stableMvnpdf(x,mu,C,scientific,invertedC)
     if scientific && nargout < 2
         error('call with 2 output arguments to get scientific notation result');
     end
     d = size(x,1);
     ld = stableLogdet(C);
+    if invertedC
+        ld = -ld;
+    end
     ld = -ld/2;
     v = x-mu;
-    rc = rcond(C);
-    if log10(rc) < -15
+    if invertedC
+        quad = v' * C * v;
+    elseif log10(rcond(C)) < -15
         quad = v' * pinv(C) * v;
     else
         quad = v' * (C \ v);

@@ -1,7 +1,7 @@
 function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     parser = inputParser;
     addParameter(parser,'verbose',0,@isnumeric);
-    addParameter(parser,'stepsize',0.1,@isnumeric);
+    addParameter(parser,'stepsize',0.5,@isnumeric);
     addParameter(parser,'burnin',0,@isnumeric);
     addParameter(parser,'thin',1,@isnumeric);
     addParameter(parser,'plotG',false,@islogical);
@@ -17,6 +17,7 @@ function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
     addParameter(parser,'prestimSamples',0,@isnumeric);
     addParameter(parser,'poststimSamples',0,@isnumeric);
     addParameter(parser,'initZ',1,@isnumeric);
+    addParameter(parser,'skipCheck',false,@islogical);
     parse(parser,varargin{:});
     params = parser.Results;
 
@@ -168,8 +169,12 @@ function [vsamp,gsamp,zsamp,rr] = gestaltGibbs(ge,xind,nSamp,varargin)
                     
                 end
             end
-                               
-            valid = gestaltCheckG(g_temp,ge,params.precision);            
+            
+            if params.skipCheck
+                valid = true;
+            else
+                valid = gestaltCheckG(g_temp,ge,params.precision);            
+            end
             if valid
                 g = g_temp;
             else

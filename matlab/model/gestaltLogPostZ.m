@@ -8,7 +8,9 @@ function lp = gestaltLogPostZ(z,xind,V,ge)
         V = reshape(V,ge.B,ge.Dv);
     end
     
-    logprior = log( gampdf(z,ge.z_shape,ge.z_scale) );
+    %logprior = log( gampdf(z,ge.z_shape,ge.z_scale) );
+    % the logarithm of the gamma prior is proportional to this:
+    logprior = (ge.z_shape-1) * log(z) - z / ge.z_scale;
     
     X = reshape(ge.X(xind,:,:),ge.B,ge.Dx);
     quad = 0;
