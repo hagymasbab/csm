@@ -1,4 +1,4 @@
-function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin,k,nullcomp)    
+function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin,k,nullcomp,maxStep)    
 
     % TODO try to create the patch DB and filters if needed
     
@@ -40,5 +40,5 @@ function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin
     learningRate = 0;
     
     % start learning
-    gestaltEM(ge,patchDB',embatch,10000,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin,'computeLikelihood',false,'verbose',2);
+    gestaltEM(ge,patchDB',embatch,maxStep,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin,'computeLikelihood',false,'verbose',2);
 end
