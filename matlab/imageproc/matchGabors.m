@@ -29,24 +29,40 @@ function gabors = matchGabors(A,compare,randseed)
             constraints_A = [1 0 0; -1 0 0; 0 1 0; 0 -1 0; 0 0 1; 0 0 -1];
             constraints_b = [imSize/2; -4; 180; 0; 1; 0];    
             initparam = [randi([4 imSize/2]); randi([0 180]); rand()];
-            actfunc = @(x) difference(filter,x(1),x(2),x(3));            
+            actfunc = @(x) difference(filter,x(1),x(2),x(3));  
+            x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
+            lambdas(i,1) = x_opt(1);
+            orients(i,1) = x_opt(2);
+            phases(i,1) = x_opt(3);
         elseif strcmp(compare,'gabor')
             constraints_A = [1 0 0; -1 0 0; 0 1 0; 0 -1 0; 0 0 1; 0 0 -1];
             constraints_b = [imSize/2; -4; 180; 0; 10; -2];    
             initparam = [randi([4 imSize/2]); randi([0 180]); randi([2 10])];
-            actfunc = @(x) difference_gbr(filter,x(1),x(2),x(3),maxX(i),maxY(i));            
-        end
-        x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
-        lambdas(i,1) = x_opt(1);
-        orients(i,1) = x_opt(2);
-        if strcmp(compare,'grating')            
-            phases(i,1) = x_opt(3);
-            %optgr = grating(lambdas(i,1),orients(i,1),phases(i,1),imSize);
-            % act_gabor = 
-        elseif strcmp(compare,'gabor')
+            actfunc = @(x) difference_gbr(filter,x(1),x(2),x(3),maxX(i),maxY(i)); 
+            x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
+            lambdas(i,1) = x_opt(1);
+            orients(i,1) = x_opt(2);
             sigmas(i,1) = x_opt(3);
             act_gabor = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i),sigmas(i,1));
-        end        
+        elseif strcmp(compare,'gabor_twostep')
+            constraints_A = [1 0; -1 0; 0 1; 0 -1];
+            constraints_b = [imSize/2; -4; 180; 0];    
+            initparam = [randi([4 imSize/2]); randi([0 180])];
+            sigma0 = 10;
+            actfunc = @(x) difference_gbr(filter,x(1),x(2),sigma0,maxX(i),maxY(i)); 
+            x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
+            lambdas(i,1) = x_opt(1);
+            orients(i,1) = x_opt(2);
+            
+            constraints_A = [1;-1];
+            constraints_b = [10; -2];    
+            initparam = [randi([2 10])];
+            actfunc = @(x) difference_gbr(filter,lambdas(i,1),orients(i,1),x,maxX(i),maxY(i)); 
+            x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
+            sigmas(i,1) = x_opt;
+            
+            act_gabor = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i),sigmas(i,1));
+        end               
         gabors(:,i) = reshape(act_gabor,imSize^2,1);
     end
     figure;
@@ -54,6 +70,7 @@ function gabors = matchGabors(A,compare,randseed)
     title('Orients');
     figure;
     hist(lambdas-2,20);
+    title('Wavelengths');
     figure;
     hist(sigmas,20);
     title('Sigmas');
