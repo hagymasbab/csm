@@ -54,13 +54,35 @@ function gabors = matchGabors(A,compare,randseed)
             lambdas(i,1) = x_opt(1);
             orients(i,1) = x_opt(2);
             
-            constraints_A = [1;-1];
-            constraints_b = [10; -2];    
-            initparam = [randi([2 10])];
-            actfunc = @(x) difference_gbr(filter,lambdas(i,1),orients(i,1),x,maxX(i),maxY(i)); 
-            x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
-            sigmas(i,1) = x_opt;
+            sigmas(i,1) = sigma0;
+%             constraints_A = [1;-1];
+%             constraints_b = [10; -2];    
+%             initparam = [randi([2 10])];
+%             actfunc = @(x) difference_gbr(filter,lambdas(i,1),orients(i,1),x,maxX(i),maxY(i)); 
+%             x_opt = fmincon(actfunc,initparam,constraints_A,constraints_b,[],[],[],[],[],options);       
+%             sigmas(i,1) = x_opt;
             
+            act_gabor = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i),sigmas(i,1));
+            
+        elseif strcmp(compare,'gabor_threestep')
+            sigma0 = 10;
+            lambda0 = 5;
+            lambda1 = 8;
+            actfunc = @(x) difference_gbr(filter,lambda0,x,sigma0,maxX(i),maxY(i)); 
+            [or1,fval1] = fminbnd(actfunc,0,180);
+            actfunc = @(x) difference_gbr(filter,lambda1,x,sigma0,maxX(i),maxY(i)); 
+            [or2,fval2] = fminbnd(actfunc,0,180);
+            if fval1 < fval2
+                orients(i,1) = or1;
+            else
+                orients(i,1) = or2;
+            end
+            actfunc = @(x) difference_gbr(filter,x,orients(i,1),sigma0,maxX(i),maxY(i)); 
+            lambdas(i,1) = fminbnd(actfunc,4,imSize/2);
+            actfunc = @(x) difference_gbr(filter,lambdas(i,1),orients(i,1),x,maxX(i),maxY(i)); 
+            sigmas(i,1) = fminbnd(actfunc,3,10);            
+            %lambdas(i,1) = lambda0;
+            %sigmas(i,1) = sigma0;
             act_gabor = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i),sigmas(i,1));
         end               
         gabors(:,i) = reshape(act_gabor,imSize^2,1);
