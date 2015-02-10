@@ -72,6 +72,29 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
         % calculate the receptive fields too
         receptiveFields = gestaltGReceptiveFields(ge,cc,200);        
     
+    elseif strcmp(params.method,'block')
+        if params.overlapping            
+            blocksize = floor(1.5*(ge.Dx-k+1) / k);
+            starts = ((1:k)-1)*(floor(blocksize/2)+1) + 2;            
+        else
+            blocksize = floor((ge.Dx-k+1) / k);
+            starts = ((1:k)-1)*(blocksize+1) + 2;            
+        end
+        
+        ends = starts + blocksize -1;            
+        cc = {};
+        for i=1:k
+            act_cc = zeros(ge.Dv);
+            act_cc(starts(i):ends(i),starts(i):ends(i)) = 2;
+            diagonals = sum(act_cc);
+            act_cc = act_cc + diag(diagonals);
+            cc{i} = act_cc;
+        end
+        
+        if params.nullComponent
+            cc{end+1} = eye(ge.Dv);
+        end
+        
     elseif strcmp(params.method,'vertical-bars')
         
          % vertical lines
