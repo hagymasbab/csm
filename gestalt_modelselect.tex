@@ -10,7 +10,23 @@
 
 \section{The likelihood function}
 
-In order to evaluate the log-likelihood for cross validation steps, we have to use an approximation.
+The full likelihood looks like this for a set of $N$ images
+
+\begin{equation}
+p(X \mid V,G,Z,C_{1..k}) = \prod_{n=1}^N p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n) p(z_n)
+\end{equation}
+%
+marginalising over all the latents will produce
+
+\begin{equation}
+p(X \mid C_{1..k}) = \iiint_{-\infty}^{\infty} \prod_{n=1}^N p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n) p(z_n) \mathrm{d}V\mathrm{d}G\mathrm{d}Z
+\end{equation}
+%
+taking $NL$ samples from the priors of all latents, we can approximate this as
+
+\begin{equation}
+p(X \mid C_{1..k}) \approx \iiint_{-\infty}^{\infty} \prod_{n=1}^N p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n) p(z_n) \mathrm{d}V\mathrm{d}G\mathrm{d}Z
+\end{equation}
 
 \begin{equation}
 \begin{split}

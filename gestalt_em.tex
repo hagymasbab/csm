@@ -146,12 +146,31 @@ The complete-data likelihood with respect to a set of batch observations of size
 
 \begin{equation}
 \begin{split}
-&p(\mathbf{V},G,\mathbf{X} \mid C_{1..K}) = \prod_{n=1}^N p(X_n \mid V_n) p(V_n \mid g_n) p(g_n) = \\
-&\prod_{n=1}^N p(g_n) \prod_{b=1}^B p(x_{nb} \mid v_{nb}) p(v_{nb} \mid g_n) 
+&p(\mathbf{V},G,Z,\mathbf{X} \mid C_{1..K}) = \prod_{n=1}^N p(X_n \mid V_n,z_n) p(V_n \mid g_n) p(g_n)  p(z_n)= \\
+&\prod_{n=1}^N \left[ p(g_n) p(z_n) \prod_{b=1}^B p(x_{nb} \mid v_{nb}) p(v_{nb} \mid g_n) \right]
 \end{split}
 \end{equation}
 %
-Let's denote the logarithm of this by $\mathcal{L}=\log p(\mathbf{V},G,\mathbf{X} \mid C_{1..K})$. We can approximate the integral of this logarithm over the joint posterior by averaging over $L$ samples from it, separately for each observation $x_n$. As we will seek the values of the precision components $C_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters. This way we arrive to the following expression 
+the logarithm of this will be
+
+\begin{equation}
+\begin{split}
+& \log p(\mathbf{V},G,Z,\mathbf{X} \mid C_{1..K} )= \\ 
+& = \sum_{n=1}^N  \left[ \log p(g_n) + \log p(z_n) + \sum_{b=1}^B  \left[ \log p(x_{nb} \mid v_{nb}) + \log p(v_{nb} \mid g_n)\right] \right] = \\
+& = N  (\log p(g) + \log p(z)) + \sum_{n=1}^N \sum_{b=1}^B \log p(x_{nb} \mid v_{nb}) + \log p(v_{nb} \mid g_n) = \\
+& = const + \sum_{n=1}^N \sum_{b=1}^B  \log p(v_{nb} \mid g_n)
+\end{split}
+\end{equation}
+%
+where $const$ is constant with respect to the parameters $C_{1 \dots K}$.
+
+Let's have the expectation of this logarithm with respect to the joint posterior
+
+\begin{equation}
+\mathcal{L}=\iiint_{-\infty}^{\infty} p(\mathbf{V},G,Z \mid \mathbf{X})\log p(\mathbf{V},G,Z,\mathbf{X} \mid C_{1..K}) \mathrm{d}\mathbf{V}\mathrm{d}G\mathrm{d}Z. 
+\end{equation}
+
+We can approximate this integral by averaging over $L$ samples from the full posterior, separately for each observation $x_n$. As we will seek the values of the precision components $C_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters, only leaving the term of the form $p(v \mid g)$. This way we arrive to the following expression 
 
 \begin{equation}
 \begin{split}
@@ -162,7 +181,7 @@ Let's denote the logarithm of this by $\mathcal{L}=\log p(\mathbf{V},G,\mathbf{X
 %
 noting that the double summation over $L$ samples over all $N$ observations always happens on the same terms, so we can substitute it with a single sum that iterates over the full sample set.
 
-To ensure that the optimisation procedure does not produce precision matrices that are not positive definite, we can optimise for the Cholesky upper triangle matrix istead of the precision matrix, as this also specifies the Gaussian completely.
+To ensure that the optimisation procedure does not produce precision matrices that are not positive definite, we can optimise for the Cholesky upper triangle matrix instead of the covariance matrix, as this also specifies the Gaussian completely.
 
 \begin{eqnarray}
 C_k = U_k^T U_k \\
