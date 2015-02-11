@@ -95,6 +95,8 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
             cc{end+1} = eye(ge.Dv);
         end
         
+        receptiveFields = gestaltGReceptiveFields(ge,cc,100);   
+        
     elseif strcmp(params.method,'vertical-bars')
         
          % vertical lines

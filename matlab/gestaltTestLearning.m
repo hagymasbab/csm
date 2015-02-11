@@ -1,21 +1,23 @@
 function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterset,dataset,karklin)    
             
-    filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
+    %filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
     
     if strcmp(dataset,'synthetic')
         genComps = true;
-        genData = true;
+        genData = true;        
     else
         genComps = false;
         genData = false;
     end
     
-    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',N,'filters',filterfile, ...
-        'obsVar',0.1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',false,'generateComponents',genComps,'generateData',genData);
+    ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',N,'filters',filterset, ...
+        'obsVar',0.1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',false, ...
+        'generateComponents',genComps,'generateData',genData,'componentShape','block');
 
     if strcmp(dataset,'synthetic')
         X = ge.X;
         synDat = true;
+        comps = cell(nTrials,nSteps+1,ge.k);
     else
         datafile = sprintf('patches_%s_%d.mat',dataset,Dx);
         load(datafile);
@@ -31,6 +33,16 @@ function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterse
         load iter;
         for s=1:nSteps+1
             ll(t,s) = state_sequence{s}.loglike;
+            if strcmp(dataset,'synthetic')
+                %state_sequence{s}.estimated_components
+                for kk=1:ge.k
+                    comps{t,s,kk} = state_sequence{s}.estimated_components{kk};
+                end
+            end
+        end
+        
+        if strcmp(dataset,'synthetic')
+            save('comps.mat','comps');
         end
         save('loglikes.mat','ll');
     end

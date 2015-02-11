@@ -21,9 +21,10 @@ function gestalt = gestaltCreate(name,varargin)
     addParameter(p,'prior','gamma');
     addParameter(p,'precision',false,@islogical);
     addParameter(p,'contrast',true,@islogical);
-    addParameter(p,'nullComponent',true,@islogical);
+    addParameter(p,'nullComponent',false,@islogical);
     addParameter(p,'overlapping',false,@islogical);
     addParameter(p,'generateComponents',false,@islogical);
+    addParameter(p,'componentShape','block');
     addParameter(p,'generateData',false,@islogical);
     addParameter(p,'cc',{});
     parse(p,varargin{:});
@@ -75,7 +76,7 @@ function gestalt = gestaltCreate(name,varargin)
         else        
             % TODO this is only valid if we have 4-orient 1-frequency
             % gabors with 2-by-2 grid layout
-            [gestalt.cc, gestalt.gRF] = gestaltCovariances(gestalt,gestalt.k,'nullComponent',gestalt.nullComponent,'overlapping',gestalt.overlapping,'nOrient',4,'method','oriented-gabors');            
+            [gestalt.cc, gestalt.gRF] = gestaltCovariances(gestalt,gestalt.k,'nullComponent',gestalt.nullComponent,'overlapping',gestalt.overlapping,'nOrient',4,'method',gestalt.componentShape);            
     %         if gestalt.nullComponent
     %             gestalt.k = gestalt.k + 1;
     %         end

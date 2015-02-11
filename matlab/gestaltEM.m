@@ -237,7 +237,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             end
         end
         
-        params.learningRate
+        %params.learningRate
         
         % update cholesky components
         for j=1:ge.k
