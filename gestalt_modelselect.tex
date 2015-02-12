@@ -8,7 +8,7 @@
 \title{Model selection for the gestalt model}
 \maketitle
 
-\section{The likelihood function}
+\section{The likelihood function - way 1}
 
 The full likelihood looks like this for a set of $N$ images
 
@@ -17,8 +17,9 @@ The full likelihood looks like this for a set of $N$ images
 p(X \mid V,G,Z,C_{1..k}) = \prod_{n=1}^N p(x_n \mid v_n,z_n)
 \end{split}
 \end{equation}
-%
-marginalising over all the latents will produce
+
+
+Marginalising over all the latents will produce
 
 \begin{equation}
 p(X \mid C_{1..k}) = \iiint_{-\infty}^{\infty} \prod_{n=1}^N p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n) p(z_n) \mathrm{d}V\mathrm{d}G\mathrm{d}Z
@@ -30,43 +31,49 @@ taking $NL$ samples from the priors of all latents, we can approximate this as
 p(X \mid C_{1..k}) \approx \frac{1}{L} \sum_{l = 1}^{L} \prod_{n=1}^N p(x_n \mid v_{n,l},z_{n,l}) 
 \end{equation}
 
-%\begin{equation}
-%\begin{split}
-%p(X \mid C_{1..k}) = \prod_{n=1}^N \iiint_{-\infty}^{\infty} p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n) p(z_n) \mathrm{d}v_n\mathrm{d}g_n\mathrm{d}z_n = \\
-%= \prod_{n=1}^N \iint_{-\infty}^{\infty}  p(g_n) p(z_n) \int_{-\infty}^{\infty} p(x_n \mid v_n,z_n) p(v_n \mid g_n) \mathrm{d}v_n\mathrm{d}g_n \mathrm{d}z_n
-%\end{split}
-%\end{equation}
-%%
-%the product of the two conditionals can be rewritten as a Gaussian over $v$ times another Gaussian
+\section{The likelihood function - way 2}
+
+\begin{equation}
+p(X \mid C_{1..k}) = \prod_{n=1}^N p(x_n \mid C_{1..k}) 
+\end{equation}
+
+\begin{equation}
+\begin{split}
+p(X \mid C_{1..k}) = \prod_{n=1}^N \iiint_{-\infty}^{\infty} p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n) p(z_n) \mathrm{d}v_n\mathrm{d}g_n\mathrm{d}z_n = \\
+= \prod_{n=1}^N \iint_{-\infty}^{\infty}  p(g_n) p(z_n) \int_{-\infty}^{\infty} p(x_n \mid v_n,z_n) p(v_n \mid g_n) \mathrm{d}v_n\mathrm{d}g_n \mathrm{d}z_n
+\end{split}
+\end{equation}
 %
-%\begin{equation} 
-%p(x \mid v,z) p(v \mid g) = \frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v) \mathcal{N}(v; \mu_c,C_c)
-%\end{equation}
-%%
-%where $v$ only appears in the second Gaussian, so integrating this formula will set that term to 1 and leave everything else as it is.
+the product of the two conditionals can be rewritten as a Gaussian over $v$ times another Gaussian
+
+\begin{equation} 
+p(x \mid v,z) p(v \mid g) = \frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v) \mathcal{N}(v; \mu_c,C_c)
+\end{equation}
 %
-%\begin{equation}
-%p(X \mid C_{1..k}) =  \det(A^T A)^{-\frac{N}{2}} \prod_{n=1}^N \int_{0}^{\infty} p(z) \frac{1}{z^{D_v}}  \int_{0}^{\infty}  p(g) \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} + C_v) \mathrm{d}g \mathrm{d}z
-%\end{equation}
+where $v$ only appears in the second Gaussian, so integrating this formula will set that term to 1 and leave everything else as it is.
+
+\begin{equation}
+p(X \mid C_{1..k}) =  \det(A^T A)^{-\frac{N}{2}} \prod_{n=1}^N \int_{0}^{\infty} p(z) \frac{1}{z^{D_v}}  \int_{0}^{\infty}  p(g) \mathcal{N}(\frac{1}{z} A^{+}x; 0,\frac{\sigma_x}{z^2} (A^T A)^{-1} + C_v) \mathrm{d}g \mathrm{d}z
+\end{equation}
+
+\section{Approximation with sampling}
+
+The integrals may be approximated by averaging over samples from $p(g)$ and $p(z)$, leaving out terms constant in $g$, $z$ and $x$
+
+\begin{equation}
+p(X \mid C_{1..k}) \sim \prod_{n=1}^N  \frac{1}{L^2} \sum_{l_1=1}^L \frac{1}{z_{l_1}^{D_v}}  \sum_{l_2=1}^L \mathcal{N}(\frac{1}{z_{l_1}} A^{+}x_n; 0,\frac{\sigma_x}{z_{l_1}^2} (A^T A)^{-1} + C_v^{l_2})
+\end{equation}
+% 
+as $z$ and $g$ are independent, we can choose a large enough $L$ and merge the sums, and bring the division by $L$ outside of the product
+
+\begin{equation}
+p(X \mid C_{1..k}) \sim \frac{1}{L^N} \prod_{n=1}^N  \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l)
+\end{equation}
 %
-%\section{Approximation with sampling}
-%
-%The integrals may be approximated by averaging over samples from $p(g)$ and $p(z)$, leaving out terms constant in $g$, $z$ and $x$
-%
-%\begin{equation}
-%p(X \mid C_{1..k}) \sim \prod_{n=1}^N  \frac{1}{L^2} \sum_{l_1=1}^L \frac{1}{z_{l_1}^{D_v}}  \sum_{l_2=1}^L \mathcal{N}(\frac{1}{z_{l_1}} A^{+}x_n; 0,\frac{\sigma_x}{z_{l_1}^2} (A^T A)^{-1} + C_v^{l_2})
-%\end{equation}
-%% 
-%as $z$ and $g$ are independent, we can choose a large enough $L$ and merge the sums, and bring the division by $L$ outside of the product
-%
-%\begin{equation}
-%p(X \mid C_{1..k}) \sim \frac{1}{L^N} \prod_{n=1}^N  \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l)
-%\end{equation}
-%%
-%taking the logarithm we get
-%
-%\begin{equation}
-%\log p(X \mid C_{1..k}) \sim - N \log(L) + \sum_{n=1}^N \log \left[ \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l) \right]
-%\end{equation}
-%
+taking the logarithm we get
+
+\begin{equation}
+\log p(X \mid C_{1..k}) \sim - N \log(L) + \sum_{n=1}^N \log \left[ \sum_{l=1}^L \frac{1}{z_{l_1}^{D_v}}  \mathcal{N}(\frac{1}{z_l} A^{+}x_n; 0,\frac{\sigma_x}{z_l^2} (A^T A)^{-1} + C_v^l) \right]
+\end{equation}
+
 \end{document}

@@ -187,5 +187,7 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
                 end
             end
         end
+    else
+        error('nonexistent cc method');
     end
 end

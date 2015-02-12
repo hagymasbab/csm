@@ -11,7 +11,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'burnin',0,@isnumeric);
     addParameter(parser,'stoppingDiff',0,@isnumeric);      
     addParameter(parser,'computeLikelihood',true,@islogical);      
-    addParameter(parser,'likelihoodSamples',50,@isnumeric);   
+    addParameter(parser,'likelihoodSamples',100,@isnumeric);   
     addParameter(parser,'cctComponents',false,@islogical); 
     addParameter(parser,'savingCode',0,@isnumeric);   
     addParameter(parser,'skipCheck',false,@islogical);
@@ -138,9 +138,9 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         % likelihoods for real images tend to be smaller, so we have to
         % calculate the likelihood with recording coefficients and
         % exponents at every step in that case
-        use_scinot = ~params.syntheticData;
+        % use_scinot = ~params.syntheticData;
         % calculate log-likelihood on full dataset
-        state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky,'scientific',use_scinot);
+        state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X);
         best_loglike = state.loglike;
         if params.verbose>1
             fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
@@ -266,8 +266,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         state.matrix_norms = {};
         for i=1:ge.k
             state.matrix_norms{i} = norm(cc_next{i});
-        end
-        state_sequence{step+1} = state;                
+        end                       
                 
         if params.verbose > 1
             synstr = '';
@@ -279,7 +278,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         
         if params.computeLikelihood
             % calculate log-likelihood on full dataset
-            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X,'cholesky',cholesky,'scientific',use_scinot);
+            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X);
             best_so_far = false;
             if state.loglike > best_loglike
                 best_loglike = state.loglike;
@@ -290,10 +289,12 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             end
         end
         
+        state_sequence{step+1} = state; 
+        
         if params.syntheticData
-            save('iter.mat','state_sequence','goal_cc','-v7.3');
+            save('iter.mat','state_sequence','goal_cc','ge_saved','-v7.3');
         else
-            save('iter.mat','state_sequence','-v7.3');            
+            save('iter.mat','state_sequence','ge_saved','-v7.3');            
         end
         
         if ~params.computeLikelihood || best_so_far

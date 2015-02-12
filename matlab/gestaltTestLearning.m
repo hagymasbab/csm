@@ -1,18 +1,20 @@
-function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,filterset,dataset,karklin)    
+function gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dataset,karklin)    
             
     %filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
     
     if strcmp(dataset,'synthetic')
         genComps = true;
-        genData = true;        
+        genData = true;
+        filterset = 'gabor_4or';
     else
         genComps = false;
         genData = false;
+        filterset = 'OF';
     end
     
     ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',N,'filters',filterset, ...
         'obsVar',0.1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',false, ...
-        'generateComponents',genComps,'generateData',genData,'componentShape','block');
+        'generateComponents',genComps,'generateData',genData,'componentShape','oriented-gabors');
 
     if strcmp(dataset,'synthetic')
         X = ge.X;
