@@ -1,8 +1,14 @@
-function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,obsNoise,reset,sampler)
+function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,obsNoise,reset,sampler,breakdownSamples)
+    if sum(timings~=timings(1)) > 0
+        error('cannot break down samples if timings are not equal');
+    end
     % models need to have the same dimensions and only differ in their
     % parametrisation
     if ~iscell(models)
         models = {models};
+    end
+    if ~iscell(stimuli)
+        stimuli = mat2cell(stimuli,ones(1,size(stimuli,1)));
     end
     nMod = size(models,2);
     Dv = models{1}.Dv;
@@ -13,12 +19,18 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
     end
     k = max(ks);
     totalSamples = sum(timings);
-    ends = cumsum(timings);
-    starts = [1 ends(1:end-1)+1];
     nStim = size(stimuli,2);
-    vsamp = zeros(nMod,nTrials,totalSamples,B,Dv);
-    gsamp = zeros(nMod,nTrials,totalSamples,k);
-    zsamp = zeros(nMod,nTrials,totalSamples);
+    if ~breakdownSamples
+        ends = cumsum(timings);
+        starts = [1 ends(1:end-1)+1];        
+        vsamp = zeros(nMod,nTrials,totalSamples,B,Dv);
+        gsamp = zeros(nMod,nTrials,totalSamples,k);
+        zsamp = zeros(nMod,nTrials,totalSamples);
+    else
+        vsamp = zeros(nMod,nTrials,nStim,timings(1),B,Dv);
+        gsamp = zeros(nMod,nTrials,nStim,timings(1),k);
+        zsamp = zeros(nMod,nTrials,nStim,timings(1));
+    end
     for m = 1:nMod
         fprintf('Model %d/%d ',nMod,m);
         if strcmp(models{m}.prior,'gamma') 
@@ -37,7 +49,7 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
                 actstim = zeros(models{m}.B,models{m}.Dx);
                 % TODO repmat
                 for bb = 1 : models{m}.B
-                    actstim(bb,:) = stimuli{s} + obsNoise * randn(size(stimuli{s}));
+                    actstim(bb,:) = stimuli{s}(:) + obsNoise * randn(size(stimuli{s}));
                 end
                 models{m}.X(1,:,:) = actstim;
                 %viewImage(models{m}.X(1,1,:));pause
@@ -50,15 +62,15 @@ function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,
                 end
                 
                 % store results
-%                 actlength = ends(s) - starts(s) + 1;
-%                 vsamp(m,t,starts(s):ends(s),:,:) = reshape(cs(:,models{m}.k+1:end),[actlength B Dv]);
-%                 gsamp(m,t,starts(s):ends(s),:) = cs(:,1:models{m}.k);
-%                 zsamp(m,t,starts(s):ends(s)) = zs;
-                
-                vsamp(m,t,starts(s):ends(s),:,:) = vs;
-                gsamp(m,t,starts(s):ends(s),1:models{m}.k) = gs;
-                zsamp(m,t,starts(s):ends(s)) = zs;
-                
+                if ~breakdownSamples
+                    vsamp(m,t,starts(s):ends(s),:,:) = vs;
+                    gsamp(m,t,starts(s):ends(s),1:models{m}.k) = gs;
+                    zsamp(m,t,starts(s):ends(s)) = zs;
+                else
+                    vsamp(m,t,s,:,:,:) = vs;
+                    gsamp(m,t,s,:,1:models{m}.k) = gs;
+                    zsamp(m,t,s,:) = zs;
+                end
                 
                 % set endpoint as next initial
                 if ~reset                    
