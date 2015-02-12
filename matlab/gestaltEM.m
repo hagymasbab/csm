@@ -11,7 +11,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'burnin',0,@isnumeric);
     addParameter(parser,'stoppingDiff',0,@isnumeric);      
     addParameter(parser,'computeLikelihood',true,@islogical);      
-    addParameter(parser,'likelihoodSamples',100,@isnumeric);   
+    addParameter(parser,'likelihoodSamples',50,@isnumeric);   
     addParameter(parser,'cctComponents',false,@islogical); 
     addParameter(parser,'savingCode',0,@isnumeric);   
     addParameter(parser,'skipCheck',false,@islogical);

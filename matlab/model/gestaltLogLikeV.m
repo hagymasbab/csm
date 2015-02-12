@@ -4,9 +4,13 @@ function loglike = gestaltLogLikeV(V,g,ge,precision,iC,Cv)
     end
     B = size(V,1);        
     
+    illConditioned = false;
     if ~precision
         if isempty(Cv)
-            Cv = componentSum(g,ge.cc);
+            Cv = componentSum(g,ge.cc);            
+        end
+        if rcond(Cv) < 1e-15
+            illConditioned = true;
         end
         if ge.sparseComponents
             Cv = sparse(Cv);
@@ -26,7 +30,11 @@ function loglike = gestaltLogLikeV(V,g,ge,precision,iC,Cv)
         
         if ~precision
             if isempty(iC)
-                quad = quad + vb' * (Cv \ vb);
+                if ~illConditioned
+                    quad = quad + vb' * (Cv \ vb);
+                else
+                    quad = quad + vb' * pinv(Cv) * vb;
+                end
             else
                 quad = quad + vb' * iC * vb;
             end
