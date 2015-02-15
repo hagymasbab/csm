@@ -87,6 +87,9 @@ function gabors = matchGabors(A,compare,randseed)
         end               
         gabors(:,i) = reshape(act_gabor,imSize^2,1);
     end
+    
+    save('filtermatching.mat','orients','lambdas','maxX','maxY');
+    
     figure;
     hist(orients,20);
     title('Orients');
