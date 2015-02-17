@@ -1,10 +1,17 @@
-function [gRF,seeds] = gestaltGReceptiveFields(ge,cc,sampleNum)
+function [gRF,seeds] = gestaltGReceptiveFields(ge,cc,sampleNum,plothist)
+    close all;
     ge.cc = cc;
     ge.obsVar = 0.001;
     gRF = cell(1,ge.k);
     seeds = cell(1,ge.k);
+    transformed_loc = cell(1,ge.k);
     z = 1;
+    if plothist
+        load filtermatching
+        vertnum = 3;
+    end
     for i = 1:ge.k
+        printCounter(i,'maxVal',ge.k,'stringVal','Component');
         act_G = zeros(ge.k,1);
         act_G(i,1) = 10;
         allX = zeros(sampleNum*ge.B,ge.Dx);
@@ -17,6 +24,28 @@ function [gRF,seeds] = gestaltGReceptiveFields(ge,cc,sampleNum)
         corrmat = corrmat .* (ones(ge.Dx)-eye(ge.Dx));
         recField = max(corrmat);
         gRF{i} = recField;
-        seeds{i} = sum(corrmat);
+        seeds{i} = sum(abs(corrmat));
+        if plothist
+            transformed_loc{i} = exp(seeds{i}/5);
+            select_idx = seeds{i} > mean([mean(seeds{i});max(seeds{i})]);
+            %sum(select_idx)
+            %ymax = 10;
+            subplot(vertnum,ge.k,i);
+            hist(orients(select_idx));
+            xlim([0 180]);
+            %ylim([0 ymax]);
+            subplot(vertnum,ge.k,i+ge.k);        
+            hist(maxX(select_idx'));
+            xlim([1 sqrt(ge.Dx)]);
+            %ylim([0 ymax]);
+            subplot(vertnum,ge.k,i+2*ge.k);
+            hist(maxY(select_idx'));
+            xlim([1 sqrt(ge.Dx)]);
+            %ylim([0 ymax]);
+        end
+    end        
+    if plothist
+        figure;
+        viewImageSet(transformed_loc);
     end
 end
