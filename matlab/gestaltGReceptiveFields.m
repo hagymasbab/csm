@@ -1,5 +1,5 @@
 function [gRF,seeds] = gestaltGReceptiveFields(ge,cc,sampleNum,plothist)
-    close all;
+    %close all;
     ge.cc = cc;
     ge.obsVar = 0.001;
     gRF = cell(1,ge.k);
@@ -9,15 +9,20 @@ function [gRF,seeds] = gestaltGReceptiveFields(ge,cc,sampleNum,plothist)
     if plothist
         load filtermatching
         vertnum = 3;
+        figure;
     end
     for i = 1:ge.k
         printCounter(i,'maxVal',ge.k,'stringVal','Component');
         act_G = zeros(ge.k,1);
         act_G(i,1) = 10;
-        allX = zeros(sampleNum*ge.B,ge.Dx);
-        for s = 1:sampleNum
-            X = gestaltAncestralSample(ge,act_G,z);
-            allX((s-1)*ge.B+1:s*ge.B,:) = X;            
+        if ge.B > 1
+            allX = zeros(sampleNum*ge.B,ge.Dx);
+            for s = 1:sampleNum
+                X = gestaltAncestralSample(ge,act_G,z);
+                allX((s-1)*ge.B+1:s*ge.B,:) = X;            
+            end
+        else
+            allX = gestaltAncestralSample(ge,act_G,z,'N',sampleNum);
         end
         %recField = zeros(ge.Dx,1);
         corrmat = corr(allX);
@@ -30,16 +35,22 @@ function [gRF,seeds] = gestaltGReceptiveFields(ge,cc,sampleNum,plothist)
             select_idx = seeds{i} > mean([mean(seeds{i});max(seeds{i})]);
             %sum(select_idx)
             %ymax = 10;
-            subplot(vertnum,ge.k,i);
+            %subplot(vertnum,ge.k,i);
+            subplot(ge.k,vertnum,(i-1)*vertnum+1);
             hist(orients(select_idx));
-            xlim([0 180]);
+            if i==1;title('Orientations');end;
+            xlim([0 180]);           
             %ylim([0 ymax]);
-            subplot(vertnum,ge.k,i+ge.k);        
+            %subplot(vertnum,ge.k,i+ge.k);  
+            subplot(ge.k,vertnum,(i-1)*vertnum+2);
             hist(maxX(select_idx'));
+            if i==1;title('Vertical location');end;
             xlim([1 sqrt(ge.Dx)]);
             %ylim([0 ymax]);
-            subplot(vertnum,ge.k,i+2*ge.k);
+            %subplot(vertnum,ge.k,i+2*ge.k);
+            subplot(ge.k,vertnum,(i-1)*vertnum+3);
             hist(maxY(select_idx'));
+            if i==1;title('Horizontal location');end;
             xlim([1 sqrt(ge.Dx)]);
             %ylim([0 ymax]);
         end
