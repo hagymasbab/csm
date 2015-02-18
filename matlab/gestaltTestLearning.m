@@ -18,8 +18,7 @@ function ge = gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dat
 
     if strcmp(dataset,'synthetic')
         X = ge.X;
-        synDat = true;
-        comps = cell(nTrials,nSteps+1,ge.k);
+        synDat = true;        
     else
         datafile = sprintf('patches_%s_%d.mat',dataset,Dx);
         load(datafile);
@@ -28,6 +27,7 @@ function ge = gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dat
     end    
         
     ll = zeros(nTrials,nSteps+1);
+    comps = cell(nTrials,nSteps+1,ge.k);
     
     for t=1:nTrials
         printCounter(t,'stringVal','Trial','maxVal',nTrials);
@@ -35,17 +35,12 @@ function ge = gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dat
         load iter;
         for s=1:nSteps+1
             ll(t,s) = state_sequence{s}.loglike;
-            if strcmp(dataset,'synthetic')
-                %state_sequence{s}.estimated_components
-                for kk=1:ge.k
-                    comps{t,s,kk} = state_sequence{s}.estimated_components{kk};
-                end
+            for kk=1:ge.k
+                comps{t,s,kk} = state_sequence{s}.estimated_components{kk};
             end
         end
         
-        if strcmp(dataset,'synthetic')
-            save('comps.mat','comps');
-        end
+        save('comps.mat','comps');
         save('loglikes.mat','ll');
     end
     
