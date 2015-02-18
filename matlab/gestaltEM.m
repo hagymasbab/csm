@@ -213,9 +213,6 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         
         if strcmp(params.computeLikelihood,'batch')
             state.batch_loglike_pre = gestaltLogLikelihood(ge,params.likelihoodSamples,ge.X);
-            if params.verbose>1
-                fprintf('Log-likelihood on actual batch before learning: %f\n',state.batch_loglike_pre);
-            end
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -297,7 +294,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         elseif strcmp(params.computeLikelihood,'batch')
             state.batch_loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,ge.X);
             if params.verbose>1
-                fprintf('Log-likelihood on actual batch after learning: %f\n',state.batch_loglike);
+                fprintf('Log-likelihood on actual batch before learning: %f\n',state.batch_loglike_pre);
+                fprintf('                               after learning: %f\n',state.batch_loglike);
             end
         end
         
