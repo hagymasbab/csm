@@ -1,4 +1,4 @@
-function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin,k,nullcomp,maxStep,skipCheck,likelihood)    
+function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin,k,nullcomp,maxStep,skipCheck,likelihood,learningRate)    
 
     % TODO try to create the patch DB and filters if needed
     
@@ -37,7 +37,7 @@ function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin
     end        
     
     % this means automatically adapting the LR after the first gradient computation 
-    learningRate = 0;
+    %learningRate = 0;
     
     % start learning
     gestaltEM(ge,patchDB',embatch,maxStep,samplesize,'shuffle','syntheticData',false,'initCond',initCond,'learningRate',learningRate,'burnin',burnin,'computeLikelihood',likelihood,'verbose',2,'skipCheck',skipCheck);
