@@ -10,7 +10,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     addParameter(parser,'syntheticData',true,@islogical);    
     addParameter(parser,'burnin',0,@isnumeric);
     addParameter(parser,'stoppingDiff',0,@isnumeric);      
-    addParameter(parser,'computeLikelihood',true,@islogical);      
+    addParameter(parser,'computeLikelihood','none');      
     addParameter(parser,'likelihoodSamples',50,@isnumeric);   
     addParameter(parser,'cctComponents',false,@islogical); 
     addParameter(parser,'savingCode',0,@isnumeric);   
@@ -134,16 +134,16 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     state.estimated_components = ccInit;
     state.samples = [];    
     
-    if params.computeLikelihood
+    if strcmp(params.computeLikelihood,'full')
         % likelihoods for real images tend to be smaller, so we have to
         % calculate the likelihood with recording coefficients and
         % exponents at every step in that case
         % use_scinot = ~params.syntheticData;
         % calculate log-likelihood on full dataset
-        state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X);
-        best_loglike = state.loglike;
+        state.full_loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X);
+        best_loglike = state.full_loglike;
         if params.verbose>1
-            fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
+            fprintf('Log-likelihood on full dataset: %f\n',state.full_loglike);
         end
     end
     
@@ -211,6 +211,13 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             end
         end        
         
+        if strcmp(params.computeLikelihood,'batch')
+            state.batch_loglike_pre = gestaltLogLikelihood(ge,params.likelihoodSamples,ge.X);
+            if params.verbose>1
+                fprintf('Log-likelihood on actual batch before learning: %f\n',state.batch_loglike_pre);
+            end
+        end
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
         % M - step            
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,16 +283,21 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             fprintf(' maxreldiff %.2e %s skipped %d\n',maxel_diff_rel,synstr,skipped);
         end
         
-        if params.computeLikelihood
+        if strcmp(params.computeLikelihood,'full')
             % calculate log-likelihood on full dataset
-            state.loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X);
+            state.full_loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,X);
             best_so_far = false;
-            if state.loglike > best_loglike
-                best_loglike = state.loglike;
+            if state.full_loglike > best_loglike
+                best_loglike = state.full_loglike;
                 best_so_far = true;
             end
             if params.verbose>1
-                fprintf('Log-likelihood on full dataset: %f\n',state.loglike);
+                fprintf('Log-likelihood on full dataset: %f\n',state.full_loglike);
+            end
+        elseif strcmp(params.computeLikelihood,'batch')
+            state.batch_loglike = gestaltLogLikelihood(ge,params.likelihoodSamples,ge.X);
+            if params.verbose>1
+                fprintf('Log-likelihood on actual batch after learning: %f\n',state.batch_loglike);
             end
         end
         
@@ -297,7 +309,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             save('iter.mat','state_sequence','ge_saved','-v7.3');            
         end
         
-        if ~params.computeLikelihood || best_so_far
+        if ~strcmp(params.computeLikelihood,'full') || best_so_far
             cc_saved = cc_next;        
             save(savename,'cc_saved','ge_saved');
         end

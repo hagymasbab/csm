@@ -69,8 +69,9 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
         if params.nullComponent
             cc{end+1} = eye(ge.Dv);
         end
+        ge.k = length(cc);
         % calculate the receptive fields too
-        receptiveFields = gestaltGReceptiveFields(ge,cc,200);        
+        receptiveFields = gestaltGReceptiveFields(ge,cc,1000,false);        
     
     elseif strcmp(params.method,'block')
         if params.overlapping            
@@ -94,8 +95,9 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
         if params.nullComponent
             cc{end+1} = eye(ge.Dv);
         end
+        ge.k = length(cc);
         
-        receptiveFields = gestaltGReceptiveFields(ge,cc,100);   
+        receptiveFields = gestaltGReceptiveFields(ge,cc,1000,false);   
         
     elseif strcmp(params.method,'vertical-bars')
         

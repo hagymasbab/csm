@@ -24,7 +24,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParameter(p,'nullComponent',false,@islogical);
     addParameter(p,'overlapping',false,@islogical);
     addParameter(p,'generateComponents',false,@islogical);
-    addParameter(p,'componentShape','block');
+    addParameter(p,'componentShape','oriented-gabors');
     addParameter(p,'generateData',false,@islogical);
     addParameter(p,'cc',{});
     parse(p,varargin{:});
