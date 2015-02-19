@@ -1,4 +1,4 @@
-function ge = gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dataset,karklin)    
+function ge = gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dataset,karklin,like_full)    
             
     %filterfile = sprintf('filters_%s_%d.mat',filterset,Dx);
     
@@ -29,19 +29,33 @@ function ge = gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dat
     ll = zeros(nTrials,nSteps+1);
     comps = cell(nTrials,nSteps+1,ge.k);
     
+    if like_full
+        like_comp = 'full';
+    else
+        like_comp = 'batch';
+    end
+    
     for t=1:nTrials
-        printCounter(t,'stringVal','Trial','maxVal',nTrials);
-        gestaltEM(ge,X,emBatchSize,nSteps,nSamples,'shuffle','syntheticData',synDat,'burnin',20,'verbose',0,'cctComponents',karklin,'computeLikelihood',true);
+        printCounter(t,'stringVal','Trial','maxVal',nTrials);        
+        gestaltEM(ge,X,emBatchSize,nSteps,nSamples,'shuffle','syntheticData',synDat,'burnin',20,'verbose',0,'cctComponents',karklin,'computeLikelihood',like_comp);
         load iter;
         for s=1:nSteps+1
-            ll(t,s) = state_sequence{s}.loglike;
+            if like_full
+                ll(t,s) = state_sequence{s}.full_loglike;
+            else
+                if s==1
+                    ll(t,s) = state_sequence{s+1}.batch_loglike_pre;
+                else
+                    ll(t,s) = state_sequence{s}.batch_loglike;
+                end
+            end
             for kk=1:ge.k
                 comps{t,s,kk} = state_sequence{s}.estimated_components{kk};
             end
         end
         
         save('comps.mat','comps');
-        save('loglikes.mat','ll');
+        save('loglikes.mat','ll','like_comp');
     end
     
 end
