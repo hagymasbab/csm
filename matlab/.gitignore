@@ -3,6 +3,7 @@
 # !patches_*_*.mat - don't add patches for now as they are pretty big
 !filters_*_*.mat
 !wnodes_*.mat
+!filtermatching.mat
 # ignore generated figures
 *.fig
 # also temporary code files created by matlab
