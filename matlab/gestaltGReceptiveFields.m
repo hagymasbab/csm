@@ -12,7 +12,9 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
     all_corrs = cell(1,ge.k);
     all_vars = zeros(ge.k,ge.Dv);
     for i = 1:ge.k
-        printCounter(i,'maxVal',ge.k,'stringVal','Component');
+        if plothist
+            printCounter(i,'maxVal',ge.k,'stringVal','Component');
+        end
         all_vars(i,:) = diag(cc{i})';
         all_corrs{i} = corrcov(cc{i});        
         act_G = zeros(ge.k,1);
@@ -36,7 +38,7 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
     
     %figure;viewImageSet(all_corrs);
     corr_mean = componentSum(1/ge.k,all_corrs);
-    figure;viewImage(corr_mean);
+    %figure;viewImage(corr_mean);
     %sum(sum(corr_mean<0))
     corr_std = zeros(ge.Dv);
     for i = 1:ge.k       
@@ -53,6 +55,9 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
 
         act_var = diag(cc{i});
         select_idx = act_var > var_mean + var_std;
+        if sum(select_idx) == 0
+            select_idx = (1:ge.Dv)';
+        end
         angstds(i,1) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx)))) ;
         
         if plothist
@@ -65,17 +70,20 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
             xlim([0 180]);                
             xlabel(sprintf('Angular STD %f',angstds(i,1)));
         end
-
+        
         select_idx = [];
         for j = 1:ge.Dv
             for k = j+1:ge.Dv
-                if all_corrs{i}(j,k) > 0 && all_corrs{i}(j,k) > (corr_mean(j,k) + 2*corr_std(j,k))
+                if all_corrs{i}(j,k) > 0 && all_corrs{i}(j,k) > (corr_mean(j,k) + corr_std(j,k))
                     if ~any(select_idx==j);select_idx = [select_idx;j];end;
                     if ~any(select_idx==k);select_idx = [select_idx;k];end;
                 end
             end
-        end       
-        angstds(i,2) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx)))) ;
+        end
+        if sum(select_idx) == 0
+            select_idx = (1:ge.Dv)';
+        end
+        angstds(i,2) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx))));
         
         if plothist
             subplot(ge.k,vertnum,(i-1)*vertnum+2);
@@ -88,13 +96,16 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
         select_idx = [];
         for j = 1:ge.Dv
             for k = j+1:ge.Dv
-                if  all_corrs{i}(j,k) < 0 && all_corrs{i}(j,k) < corr_mean(j,k) - 2*corr_std(j,k)
+                if  all_corrs{i}(j,k) < 0 && all_corrs{i}(j,k) < corr_mean(j,k) - corr_std(j,k)
                     if ~any(select_idx==j);select_idx = [select_idx;j];end;
                     if ~any(select_idx==k);select_idx = [select_idx;k];end;
                 end
             end
-        end          
-        angstds(i,3) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx)))) ;
+        end    
+        if sum(select_idx) == 0
+            select_idx = (1:ge.Dv)';
+        end
+        angstds(i,3) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx))));
 
         if plothist
             subplot(ge.k,vertnum,(i-1)*vertnum+3);

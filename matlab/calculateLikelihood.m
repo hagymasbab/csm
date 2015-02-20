@@ -1,10 +1,11 @@
 function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,calculate)
 
     setrandseed(randseed);
-
-    load(dataset);
-    N_all = size(patchDB,2);
-    X_test = patchDB(:,chooseKfromN(N_test,N_all))';        
+    if strcmp(calculate,'likelihood')
+        load(dataset);
+        N_all = size(patchDB,2);
+        X_test = patchDB(:,chooseKfromN(N_test,N_all))';        
+    end
     
     load(iterfile);
     load(gefile);
@@ -41,16 +42,27 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
             for kk = 1:ge.k
               norms(i,kk) = norm(act_cc{kk});
               for other = kk+1:ge.k
-                  dist = covcompRootMeanSquare(act_cc(kk),act_cc(other),[1]);
+                  dist = covcompRootMeanSquare(act_cc(kk),act_cc(other),1);
                   distances(i,met_idx) = dist;
                   met_idx = met_idx+1;
               end
             end
             save('iter_norms.mat','norms','distances');
         elseif strcmp(calculate,'grf')
-            [~,seeds,angstds,~] = gestaltGReceptiveFields(ge,cc_act,10000,false);
+            if i>1
+%                 [~,seeds,angstds,~] = gestaltGReceptiveFields(ge,act_cc,10000,false);
+            else
+%                 angstds = circ_rad2ang(sqrt(2)) * ones(ge.k,3);
+%                 seeds = {};
+%                 for kk = 1:ge.k
+%                     seeds{end+1} = zeros(ge.Dv,1);
+%                 end
+                pixel_comps = {};
+                angular_stds = zeros(index,ge.k,3);
+            end
+            [~,seeds,angstds,~] = gestaltGReceptiveFields(ge,act_cc,10000,false);
             pixel_comps{end+1} = seeds;
-            angular_stds{end+1} = angstds;
+            angular_stds(i,:,:) = angstds;
             save('iter_grf.mat','pixel_comps','angular_stds');
         end
     end
