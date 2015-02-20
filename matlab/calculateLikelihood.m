@@ -47,6 +47,11 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
               end
             end
             save('iter_norms.mat','norms','distances');
+        elseif strcmp(calculate,'grf')
+            [~,seeds,angstds,~] = gestaltGReceptiveFields(ge,cc_act,10000,false);
+            pixel_comps{end+1} = seeds;
+            angular_stds{end+1} = angstds;
+            save('iter_grf.mat','pixel_comps','angular_stds');
         end
     end
 end
