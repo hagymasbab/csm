@@ -35,12 +35,12 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
         gRF{i} = recField;
         seeds{i} = sum(abs(corrmat));
     end
-    
-    %figure;viewImageSet(all_corrs);
+        
     corr_mean = componentSum(1/ge.k,all_corrs);
     %figure;viewImage(corr_mean);
     %sum(sum(corr_mean<0))
     corr_std = zeros(ge.Dv);
+    all_corrs = nodiag(all_corrs);
     for i = 1:ge.k       
         corr_std = corr_std + (all_corrs{i}-corr_mean).^2;
     end
@@ -62,6 +62,7 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
         
         if plothist
             if i==1
+                figure;viewImageSet(all_corrs);
                 figure;
             end
             subplot(ge.k,vertnum,(i-1)*vertnum+1);
@@ -71,17 +72,24 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
             xlabel(sprintf('Angular STD %f',angstds(i,1)));
         end
         
+%         select_idx = [];
+%         for j = 1:ge.Dv
+%             for k = j+1:ge.Dv
+%                 if all_corrs{i}(j,k) > 0 && all_corrs{i}(j,k) > (corr_mean(j,k) + corr_std(j,k))
+%                     if ~any(select_idx==j);select_idx = [select_idx;j];end;
+%                     if ~any(select_idx==k);select_idx = [select_idx;k];end;
+%                 end
+%             end
+%         end
+%         if sum(select_idx) == 0
+%             select_idx = (1:ge.Dv)';
+%         end
+        maxel = 50;
+        [~,high_x,high_y] = maxNElements(all_corrs{i},maxel);
         select_idx = [];
-        for j = 1:ge.Dv
-            for k = j+1:ge.Dv
-                if all_corrs{i}(j,k) > 0 && all_corrs{i}(j,k) > (corr_mean(j,k) + corr_std(j,k))
-                    if ~any(select_idx==j);select_idx = [select_idx;j];end;
-                    if ~any(select_idx==k);select_idx = [select_idx;k];end;
-                end
-            end
-        end
-        if sum(select_idx) == 0
-            select_idx = (1:ge.Dv)';
+        for j = 1:length(high_x)
+            if ~any(select_idx==high_x(j));select_idx = [select_idx;high_x(j)];end;
+            if ~any(select_idx==high_y(j));select_idx = [select_idx;high_y(j)];end;
         end
         angstds(i,2) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx))));
         
@@ -93,17 +101,23 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
             xlabel(sprintf('Angular STD %f',angstds(i,2)));
         end
 
+%         select_idx = [];
+%         for j = 1:ge.Dv
+%             for k = j+1:ge.Dv
+%                 if  all_corrs{i}(j,k) < 0 && all_corrs{i}(j,k) < corr_mean(j,k) - corr_std(j,k)
+%                     if ~any(select_idx==j);select_idx = [select_idx;j];end;
+%                     if ~any(select_idx==k);select_idx = [select_idx;k];end;
+%                 end
+%             end
+%         end    
+%         if sum(select_idx) == 0
+%             select_idx = (1:ge.Dv)';
+%         end
+        [~,high_x,high_y] = maxNElements(-all_corrs{i},maxel);
         select_idx = [];
-        for j = 1:ge.Dv
-            for k = j+1:ge.Dv
-                if  all_corrs{i}(j,k) < 0 && all_corrs{i}(j,k) < corr_mean(j,k) - corr_std(j,k)
-                    if ~any(select_idx==j);select_idx = [select_idx;j];end;
-                    if ~any(select_idx==k);select_idx = [select_idx;k];end;
-                end
-            end
-        end    
-        if sum(select_idx) == 0
-            select_idx = (1:ge.Dv)';
+        for j = 1:length(high_x)
+            if ~any(select_idx==high_x(j));select_idx = [select_idx;high_x(j)];end;
+            if ~any(select_idx==high_y(j));select_idx = [select_idx;high_y(j)];end;
         end
         angstds(i,3) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx))));
 

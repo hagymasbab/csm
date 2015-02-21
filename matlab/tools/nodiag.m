@@ -3,8 +3,8 @@ function ndM = nodiag(M)
         M = {M};        
     end
     ndM = cell(size(M));
-    for i = size(M,1)
-        for j = size(M,2)
+    for i = 1:size(M,1)
+        for j = 1:size(M,2)
             ndM{i,j} = M{i,j} - diag(diag(M{i,j}));
         end
     end
