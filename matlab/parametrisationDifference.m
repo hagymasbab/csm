@@ -28,23 +28,30 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
         um = true;
         subplot(length(cc),hornum,(i-1)*hornum + 1);
         viewImage(ccm{i},'useMax',um);
+        if i==1;title('Corr.mat.');end;
+        ylabel(sprintf('Component %d',i));
         freezeColors
         subplot(length(cc),hornum,(i-1)*hornum + 2);
         viewImage(bcm{i},'useMax',um);
+        if i==1;title('Corr.mat. KL');end;
         freezeColors
         subplot(length(cc),hornum,(i-1)*hornum + 3);
         viewImage(diffcm,'useMax',um);
+        if i==1;title('Corr.mat. Diff');end;
         colormap(cmp_diff);
         freezeColors
         
         subplot(length(cc),hornum,(i-1)*hornum + 4);
         viewImage(cst{i},'useMax',um);
+        if i==1;title('Pixel');end;
         freezeColors
         subplot(length(cc),hornum,(i-1)*hornum + 5);
         viewImage(bst{i},'useMax',um);
+        if i==1;title('Pixel KL');end;
         freezeColors
         subplot(length(cc),hornum,(i-1)*hornum + 6);
         viewImage(diffst,'useMax',um);
+        if i==1;title('Pixel Diff');end;
         colormap(cmp_diff);
         freezeColors
     end
