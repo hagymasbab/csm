@@ -1,5 +1,6 @@
-function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,modelset,sampler,Dx)
+function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo,calculation,stimtype,modelset,sampler,Dx,randseed)
     close all;        
+    setrandseed(randseed);
     
     nOrient = 4; % this is true for gabor_4or_??.mat only
     shift = nOrient/2; 
@@ -15,8 +16,8 @@ function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo
         sh1 = 2; % single shift 
         sh2 = 4; % double shift
     else
-        sh1 = 1;
-        sh2 = 2;
+        sh1 = 2;
+        sh2 = 3;
     end
     locations = [ic_idx-(sh2*rfsinarow)+sh2 ic_idx-(sh1*rfsinarow)+sh1 ic_idx+(sh1*rfsinarow)-sh1 ic_idx+(sh2*rfsinarow)-sh2];    
     filterlists = ([ic_idx locations] - 1) .* nOrient + 2;
@@ -25,7 +26,7 @@ function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo
     model_names = {};
     
     % create base model
-    filterfile = sprintf('gabor_4or_%d.mat',sqrt(Dx));
+    filterfile = sprintf('filters_gabor_4or_%d.mat',Dx);
     B = 1;
     g_shape = 1;
     z_shape = 1;
@@ -40,7 +41,7 @@ function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo
         cc = filterList2Components(filterlists,true,Dx);    
         k = size(cc,2); 
 
-        ge1 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'filters',filterfile,'cc',cc, ...
+        ge1 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'filters','gabor_4or','cc',cc, ...
             'obsVar',sigma,'z_shape',z_shape,'z_scale',z_scale, ...
             'prior','gamma','g_shape',g_shape,'g_scale',g_mean/g_shape,'null_shape',g_shape,'null_scale',g_mean/g_shape);
         models{end+1} = ge1;
@@ -63,7 +64,7 @@ function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo
     elseif strcmp(modelset,'gdim')
         cc = filterList2Components(filterlists,true,Dx);
         k = size(cc,2); 
-        ge1 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'filters',filterfile,'cc',cc, ...
+        ge1 = gestaltCreate('temp','Dx',Dx,'k',k,'B',B,'N',1,'nullComponent',true,'filters','gabor_4or','cc',cc, ...
             'obsVar',sigma,'z_shape',z_shape,'z_scale',z_scale, ...
             'prior','gamma','g_shape',g_shape,'g_scale',g_mean/g_shape,'null_shape',g_shape,'null_scale',g_mean/g_shape);
         models{end+1} = ge1;
@@ -156,7 +157,7 @@ function [vdata,zdata,vsamp] = gestaltPriorCorrelations(nTrials,timings,appendTo
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if isempty(appendTo)
-        [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,0,reset,sampler);
+        [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,0,reset,sampler,false);
     else
         load(appendTo);
     end

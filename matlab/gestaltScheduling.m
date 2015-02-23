@@ -1,5 +1,5 @@
 function [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,models,nTrials,obsNoise,reset,sampler,breakdownSamples)
-    if sum(timings~=timings(1)) > 0
+    if sum(timings~=timings(1)) > 0 && breakdownSamples
         error('cannot break down samples if timings are not equal');
     end
     % models need to have the same dimensions and only differ in their
