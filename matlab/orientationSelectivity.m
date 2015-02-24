@@ -5,6 +5,8 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     
     nSamples = 80;
     burnin = 20;
+%     nSamples = 20;
+%     burnin = 5;
     
     if isempty(cc)
         Dx = 64;    
@@ -14,23 +16,26 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
         py = 0.5;
         central_orient = 0;
     else
-        Dx = size(cc{1});
+        Dx = size(cc{1},1);
         k = length(cc);
-        % TODO calculate orientation, location and index of a cell
+        % calculate orientation, location and index of a cell
         load(sprintf('filtermatching_%d.mat',Dx));
-        cell_idx = 1;
-        central_orient = orients(1,1);
-        px = maxX
+        %load('filtermatching_576.mat');
+        cell_idx = 3;
+        central_orient = orients(cell_idx,1);
+        px = maxX(1,cell_idx) / sqrt(Dx);
+        py = maxY(1,cell_idx) / sqrt(Dx);
     end
     
 
     %contrasts = [0.05 0.2 0.8];
-    contrasts = [0.04 1];
+    contrasts = [0.04 1 10];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
-    orient_shift = 45 * pi/180;    
+    stepnum = 4;
+    orient_shift = (45/stepnum) * pi/180;    
     orients = central_orient;     
-    for i=1:2
+    for i=1:stepnum
         orients = [central_orient-i*orient_shift orients central_orient+i*orient_shift];
     end        
         
@@ -47,33 +52,41 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
             end
             stimuli{1,length(orients)*(z-1)+o} = act_stimulus(:);
         end
-    end
+    end        
     
     viewImageSet(stimuli,'max',false);
+    %pause
     
     % set timings
     timings = (nSamples+burnin) * ones(1,length(contrasts)*length(orients));                
     
+    % create model
+    if isempty(cc)
+        ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','gabor_4or','obsVar',1, ...
+            'nullComponent',false,'generateComponents',true,'generateData',false);
+    else
+        ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','OF','obsVar',1,'cc',cc, ...
+            'nullComponent',false,'generateComponents',false,'generateData',false);
+    end
+    figure;viewImage(ge.A(:,cell_idx)','useMax',true);
+    
     if loadSamples
         load('bin/save_orient_select_samples.mat');
-    else
-        % create model
-        if isempty(cc)
-            ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','gabor_4or','obsVar',1, ...
-                'nullComponent',false,'generateComponents',true,'generateData',false);
-        else
-            ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','OF','obsVar',1,'cc',cc, ...
-                'nullComponent',false,'generateComponents',false,'generateData',false);
-        end
+    else        
         % run scheduling
         [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,{ge},nTrials,ge.obsVar,true,'gibbs',false);
         save('bin/save_orient_select_samples.mat','vsamp','gsamp','zsamp');
     end
+
+    % calculate rates - not good for only 1 trial
+%     vdata = squeeze(vsamp(1,:,:,1,cell_idx)); % ntrials x all the samples
+%     zdata = squeeze(zsamp(1,:,:));
+%     gdata = squeeze(gsamp(1,:,:,:)); % ntrials x totalsamples x k
     
-    % calculate rates
-    vdata = squeeze(vsamp(1,:,:,1,cell_idx)); % ntrials x all the samples
-    zdata = squeeze(zsamp(1,:,:));
-    gdata = squeeze(gsamp(1,:,:,:)); % ntrials x totalsamples x k
+    vdata = reshape(vsamp(1,:,:,1,cell_idx),[nTrials sum(timings)]); 
+    zdata = reshape(zsamp(1,:,:),[nTrials sum(timings)]);
+    gdata = reshape(gsamp(1,:,:,:),[nTrials sum(timings) k]);
+    
 %     figure;
 %     subplot(2,1,1);
 %     plot(vdata')
@@ -97,13 +110,19 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     end        
             
     %vrate = squeeze(mean(vdata(:,:,:,burnin+1:end),4));
-    vrate = squeeze(mean(v_split,4)); % firing rate for each trial and stimulus nTrials x nContrast x nOrient
-    vmax = squeeze(max(v_split,[],4)); % firing rate for each trial and stimulus nTrials x nContrast x nOrient
-    zrate = squeeze(mean(z_split,4)); % average contrast for each trial and stimulus nTrials x nContrast x nOrient
-    grate = reshape(mean(g_split,4),nTrials,length(contrasts),length(orients),k); % average g for each trial and stimulus nTrials x nContrast x nOrient x k
-    size(grate)
-    vvar = squeeze(var(v_split,0,4)); % variance of firing rate for each trial and stimulus
+%     vrate = squeeze(mean(v_split,4)); % firing rate for each trial and stimulus nTrials x nContrast x nOrient
+%     vvar = squeeze(var(v_split,0,4)); % variance of firing rate for each trial and stimulus
+%     vmax = squeeze(max(v_split,[],4)); % firing rate for each trial and stimulus nTrials x nContrast x nOrient
+%     zrate = squeeze(mean(z_split,4)); % average contrast for each trial and stimulus nTrials x nContrast x nOrient
     
+    vrate = reshape(mean(v_split,4),[nTrials length(contrasts) length(orients)]); % firing rate for each trial and stimulus 
+    vvar = reshape(var(v_split,0,4),[nTrials length(contrasts) length(orients)]); % variance of firing rate for each trial and stimulus
+    vmax = reshape(max(v_split,[],4),[nTrials length(contrasts) length(orients)]); % firing rate for each trial and stimulus
+    zrate = reshape(mean(z_split,4),[nTrials length(contrasts) length(orients)]); % average contrast for each trial and stimulus
+    
+    grate = reshape(mean(g_split,4),nTrials,length(contrasts),length(orients),k); % average g for each trial and stimulus nTrials x nContrast x nOrient x k
+    %size(grate)
+        
     figure
     scatter(zrate(:),vvar(:));
     xlabel('Estimated contrast','FontSize',16);
@@ -130,31 +149,29 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     ylabel('Estimated contrast','FontSize',16);
 %     set(gca,'XTick',[],'YTick',[]);
     
-%     v_t2t = squeeze(var(vrate,0,1)); % nContrast x nOrient
-    v_t2t = [];
-    rmsc = [];
-    trial_avg_z = [];
-    for z=1:length(contrasts)
-        for o=1:length(orients)
-            %v_t2t = [v_t2t; var(vmax(:,z,o))];
-            v_t2t = [v_t2t; var(vrate(:,z,o))];
-            rmsc = [rmsc; rms_contrasts(z)];
-            trial_avg_z = [trial_avg_z; mean(zrate(:,z,o))];
-        end
-    end
-    
-%     rmsc = repmat(rms_contrasts',length(orients),1);
-    figure
-    scatter(rmsc,v_t2t(:));
-    xlabel('RMS contrast of stimulus','FontSize',16);
-    ylabel('Trial-to-trial variance of membrane potential','FontSize',16);
-    %set(gca,'XTick',[],'YTick',[]);
-    
-%     trial_avg_z = squeeze(mean(zrate,1));
-    figure
-    scatter(trial_avg_z(:),v_t2t(:));
-    xlabel('Estimated contrast of stimulus','FontSize',16);
-    ylabel('Trial-to-trial variance of membrane potential','FontSize',16);
+% %     v_t2t = squeeze(var(vrate,0,1)); % nContrast x nOrient
+%     v_t2t = [];
+%     rmsc = [];
+%     trial_avg_z = [];
+%     for z=1:length(contrasts)
+%         for o=1:length(orients)
+%             %v_t2t = [v_t2t; var(vmax(:,z,o))];
+%             v_t2t = [v_t2t; var(vrate(:,z,o))];
+%             rmsc = [rmsc; rms_contrasts(z)];
+%             trial_avg_z = [trial_avg_z; mean(zrate(:,z,o))];
+%         end
+%     end
+%     
+%     figure
+%     scatter(rmsc,v_t2t(:));
+%     xlabel('RMS contrast of stimulus','FontSize',16);
+%     ylabel('Trial-to-trial variance of membrane potential','FontSize',16);
+%     %set(gca,'XTick',[],'YTick',[]);
+%     
+%     figure
+%     scatter(trial_avg_z(:),v_t2t(:));
+%     xlabel('Estimated contrast of stimulus','FontSize',16);
+%     ylabel('Trial-to-trial variance of membrane potential','FontSize',16);
     
     
 %     zdata = reshape(zdata,[nTrials length(contrasts) length(orients) nSamples+burnin]);
@@ -189,29 +206,29 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     ylabel(sprintf('Estimated contrast, mean and std of %d trials',nTrials),'FontSize',16)    
     %set(gca,'XTick',1:5,'XTickLabels',ticlabels,'FontSize',16,'Ytick',[]);
     
-    gcontr = [];
-    gstds = [];
-    for z=1:length(contrasts)
-        actg_m = [];
-        actg_s = [];
-        for o=1:length(orients)
-            size(grate(:,z,o,:))
-            g = reshape(grate(:,z,o,:),nTrials,k); % ntrials x k
-            %size(g)
-            actg_m = [actg_m; mean(g,1)]; % o x k
-            actg_s = [actg_s; std(g,0,1)]; % o x k
-        end
-        %size(actg_m)
-        gcontr = [gcontr; mean(actg_m,1)]; % z x k
-        gstds = [gstds; mean(actg_s,1)]; % z x k
-    end
-    
-    figure;
-    for kk=1:k
-        means = gcontr(:,kk);
-        stds = gstds(:,kk);
-        h = errorbar(means,stds,'LineWidth',2);        
-        hold on;
-    end
-    title('G','FontSize',16);
+%     gcontr = [];
+%     gstds = [];
+%     for z=1:length(contrasts)
+%         actg_m = [];
+%         actg_s = [];
+%         for o=1:length(orients)
+%             %size(grate(:,z,o,:))
+%             g = reshape(grate(:,z,o,:),nTrials,k); % ntrials x k
+%             %size(g)
+%             actg_m = [actg_m; mean(g,1)]; % o x k
+%             actg_s = [actg_s; std(g,0,1)]; % o x k
+%         end
+%         %size(actg_m)
+%         gcontr = [gcontr; mean(actg_m,1)]; % z x k
+%         gstds = [gstds; mean(actg_s,1)]; % z x k
+%     end
+%     
+%     figure;
+%     for kk=1:k
+%         means = gcontr(:,kk);
+%         stds = gstds(:,kk);
+%         h = errorbar(means,stds,'LineWidth',2);        
+%         hold on;
+%     end
+%     title('G','FontSize',16);
 end
