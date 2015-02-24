@@ -8,5 +8,5 @@ function setrandseed(randseed)
     s = RandStream('mt19937ar','Seed',randseed);
     RandStream.setGlobalStream(s);
     randseed = s.Seed;
-    save('lastrandseed.mat','randseed');
+    save('bin/lastrandseed.mat','randseed');
 end

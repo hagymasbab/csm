@@ -17,6 +17,10 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
         Dx = size(cc{1});
         k = length(cc);
         % TODO calculate orientation, location and index of a cell
+        load(sprintf('filtermatching_%d.mat',Dx));
+        cell_idx = 1;
+        central_orient = orients(1,1);
+        px = maxX
     end
     
 
@@ -51,7 +55,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     timings = (nSamples+burnin) * ones(1,length(contrasts)*length(orients));                
     
     if loadSamples
-        load('orient_select_samples.mat');
+        load('bin/save_orient_select_samples.mat');
     else
         % create model
         if isempty(cc)
@@ -63,7 +67,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
         end
         % run scheduling
         [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,{ge},nTrials,ge.obsVar,true,'gibbs',false);
-        save('orient_select_samples.mat','vsamp','gsamp','zsamp');
+        save('bin/save_orient_select_samples.mat','vsamp','gsamp','zsamp');
     end
     
     % calculate rates

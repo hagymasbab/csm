@@ -54,8 +54,9 @@ function ge = gestaltTestLearning(Dx,k,N,emBatchSize,nTrials,nSteps,nSamples,dat
             end
         end
         
-        save('comps.mat','comps');
-        save('loglikes.mat','ll','like_comp');
+        save(sprintf('bin/comps_%s%d_k%d_run%d_iter%d.mat',dataset(1:4),N,k,nTrials,nSteps),'comps');
+        save(sprintf('bin/loglikes_%s%d_k%d_run%d_iter%d.mat',dataset(1:4),N,k,nTrials,nSteps),'ll','like_comp');
+        %save('loglikes.mat','ll','like_comp');
     end
     
 end

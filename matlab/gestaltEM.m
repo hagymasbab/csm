@@ -91,7 +91,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     end
     
     %fprintf('The saving code for this run is %d\n',savingCode);
-    savename = sprintf('cc_%d.mat',savingCode);
+    savename = sprintf('bin/cc_%d.mat',savingCode);
     
     cholesky = cellchol(ccInit);                  
     goal_cc = extractComponents(ge,params.precision);    
@@ -302,9 +302,9 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         state_sequence{step+1} = state; 
         
         if params.syntheticData
-            save('iter.mat','state_sequence','goal_cc','ge_saved','-v7.3');
+            save('bin/iter.mat','state_sequence','goal_cc','ge_saved','-v7.3');
         else
-            save('iter.mat','state_sequence','ge_saved','-v7.3');            
+            save('bin/iter.mat','state_sequence','ge_saved','-v7.3');            
         end
         
         if ~strcmp(params.computeLikelihood,'full') || best_so_far

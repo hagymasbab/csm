@@ -1,6 +1,8 @@
 function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,calculate)
 
     setrandseed(randseed);
+    namepart = iterfile(5:end);
+    
     if strcmp(calculate,'likelihood')
         load(dataset);
         N_all = size(patchDB,2);

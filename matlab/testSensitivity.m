@@ -13,12 +13,12 @@ function testSensitivity(ge,cc,nTrials,nSamples,burnin,loadSamples,plotStuff)
     end
     timings = ones(1,length(stimuli)) * (nSamples + burnin);
     if loadSamples
-        load('testsens.mat');
+        load('bin/save_testsens.mat');
     else
         % run scheduling
         ge.cc = cc;
         [~,gsamp,~] = gestaltScheduling(stimuli,timings,{ge},nTrials,0,true,'gibbs',false);
-        save('testsens.mat','gsamp');
+        save('bin/save_testsens.mat','gsamp');
     end
     
     if plotStuff

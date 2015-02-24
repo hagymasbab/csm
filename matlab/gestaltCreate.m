@@ -104,4 +104,4 @@ function gestalt = gestaltCreate(name,varargin)
     end
     
     %fprintf('Saving results\n');
-    save(strcat('gestalt_',name,'.mat'),'gestalt');
+    %save(strcat('gestalt_',name,'.mat'),'gestalt');
