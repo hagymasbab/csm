@@ -1,28 +1,36 @@
-function vmax = orientationSelectivity(nTrials,loadSamples,randseed)
+function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
 
     close all;
     setrandseed(randseed);
-    Dx = 64;
-    imSize = sqrt(Dx);
-    k = 2;
+    
     nSamples = 80;
     burnin = 20;
+    
+    if isempty(cc)
+        Dx = 64;    
+        k = 2;
+        cell_idx = 41; 
+        px = 0.5;
+        py = 0.5;
+        central_orient = 0;
+    else
+        Dx = size(cc{1});
+        k = length(cc);
+        % TODO calculate orientation, location and index of a cell
+    end
+    
 
     %contrasts = [0.05 0.2 0.8];
     contrasts = [0.04 1];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
-    orient_shift = 45 * pi/180;
-    central_orient = 0;
-    %orients = [central_orient-2*orient_shift central_orient-orient_shift central_orient central_orient+orient_shift central_orient+2*orient_shift];        
-    orients = [central_orient];        
-    
-    px = 0.5;
-    py = 0.5;
-    
-    % calculate cell id    
-    cell_idx = 41; 
-    
+    orient_shift = 45 * pi/180;    
+    orients = central_orient;     
+    for i=1:2
+        orients = [central_orient-i*orient_shift orients central_orient+i*orient_shift];
+    end        
+        
+    imSize = sqrt(Dx);
     stimuli = cell(1,length(contrasts)*length(orients));
     for o=1:length(orients)
         % create Gabor      
@@ -46,10 +54,13 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed)
         load('orient_select_samples.mat');
     else
         % create model
-        ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','gabor_4or','obsVar',1, ...
-            'nullComponent',false,'generateComponents',true,'generateData',false);
-%         ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','gabor_4or','obsVar',1, ...
-%             'nullComponent',true,'generateComponents',true,'generateData',false,'g_scale',0.1);
+        if isempty(cc)
+            ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','gabor_4or','obsVar',1, ...
+                'nullComponent',false,'generateComponents',true,'generateData',false);
+        else
+            ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',1,'filters','OF','obsVar',1,'cc',cc, ...
+                'nullComponent',false,'generateComponents',false,'generateData',false);
+        end
         % run scheduling
         [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,{ge},nTrials,ge.obsVar,true,'gibbs',false);
         save('orient_select_samples.mat','vsamp','gsamp','zsamp');
