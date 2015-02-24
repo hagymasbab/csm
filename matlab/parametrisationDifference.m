@@ -1,6 +1,6 @@
 function bcc = parametrisationDifference(ge,cc,loaddata)
     if loaddata
-        load('paramdiff.mat');
+        load('bin/save_paramdiff.mat');
     else
         ccm = cell(1,length(cc));
         bcm = cell(1,length(cc));
@@ -15,7 +15,7 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
 
         [~,seeds,~,cst] = gestaltGReceptiveFields(ge,cc,10000,false);
         [~,bseeds,~,bst] = gestaltGReceptiveFields(ge,bcc,10000,false);
-        save('paramdiff.mat','bcc','seeds','bseeds','cst','bst','cc','ccm','bcm');
+        save('bin/save_paramdiff.mat','bcc','seeds','bseeds','cst','bst','cc','ccm','bcm');
     end
     hornum = 6;
     subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);

@@ -38,7 +38,8 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
             ge.cc = act_cc;
             ll = gestaltLogLikelihood(ge,samples,X_test,'scientific',true);        
             likelihoods(i) = ll;
-            save('iter_likes.mat','likelihoods');
+            %save('iter_likes.mat','likelihoods');
+            save(['bin/likes' namepart],'likelihoods');
         elseif strcmp(calculate,'metrics')
             met_idx = 1;
             for kk = 1:ge.k
@@ -49,7 +50,8 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
                   met_idx = met_idx+1;
               end
             end
-            save('iter_norms.mat','norms','distances');
+            %save('iter_norms.mat','norms','distances');
+            save(['bin/norms' namepart],'norms','distances');
         elseif strcmp(calculate,'grf')            
             if i == 1
                 pixel_comps = {};
@@ -64,7 +66,8 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
                     pixel_rms(i-1,j) = sqrt(sum((pixel_comps{i-1}{j} - pixel_comps{i}{j}).^2));
                 end
             end
-            save('iter_grf.mat','pixel_comps','angular_stds','pixel_rms');
+            %save('iter_grf.mat','pixel_comps','angular_stds','pixel_rms');
+            save(['bin/grf' namepart],'pixel_comps','angular_stds','pixel_rms');
         end
     end
 end
