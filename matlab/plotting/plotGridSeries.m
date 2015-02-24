@@ -24,7 +24,7 @@ function plotGridSeries(data,redlines,verstrings,horstrings,vertitle,hortitle)
             xlim([1 slen]);
             ylim([ymin ymax]);
             plot(mean(actdata)','LineWidth',3);            
-            title(sprintf('%s %s %s %s',vertitle,verstrings{m},hortitle,horstrings{kk}),'FontSize',16);
+            ylabel(sprintf('%s %s %s %s',vertitle,verstrings{m},hortitle,horstrings{kk}),'FontSize',12);
             for t=1:length(redlines)
                 act_t = redlines(t);
                 plot([act_t;act_t],ylim(),'k-','LineWidth',2);
