@@ -3,8 +3,8 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     close all;
     setrandseed(randseed);
     
-    nSamples = 80;
-    burnin = 20;
+    nSamples = 50;
+    burnin = 50;
 %     nSamples = 20;
 %     burnin = 5;
     
@@ -32,7 +32,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     contrasts = [0.04 1 10];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
-    stepnum = 4;
+    stepnum = 2;
     orient_shift = (45/stepnum) * pi/180;    
     orients = central_orient;     
     for i=1:stepnum
