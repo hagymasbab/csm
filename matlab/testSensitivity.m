@@ -5,7 +5,7 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
     thetas = [90 150];
     for t = 1:length(thetas)
         lambda = 4;
-        phase = 0.5;
+        phase = 0;
         act_gr = grating(lambda,thetas(t),phase,sqrt(ge.Dx));
         stimuli{end+1} = act_gr(:);
     end

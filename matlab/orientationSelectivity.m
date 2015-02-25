@@ -29,10 +29,10 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     
 
     %contrasts = [0.05 0.2 0.8];
-    contrasts = [0.04 1 10];
+    contrasts = [2 5];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
-    stepnum = 2;
+    stepnum = 3;
     orient_shift = (45/stepnum) * pi/180;    
     orients = central_orient;     
     for i=1:stepnum
@@ -185,14 +185,14 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
         h = errorbar(means,stds,'LineWidth',2);
         hold on;
     end
-    title('Preferred orientation of cell: 0^o','FontSize',16);
+    %title('Preferred orientation of cell: 0^o','FontSize',16);
     xlabel('Stimulus orientation','FontSize',16)
     ylabel(sprintf('Firing rate, mean and std of %d trials',nTrials),'FontSize',16)
     ticlabels = cell(1,length(orients));
     for o=1:length(orients)
         ticlabels{o} = sprintf('%d',orients(o)*180/pi);
     end
-    set(gca,'XTick',1:5,'XTickLabels',ticlabels,'FontSize',16,'Ytick',[]);
+    set(gca,'XTick',1:5,'XTickLabel',ticlabels,'FontSize',16,'Ytick',[]);
     
     figure;
     for z=1:length(contrasts)
@@ -201,7 +201,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
         h = errorbar(means,stds,'LineWidth',2);        
         hold on;
     end
-    title('Preferred orientation of cell: 0^o','FontSize',16);
+    %title('Preferred orientation of cell: 0^o','FontSize',16);
     xlabel('Stimulus orientation','FontSize',16)
     ylabel(sprintf('Estimated contrast, mean and std of %d trials',nTrials),'FontSize',16)    
     %set(gca,'XTick',1:5,'XTickLabels',ticlabels,'FontSize',16,'Ytick',[]);
