@@ -23,34 +23,36 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
         %load('filtermatching_576.mat');
         cell_idx = 3;
         central_orient = orients(cell_idx,1);
+        %if central_orient > 90; central_orient = 180 - central_orient;end;
         px = maxX(1,cell_idx) / sqrt(Dx);
         py = maxY(1,cell_idx) / sqrt(Dx);
     end
     
 
     %contrasts = [0.05 0.2 0.8];
-    contrasts = [2 5];
+    contrasts = [3 5];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
     stepnum = 3;
-    orient_shift = (45/stepnum) * pi/180;    
-    orients = central_orient;     
+    orient_shift = (45/stepnum);    
+    stim_orients = central_orient;     
     for i=1:stepnum
-        orients = [central_orient-i*orient_shift orients central_orient+i*orient_shift];
+        stim_orients = [central_orient-i*orient_shift stim_orients central_orient+i*orient_shift];
     end        
+    stim_orients = [central_orient-(stepnum+1)*orient_shift stim_orients];
         
     imSize = sqrt(Dx);
-    stimuli = cell(1,length(contrasts)*length(orients));
-    for o=1:length(orients)
+    stimuli = cell(1,length(contrasts)*length(stim_orients));
+    for o=1:length(stim_orients)
         % create Gabor      
-        [~,~,act_gabor] = gabor('theta',orients(o),'lambda',4,'width',imSize,'height',imSize,'px',px,'py',py,'Sigma',1.8);
+        [~,~,act_gabor] = gabor('theta',circ_ang2rad(stim_orients(o)),'lambda',4,'width',imSize,'height',imSize,'px',px,'py',py,'Sigma',1.8);
         for z=1:length(contrasts)            
             % put Gabor on gray background
             act_stimulus = zeros(imSize) + contrasts(z) * act_gabor;
             if o==1
                 rms_contrasts(z) = std(act_stimulus(:));
             end
-            stimuli{1,length(orients)*(z-1)+o} = act_stimulus(:);
+            stimuli{1,length(stim_orients)*(z-1)+o} = act_stimulus(:);
         end
     end        
     
@@ -58,7 +60,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     %pause
     
     % set timings
-    timings = (nSamples+burnin) * ones(1,length(contrasts)*length(orients));                
+    timings = (nSamples+burnin) * ones(1,length(contrasts)*length(stim_orients));                
     
     % create model
     if isempty(cc)
@@ -93,12 +95,12 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
 %     subplot(2,1,2);
 %     plot(squeeze(vsamp(1,:,:,1,1))');
     %vdata = reshape(vdata,[nTrials length(contrasts) length(orients) nSamples+burnin]);
-    v_split = zeros(nTrials,length(contrasts),length(orients),nSamples);
-    z_split = zeros(nTrials,length(contrasts),length(orients),nSamples);
-    g_split = zeros(nTrials,length(contrasts),length(orients),nSamples,k);
+    v_split = zeros(nTrials,length(contrasts),length(stim_orients),nSamples);
+    z_split = zeros(nTrials,length(contrasts),length(stim_orients),nSamples);
+    g_split = zeros(nTrials,length(contrasts),length(stim_orients),nSamples,k);
     for z=1:length(contrasts)
-        for o=1:length(orients)
-            stim_idx = (z-1)*length(orients)+o;
+        for o=1:length(stim_orients)
+            stim_idx = (z-1)*length(stim_orients)+o;
             start_idx = (stim_idx - 1) * (nSamples+burnin) + burnin + 1;
             end_idx = start_idx + nSamples - 1;
             v_split(:,z,o,:) = vdata(:,start_idx:end_idx);
@@ -115,12 +117,12 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
 %     vmax = squeeze(max(v_split,[],4)); % firing rate for each trial and stimulus nTrials x nContrast x nOrient
 %     zrate = squeeze(mean(z_split,4)); % average contrast for each trial and stimulus nTrials x nContrast x nOrient
     
-    vrate = reshape(mean(v_split,4),[nTrials length(contrasts) length(orients)]); % firing rate for each trial and stimulus 
-    vvar = reshape(var(v_split,0,4),[nTrials length(contrasts) length(orients)]); % variance of firing rate for each trial and stimulus
-    vmax = reshape(max(v_split,[],4),[nTrials length(contrasts) length(orients)]); % firing rate for each trial and stimulus
-    zrate = reshape(mean(z_split,4),[nTrials length(contrasts) length(orients)]); % average contrast for each trial and stimulus
+    vrate = reshape(mean(v_split,4),[nTrials length(contrasts) length(stim_orients)]); % firing rate for each trial and stimulus 
+    vvar = reshape(var(v_split,0,4),[nTrials length(contrasts) length(stim_orients)]); % variance of firing rate for each trial and stimulus
+    vmax = reshape(max(v_split,[],4),[nTrials length(contrasts) length(stim_orients)]); % firing rate for each trial and stimulus
+    zrate = reshape(mean(z_split,4),[nTrials length(contrasts) length(stim_orients)]); % average contrast for each trial and stimulus
     
-    grate = reshape(mean(g_split,4),nTrials,length(contrasts),length(orients),k); % average g for each trial and stimulus nTrials x nContrast x nOrient x k
+    grate = reshape(mean(g_split,4),nTrials,length(contrasts),length(stim_orients),k); % average g for each trial and stimulus nTrials x nContrast x nOrient x k
     %size(grate)
         
     figure
@@ -134,7 +136,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
     
     for t=1:nTrials
         for z=1:length(contrasts)
-            for o=1:length(orients)
+            for o=1:length(stim_orients)
                 true_z = [true_z; rms_contrasts(z)];
                 est_z = [est_z; zrate(t,z,o)];
             end
@@ -185,14 +187,14 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc)
         h = errorbar(means,stds,'LineWidth',2);
         hold on;
     end
-    %title('Preferred orientation of cell: 0^o','FontSize',16);
+    title(sprintf('Matched orientation of cell: %.2f^o',central_orient),'FontSize',16);
     xlabel('Stimulus orientation','FontSize',16)
     ylabel(sprintf('Firing rate, mean and std of %d trials',nTrials),'FontSize',16)
-    ticlabels = cell(1,length(orients));
-    for o=1:length(orients)
-        ticlabels{o} = sprintf('%d',orients(o)*180/pi);
+    ticlabels = cell(1,length(stim_orients));
+    for o=1:length(stim_orients)
+        ticlabels{o} = sprintf('%0.2f',stim_orients(o));
     end
-    set(gca,'XTick',1:5,'XTickLabel',ticlabels,'FontSize',16,'Ytick',[]);
+    set(gca,'XTick',1:length(stim_orients),'XTickLabel',ticlabels,'FontSize',16,'Ytick',[]);
     
     figure;
     for z=1:length(contrasts)
