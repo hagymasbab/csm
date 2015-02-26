@@ -17,7 +17,7 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
         [~,bseeds,~,bst] = gestaltGReceptiveFields(ge,bcc,10000,false);
         save('bin/save_paramdiff.mat','bcc','seeds','bseeds','cst','bst','cc','ccm','bcm');
     end
-    hornum = 6;
+    hornum = 4;
     subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
     load cmp_diff
     for i=1:length(cc)      
@@ -35,25 +35,25 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
         viewImage(bcm{i},'useMax',um);
         if i==1;title('Corr.mat. KL');end;
         freezeColors
-        subplot(length(cc),hornum,(i-1)*hornum + 3);
-        viewImage(diffcm,'useMax',um);
-        if i==1;title('Corr.mat. Diff');end;
-        colormap(cmp_diff);
-        freezeColors
+%         subplot(length(cc),hornum,(i-1)*hornum + 3);
+%         viewImage(diffcm,'useMax',um);
+%         if i==1;title('Corr.mat. Diff');end;
+%         colormap(cmp_diff);
+%         freezeColors
         
-        subplot(length(cc),hornum,(i-1)*hornum + 4);
+        subplot(length(cc),hornum,(i-1)*hornum + 3);
         viewImage(cst{i},'useMax',um);
         if i==1;title('Pixel');end;
         freezeColors
-        subplot(length(cc),hornum,(i-1)*hornum + 5);
-        viewImage(bst{i},'useMax',um);
+        subplot(length(cc),hornum,(i-1)*hornum + 4);
+        viewImage(exp(bseeds{i}*1.2),'useMax',um);
         if i==1;title('Pixel KL');end;
         freezeColors
-        subplot(length(cc),hornum,(i-1)*hornum + 6);
-        viewImage(diffst,'useMax',um);
-        if i==1;title('Pixel Diff');end;
-        colormap(cmp_diff);
-        freezeColors
+%         subplot(length(cc),hornum,(i-1)*hornum + 6);
+%         viewImage(diffst,'useMax',um);
+%         if i==1;title('Pixel Diff');end;
+%         colormap(cmp_diff);
+%         freezeColors
     end
 end
         

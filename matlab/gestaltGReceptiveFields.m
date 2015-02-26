@@ -6,7 +6,8 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
     seeds = cell(1,ge.k);
     transformed_loc = cell(1,ge.k);
     z = 1;
-    load filtermatching
+    Dx = size(cc{1},1);
+    load(sprintf('filtermatching_%d.mat',Dx));
     vertnum = 3; 
     
     all_corrs = cell(1,ge.k);
@@ -51,7 +52,7 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
 
     angstds = zeros(ge.k,vertnum);
     for i = 1:ge.k       
-        transformed_loc{i} = exp(seeds{i}/5);
+        transformed_loc{i} = exp(seeds{i}/8);
 
         act_var = diag(cc{i});
         select_idx = act_var > var_mean + var_std;
