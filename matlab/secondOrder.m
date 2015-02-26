@@ -20,6 +20,8 @@ function secondOrder(imgpath)
     
     figure;
     imc = im1+im2+im3;
-    viewImage(imc,'useMax',true);
+    viewImage(imc,'useMax',true);    
+    hold on
+    scatter(32,32,'rs','filled')
     print('-dpng',[imgpath '/comp_c.png']);
 end
