@@ -1,4 +1,4 @@
-function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,calculate)
+function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,calculate,startfrom)
 
     setrandseed(randseed);
     namepart = iterfile(5:end);
@@ -26,48 +26,50 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
         end
     end
     
+    dlen = index - startfrom + 1;
     
-    likelihoods = zeros(index,1);
-    norms = zeros(index,ge.k);
-    distances = zeros(index,ge.k*(ge.k-1)/2);
+    likelihoods = zeros(dlen,1);
+    norms = zeros(dlen,ge.k);
+    distances = zeros(dlen,ge.k*(ge.k-1)/2);
     
-    for i=1:index
+    for i=startfrom:index
+        didx = i-startfrom+1;
         printCounter(i,'stringVal','Iteration','maxVal',index);
         act_cc = state_sequence{i}.estimated_components;
         if strcmp(calculate,'likelihood')
             ge.cc = act_cc;
             ll = gestaltLogLikelihood(ge,samples,X_test,'scientific',true);        
-            likelihoods(i) = ll;
+            likelihoods(didx) = ll;
             %save('iter_likes.mat','likelihoods');
-            save(['bin/likes' namepart],'likelihoods');
+            save(['bin/likes' namepart],'likelihoods','startfrom');
         elseif strcmp(calculate,'metrics')
             met_idx = 1;
             for kk = 1:ge.k
-              norms(i,kk) = norm(act_cc{kk});
+              norms(didx,kk) = norm(act_cc{kk});
               for other = kk+1:ge.k
                   dist = covcompRootMeanSquare(act_cc(kk),act_cc(other),1);
-                  distances(i,met_idx) = dist;
+                  distances(didx,met_idx) = dist;
                   met_idx = met_idx+1;
               end
             end
             %save('iter_norms.mat','norms','distances');
-            save(['bin/norms' namepart],'norms','distances');
+            save(['bin/norms' namepart],'norms','distances','startfrom');
         elseif strcmp(calculate,'grf')            
-            if i == 1
+            if didx == 1
                 pixel_comps = {};
                 angular_stds = zeros(index,ge.k,3);
                 pixel_rms = zeros(index-1,ge.k);
             end
             [~,seeds,angstds,~] = gestaltGReceptiveFields(ge,act_cc,10000,false);
             pixel_comps{end+1} = seeds;
-            angular_stds(i,:,:) = angstds;
-            if i>1
+            angular_stds(didx,:,:) = angstds;
+            if didx>1
                 for j = 1:ge.k
-                    pixel_rms(i-1,j) = sqrt(sum((pixel_comps{i-1}{j} - pixel_comps{i}{j}).^2));
+                    pixel_rms(didx-1,j) = sqrt(sum((pixel_comps{didx-1}{j} - pixel_comps{didx}{j}).^2));
                 end
             end
             %save('iter_grf.mat','pixel_comps','angular_stds','pixel_rms');
-            save(['bin/grf' namepart],'pixel_comps','angular_stds','pixel_rms');
+            save(['bin/grf' namepart],'pixel_comps','angular_stds','pixel_rms','startfrom');
         end
     end
 end
