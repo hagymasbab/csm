@@ -2,7 +2,7 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
     % create a bunch of stimuli
     stimuli = {};
     %thetas = linspace(0,120,4);
-    thetas = [0 45 0 0];
+    thetas = [0 45];
     for t = 1:length(thetas)
         lambda = 10;
         phase = 0;
