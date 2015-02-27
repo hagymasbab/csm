@@ -8,7 +8,7 @@ function learnedLikelihoodVariance(ge,cc,N_test,nTrial,samplenums,loadData,plotS
     else
         ll = zeros(nTrial,length(samplenums));
         for s = 1:length(samplenums)
-            for t = 1:nTrial
+            parfor t = 1:nTrial
                 ll(t,s) = gestaltLogLikelihood(ge,samplenums(s),X_test,'scientific',true); 
             end
         end
