@@ -21,8 +21,8 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
     else
         % run scheduling
         ge.cc = cc;
-        [~,gsamp,~] = gestaltScheduling(stimuli,timings,{ge},nTrials,0,true,'gibbs',false);
-        save('bin/save_testsens.mat','gsamp','stimuli');
+        [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,{ge},nTrials,0,true,'gibbs',false);
+        save('bin/save_testsens.mat','gsamp','vsamp','zsamp','stimuli');
     end
     
     if plotStuff
