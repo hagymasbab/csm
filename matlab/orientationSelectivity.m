@@ -30,7 +30,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
     
 
     %contrasts = [0.05 0.2 0.8];
-    contrasts = [3 5];
+    contrasts = [0.05 5 10];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
     stepnum = 2;
@@ -39,7 +39,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
     for i=1:stepnum
         stim_orients = [central_orient-i*orient_shift stim_orients central_orient+i*orient_shift];
     end        
-    stim_orients = [central_orient-(stepnum+1)*orient_shift stim_orients];
+    %stim_orients = [central_orient-(stepnum+1)*orient_shift stim_orients];
         
     imSize = sqrt(Dx);
     stimuli = cell(1,length(contrasts)*length(stim_orients));
@@ -129,6 +129,28 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
         xlabel('RMS contrast','FontSize',16);
         ylabel('Estimated contrast','FontSize',16);
     %     set(gca,'XTick',[],'YTick',[]);
+    
+        figure
+        scatter(true_z,vvar(:));
+        xlabel('RMS contrast','FontSize',16);
+        ylabel('Membrane potential variance','FontSize',16);
+        set(gca,'XTick',[],'YTick',[]);
+        
+        zbar_mean = [];
+        zbar_std = [];
+        xticklabels = {};
+        vars = vvar(:);        
+        for z=1:length(rms_contrasts)
+            actvvars = vars(true_z==rms_contrasts(z));
+            zbar_mean = [zbar_mean; mean(actvvars)];
+            zbar_std = [zbar_std; std(actvvars)];
+            xticklabels{end+1} = sprintf('%.2f',rms_contrasts(z));
+        end
+        figure
+        barwitherr(zbar_std,zbar_mean);
+        set(gca,'XTickLabel',xticklabels);
+        xlabel('RMS contrast','FontSize',16);
+        ylabel('Membrane potential variance','FontSize',16);
 
     % %     v_t2t = squeeze(var(vrate,0,1)); % nContrast x nOrient
     %     v_t2t = [];
