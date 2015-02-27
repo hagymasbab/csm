@@ -165,7 +165,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         cc_prev = extractComponents(ge,params.precision);
              
         % choose a batch from tha big dataset randomly
-        ge.X = X(chooseKfromN(emBatchSize,size(X,1)),:,:);        
+        img_indices = chooseKfromN(emBatchSize,size(X,1));
+        ge.X = X(img_indices,:,:);        
         
         % check whether current components are sparse         
         ge.sparseComponents = length(find(componentSum(1,ge.cc))) < ge.Dv^2 / 2;        
@@ -266,6 +267,7 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
             [state.difference_to_truth,~,maxel_diff] = covcompRootMeanSquare(act_c,true_c,1,'useDiagonals',truthdiff_diagonals);
         end
         state.estimated_components = extractComponents(ge,params.precision);
+        state.img_indices = img_indices;
         %state.samples = samples;
         state.matrix_norms = {};
         for i=1:ge.k

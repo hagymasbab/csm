@@ -56,7 +56,7 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
         figure();
         for j=1:length(stimuli)
             subplot(length(stimuli),2,j*2);
-            barwitherr(resp_stds(j,:)',responses(j,:)');
+            barwitherr(resp_stds(j,:)'/sqrt(nTrials),responses(j,:)');
             xlim([0 ge.k+1]);
             set(gca,'XTickLabel',compnums,'Ytick',[]);
             %title(sprintf('Stimulus %d',j));
