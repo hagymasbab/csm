@@ -11,9 +11,9 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
 %         stimuli{end+1} = act_gr(:);
 %     end
     load img_stone
-    stimuli{1} = img;
+    stimuli{1} = img(:);
     load img_seeds
-    stimuli{2} = img;
+    stimuli{2} = img(:);
 %     if plotStuff
 %         viewImageSet(stimuli);
 %         pause
