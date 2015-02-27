@@ -2,14 +2,18 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
     % create a bunch of stimuli
     stimuli = {};
     %thetas = linspace(0,120,4);
-    thetas = [0 45];
-    for t = 1:length(thetas)
-        lambda = 10;
-        phase = 0;
-        act_gr = grating(lambda,thetas(t),phase,sqrt(ge.Dx));
-        act_gr = act_gr + grating(lambda,thetas(t)+90,phase,sqrt(ge.Dx));
-        stimuli{end+1} = act_gr(:);
-    end
+%     thetas = [0 45];
+%     for t = 1:length(thetas)
+%         lambda = 10;
+%         phase = 0;
+%         act_gr = grating(lambda,thetas(t),phase,sqrt(ge.Dx));
+%         act_gr = act_gr + grating(lambda,thetas(t)+90,phase,sqrt(ge.Dx));
+%         stimuli{end+1} = act_gr(:);
+%     end
+    load img_stone
+    stimuli{1} = img;
+    load img_seeds
+    stimuli{2} = img;
 %     if plotStuff
 %         viewImageSet(stimuli);
 %         pause
