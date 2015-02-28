@@ -3,8 +3,8 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
     close all;
     setrandseed(randseed);
     
-    nSamples = 100;
-    burnin = 50;
+    nSamples = 150;
+    burnin = 100;
 %     nSamples = 20;
 %     burnin = 5;
     
