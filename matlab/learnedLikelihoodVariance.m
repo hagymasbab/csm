@@ -8,6 +8,7 @@ function learnedLikelihoodVariance(ge,cc,N_test,nTrial,samplenums,loadData,plotS
     else
         ll = zeros(nTrial,length(samplenums));
         for s = 1:length(samplenums)
+            printCounter(s,'maxVal',length(samplenums),'stringVal','SampleNum');
             parfor t = 1:nTrial
                 ll(t,s) = gestaltLogLikelihood(ge,samplenums(s),X_test,'scientific',true); 
             end
@@ -16,8 +17,16 @@ function learnedLikelihoodVariance(ge,cc,N_test,nTrial,samplenums,loadData,plotS
     end
     
     if plotStuff
-        barwitherr(std(ll)',mean(ll)');
+        load cmp_graybars;
+        barwitherr(std(ll)',-mean(ll)');
+        colormap(cmp_graybars);
+        xlim([0 length(samplenums)+1]);
+        maxmean = max(-mean(ll)');
+        margin = 0.07e5;
+        ylim([maxmean-margin maxmean+margin])
         xlabels={};for i=1:length(samplenums);xlabels{end+1}=sprintf('%d',samplenums(i));end;
-        set(gca,'XTickLabel',xlabels)
+        set(gca,'XTickLabel',xlabels,'FontSize',16);
+        xlabel('Sample #','FontSize',16);
+        ylabel('Negative log-likelihood','FontSize',16);
     end
 end
