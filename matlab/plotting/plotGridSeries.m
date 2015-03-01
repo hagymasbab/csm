@@ -30,6 +30,7 @@ function plotGridSeries(data,redlines,verstrings,horstrings,vertitle,hortitle)
                 plot([act_t;act_t],ylim(),'k-','LineWidth',2);
             end
             plot([1 slen],[0 0],'k--','LineWidth',1);
+            set(gca,'XTick',[],'YTick',[]);
         end
     end
 end

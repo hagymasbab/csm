@@ -47,18 +47,19 @@ function ICresponse(nTrials,nSamples,loadSamples,randseed)
     timings = [nSamples nSamples];
         
     if loadSamples
-        load('icsamples.mat');        
+        load('bin/save_icsamples.mat');        
     else
         [vsamp,gsamp,zsamp] = gestaltScheduling(stimuli,timings,{ge},nTrials,0,false,'gibbs',false);
-        save('icsamples.mat','vsamp','gsamp','zsamp');
+        save('bin/save_icsamples.mat','vsamp','gsamp','zsamp');
     end
     
     exemplar_cells = [upper_cell omitted_cell lower_cell other_cell];
-    exemplar_titles = {'stim1','ic1','stim2','ic2'};
+    %exemplar_titles = {'stim1','ic1','stim2','ic2'};
+    exemplar_titles = {'','','',''};
     
     cumulative_timings = cumsum(timings);
     gdata = permute(gsamp(:,:,:,1:2),[1 4 2 3]);
-    plotGridSeries(gdata,cumulative_timings,{},{'1','2'},'','comp');
+    plotGridSeries(gdata,cumulative_timings,{},{'',''},'','');
     vdata = permute(reshape(mean(vsamp(:,:,:,:,exemplar_cells),4),1,nTrials,cumulative_timings(end),length(exemplar_cells)),[1 4 2 3]);
     plotGridSeries(vdata,cumulative_timings,{''},exemplar_titles,'','');
 end
