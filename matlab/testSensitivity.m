@@ -36,7 +36,7 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
         gdata = permute(gdata,[3,1,2]); % k x nTrials x allSamp
         gdata = reshape(gdata,[1 ge.k nTrials size(gdata,3)]);
         compnums={};other={};for i=1:ge.k;compnums{end+1}=sprintf('%d',i);other{end+1}='';end; 
-        plotGridSeries(gdata,cumsum(timings),other,compnums,'','C');
+        %plotGridSeries(gdata,cumsum(timings),other,compnums,'','C');
         
         xticpos = cumsum(timings) - timings(1)/2;
         responses = zeros(length(stimuli),ge.k);
@@ -53,19 +53,41 @@ function testSensitivity(ge,cc,nTrials,allSamples,burnin,loadSamples,plotStuff)
                 responses(j,i) = mean_response;
                 xticlab{end+1} = sprintf('mu = %.2f',mean_response);
             end
-            subplot(ge.k,1,i);
-            set(gca,'XTick',xticpos,'XTickLabel',xticlab,'Ytick',[]);
+            %subplot(ge.k,1,i);
+            %set(gca,'XTick',xticpos,'XTickLabel',xticlab,'Ytick',[]);
+        end
+        
+        for j=1:length(stimuli)
+            figure;
+            viewImage(stimuli{j},'useMax',true);
         end
         
         figure();
+        load cmp_graybars;
+        ymax = 0;
         for j=1:length(stimuli)
-            subplot(length(stimuli),2,j*2);
+            subplot(length(stimuli),1,j);
             barwitherr(resp_stds(j,:)'/sqrt(nTrials),responses(j,:)');
             xlim([0 ge.k+1]);
-            set(gca,'XTickLabel',compnums,'Ytick',[]);
+            set(gca,'XTickLabel',compnums,'YTick',[],'FontSize',16);
+            if j==1
+                title('Activation of components');
+            elseif j==length(stimuli)
+                xlabel('Component #','FontSize',16);
+            end
+            colormap(cmp_graybars);
+            ylims = ylim();
+            if ylims(2) > ymax
+                ymax = ylims(2);
+            end
             %title(sprintf('Stimulus %d',j));
-            subplot(length(stimuli),2,j*2-1);
-            viewImage(stimuli{j},'useMax',true);
+            %subplot(length(stimuli),2,j*2-1);
+            %viewImage(stimuli{j},'useMax',true);
+        end
+        
+        for j=1:length(stimuli)
+            subplot(length(stimuli),1,j);
+            ylim([0 ymax]);
         end
     end
     

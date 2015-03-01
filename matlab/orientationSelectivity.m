@@ -30,7 +30,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
     
 
     %contrasts = [0.05 0.2 0.8];
-    contrasts = [0.05 10 50];
+    contrasts = [0.05 10 20 30];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
     stepnum = 2;
