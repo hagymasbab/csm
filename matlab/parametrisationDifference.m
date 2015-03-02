@@ -35,16 +35,21 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
         
         subplot(num_to_plot,hornum,(i-1)*hornum + 2);
         hist(ccm{i}(:),200)
-        set(gca,'Ytick',[]);
+        set(gca,'Ytick',[],'XTick',[]);
         
         subplot(num_to_plot,hornum,(i-1)*hornum + 3);
+        viewImage(cst{i},'useMax',um);
+        %if i==1;title('Pixel');end;
+        freezeColors
+        
+        subplot(num_to_plot,hornum,(i-1)*hornum + 4);
         viewImage(bcm{i},'useMax',um);
         %if i==1;title('Corr.mat. KL');end;
         freezeColors                       
         
-        subplot(num_to_plot,hornum,(i-1)*hornum + 4);
+        subplot(num_to_plot,hornum,(i-1)*hornum + 5);
         hist(bcm{i}(:),10);
-        set(gca,'Ytick',[]);
+        set(gca,'Ytick',[],'XTick',[]);
         
 %         subplot(length(cc),hornum,(i-1)*hornum + 3);
 %         viewImage(diffcm,'useMax',um);
@@ -52,10 +57,7 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
 %         colormap(cmp_diff);
 %         freezeColors
         
-        subplot(num_to_plot,hornum,(i-1)*hornum + 5);
-        viewImage(cst{i},'useMax',um);
-        %if i==1;title('Pixel');end;
-        freezeColors
+        
         subplot(num_to_plot,hornum,(i-1)*hornum + 6);
         viewImage(exp(bseeds{i}*1.2),'useMax',um);
         %if i==1;title('Pixel KL');end;
