@@ -31,6 +31,7 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
 
     %contrasts = [0.05 0.2 0.8];
     contrasts = [10 20];
+    %contrasts = [0.05 10 20 30];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
     stepnum = 2;
@@ -147,10 +148,12 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
             xticklabels{end+1} = sprintf('%.2f',rms_contrasts(z));
         end
         figure
-        barwitherr(zbar_std,zbar_mean);
-        set(gca,'XTickLabel',xticklabels);
-        xlabel('RMS contrast','FontSize',16);
-        ylabel('Membrane potential variance','FontSize',16);
+        barwitherr(zbar_std/sqrt(nTrials),zbar_mean);
+        set(gca,'XTickLabel',xticklabels,'FontSize',16);
+        xlabel('RMS contrast of stimulus','FontSize',16);
+        ylabel('Variance of V1 samples','FontSize',16);
+        load cmp_graybars
+        colormap(cmp_graybars)
 
     % %     v_t2t = squeeze(var(vrate,0,1)); % nContrast x nOrient
     %     v_t2t = [];
