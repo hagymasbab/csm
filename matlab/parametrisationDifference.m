@@ -20,29 +20,31 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
     hornum = 6;
     subplot = @(m,n,p) subtightplot (m, n, p, [0.025 0.001], [0 0.025], [0 0.01]);
     load cmp_diff
-    for i=1:length(cc)      
+    num_to_plot = 2;
+    for i=1:num_to_plot      
         printCounter(i,'maxVal',length(cc),'stringVal','Component');
         diffcm = ccm{i} - bcm{i};
         diffst = cst{i} - bst{i};
         
         um = true;
-        subplot(length(cc),hornum,(i-1)*hornum + 1);
+        subplot(num_to_plot,hornum,(i-1)*hornum + 1);
         viewImage(ccm{i},'useMax',um);
-        if i==1;title('Corr.mat.');end;
-        ylabel(sprintf('Component %d',i));
+        %if i==1;title('Corr.mat.');end;
+        %ylabel(sprintf('Component %d',i));
         freezeColors
-        subplot(length(cc),hornum,(i-1)*hornum + 2);
+        
+        subplot(num_to_plot,hornum,(i-1)*hornum + 2);
+        hist(ccm{i}(:),200)
+        set(gca,'Ytick',[]);
+        
+        subplot(num_to_plot,hornum,(i-1)*hornum + 3);
         viewImage(bcm{i},'useMax',um);
-        if i==1;title('Corr.mat. KL');end;
-        freezeColors
+        %if i==1;title('Corr.mat. KL');end;
+        freezeColors                       
         
-        binnum = 200;
-        
-        subplot(length(cc),hornum,(i-1)*hornum + 3);
-        hist(ccm{i}(:),binnum)
-        
-        subplot(length(cc),hornum,(i-1)*hornum + 4);
-        hist(bcm{i}(:),binnum);
+        subplot(num_to_plot,hornum,(i-1)*hornum + 4);
+        hist(bcm{i}(:),10);
+        set(gca,'Ytick',[]);
         
 %         subplot(length(cc),hornum,(i-1)*hornum + 3);
 %         viewImage(diffcm,'useMax',um);
@@ -50,13 +52,13 @@ function bcc = parametrisationDifference(ge,cc,loaddata)
 %         colormap(cmp_diff);
 %         freezeColors
         
-        subplot(length(cc),hornum,(i-1)*hornum + 5);
+        subplot(num_to_plot,hornum,(i-1)*hornum + 5);
         viewImage(cst{i},'useMax',um);
-        if i==1;title('Pixel');end;
+        %if i==1;title('Pixel');end;
         freezeColors
-        subplot(length(cc),hornum,(i-1)*hornum + 6);
+        subplot(num_to_plot,hornum,(i-1)*hornum + 6);
         viewImage(exp(bseeds{i}*1.2),'useMax',um);
-        if i==1;title('Pixel KL');end;
+        %if i==1;title('Pixel KL');end;
         freezeColors
 %         subplot(length(cc),hornum,(i-1)*hornum + 6);
 %         viewImage(diffst,'useMax',um);
