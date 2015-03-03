@@ -15,6 +15,8 @@ function plotGridSeries(data,redlines,verstrings,horstrings,vertitle,hortitle)
     end
     ymin = min(data(:));
     ymax = max(data(:));
+    def_colors = get(groot,'DefaultAxesColorOrder');
+    def_colors(4,:) = def_colors(5,:);
     for m = 1:vernum
         for kk = 1:hornum
             actdata = squeeze(data(m,kk,:,:));
@@ -23,7 +25,7 @@ function plotGridSeries(data,redlines,verstrings,horstrings,vertitle,hortitle)
             hold on;
             xlim([1 slen]);
             ylim([ymin ymax]);
-            plot(mean(actdata)','LineWidth',3);            
+            plot(mean(actdata)','LineWidth',4,'Color',def_colors(kk,:));            
             ylabel(sprintf('%s %s %s %s',vertitle,verstrings{m},hortitle,horstrings{kk}),'FontSize',12);
             for t=1:length(redlines)
                 act_t = redlines(t);

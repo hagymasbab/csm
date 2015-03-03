@@ -85,11 +85,15 @@ function responseCorrelations(samplefile,ge,cc,burnin)
     %[~,cell1,cell2] = maxNElements(nodiag(wt_mean_corrmats{2}),1);
     %[~,cell1,cell2] = maxNElements(nodiag(cr_post{2}),1);
     %[~,cell1,cell2] = maxNElements(nodiag(corr_2_10)-nodiag(cvcr),1);
-    [~,cell1,cell2] = maxNElements(abs(nodiag(cm_2_10))-abs(nodiag(cv)),1);
+    [~,cell1,cell2] = maxNElements(abs(nodiag(cm_2_10))-abs(nodiag(cv)),1,[]);
     figure;
     viewImage(ge.A(:,cell1),'useMax',true);
     figure;
     viewImage(ge.A(:,cell2),'useMax',true);
+    figure;
+    viewImage(ge.A(:,cell1),'useMax',false);
+    figure;
+    viewImage(ge.A(:,cell2),'useMax',false);
     
     chosen_trial = 4;
     %subplot(2,1,1);
