@@ -30,8 +30,9 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
     
 
     %contrasts = [0.05 0.2 0.8];
-    contrasts = [10 20];
-    %contrasts = [0.05 10 20 30];
+    %contrasts = [10 20];
+    contrasts = [0.05 10 20 30];
+    %contrasts = [0.05 10 30];
     %contrasts = [0.5 100];
     rms_contrasts = zeros(size(contrasts));
     stepnum = 2;
@@ -82,6 +83,8 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
     end
  
     if plotStuff
+        fontsize = 24;
+        
         vdata = reshape(vsamp(1,:,:,1,cell_idx),[nTrials sum(timings)]); 
         zdata = reshape(zsamp(1,:,:),[nTrials sum(timings)]);
         gdata = reshape(gsamp(1,:,:,:),[nTrials sum(timings) k]);
@@ -149,9 +152,9 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
         end
         figure
         barwitherr(zbar_std/sqrt(nTrials),zbar_mean);
-        set(gca,'XTickLabel',xticklabels,'FontSize',16);
-        xlabel('RMS contrast of stimulus','FontSize',16);
-        ylabel('Variance of V1 samples','FontSize',16);
+        set(gca,'XTickLabel',xticklabels,'FontSize',fontsize);
+        xlabel('RMS contrast of stimulus','FontSize',fontsize);
+        ylabel('Variance of V1 response','FontSize',fontsize);
         load cmp_graybars
         colormap(cmp_graybars)
 
@@ -182,23 +185,23 @@ function vmax = orientationSelectivity(nTrials,loadSamples,randseed,cc,plotStuff
 
     %     zdata = reshape(zdata,[nTrials length(contrasts) length(orients) nSamples+burnin]);
     %     zrate = squeeze(mean(zdata(:,:,:,burnin+1:end),4));
-
+        
         figure;
         % reproduce plot from s&s
         for z=1:length(contrasts)
             means = mean(vrate(:,z,:),1);
             stds = std(vrate(:,z,:),0,1);
-            h = errorbar(means,stds,'LineWidth',2);
+            h = errorbar(means,stds/sqrt(nTrials),'LineWidth',2);
             hold on;
         end
-        title(sprintf('Matched orientation of cell: %.2f^o',central_orient),'FontSize',16);
-        xlabel('Stimulus orientation','FontSize',16)
-        ylabel(sprintf('Firing rate, mean and std of %d trials',nTrials),'FontSize',16)
+        %title(sprintf('Matched orientation of cell: %.2f^o',central_orient),'FontSize',16);
+        xlabel('Stimulus orientation','FontSize',fontsize)
+        ylabel('V1 firing rate','FontSize',fontsize)
         ticlabels = cell(1,length(stim_orients));
         for o=1:length(stim_orients)
             ticlabels{o} = sprintf('%0.2f',stim_orients(o));
         end
-        set(gca,'XTick',1:length(stim_orients),'XTickLabel',ticlabels,'FontSize',16,'Ytick',[]);
+        set(gca,'XTick',1:length(stim_orients),'XTickLabel',ticlabels,'FontSize',fontsize,'Ytick',[]);
 
         figure;
         for z=1:length(contrasts)

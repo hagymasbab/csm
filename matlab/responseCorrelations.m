@@ -24,6 +24,7 @@ function responseCorrelations(samplefile,ge,cc,burnin)
     vrate = reshape(mean(v_split,3),[nTrials nStim Dx]);
     grate = reshape(mean(g_split,3),[nTrials nStim k]);
     zrate = reshape(mean(z_split,3),[nTrials nStim]);
+    zdev = reshape(std(z_split,0,3),[nTrials nStim]);
     vmean = reshape(mean(v_split,1),[nStim nSamp-burnin Dx]);
     grate_mean = reshape(mean(grate),nStim,k);        
     
@@ -61,16 +62,16 @@ function responseCorrelations(samplefile,ge,cc,burnin)
     end
     
     load('cmp_graybars.mat');
-    cmp = summer;
+%     cmp = summer;
     
     %figure;
-    bar(zrate);
-    xlim([0 nTrials+1]);
-    xlabel('Trial #','FontSize',16);
-    ylabel('Estimated contrast','FontSize',16);
-    set(gca,'FontSize',16);
-    legend(stimlabels,'FontSize',16);
-    colormap(cmp);
+%     bar(zrate);
+%     xlim([0 nTrials+1]);
+%     xlabel('Trial #','FontSize',16);
+%     ylabel('Estimated contrast','FontSize',16);
+%     set(gca,'FontSize',16);
+%     legend(stimlabels,'FontSize',16);
+%     colormap(cmp);
     
     cv = componentSum(1/k,cc);
     cvcr = corrcov(cv);
@@ -90,46 +91,75 @@ function responseCorrelations(samplefile,ge,cc,burnin)
     figure;
     viewImage(ge.A(:,cell2),'useMax',true);
     
-    figure;
-    textratio = 0.8;
-    rfont = 20;
+    chosen_trial = 4;
     %subplot(2,1,1);
-    cell1_stim1_avgresp = vmean(1,:,cell1);
-    cell2_stim1_avgresp = vmean(1,:,cell2);
+%     cell1_stim1_avgresp = vmean(1,:,cell1);
+%     cell2_stim1_avgresp = vmean(1,:,cell2);
+    cell1_stim1_avgresp = v_split(chosen_trial,1,:,cell1);
+    cell2_stim1_avgresp = v_split(chosen_trial,1,:,cell2);
+%     cell1_stim2_avgresp = vmean(2,:,cell1);
+%     cell2_stim2_avgresp = vmean(2,:,cell2);
+    cell1_stim2_avgresp = v_split(chosen_trial,2,:,cell1);
+    cell2_stim2_avgresp = v_split(chosen_trial,2,:,cell2);
+%     corr1 = wt_mean_corrmats{1}(cell1,cell2);
+%     corr2 = wt_mean_corrmats{2}(cell1,cell2);
+    corr1 = wt_corrmats{1,chosen_trial}(cell1,cell2);
+    corr2 = wt_corrmats{2,chosen_trial}(cell1,cell2);
+    mean1 = [vrate(chosen_trial,1,cell1); vrate(chosen_trial,1,cell2)];
+    mean2 = [vrate(chosen_trial,2,cell1); vrate(chosen_trial,2,cell2)];
+    %mean1 = cov([cell1_stim1_avgresp(:) cell2_stim1_avgresp(:)]);
+    cov2 = cov([cell1_stim2_avgresp(:) cell2_stim2_avgresp(:)]);
+    cov1 = cov([cell1_stim1_avgresp(:) cell2_stim1_avgresp(:)]);
+    cov2 = cov([cell1_stim2_avgresp(:) cell2_stim2_avgresp(:)]);
+    
+    figure;
+    rfont = 30;
+    def_colors = get(groot,'DefaultAxesColorOrder');
+    reddish_color = def_colors(2,:);
+    
     scatter(cell1_stim1_avgresp(:),cell2_stim1_avgresp(:),'ko');
     set(gca,'XTick',[],'Ytick',[]);
     hold on;
+    for sd = 0.3:0.8:2
+        cont = plot_gaussian_ellipsoid(mean1, cov1, sd);
+        set(cont,'Color','k');
+    end
     p1 = polyfit(cell1_stim1_avgresp(:),cell2_stim1_avgresp(:),1);
     xlims = xlim();
     ylims = ylim();
     range = xlims(1):0.01:xlims(2);
-    plot(range,polyval(p1,range),'LineWidth',3);
+    plot(range,polyval(p1,range),'LineWidth',3,'Color',reddish_color);
     txpos = xlims(1) + abs(xlims(2) - xlims(1))*0.1;
     typos = ylims(2) - abs(ylims(2) - ylims(1))*0.1;
-    text(txpos,typos,sprintf('r=%.2f',wt_mean_corrmats{1}(cell1,cell2)),'FontSize',rfont,'Color','r')
+    text(txpos,typos,sprintf('r=%.2f',corr1),'FontSize',rfont,'Color',reddish_color)
     %subplot(2,1,2);
     figure;
-    cell1_stim2_avgresp = vmean(2,:,cell1);
-    cell2_stim2_avgresp = vmean(2,:,cell2);
+
     scatter(cell1_stim2_avgresp(:),cell2_stim2_avgresp(:),'ko');
     set(gca,'XTick',[],'Ytick',[]);
     hold on;
+    for sd = 0.3:0.8:2
+        cont = plot_gaussian_ellipsoid(mean2, cov2, sd);
+        set(cont,'Color','k');
+    end
     p2 = polyfit(cell1_stim2_avgresp(:),cell2_stim2_avgresp(:),1);
     xlims = xlim();
     ylims = ylim();
     range = xlims(1):0.01:xlims(2);
-    plot(range,polyval(p2,range),'LineWidth',3);
+    plot(range,polyval(p2,range),'LineWidth',3,'Color',reddish_color);
     txpos = xlims(1) + abs(xlims(2) - xlims(1))*0.1;
     typos = ylims(2) - abs(ylims(2) - ylims(1))*0.1;
-    text(txpos,typos,sprintf('r=%.2f',wt_mean_corrmats{2}(cell1,cell2)),'FontSize',rfont,'Color','r')
+    text(txpos,typos,sprintf('r=%.2f',corr2),'FontSize',rfont,'Color',reddish_color)
     
     figure;
     subplot(2,1,1);
-    barwitherr(z_std(1),z_avg(1));
+    %barwitherr(z_std(1),z_avg(1));
+    barwitherr(zdev(chosen_trial,1),zrate(chosen_trial,1));
     set(gca,'XTick',[],'FontSize',16);
     xlim([0 2]);
     subplot(2,1,2);
-    barwitherr(z_std(2),z_avg(2));
+    %barwitherr(z_std(2),z_avg(2));
+    barwitherr(zdev(chosen_trial,2),zrate(chosen_trial,2));
     set(gca,'XTick',[],'FontSize',16);
     xlim([0 2]);
     colormap(cmp_graybars)
