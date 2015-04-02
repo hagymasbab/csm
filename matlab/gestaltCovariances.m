@@ -71,7 +71,7 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
         end
         ge.k = length(cc);
         % calculate the receptive fields too
-        receptiveFields = gestaltGReceptiveFields(ge,cc,1000,false);        
+        % receptiveFields = gestaltGReceptiveFields(ge,cc,1000,false);        
     
     elseif strcmp(params.method,'block')
         if params.overlapping            
