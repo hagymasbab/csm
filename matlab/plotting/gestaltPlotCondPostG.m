@@ -12,9 +12,10 @@ function posteriors = gestaltPlotCondPostG(ge,V,prior,stepsize)
         
     % k=2
     %stepsize = 0.1;
-    gx = 0.01:stepsize:0.99;
-    gy = 0.01:stepsize:0.99;
-    gz = 0.01:stepsize:0.99;
+    gmax = 5;
+    gx = 0.01:stepsize:gmax;
+    gy = 0.01:stepsize:gmax;
+    gz = 0.01:stepsize:gmax;
     
     legends = cell(1,nInput);
     maxindices = zeros(1,nInput);
@@ -39,7 +40,7 @@ function posteriors = gestaltPlotCondPostG(ge,V,prior,stepsize)
                 for gg=1:size(gy,2)
                     if ge.k == 2
                         lp2dim(g,gg) = exp(gestaltLogPostG([gx(g);gy(gg)],actV,ge,prior,precision));
-                        pr2dim(g,gg) = exp(gestaltLogPriorG([gx(g);gy(gg)],ge,prior));
+                        pr2dim(g,gg) = exp(gestaltLogPriorG([gx(g);gy(gg)],ge));
                     elseif ge.k >= 3
                         for ggg = 1:size(gz,2)
                             if ge.k == 4
@@ -47,13 +48,13 @@ function posteriors = gestaltPlotCondPostG(ge,V,prior,stepsize)
                                 actpr = 0;
                                 for g4 = 1:size(gz,2)
                                     actlp = actlp + gestaltLogPostG([gx(g);gy(gg);gz(g4);gz(ggg)],actV,ge,prior,precision);
-                                    actpr = actpr + gestaltLogPriorG([gx(g);gy(gg);gz(g4);gz(ggg)],ge,prior);
+                                    actpr = actpr + gestaltLogPriorG([gx(g);gy(gg);gz(g4);gz(ggg)],ge);
                                 end
                                 lp3dim(g,gg,ggg) = exp(actlp);
                                 pr3dim(g,gg,ggg) = exp(actpr);
                             else
                                 lp3dim(g,gg,ggg) = exp(gestaltLogPostG([gx(g);gy(gg);gz(ggg)],actV,ge,prior,precision));
-                                pr3dim(g,gg,ggg) = exp(gestaltLogPriorG([gx(g);gy(gg);gz(ggg)],ge,prior));
+                                pr3dim(g,gg,ggg) = exp(gestaltLogPriorG([gx(g);gy(gg);gz(ggg)],ge));
                             end
                         end
                     end                
@@ -67,6 +68,8 @@ function posteriors = gestaltPlotCondPostG(ge,V,prior,stepsize)
                 lp2 = sum(lp2dim,1);
                 pr1 = sum(pr2dim,2);
                 pr2 = sum(pr2dim,1);
+                lp12 = lp2dim;
+                pr12 = pr2dim;
                 legends = {'comp1post','comp0post'};
             elseif ge.k >= 3
                 lp12 = squeeze(sum(lp3dim,3));

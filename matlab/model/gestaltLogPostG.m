@@ -12,7 +12,7 @@ function lp = gestaltLogPostG(g,V,ge,prior,precision)
     
     logprior = gestaltLogPriorG(g,ge);        
     
-    loglike = gestaltLogLikeV(V,g,ge,precision);
+    loglike = gestaltLogLikeV(V,g,ge,precision,[],[]);
     
     lp = loglike + logprior;
 end

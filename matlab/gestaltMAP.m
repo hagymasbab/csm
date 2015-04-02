@@ -21,7 +21,7 @@ function [V,G,Z] = gestaltMAP(ge,X)
             %fprintf('.');
             % TODO reshape if needed
             grad = gestaltFullLogPosteriorGrad(ge,X(i,:),V(i,:),G(i,:)',Z(i,1),[]);
-            grad'
+            %grad'
             if max(grad) > 1e-2
                 grad_G = grad(1:ge.k,1);
                 grad_V = grad(ge.k+1:end-1,1);
@@ -30,7 +30,7 @@ function [V,G,Z] = gestaltMAP(ge,X)
                 V(i,:) = V(i,:) + learning_rate_v * grad_V';
                 G(i,:) = max(G(i,:) + learning_rate_g * grad_G',minval*ones(1,ge.k));
                 Z(i,:) = max(Z(i,:) + learning_rate_z * grad_Z',minval);                
-                V(i,:)
+                %V(i,:)
                 G(i,:)
                 Z(i,:)
                 pause
