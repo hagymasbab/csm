@@ -51,10 +51,10 @@ function [V,G,Z] = gestaltMAP(ge,X)
 %                 for j=1:length(zx);pz(j) = gestaltFullLogPosterior(ge,act_x,act_v,act_g,zx(j),[]);end;
 %                 plot(zx,pz)
                 
-                gx = 0.01:0.1:2;
+                gx = 0.01:0.01:0.7;
                 pg = zeros(length(gx));
                 for k=1:length(gx);printCounter(k,'maxVal',length(gx),'StringVal','e');for j=1:length(gx);pg(k,j) = gestaltFullLogPosterior(ge,act_x,act_v,[gx(k);gx(j)],act_z,[]);end;end;
-                cutoff = 3;
+                cutoff = 10;
                 imagesc(gx(cutoff:end),gx(cutoff:end),pg(cutoff:end,cutoff:end))
                 
 %                 gx = 0.01:0.1:2;
