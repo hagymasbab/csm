@@ -4,7 +4,9 @@ function grad = gestaltFullLogPosteriorGrad(ge,X,V,g,z,iC)
     end
     
     if isempty(iC)
-        Cv = sparse(componentSum(g,ge.cc));
+        Cv = componentSum(g,ge.cc);
+        %rcond(Cv)
+        Cv = sparse(Cv);
         iC = inv(Cv);
     end
     
@@ -15,7 +17,8 @@ function grad = gestaltFullLogPosteriorGrad(ge,X,V,g,z,iC)
     common = (ge.B * iC - iC * vv * iC)';
     for i = 1 : ge.k
         % trace computation is more efficient like this
-        matpart = sum(sum(common.*ge.cc{i}));
+        %matpart = sum(sum(common.*ge.cc{i}));
+        matpart = trace(common * ge.cc{i});
         matpart = - matpart / 2;
         if ge.nullComponent && i == ge.k
             shg = ge.null_shape;

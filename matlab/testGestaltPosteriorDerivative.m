@@ -76,7 +76,7 @@ function disc = testGestaltPosteriorDerivative(which,B)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % define model
-    ge = gestaltCreate('temp','Dx',36,'k',3,'nullComponent',true,'generate',true,'B',B,'N',1);    
+    ge = gestaltCreate('temp','Dx',256,'k',2,'nullComponent',false,'generateComponents',true,'generateData',true,'B',B,'N',1);    
     
     % define stimulus
     X = reshape(ge.X(1,:,:),ge.B,ge.Dx);
