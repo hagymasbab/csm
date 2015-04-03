@@ -8,7 +8,7 @@ function lp = gestaltFullLogPosterior(ge,X,V,g,z,iC)
     end
     lx = - scalar / (2 * ge.obsVar);
     % likelihood of V
-    lv = gestaltLogLikeV(V,g,ge,false,iC);
+    lv = gestaltLogLikeV(V,g,ge,false,iC,[]);
     % prior of g
     lg = gestaltLogPriorG(g,ge);
     % prior of z
