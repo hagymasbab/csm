@@ -12,7 +12,7 @@ function gestalt = gestaltCreate(name,varargin)
     addParameter(p,'sparsity',0.2,@isnumeric);
     addParameter(p,'z_shape',2,@isnumeric);
     addParameter(p,'z_scale',2,@isnumeric);
-    addParameter(p,'g_shape',2,@isnumeric);
+    addParameter(p,'g_shape',1,@isnumeric);
     addParameter(p,'g_scale',2,@isnumeric);
     addParameter(p,'null_shape',2,@isnumeric);
     addParameter(p,'null_scale',2,@isnumeric);
