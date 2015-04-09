@@ -22,11 +22,12 @@ function ge = gestaltGenerate(ge,N,varargin)
     if ge.k < 10
         %ge.G = symmetricDirichlet(ge.sparsity,ge.k,ge.N);
         ge.G = symmetricDirichlet(0.1,ge.k,ge.N);
-    else
-        ge.G = zeros(ge.N,ge.k);
-        for i = 1:N
-            ge.G(i,:) = gestaltSamplePriorG(ge,'gamma')';
-        end
+    else        
+        ge.G = gestaltSamplePriorG(ge,N);
+%         ge.G = zeros(ge.N,ge.k);
+%         for i = 1:N
+%             ge.G(i,:) = gestaltSamplePriorG(ge,1)';
+%         end
     end
     
     if ge.contrast

@@ -1,26 +1,38 @@
-function [V,G,Z] = gestaltMAP(ge,X)
+function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
     close all;
-%     if ge.B ~= 1
-%         error('not implemented for B>1');
-%     end
+     if ge.B ~= 1
+         error('not implemented for B>1');
+     end
+    X = reshape(ge.X,ge.N,ge.Dx);
     N = size(X,1);
+    
+    if fix_v
+        learning_rate_v = 0;
+        %V = ge.V;
+        V = (ge.A'*X')';
+    else
+        learning_rate_v = 0.0001;
+        V = (ge.A'*X')';
+    end
+    
+    if fix_z
+        learning_rate_z = 0;
+        Z = ge.Z;
+    else
+        learning_rate_z = 0.001;
+        Z = 1 * ones(N,1);
+    end
+    
     learning_rate_g = 0.01;
-    learning_rate_v = 0.0001;
-    learning_rate_z = 0.001;
+    G = rand(N,ge.k);
     minval = 0.01;
     
-    % initialise latent variables
-    %V = zeros(N,ge.Dv);
-    V = (ge.A'*X')';
-    %V = ge.V;
-    %G = (1/ge.k)*ones(N,ge.k);
-    G = rand(N,ge.k)
-    %G = repmat([0.01 1],N,1);
-    %Z = 1 * ones(N,1);                           
-    Z = ge.Z;
+    delta = {};
+    gcourse = {};
+    zcourse = {};
     
     for i=1:N
-        printCounter(i,'maxVal',N,'stringVal','Observation');        
+        %printCounter(i,'maxVal',N,'stringVal','Observation');        
         if ge.B==1
             act_x = X(i,:);
             act_v = V(i,:);
@@ -37,6 +49,9 @@ function [V,G,Z] = gestaltMAP(ge,X)
         % gradient ascent
         convergence = false;
         counter = 1;
+        actdelta = [];
+        actgcourse = [];
+        actzcourse = [];
         while ~convergence
             %printCounter(j);
             counter = counter+1; 
@@ -44,7 +59,7 @@ function [V,G,Z] = gestaltMAP(ge,X)
             % TODO reshape if needed
             if ge.B==1
                 grad = gestaltFullLogPosteriorGrad(ge,act_x,act_v,act_g,act_z,[]);
-                grad_G = grad(1:ge.k,1)
+                grad_G = grad(1:ge.k,1);
                 grad_V = grad(ge.k+1:end-1,1);
                 grad_Z = grad(end,1);
 %                 
@@ -55,12 +70,7 @@ function [V,G,Z] = gestaltMAP(ge,X)
 %                     learning_rate_v = pref_shift / max(abs(grad_V))
 %                 end
             end
-%           
-            imgmax = 1.1;
-            imgstep = 0.04;
-            gx = 0.01:imgstep:imgmax;
-            probcutoff = 70;
-            cutoff = 1;
+%                    
             
 %             pg = zeros(length(gx));
 %             for k=1:length(gx);printCounter(k,'maxVal',length(gx),'StringVal','e');for j=1:length(gx);pg(k,j) = gestaltFullLogPosterior(ge,reshape(act_x,ge.B,ge.Dx),reshape(act_v,ge.B,ge.Dv),[gx(k);gx(j)],act_z,[]);end;end;            
@@ -78,9 +88,17 @@ function [V,G,Z] = gestaltMAP(ge,X)
 %                 for j=1:length(zx);pz(j) = gestaltFullLogPosterior(ge,act_x,act_v,act_g,zx(j),[]);end;
 %                 plot(zx,pz)                                
                 
-                drawGradients = false;
-                if drawGradients
+                drawGradients = 0;
+                if rem(counter-1,drawGradients) == 0
+                    imgmax = 1.1;
+                    imgstep = 0.04;                    
+                    probcutoff = 70;
+                    cutoff = 1;
+                    
                     gx = 0.01:imgstep:imgmax;
+                    if max(act_g) > imgmax
+                        gx = gx + max(act_g) - imgmax/2;
+                    end
                     gg1 = zeros(length(gx));
                     gg2 = zeros(length(gx));
                     for k=1:length(gx)
@@ -92,7 +110,7 @@ function [V,G,Z] = gestaltMAP(ge,X)
                         end
                     end           
 
-                    if counter == 2                    
+                    if ~exist('fhg1') 
                         fhg1 = figure;
                     else 
                         figure(fhg1);
@@ -117,33 +135,43 @@ function [V,G,Z] = gestaltMAP(ge,X)
                     caxis(colorscale*[-maxval maxval]);
                     title('2')
                     hold on;
-                    plot(act_g(2),act_g(1),'-gx','MarkerSize',20,'LineWidth',3);
+                    plot(act_g(2),act_g(1),'-gx','MarkerSize',20,'LineWidth',3);                    
                 end
                 
                 prev_g = act_g;
                 
                 max_shift_g = 0.1;
                 act_v = act_v + learning_rate_v * grad_V';
-                act_g = max(act_g + min(learning_rate_g * grad_G,max_shift_g),minval*ones(ge.k,1))
-                act_z = max(act_z + learning_rate_z * grad_Z,minval)
-                lp = gestaltFullLogPosterior(ge,act_x,act_v,act_g,act_z,[])   
+                act_g = max(act_g + min(learning_rate_g * grad_G,max_shift_g),minval*ones(ge.k,1));
+                act_z = max(act_z + learning_rate_z * grad_Z,minval);
+                %lp = gestaltFullLogPosterior(ge,act_x,act_v,act_g,act_z,[]);
                 
-                maxdelta = sum((prev_g-act_g).^2)
-                if maxdelta < 1e-8
+                %maxdelta = sum((prev_g-act_g).^2);
+                maxdelta = max((prev_g-act_g).^2);
+                if maxdelta < difflimit
                     convergence = true;
+                    fprintf('Convergence achieved in %d steps.\n',counter-1);
                 end
                 
                 actnorm = reshape(act_v,1,ge.Dv);
                 actnorm = actnorm/norm(actnorm);
-                actnorm * norm_v'
+                angle = actnorm * norm_v';
+                actdelta = [actdelta angle];
+                actgcourse = [actgcourse act_g];
+                actzcourse = [actzcourse act_z];
 %                 %viewImage(grad_V)
 %                 fprintf('g %.2f v %.2f z %.2f lp %.2f\n',max(grad_G),max(grad_V),max(grad_Z),lp);
                 %pause
             else
                 convergence = true;
+                fprintf('Convergence achieved in %d steps.\n',counter-1);
             end
+            
         end
         
+        delta{end+1} = actdelta;
+        gcourse{end+1} = actgcourse;
+        zcourse{end+1} = actzcourse;
         V(i,:) = act_v;
         G(i,:) = act_g';
         Z(i,1) = act_z;
