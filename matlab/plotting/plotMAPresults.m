@@ -49,4 +49,9 @@ for ni = 1:2
     plot([0;length(delta{ni})],[ge.Z(ni,1) ge.Z(ni,1)],'r-');
     title('Z');
     xlim([1 length(delta{ni})]);
+    
+    subplot(2,colnum,colnum+5);
+    plot(loglike{ni});    
+    title('Log-likelihood');
+    xlim([1 length(delta{ni})]);
 end

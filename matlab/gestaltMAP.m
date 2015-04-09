@@ -1,4 +1,4 @@
-function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
+function [V,G,Z,delta,gcourse,zcourse,loglike] = gestaltMAP(ge,fix_v,fix_z,v_init)
     close all;
      if ge.B ~= 1
          error('not implemented for B>1');
@@ -8,11 +8,16 @@ function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
     
     if fix_v
         learning_rate_v = 0;
-        %V = ge.V;
-        V = (ge.A'*X')';
     else
         learning_rate_v = 0.0001;
+    end
+    
+    if strcmp(v_init,'data')
         V = (ge.A'*X')';
+    elseif strcmp(v_init,'true')
+        V = ge.V;
+    else
+        error('invalid v_init');
     end
     
     if fix_z
@@ -30,6 +35,7 @@ function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
     delta = {};
     gcourse = {};
     zcourse = {};
+    loglike = {};
     
     for i=1:N
         %printCounter(i,'maxVal',N,'stringVal','Observation');        
@@ -52,6 +58,7 @@ function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
         actdelta = [];
         actgcourse = [];
         actzcourse = [];
+        actloglike = [];
         while ~convergence
             %printCounter(j);
             counter = counter+1; 
@@ -144,11 +151,11 @@ function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
                 act_v = act_v + learning_rate_v * grad_V';
                 act_g = max(act_g + min(learning_rate_g * grad_G,max_shift_g),minval*ones(ge.k,1));
                 act_z = max(act_z + learning_rate_z * grad_Z,minval);
-                %lp = gestaltFullLogPosterior(ge,act_x,act_v,act_g,act_z,[]);
+                lp = gestaltFullLogPosterior(ge,act_x,act_v,act_g,act_z,[]);
                 
                 %maxdelta = sum((prev_g-act_g).^2);
                 maxdelta = max((prev_g-act_g).^2);
-                if maxdelta < difflimit
+                if maxdelta < 1e-6 || counter == 1000
                     convergence = true;
                     fprintf('Convergence achieved in %d steps.\n',counter-1);
                 end
@@ -159,6 +166,7 @@ function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
                 actdelta = [actdelta angle];
                 actgcourse = [actgcourse act_g];
                 actzcourse = [actzcourse act_z];
+                actloglike = [actloglike lp];
 %                 %viewImage(grad_V)
 %                 fprintf('g %.2f v %.2f z %.2f lp %.2f\n',max(grad_G),max(grad_V),max(grad_Z),lp);
                 %pause
@@ -172,6 +180,7 @@ function [V,G,Z,delta,gcourse,zcourse] = gestaltMAP(ge,difflimit,fix_v,fix_z)
         delta{end+1} = actdelta;
         gcourse{end+1} = actgcourse;
         zcourse{end+1} = actzcourse;
+        loglike{end+1} = actloglike;
         V(i,:) = act_v;
         G(i,:) = act_g';
         Z(i,1) = act_z;
