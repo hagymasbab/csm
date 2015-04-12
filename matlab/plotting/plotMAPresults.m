@@ -27,6 +27,7 @@ for ni = 1:2
     subplot(2,colnum,colnum+3);
     plot(delta{ni}');
     xlim([1 length(delta{ni})]);
+    ylim([0 1]);
     title('V_{MAP} \cdot V_{True}');
 
     subplot(2,colnum,4);

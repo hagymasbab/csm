@@ -24,8 +24,9 @@ function [V,G,Z,delta,gcourse,zcourse,loglike] = gestaltMAP(ge,fix_v,fix_z,v_ini
         learning_rate_z = 0;
         Z = ge.Z;
     else
-        learning_rate_z = 0.001;
-        Z = 1 * ones(N,1);
+        learning_rate_z = 0.0001;
+        %Z = 1 * ones(N,1);
+        Z = gamrnd(2*ones(N,1),2);
     end
     
     learning_rate_g = 0.01;
@@ -69,12 +70,14 @@ function [V,G,Z,delta,gcourse,zcourse,loglike] = gestaltMAP(ge,fix_v,fix_z,v_ini
 %                 end
                 
             if rem(counter-2,drawGradients) == 0
-                imgmax = 1.1;
-                imgstep = 0.04;                    
-                probcutoff = 70;
+                imgmax = 1;
+                %imgstep = 0.04;                    
+                imgres = 30;
+                probcutoff = 1;
                 cutoff = 1;
 
-                gx = 0.01:imgstep:imgmax;
+                %gx = 0.01:imgstep:imgmax;
+                gx = linspace(minval,imgmax,imgres);
                 if max(act_g) > imgmax
                     gx = gx + max(act_g) - imgmax/2;
                 end
@@ -103,13 +106,15 @@ function [V,G,Z,delta,gcourse,zcourse,loglike] = gestaltMAP(ge,fix_v,fix_z,v_ini
                         pg(k,j) = gestaltFullLogPosterior(ge,reshape(act_x,ge.B,ge.Dx),reshape(act_v,ge.B,ge.Dv),[gx(k);gx(j)],act_z,[]);
                     end
                 end
-                pg (pg < max(pg(:))*0.01*probcutoff) = max(pg(:))*0.01*probcutoff;            
+                pg (pg < max(pg(:))*0.01*probcutoff) = max(pg(:))*0.01*probcutoff;         
                 imagesc(gx(cutoff:end),gx(cutoff:end),pg(cutoff:end,cutoff:end))   
+                colormap jet
                 hold on;
                 plot(act_g(2),act_g(1),'-gx','MarkerSize',20,'LineWidth',3);
 
                 subplot(1,4,2);
                 imagesc(gx(cutoff:end),gx(cutoff:end),gg1(cutoff:end,cutoff:end))
+                colormap jet
                 maxval = max([ max(max(gg1(cutoff:end,cutoff:end))) abs( min(min(gg1(cutoff:end,cutoff:end))) ) ]);
                 colorscale = 1e-5;
                 caxis(colorscale*[-maxval maxval]);
@@ -119,6 +124,7 @@ function [V,G,Z,delta,gcourse,zcourse,loglike] = gestaltMAP(ge,fix_v,fix_z,v_ini
 
                 subplot(1,4,3);
                 imagesc(gx(cutoff:end),gx(cutoff:end),gg2(cutoff:end,cutoff:end))
+                colormap jet
                 maxval = max([ max(max(gg2(cutoff:end,cutoff:end))) abs( min(min(gg2(cutoff:end,cutoff:end))) ) ]);                
                 caxis(colorscale*[-maxval maxval]);
                 title('2')
@@ -137,6 +143,8 @@ function [V,G,Z,delta,gcourse,zcourse,loglike] = gestaltMAP(ge,fix_v,fix_z,v_ini
             end
 
             prev_g = act_g;
+            prev_v = act_v;
+            prev_z = act_z;
 
             max_shift_g = 0.1;
             act_v = act_v + learning_rate_v * grad_V';
@@ -144,11 +152,15 @@ function [V,G,Z,delta,gcourse,zcourse,loglike] = gestaltMAP(ge,fix_v,fix_z,v_ini
             act_z = max(act_z + learning_rate_z * grad_Z,minval);
             lp = gestaltFullLogPosterior(ge,act_x,act_v,act_g,act_z,[]);
 
-            %maxdelta = sum((prev_g-act_g).^2);
-            maxdelta = max((prev_g-act_g).^2);
-            if maxdelta < 1e-6 || counter == 1000
+            delta_g = max((prev_g-act_g).^2);
+            delta_v = max((prev_v-act_v).^2);
+            delta_z = max((prev_z-act_z).^2);
+            maxdelta = max([delta_g delta_v delta_z]);
+            if maxdelta < 1e-6 || counter == 10000
                 convergence = true;
                 fprintf('Convergence achieved in %d steps.\n',counter-1);
+            elseif rem(counter-1,1000) == 0
+                learning_rate_g = learning_rate_g * 0.1;
             end
 
             actnorm = reshape(act_v,1,ge.Dv);
