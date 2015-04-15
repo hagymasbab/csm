@@ -1,9 +1,12 @@
-function gestaltLearnNatural(code,dataset,filterset,Dx,embatch,samplesize,burnin,k,nullcomp,maxStep,skipCheck,likelihood,learningRate)    
+function gestaltLearnNatural(code,dataset,datasize,filterset,Dx,embatch,samplesize,burnin,k,nullcomp,maxStep,skipCheck,likelihood,learningRate)    
 
     % TODO try to create the patch DB and filters if needed
     
     datafile = sprintf('patches_%s_%d.mat',dataset,Dx);
     load(datafile);
+    if datasize > 0
+        patchDB = patchDB(:,1:datasize);
+    end
     
     % TODO subsample patchDB to leave out a test set for crossvalidation
     
