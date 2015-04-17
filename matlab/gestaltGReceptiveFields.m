@@ -49,8 +49,9 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
     %figure;viewImage(corr_std);
     var_mean = mean(all_vars,1)';
     var_std = std(all_vars,0,1)';
-
-    angstds = zeros(ge.k,vertnum);
+    
+    plot_ang = min(ge.k,15);
+    angstds = zeros(plot_ang,vertnum);
     for i = 1:ge.k       
         transformed_loc{i} = exp(seeds{i}/5);
 
@@ -61,16 +62,17 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
         end
         angstds(i,1) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx)))) ;
         
-        if plothist
+        if plothist && i <= plot_ang
             if i==1
                 figure;viewImageSet(all_corrs);
                 figure;
             end
-            subplot(ge.k,vertnum,(i-1)*vertnum+1);
+            subplot(plot_ang,vertnum,(i-1)*vertnum+1);
             hist(orients(select_idx));
             if i==1;title('Variance');end;
             xlim([0 180]);                
-            xlabel(sprintf('Angular STD %f',angstds(i,1)));
+            %xlabel(sprintf('Angular STD %f',angstds(i,1)));
+            set(gca,'XTickLabel',{});
         end
         
 %         select_idx = [];
@@ -86,7 +88,7 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
 %             select_idx = (1:ge.Dv)';
 %         end
         maxel = 50;
-        [~,high_x,high_y] = maxNElements(all_corrs{i},maxel);
+        [~,high_x,high_y] = maxNElements(all_corrs{i},maxel,[]);
         select_idx = [];
         for j = 1:length(high_x)
             if ~any(select_idx==high_x(j));select_idx = [select_idx;high_x(j)];end;
@@ -94,12 +96,13 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
         end
         angstds(i,2) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx))));
         
-        if plothist
-            subplot(ge.k,vertnum,(i-1)*vertnum+2);
+        if plothist && i <= plot_ang
+            subplot(plot_ang,vertnum,(i-1)*vertnum+2);
             hist(orients(select_idx));
             if i==1;title('Positive');end;
             xlim([0 180]);                   
-            xlabel(sprintf('Angular STD %f',angstds(i,2)));
+            %xlabel(sprintf('Angular STD %f',angstds(i,2)));
+            set(gca,'XTickLabel',{});
         end
 
 %         select_idx = [];
@@ -114,7 +117,7 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
 %         if sum(select_idx) == 0
 %             select_idx = (1:ge.Dv)';
 %         end
-        [~,high_x,high_y] = maxNElements(-all_corrs{i},maxel);
+        [~,high_x,high_y] = maxNElements(-all_corrs{i},maxel,[]);
         select_idx = [];
         for j = 1:length(high_x)
             if ~any(select_idx==high_x(j));select_idx = [select_idx;high_x(j)];end;
@@ -122,12 +125,13 @@ function [gRF,seeds,angstds,transformed_loc] = gestaltGReceptiveFields(ge,cc,sam
         end
         angstds(i,3) = circ_rad2ang(circ_std(circ_ang2rad(orients(select_idx))));
 
-        if plothist
-            subplot(ge.k,vertnum,(i-1)*vertnum+3);
+        if plothist && i <= plot_ang
+            subplot(plot_ang,vertnum,(i-1)*vertnum+3);
             hist(orients(select_idx));
             if i==1;title('Negative');end;
             xlim([0 180]);    
-            xlabel(sprintf('Angular STD %f',angstds(i,3)));
+            %xlabel(sprintf('Angular STD %f',angstds(i,3)));
+            set(gca,'XTickLabel',{});
         end
     end
     if plothist

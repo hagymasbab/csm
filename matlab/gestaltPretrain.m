@@ -11,6 +11,7 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     addParamValue(parser,'plot',false,@islogical);
     addParamValue(parser,'verbose',false,@islogical);
     addParamValue(parser,'GDistrib','normal');
+    addParamValue(parser,'saveCC',0,@isnumeric);
     parse(parser,varargin{:});
     params = parser.Results;    
     
@@ -34,7 +35,14 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     g_bias = randn(ge.k,1) * params.initVar;
     v_bias = randn(ge.Dv,1) * params.initVar;
     W = randn(ge.Dv,ge.k) * params.initVar;
-    pA = pinv(ge.A);
+    
+    if params.saveCC > 0
+        savenum = floor(steps / params.saveCC) + 1;
+        cc_iter = cell(savenum,ge.k);
+        cc_iter(1,:) = w2cc(ge,W);        
+        savecount = 2;
+    end
+    
 %     data_corr = zeros(ge.Dv,ge.k);
 %     fantasy_corr = zeros(ge.Dv,ge.k);
 %     data_hiddenact = zeros(1,ge.k);
@@ -44,15 +52,13 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
     params.gbiasinc = zeros(ge.k,steps);
     params.vbiasinc = zeros(ge.Dv,steps);
     
-    % transform each line of X into a V by the pseudoinverse of A
-    V_data = pA * X'; % TODO check whether we have to transpose
-
-    if params.verbose
-        fprintf('Step %d/',steps);
-    end
+    % transform each line of X into the V space
+    %V_data = pinv(ge.A) * X';
+    V_data = ge.A' * X';
+    
     for s = 1:steps
         if params.verbose
-            printCounter(s);
+            printCounter(s,'maxVal',steps,'stringVal','Step');
         end
         V = V_data;
         % take one sample for each v from fake-G
@@ -94,15 +100,40 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
             v_bias = v_bias + params.alpha * (data_vact - fantasy_vact) / N; 
             params.vbiasinc(:,s) = v_bias;
         end
+               
+        if params.saveCC > 0 && rem(s,params.saveCC) == 0
+            cc_iter(savecount,:) = w2cc(ge,W);        
+            savecount = savecount + 1;
+            save('bin/cc_pret_iter.mat','cc_iter');
+        end
         
     end
     
-    if params.verbose
-        fprintf('\n');
-    end
     
     % construct covariance components from W
-    close all;
+    
+    cc = w2cc(ge,W);
+    
+    % plot 
+    if params.plot
+        close all;
+%     cc = cell(1,ge.k);
+        for k = 1:ge.k
+%         actc = zeros(ge.Dv);
+%         for i = 1:ge.Dv
+%             for j = 1:ge.Dv
+%                 actc(i,j) = W(i,k) * W(j,k);
+%             end
+%         end
+%         cc{k} = actc;
+        
+            figure;
+            viewImage(cc{k},'usemax',true);
+        end
+    end        
+end
+
+function cc = w2cc(ge,W)    
     cc = cell(1,ge.k);
     for k = 1:ge.k
         actc = zeros(ge.Dv);
@@ -112,10 +143,6 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
             end
         end
         cc{k} = actc;
-        if params.plot
-            figure;
-            viewImage(cc{k},'usemax',true);
-        end
     end        
 end
 
