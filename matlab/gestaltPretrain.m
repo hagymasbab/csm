@@ -104,7 +104,7 @@ function [cc,winc,gbiasinc,vbiasinc] = gestaltPretrain(ge,steps,randseed,varargi
         if params.saveCC > 0 && rem(s,params.saveCC) == 0
             cc_iter(savecount,:) = w2cc(ge,W);        
             savecount = savecount + 1;
-            save('bin/cc_pret_iter.mat','cc_iter','ge');
+            save('bin/cc_pret_iter.mat','cc_iter','ge','-v7.3');
         end
         
     end
