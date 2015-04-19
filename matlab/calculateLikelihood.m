@@ -16,7 +16,7 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
     % find out how many iterations are actually there in the data
     calc = true;
     index = 1;
-    while calc
+    while calc && index <= length(state_sequence)
         if isempty(state_sequence{index})
             calc = false;
             index = index - 1;
