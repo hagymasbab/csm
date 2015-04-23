@@ -82,9 +82,17 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
     elseif iscell(params.initCond) && size(params.initCond) == ge.k
         ccInit = params.initCond;
     elseif isnumeric(params.initCond) && length(params.initCond) == 1
+        ccInit = cell(1,ge.k);
         savingCode = params.initCond;
         load(sprintf('cc_%d.mat',savingCode))
-        ccInit = cc_next;
+        for i=1:ge.k
+            [~,e] = chol(cc_saved{i});
+            if e == 0
+                ccInit{i} = cc_saved{i};
+            else
+                ccInit{i} = nearestSPD(cc_saved{i});
+            end
+        end
     else
         fprintf('not implemented');
         return;
