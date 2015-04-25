@@ -1,11 +1,26 @@
-function gestaltLearnNatural(code,dataset,datasize,filterset,Dx,embatch,samplesize,burnin,k,nullcomp,maxStep,skipCheck,likelihood,learningRate)    
-
+function gestaltLearnNatural(Dx,k,embatch,samplesize,varargin)    
+    parser = inputParser;
+    addParameter(parser,'code',0,@isnumeric);    
+    addParameter(parser,'learningRate',0,@isnumeric); 
+    addParameter(parser,'dataset','vanhateren'); 
+    addParameter(parser,'filterset','OF'); 
+    addParameter(parser,'nullcomp',false,@islogical);
+    addParameter(parser,'skipCheck',false,@islogical);
+    addParameter(parser,'datasize',0,@isnumeric);
+    addParameter(parser,'datashift',0,@isnumeric);
+    addParameter(parser,'burnin',50,@isnumeric);
+    addParameter(parser,'likelihood','batch'); 
+    addParameter(parser,'maxStep',10000,@isnumeric);
+    addParameter(parser,'randseed','shuffle'); 
+    parse(parser,varargin{:});        
+    params = parser.Results;      
+        
     % TODO try to create the patch DB and filters if needed
     
-    datafile = sprintf('patches_%s_%d.mat',dataset,Dx);
+    datafile = sprintf('patches_%s_%d.mat',params.dataset,Dx);
     load(datafile);
-    if datasize > 0
-        patchDB = patchDB(:,1:datasize);
+    if params.datasize > 0
+        patchDB = patchDB(:,1+params.datashift:params.datasize+params.datashift);
     end
     
     % TODO subsample patchDB to leave out a test set for crossvalidation
@@ -30,19 +45,19 @@ function gestaltLearnNatural(code,dataset,datasize,filterset,Dx,embatch,samplesi
     
     % create model    
     ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',embatch, ...
-        'filters',filterset,'obsVar',1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',nullcomp,'generateComponents',false,'generateData',false);        
+        'filters',params.filterset,'obsVar',1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',params.nullcomp,'generateComponents',false,'generateData',false);        
         
     % set initial conditions
-    if code == 0
+    if params.code == 0
         initCond = 'empty';
     else
-        initCond = code;
+        initCond = params.code;
     end        
     
     % this means automatically adapting the LR after the first gradient computation 
     %learningRate = 0;
     
     % start learning
-    gestaltEM(ge,patchDB',embatch,maxStep,samplesize,'shuffle','syntheticData',false,'initCond',initCond, ...
-        'learningRate',learningRate,'burnin',burnin,'computeLikelihood',likelihood,'verbose',2,'skipCheck',skipCheck);
+    gestaltEM(ge,patchDB',embatch,params.maxStep,samplesize,params.randseed,'syntheticData',false,'initCond',initCond, ...
+        'learningRate',params.learningRate,'burnin',params.burnin,'computeLikelihood',params.likelihood,'verbose',2,'skipCheck',params.skipCheck);
 end
