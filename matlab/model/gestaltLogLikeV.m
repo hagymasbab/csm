@@ -9,9 +9,9 @@ function loglike = gestaltLogLikeV(V,g,ge,precision,iC,Cv)
         if isempty(Cv)
             Cv = componentSum(g,ge.cc);            
         end
-        if rcond(Cv) < 1e-15
-            illConditioned = true;
-        end
+%         if rcond(Cv) < 1e-15
+%             illConditioned = true;
+%         end
         if ge.sparseComponents
             Cv = sparse(Cv);
         end

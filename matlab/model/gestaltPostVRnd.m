@@ -1,9 +1,13 @@
-function [V,m] = gestaltPostVRnd(ge,xind,g,z,precision)
+function [V,m] = gestaltPostVRnd(ge,xind,g_or_Cv,z,precision)
 
     % construct the covariance and mean of the conditional posterior over v
     sAA = ((z*z)/ge.obsVar) * ge.AA;
     if ~precision
-        Cv = componentSum(g,ge.cc);        
+        if size(g_or_Cv,2) == ge.Dv
+            Cv = g_or_Cv;
+        else
+            Cv = componentSum(g_or_Cv,ge.cc);        
+        end
         %icv = Cv \ eye(ge.Dv);
         %icovm = sAA + icv;
         %icovm = sAA + inv(Cv);
@@ -12,6 +16,7 @@ function [V,m] = gestaltPostVRnd(ge,xind,g,z,precision)
         covm = inv(sAA + icv);       
         % viewImage(cov);
     else
+        % TODO implement the g_or_Cv thing
         P = componentSum(g,ge.pc);
         covm = inv(sAA + P);
     end
