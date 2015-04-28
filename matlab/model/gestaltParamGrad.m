@@ -54,10 +54,17 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
                 for b=1:ge.B
                     v = V(b,:)';
                     quad = quad + iCv * (v * v') * iCv;
+                    
+%                     vv = v * v';
+%                     increment = Cv \ vv / Cv;
+%                     quad = quad + increment;
                 end                
                 actmat = (ge.B * iCv - quad);
+%                 actmat = eye(ge.Dv) / Cv - quad;
+                
                 for kk = 1:effective_k
-                    dLdC{kk} = dLdC{kk} + g(kk,:) * actmat;               
+                    increment = g(kk,:) * actmat;
+                    dLdC{kk} = dLdC{kk} + increment;               
                 end
             else    
                 % TODO replace this with writing to stored matrices
