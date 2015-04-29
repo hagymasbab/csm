@@ -39,7 +39,7 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
             V = reshape(vsamp(n,l,:,:),ge.B,ge.Dv);
             
             % calculate \sum_{b=1}^B v^{m,b} v^{(m,b)T}            
-            VV = V'*V;
+            %VV = V'*V;
             
             % calculate the covariance matrix
             CvP = componentSum(g,cc);
@@ -53,7 +53,10 @@ function grad = gestaltParamGrad(ge,vsamp,gsamp,cholesky,varargin)
                 quad = 0;
                 for b=1:ge.B
                     v = V(b,:)';
-                    quad = quad + iCv * (v * v') * iCv;
+                    icvv = iCv * v;
+                    increment = icvv * icvv';
+                    quad = quad + increment;
+%                     quad = quad + iCv * (v * v') * iCv;
                     
 %                     vv = v * v';
 %                     increment = Cv \ vv / Cv;
