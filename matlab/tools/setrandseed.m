@@ -1,7 +1,7 @@
 function setrandseed(randseed)
     if strcmp(randseed,'last')
         % TODO check if exsits
-        load lastrandseed;
+        load('bin/lastrandseed');
     elseif strcmp(randseed,'leave')
         return
     end
