@@ -3,6 +3,7 @@ function viewImage(data,varargin)
     addParameter(p,'magnif',true,@islogical);
     addParameter(p,'usemax',false,@islogical);
     addParameter(p,'positive',false,@islogical);
+    addParameter(p,'setmax',2,@isnumeric);
     parse(p,varargin{:});
     magn = p.Results.magnif;
     usemax = p.Results.usemax;
@@ -16,7 +17,7 @@ function viewImage(data,varargin)
         end
     end
     
-    range = [-2 2];
+    range = [-p.Results.setmax p.Results.setmax];
     if usemax
         maxval = max(max(abs(data)));
         if maxval == 0

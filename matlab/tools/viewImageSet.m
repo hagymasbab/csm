@@ -2,6 +2,7 @@ function viewImageSet(images,varargin)
     p = inputParser;
     addParameter(p,'sum',false,@islogical);
     addParameter(p,'max',true,@islogical);  
+    addParameter(p,'setmax',2,@isnumeric);  
     addParameter(p,'positive',false,@islogical);
     addParameter(p,'titles',{});
     parse(p,varargin{:});
@@ -53,7 +54,7 @@ function viewImageSet(images,varargin)
     clf;
     for i=1:N
         subplot(xdim,ydim,i);
-        viewImage(images(i,:),'useMax',p.Results.max,'positive',p.Results.positive);
+        viewImage(images(i,:),'useMax',p.Results.max,'positive',p.Results.positive,'setmax',p.Results.setmax);
         if size(p.Results.titles,2) >= i
             title(p.Results.titles{i});
         end
