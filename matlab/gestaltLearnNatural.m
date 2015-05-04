@@ -12,13 +12,14 @@ function gestaltLearnNatural(Dx,k,embatch,samplesize,varargin)
     addParameter(parser,'likelihood','batch'); 
     addParameter(parser,'maxStep',10000,@isnumeric);
     addParameter(parser,'randseed','shuffle'); 
+    addParameter(parser,'obsVar',0.5,@isnumeric);
     parse(parser,varargin{:});        
     params = parser.Results;      
         
     
     % create model    
     ge = gestaltCreate('temp','Dx',Dx,'k',k,'B',1,'N',embatch, ...
-        'filters',params.filterset,'obsVar',1,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',params.nullcomp,'generateComponents',false,'generateData',false);
+        'filters',params.filterset,'obsVar',params.obsVar,'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'nullComponent',params.nullcomp,'generateComponents',false,'generateData',false);
     
     % TODO try to create the patch DB and filters if needed
     
