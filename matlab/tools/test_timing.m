@@ -4,14 +4,16 @@ function test_timing()
     c = c*c';
     v = rand(576,1);    
 
-    a = @() invert_multiply(c,v);
-    b = @() invert_multiply2(c,v);
+    %a = @() invert_multiply(c,v);
+    a = @() inv(c);
+    b = @() parinv(c);
+    %b = @() invert_multiply2(c,v);
     %b = @() divide(c,vv);
     
-    r1 = invert_multiply(c,v);
-    r2 = invert_multiply2(c,v);
-    isequal(r1,r2)
-    viewImage(r1-r2,'useMax',false);
+%     r1 = invert_multiply(c,v);
+%     r2 = invert_multiply2(c,v);
+%     isequal(r1,r2)
+%     viewImage(r1-r2,'useMax',false);
     
     timeit(a)
     timeit(b)
@@ -33,4 +35,10 @@ end
 function divide(c,vv)
     c \ vv / c;
     %eye(size(c,1)) / c;
+end
+
+function parinv(c)
+    spmd
+        inv(c);
+    end
 end
