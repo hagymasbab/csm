@@ -280,7 +280,8 @@ function [cholesky,cc_next] = gestaltEM(ge,X,emBatchSize,maxStep,nSamples,randse
         state.matrix_norms = {};
         for i=1:ge.k
             state.matrix_norms{i} = norm(cc_next{i});
-        end                       
+        end                    
+        state.learningRate = params.learningRate;
                 
         if params.verbose > 1
             synstr = '';
