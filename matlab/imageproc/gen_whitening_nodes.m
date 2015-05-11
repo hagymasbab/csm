@@ -22,4 +22,4 @@ sigma = cov(x);
 wnode = U*lambda^(-.5)*U';
 % wnode = lambda^(-.5)*U;
 
-save(sprintf('wnodes_%d.mat',patchDim^2),'wnode');
+save(sprintf('bin/wnodes_%d.mat',patchDim^2),'wnode');

@@ -26,5 +26,5 @@ function patchDB = samplePatches(patchDim,trainingLength)
     x = reshape(x,trainingLength,numDims);
     patchDB = do_whitening(x,wnode)';
 
-    save(sprintf('patches_vanhateren_%d.mat',numDims),'patchDB');
+    save(sprintf('bin/patches_vanhateren_%d.mat',numDims),'patchDB');
 end

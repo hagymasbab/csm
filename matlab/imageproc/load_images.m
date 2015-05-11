@@ -4,7 +4,8 @@ w=1536;h=1024;
 
 d0=pwd;
 
-cd /Users/karaj/csnl/vanhateren
+%cd /Users/karaj/csnl/vanhateren
+cd /home/banmi/imageDB/vanhateren
 
 % load -ascii filenames.dat
 
