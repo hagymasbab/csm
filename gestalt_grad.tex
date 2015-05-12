@@ -73,8 +73,8 @@ substituting back to the derivative
 The regularities of the $\hat U_k$ matrices allow us to replace the trace with a much more efficient computation:
 
 \begin{eqnarray}
-M = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h_n^l (g_n^l)_k \mathcal{N}(f_n^l;0,C_n^l)   \left[ (C_n^l)^{-1} - (C_n^l)^{-1} f_n^l (f_n^l)^T (C_n^l)^{-1} \right] \right) \\
-\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{a=1}^{Dv} \left[ M \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M \right]_{a,j} \left[ U_k \right]_{i,a}
+M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h_n^l (g_n^l)_k \mathcal{N}(f_n^l;0,C_n^l)   \left[ (C_n^l)^{-1} - (C_n^l)^{-1} f_n^l (f_n^l)^T (C_n^l)^{-1} \right] \right) \\
+\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
 \end{eqnarray}
 %
 we can move the parameters in the direction of the gradient scaled by a learning rate
