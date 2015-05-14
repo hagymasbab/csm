@@ -19,7 +19,7 @@ p(X \mid C_{1..K}) = \prod_{n=1}^N \iiint_{-\infty}^{\infty} p(x_n,v_n \mid z_n,
 approximation of some of the integrals by samples from the priors $p(g_n)$ and $p(z_n)$
 
 \begin{equation}
-p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L} \int_{-\infty}^{\infty} p(x_n,v_n \mid z_n^l,g_n^l)  \mathrm{d}v_n
+p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L} \int_{-\infty}^{\infty} p(x_n,v_n \mid z^l,g^l)  \mathrm{d}v_n
 \end{equation}
 %
 the integral evaluates as follows
@@ -27,17 +27,17 @@ the integral evaluates as follows
 \begin{eqnarray}
 \int_{-\infty}^{\infty} p(x_n,v_n \mid z_n,g_n)  \mathrm{d}v_n = \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k) \\
 f(x,z) \equiv \frac{1}{z}A^{+}x \\
-C(x,z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k \\
+C(z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k \\
 h(z) \equiv  \frac{1}{z^{D_v} \sqrt{\det(A^TA)}}
 \end{eqnarray}
 %
 thus, the likelihood can be expressed as
 
 \begin{eqnarray}
-p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L} h(z_n^l) \mathcal{N}(f(x_n,z_n^l);0,C(x_n,z_n^l,g_n^l)) \\
-\log p(X \mid C_{1..K}) \approx \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} h(z_n^l) \mathcal{N}(f(x_n,z_n^l);0,C(x_n,z_n^l,g_n^l)) \right] \\
-h_n^l \equiv h(z_n^l), ~ f_n^l \equiv f(x_n,z_n^l), ~ C_n^l \equiv C(x_n,z_n^l,g_n^l) \\
-\mathcal{L}_n^l \equiv h_n^l \mathcal{N}(f_n^l;0,C_n^l), ~ \mathcal{L}_n \equiv  \sum_{l=1}^{L} \mathcal{L}_n^l \\
+p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \\
+\log p(X \mid C_{1..K}) \approx \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \right] \\
+h^l \equiv h(z^l), ~ f_n^l \equiv f(x_n,z^l), ~ C^l \equiv C(z^l,g^l) \\
+\mathcal{L}_n^l \equiv h^l \mathcal{N}(f_n^l;0,C^l), ~ \mathcal{L}_n \equiv  \sum_{l=1}^{L} \mathcal{L}_n^l \\
 \log p(X \mid C_{1..K}) \approx \sum_{n=1}^N \log \mathcal{L}_n
 \end{eqnarray}
 %
@@ -46,7 +46,7 @@ the derivative of the likelihood with respect to a single element of the Cholesk
 \begin{equation}
 \begin{split}
 \frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{n=1}^N \frac{\partial \log \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n} \frac{\partial \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \frac{\partial \mathcal{L}_n^l}{\partial \left[ U_k \right]_{i,j}} = \\
-=  \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \textrm{Tr} \left[ \frac{\partial \mathcal{L}_n^l}{\partial C_n^l} \frac{\partial C_n^l}{\partial \left[ U_k \right]_{i,j}} \right]
+=  \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \textrm{Tr} \left[ \frac{\partial \mathcal{L}_n^l}{\partial C^l} \frac{\partial C^l}{\partial \left[ U_k \right]_{i,j}} \right]
 \end{split}
 \end{equation}
 % 
@@ -54,10 +54,10 @@ the derivatives in this formula are the following
 
 \begin{eqnarray}
 \begin{split}
-\frac{\partial \mathcal{L}_n^l}{\partial C_n^l} = h_n^l \frac{\partial}{\partial C_n^l} \mathcal{N}(f_n^l;0,C_n^l) = h_n^l \mathcal{N}(f_n^l;0,C_n^l) \frac{\partial}{\partial C_n^l} \log \mathcal{N}(f_n^l;0,C_n^l) = \\
-= -\frac{h_n^l}{2} \mathcal{N}(f_n^l;0,C_n^l) \left[ (C_n^l)^{-1} - (C_n^l)^{-1} f_n^l (f_n^l)^T (C_n^l)^{-1} \right]
+\frac{\partial \mathcal{L}_n^l}{\partial C^l} = h^l \frac{\partial}{\partial C^l} \mathcal{N}(f_n^l;0,C^l) = h^l \mathcal{N}(f_n^l;0,C^l) \frac{\partial}{\partial C^l} \log \mathcal{N}(f_n^l;0,C^l) = \\
+= -\frac{h^l}{2} \mathcal{N}(f_n^l;0,C^l) \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right]
 \end{split} \\
-\frac{\partial C(x,z,g)}{\partial \left[ U_k \right]_{i,j}} = g_k \frac{\partial \left( U_k^T U_k \right)}{\partial \left[ U_k \right]_{i,j}} = g_k \left( U_k^T J^{ij} + J^{ji} U_k \right) \equiv g_k \hat U_k^{ij}
+\frac{\partial C(z,g)}{\partial \left[ U_k \right]_{i,j}} = g_k \frac{\partial \left( U_k^T U_k \right)}{\partial \left[ U_k \right]_{i,j}} = g_k \left( U_k^T J^{ij} + J^{ji} U_k \right) \equiv g_k \hat U_k^{ij}
 \end{eqnarray}
 %
 substituting back to the derivative
@@ -65,17 +65,16 @@ substituting back to the derivative
 \begin{equation}
 \begin{split}
 \frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \\
-\approx  -\frac{1}{2} \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h_n^l (g_n^l)_k \mathcal{N}(f_n^l;0,C_n^l)  \textrm{Tr} \left[ \left[ (C_n^l)^{-1} - (C_n^l)^{-1} f_n^l (f_n^l)^T (C_n^l)^{-1} \right] \hat U_k^{ij} \right] = \\
-= -\frac{1}{2} \textrm{Tr} \left[ \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h_n^l (g_n^l)_k \mathcal{N}(f_n^l;0,C_n^l)   \left[ (C_n^l)^{-1} - (C_n^l)^{-1} f_n^l (f_n^l)^T (C_n^l)^{-1} \right] \right) \hat U_k^{ij} \right]
+\approx  -\frac{1}{2} \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)  \textrm{Tr} \left[ \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \hat U_k^{ij} \right] = \\
+= -\frac{1}{2} \textrm{Tr} \left[ \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right) \hat U_k^{ij} \right]
 \end{split}
 \end{equation}
 %
 The regularities of the $\hat U_k$ matrices allow us to replace the trace with a much more efficient computation:
 
 \begin{eqnarray}
-M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h_n^l (g_n^l)_k \mathcal{N}(f_n^l;0,C_n^l)   \left[ (C_n^l)^{-1} - (C_n^l)^{-1} f_n^l (f_n^l)^T (C_n^l)^{-1} \right] \right) \\
-\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] \\
-\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
+M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right) \\
+\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
 \end{eqnarray}
 %
 we can move the parameters in the direction of the gradient scaled by a learning rate

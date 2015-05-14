@@ -32,6 +32,8 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     siATA = ge.obsVar * inv(ATA);
     idATA = 1 / sqrt( det(ATA) );
     
+    % TODO precompute h_l, C_l and iC_l    
+    
     M = zeros(ge.k,ge.Dv,ge.Dv);
     for n = 1:N
         if params.verbose == 1
@@ -84,9 +86,10 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         grad{kk} = zeros(ge.Dv);
         M_k = reshape(M(kk,:,:),ge.Dv,ge.Dv);
         for i = 1:ge.Dv
-            for j = i:ge.Dv
-                % this should be equivalent with Tr(M U_hat)
-                
+            for j = i:ge.Dv                
+                %U_hat = derivQuadByElement(cholesky{k},i,j);
+                %grad{kk}(i,j) = trace(M*U_hat);
+                % this should be equivalent with Tr(M U_hat)                
                 grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* M_k(j,:) + cholesky{kk}(i,:) .* M_k(:,j)');
             end
         end
