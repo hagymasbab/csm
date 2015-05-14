@@ -85,6 +85,7 @@ function ll = gestaltLogLikelihood(ge,L,data,varargin)
         else
             G = gestaltSamplePriorG(ge,L);
             Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
+            save('bin/prior_samples.mat','G','Z');
         end
 
         log_act_l = zeros(N,1);
