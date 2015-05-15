@@ -50,7 +50,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             
             h_l = 1 / (z_l^ge.Dv * idATA);
             f_l = pAx / z_l;
-            C_v = componentSum(g_l,ge.cc);
+            C_v = componentSum(g_l,cc);
             C_l = siATA / z_l2 + C_v;
             
 %             [~,e] = chol(C_l);

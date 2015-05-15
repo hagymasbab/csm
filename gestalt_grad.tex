@@ -12,23 +12,28 @@
 p(X \mid C_{1..K}) = \prod_{n=1}^N p(x_n \mid C_{1..K}) 
 \end{equation}
 
-\begin{equation}
-p(X \mid C_{1..K}) = \prod_{n=1}^N \iiint_{-\infty}^{\infty} p(x_n,v_n \mid z_n,g_n) p(g_n) p(z_n) \mathrm{d}v_n\mathrm{d}g_n\mathrm{d}z_n
-\end{equation}
+\begin{eqnarray}
+p(X \mid C_{1..K}) = \prod_{n=1}^N \iint_{-\infty}^{\infty} p(x_n \mid z,g) p(g) p(z) \mathrm{d}g\mathrm{d}z \\
+%p(X \mid C_{1..K}) = \prod_{n=1}^N \iiint_{-\infty}^{\infty} p(x_n,v_n \mid z_n,g_n) p(g_n) p(z_n) \mathrm{d}v_n\mathrm{d}g_n\mathrm{d}z_n
+\end{eqnarray}
 %
 approximation of some of the integrals by samples from the priors $p(g_n)$ and $p(z_n)$
 
 \begin{equation}
-p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L} \int_{-\infty}^{\infty} p(x_n,v_n \mid z^l,g^l)  \mathrm{d}v_n
+p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L}p(x_n \mid z^l,g^l)
 \end{equation}
 %
-the integral evaluates as follows
+the integral evaluates as follows, according to M\'at\'e Lengyel's intuition, and by the lengthy algebraic manipulations we arrive to a form in which the dependence of covariance matrix on components is simpler, leading to a simpler derivative
 
 \begin{eqnarray}
-\int_{-\infty}^{\infty} p(x_n,v_n \mid z_n,g_n)  \mathrm{d}v_n = \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k) \\
-f(x,z) \equiv \frac{1}{z}A^{+}x \\
+\begin{split}
+p(x \mid z,g) = \int_{-\infty}^{\infty} p(x,v \mid z,g)  \mathrm{d}v = \mathcal{N}(x;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T) =\\
+= \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k) 
+%= \mathcal{N}(x;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T) 
+\end{split} \\
+f(x,z) \equiv \frac{1}{z}A^{+}x, ~ h(z) \equiv  \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \\
 C(z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k \\
-h(z) \equiv  \frac{1}{z^{D_v} \sqrt{\det(A^TA)}}
+%C(z,g) \equiv \sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T \\
 \end{eqnarray}
 %
 thus, the likelihood can be expressed as
