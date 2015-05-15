@@ -25,15 +25,25 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
         save('bin/prior_samples.mat','G','Z');
     end
-    Z_2 = Z .^ 2;
+    Z2 = Z .^ 2;
     
     pA = pinv(ge.A);
     ATA = ge.A' * ge.A;
     siATA = ge.obsVar * inv(ATA);
     idATA = 1 / sqrt( det(ATA) );
     
-    % TODO precompute h_l, C_l and iC_l    
-    
+    covariances = zeros(L,ge.Dv,ge.Dv);
+    inverse_covariances = zeros(L,ge.Dv,ge.Dv);
+    hz = zeros(L,1);
+    for l=1:L
+        g_l = G(l,:)';
+        z_l = Z(l,1);
+        cv = componentSum(g_l,cc);
+        covariances(l,:,:) = siATA / Z2(l) + cv;
+        inverse_covariances(l,:,:) = inv(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
+        hz(l) = idATA / (z_l^ge.Dv);
+    end
+        
     M = zeros(ge.k,ge.Dv,ge.Dv);
     for n = 1:N
         if params.verbose == 1
@@ -43,34 +53,23 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         pAx = pA * x_n;
         Li_n = 0;
         M_part = zeros(ge.k,ge.Dv,ge.Dv);
-        for l = 1:L            
-            g_l = G(l,:)';
-            z_l = Z(l,1);
-            z_l2 = Z_2(l,1);
-            
-            h_l = 1 / (z_l^ge.Dv * idATA);
-            f_l = pAx / z_l;
-            C_v = componentSum(g_l,cc);
-            C_l = siATA / z_l2 + C_v;
+        for l = 1:L                        
+            f_l = pAx / Z(l);
+            C_l = reshape(covariances(l,:,:),ge.Dv,ge.Dv);
+            iC_l = reshape(inverse_covariances(l,:,:),ge.Dv,ge.Dv);
+            iCf = iC_l * f_l;
             
 %             [~,e] = chol(C_l);
 %             if e ~= 0
 %                 C_l = nearestSPD(C_l);
-%             end
-                        
-            iC_l = inv(C_l);
-            iCf = iC_l * f_l;
+%             end                                              
             
             N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);
-            scalar_term = h_l * N_f;            
-            
+            scalar_term = hz(l) * N_f;                        
             matrix_term = iC_l - iCf * iCf';
             
-            %size(matrix_term)
-            %size(M_part(1,:,:))
-            
             for kk = 1:ge.k
-                M_part(kk,:,:) = M_part(kk,:,:) + reshape(g_l(kk,1) * scalar_term * matrix_term,1,ge.Dv,ge.Dv);
+                M_part(kk,:,:) = M_part(kk,:,:) + reshape(G(l,kk) * scalar_term * matrix_term,1,ge.Dv,ge.Dv);
             end
             
             Li_n = Li_n + scalar_term;            

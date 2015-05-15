@@ -1,18 +1,19 @@
 function testGestaltLLDer(formula,randseed)
     
-    function lp = gestaltLL(upperleft,cholmat,ge,L)
-        % log-likelihood
-        cholmat(1,1) = upperleft;
-        choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));        
-        lp = gestaltLogLikelihood(ge,L,ge.X,'cholesky',choles,'loadSamples',false);
+    function lp = gestaltLL(x,cholmat,ge,L,k,c1,c2)
+        % log-likelihood        
+        choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));  
+        choles{k}(c1,c2) = x;
+        %lp = gestaltLogLikelihood(ge,L,ge.X,'cholesky',choles,'loadSamples',false);
+        lp = gestaltLogLikelihood2(ge,L,ge.X,choles,'loadSamples',true,'method','algebra');
     end
 
-    function elementGrad = gestaltDerLL(upperleft,cholmat,ge,L)
+    function grad_el = gestaltDerLL(x,cholmat,ge,L,k,c1,c2)
         % derivative of log-likelihood
-        cholmat(1,1) = upperleft;
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
+        choles{k}(c1,c2) = x;
         grad = gestaltLogLikelihoodGradient(ge,L,ge.X,choles,'loadSamples',true);
-        elementGrad = grad{1}(1,1);        
+        grad_el = grad{k}(c1,c2);
     end
 
     function p = gaussian(upperleft,kovmat,x,mu,c1,c2)
@@ -33,19 +34,23 @@ function testGestaltLLDer(formula,randseed)
     end
 
     setrandseed(randseed);
-    ge = gestaltCreate('temp','Dx',64,'k',10,'N',50,'filters','OF','obsVar',0.5,'g_shape',1,'g_scale',1,'z_shape',2,'z_scale',2,'generateComponents',true,'generateData',true);
+    ge = gestaltCreate('temp','Dx',64,'k',2,'N',10,'filters','OF','obsVar',0.5,'g_shape',1,'g_scale',1,'z_shape',2,'z_scale',2,'generateComponents',true,'generateData',true);
     U = cellchol(ge.cc);    
-    L = 10;
+    L = 20;
     
     cholmat = cell2mat(U);
     
     
     if strcmp(formula,'ll')
-
-        a = @(x) gestaltLL(x,cholmat,ge,L);
-        b = @(x) gestaltDerLL(x,cholmat,ge,L);   
         
-        init = 1;
+        k = 1;
+        c1 = 1;
+        c2 = 2;
+        
+        a = @(x) gestaltLL(x,cholmat,ge,L,k,c1,c2);
+        b = @(x) gestaltDerLL(x,cholmat,ge,L,k,c1,c2);   
+        
+        init = 0.1;
         
     elseif strcmp(formula,'gausscov')
             
