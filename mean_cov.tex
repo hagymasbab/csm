@@ -16,12 +16,31 @@ p_c(v \mid g) = \mathcal{N}(v; 0,\sum_{k=1}^K g_k C_k) \\
 p_m(v \mid g) = \mathcal{N}(v; Bg,\sigma_v I)
 \end{eqnarray}
 
+\begin{equation}
+p(v \mid x) = \iint_{-\infty}^\infty p(v \mid x,g,z) p(g) p(z) \mathrm{d}g \mathrm{d}z
+\end{equation}
+%
+we can do this by either numerical integration or sampling
+
 \begin{eqnarray}
-p(x) =  \sum_z \sum_g p(x \mid g,z) p(g) p(z) \\
-p(v) = \sum_g p(v \mid g) p(g) \\
-p(x \mid v) = \sum_z p(x \mid v,z) p(z) \\
-p(v \mid x) = \frac{p(x \mid v) p(v)}{p(x)} \\
- \sum_z \sum_g p(x \mid v,g) p()
+p(v \mid x) \approx \sum_{z \in \left[z_{min} z_{max} \right]}  \sum_{g \in \left[g_{min} g_{max} \right]} p(v \mid x,g,z) p(g) p(z) \\
+p(v \mid x) \approx \frac{1}{L} \sum_{l=1}^L p(v \mid x,g^l,z^l)
 \end{eqnarray}
+
+either way, we approximate the marginal posterior with a finite mixture. In case of sampling, of $L$ components, for wich the covariance is given in the following form
+
+\begin{equation}
+C_{v \mid x} ~ \approx \frac{1}{L} \sum_{l=1}^L C_{v \mid xgz}^l + ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m) ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m)^T
+\end{equation}
+
+\begin{eqnarray}
+p_c(v \mid x,g,z) = \mathcal{N}(v;\mu_c,C_c) \\
+C_c =  \left(\frac{z^2}{\sigma_x} A^T A + \left[\sum_{k=1}^K g_k C_k \right]^{-1}\right)^{-1} \\
+\mu_c = \frac{z}{\sigma_x} C_c A^T x \\
+p_c(m \mid x,g,z) = \mathcal{N}(v;\mu_m,C_m) \\
+C_m =  \left(\frac{z^2}{\sigma_x} A^T A + \frac{1}{\sigma_v} I \right)^{-1} \\
+\mu_m = C_m \left(\frac{z}{\sigma_x} A^T x +  \frac{1}{\sigma_v} B g \right)
+\end{eqnarray}
+
 
 \end{document}
