@@ -32,6 +32,6 @@ function [C_c,C_m] = posteriorCovariances(x,A,sigma_x,sigma_v,shape_g,scale_g,sh
         mml(i,:) = mm';
     end
     
-    C_c = squeeze(sum(Ccl,1)) + cov(mcl,1);
-    C_m = squeeze(sum(Cml,1)) + cov(mml,1);
+    C_c = squeeze(mean(Ccl,1)) + cov(mcl,1);
+    C_m = squeeze(mean(Cml,1)) + cov(mml,1);
 end
