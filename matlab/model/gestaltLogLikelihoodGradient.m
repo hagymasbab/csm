@@ -39,10 +39,10 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         g_l = G(l,:)';
         z_l = Z(l,1);
         cv = componentSum(g_l,cc);
-        C_l = siATA / Z2(l) + cv;
+        Cl = siATA / Z2(l) + cv;
         % cheating
-        C_l = nearestSPD(C_l);
-        covariances(l,:,:) = C_l;
+        Cl = nearestSPD(Cl);
+        covariances(l,:,:) = Cl;
         inverse_covariances(l,:,:) = stableInverse(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
         %hz(l) = idATA / (z_l^ge.Dv);
         hz(l) = 1 / (z_l^ge.Dv);
