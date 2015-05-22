@@ -30,22 +30,28 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     pA = pinv(ge.A);
     ATA = ge.A' * ge.A;
     siATA = ge.obsVar * inv(ATA);
-    idATA = 1 / sqrt( det(ATA) );
+    idATA = 1 / sqrt( det(ATA));
     
     covariances = zeros(L,ge.Dv,ge.Dv);
     inverse_covariances = zeros(L,ge.Dv,ge.Dv);
     hz = zeros(L,1);
-    for l=1:L
+    parfor l=1:L
         g_l = G(l,:)';
         z_l = Z(l,1);
         cv = componentSum(g_l,cc);
-        covariances(l,:,:) = siATA / Z2(l) + cv;
-        inverse_covariances(l,:,:) = inv(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
-        hz(l) = idATA / (z_l^ge.Dv);
-    end
+        C_l = siATA / Z2(l) + cv;
+        % cheating
+        C_l = nearestSPD(C_l);
+        covariances(l,:,:) = C_l;
+        inverse_covariances(l,:,:) = stableInverse(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
+        %hz(l) = idATA / (z_l^ge.Dv);
+        hz(l) = 1 / (z_l^ge.Dv);
+    end    
+    
+    %Z.^ge.Dv
         
     M = zeros(ge.k,ge.Dv,ge.Dv);
-    for n = 1:N
+    parfor n = 1:N
         if params.verbose == 1
             printCounter(n,'stringVal','Datapoint','maxVal',N);
         end
@@ -64,7 +70,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
 %                 C_l = nearestSPD(C_l);
 %             end                                              
             
-            N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);            
+            N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);
             %N_f = stableMvnpdf(f_l,zeros(ge.Dv,1),C_l,false,false)
             scalar_term = hz(l) * N_f;                        
             matrix_term = iC_l - iCf * iCf';

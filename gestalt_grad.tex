@@ -31,7 +31,7 @@ p(x \mid z,g) = \int_{-\infty}^{\infty} p(x,v \mid z,g)  \mathrm{d}v = \mathcal{
 = \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k) 
 %= \mathcal{N}(x;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T) 
 \end{split} \\
-f(x,z) \equiv \frac{1}{z}A^{+}x, ~ h(z) \equiv  \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \\
+f(x,z) \equiv \frac{1}{z}A^{+}x, ~ h(z) \equiv  \frac{1}{z^{D_v} } \\
 C(z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k \\
 %C(z,g) \equiv \sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T \\
 \end{eqnarray}
@@ -39,8 +39,8 @@ C(z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k \\
 thus, the likelihood can be expressed as
 
 \begin{eqnarray}
-p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \\
-\log p(X \mid C_{1..K}) \approx \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \right] \\
+p(X \mid C_{1..K}) \approx \det(A^TA)^{-\frac{N}{2}} \prod_{n=1}^N \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \\
+\log p(X \mid C_{1..K}) \approx -\frac{N}{2} \log(\det(A^TA)) + \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \right] \\
 h^l \equiv h(z^l), ~ f_n^l \equiv f(x_n,z^l), ~ C^l \equiv C(z^l,g^l) \\
 \mathcal{L}_n^l \equiv h^l \mathcal{N}(f_n^l;0,C^l), ~ \mathcal{L}_n \equiv  \sum_{l=1}^{L} \mathcal{L}_n^l \\
 \log p(X \mid C_{1..K}) \approx \sum_{n=1}^N \log \mathcal{L}_n
