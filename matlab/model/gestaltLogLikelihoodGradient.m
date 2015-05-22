@@ -64,7 +64,8 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
 %                 C_l = nearestSPD(C_l);
 %             end                                              
             
-            N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);
+            N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);            
+            %N_f = stableMvnpdf(f_l,zeros(ge.Dv,1),C_l,false,false)
             scalar_term = hz(l) * N_f;                        
             matrix_term = iC_l - iCf * iCf';
             
@@ -74,8 +75,10 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             
             Li_n = Li_n + scalar_term;            
         end
-        
-        M = M + M_part / Li_n;        
+        % this is as approximation
+        if Li_n ~= 0
+            M = M + M_part / Li_n;      
+        end
     end
     
     M = -M / 2;
