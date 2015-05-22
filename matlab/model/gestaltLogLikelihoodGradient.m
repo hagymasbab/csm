@@ -47,7 +47,9 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         %hz(l) = idATA / (z_l^ge.Dv);
         hz(l) = 1 / (z_l^ge.Dv);
     end    
-    
+    if any(isnan(hz))
+        error('NaN in hz');
+    end
     %Z.^ge.Dv
         
     M = zeros(ge.k,ge.Dv,ge.Dv);
@@ -72,7 +74,10 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             
             N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);
             %N_f = stableMvnpdf(f_l,zeros(ge.Dv,1),C_l,false,false)
-            scalar_term = hz(l) * N_f;                        
+            scalar_term = hz(l) * N_f;   
+            if any(isnan(scalar_term))
+                error('NaN in scalar,n %d %d',n,l);
+            end
             matrix_term = iC_l - iCf * iCf';
             
             for kk = 1:ge.k
@@ -85,6 +90,10 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         if Li_n ~= 0
             M = M + M_part / Li_n;      
         end
+    end
+    
+    if any(isnan(M))
+        error('NaN in M');
     end
     
     M = -M / 2;
