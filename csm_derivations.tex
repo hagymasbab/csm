@@ -1,0 +1,264 @@
+\documentclass{paper}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\begin{document}
+
+\title{Derivations for the CSM model}
+\maketitle
+
+\section{Definition of the model}
+
+A gestalt, a perceptual object, is characterised by a covariance component for the joint distribution of visual neural activity. 
+
+\begin{eqnarray}
+p(v \mid g) = \mathcal{N}(v; 0,C_v) \\
+C_v = \sum_{k=1}^K g_k C_k \label{eq:cv}
+\end{eqnarray}
+%
+where K is the fixed number of possible gestalts in the visual scene and $g_k$ is the strength of the gestalt number $k$, coming from a $K$-dimensional Gamma prior distribution with shape and scale  parameters $\alpha_g$ and $\theta_g$ controlling the sparsity of the prior.
+
+\begin{equation}
+p(g) = \textrm{Gam}(g; \alpha_g,\theta_g)
+\end{equation}
+%
+The global contrast of the image patch is encoded by a scalar variable $z$, also coming from a Gamma prior
+
+\begin{equation}
+p(z) = \textrm{Gam}(z; \alpha_z,\theta_z)
+\end{equation}
+
+The pixel intensities are generated from the neural activity through a set of linear projective field models, possibly Gabor filters, $A$, scaled by the contrast and adding some independent observational noise.
+
+\begin{equation}
+p(x \mid v,z) = \mathcal{N}(x; zAv,\sigma_x I)
+\end{equation}
+
+\section{Likelihoods}
+
+\subsection{Likelihood of $g$ and $z$}
+
+\begin{eqnarray}
+\begin{split}
+p(x \mid z,g) = \int_{-\infty}^{\infty} p(x,v \mid z,g)  \mathrm{d}v = \mathcal{N}(x;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T) =\\
+= \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k) 
+\end{split} \\
+f(x,z) \equiv \frac{1}{z}A^{+}x, ~ h(z) \equiv  \frac{1}{z^{D_v} } \\
+C(z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k \\
+p(x \mid z,g) =  h(z) \mathcal{N}(f(x,z);0,C(z,g))
+\end{eqnarray}
+
+\subsection{Log-likelihood of the parameters}
+
+\begin{equation}
+p(X \mid C_{1..K}) = \prod_{n=1}^N p(x_n \mid C_{1..K}) 
+\end{equation}
+
+\begin{eqnarray}
+p(X \mid C_{1..K}) = \prod_{n=1}^N \iint_{-\infty}^{\infty} p(x_n \mid z,g) p(g) p(z) \mathrm{d}g\mathrm{d}z \\
+\end{eqnarray}
+%
+approximation of the integrals by samples from the priors $p(g_n)$ and $p(z_n)$
+
+\begin{equation}
+p(X \mid C_{1..K}) \approx \prod_{n=1}^N \sum_{l=1}^{L}p(x_n \mid z^l,g^l)
+\end{equation}
+
+\begin{eqnarray}
+p(X \mid C_{1..K}) \approx \det(A^TA)^{-\frac{N}{2}} \prod_{n=1}^N \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \\
+\log p(X \mid C_{1..K}) \approx -\frac{N}{2} \log(\det(A^TA)) + \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \right] \\
+h^l \equiv h(z^l), ~ f_n^l \equiv f(x_n,z^l), ~ C^l \equiv C(z^l,g^l) \\
+\mathcal{L}_n^l \equiv h^l \mathcal{N}(f_n^l;0,C^l), ~ \mathcal{L}_n \equiv  \sum_{l=1}^{L} \mathcal{L}_n^l \\
+\log p(X \mid C_{1..K}) \approx \sum_{n=1}^N \log \mathcal{L}_n
+\end{eqnarray}
+
+\subsubsection{Derivative w.r.t. $C_{1\dots K}$}
+
+\begin{equation}
+\begin{split}
+\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{n=1}^N \frac{\partial \log \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n} \frac{\partial \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \frac{\partial \mathcal{L}_n^l}{\partial \left[ U_k \right]_{i,j}} = \\
+=  \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \textrm{Tr} \left[ \frac{\partial \mathcal{L}_n^l}{\partial C^l} \frac{\partial C^l}{\partial \left[ U_k \right]_{i,j}} \right]
+\end{split}
+\end{equation}
+% 
+the derivatives in this formula are the following
+
+\begin{eqnarray}
+\begin{split}
+\frac{\partial \mathcal{L}_n^l}{\partial C^l} = h^l \frac{\partial}{\partial C^l} \mathcal{N}(f_n^l;0,C^l) = h^l \mathcal{N}(f_n^l;0,C^l) \frac{\partial}{\partial C^l} \log \mathcal{N}(f_n^l;0,C^l) = \\
+= -\frac{h^l}{2} \mathcal{N}(f_n^l;0,C^l) \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right]
+\end{split} \\
+\frac{\partial C(z,g)}{\partial \left[ U_k \right]_{i,j}} = g_k \frac{\partial \left( U_k^T U_k \right)}{\partial \left[ U_k \right]_{i,j}} = g_k \left( U_k^T J^{ij} + J^{ji} U_k \right) \equiv g_k \hat U_k^{ij}
+\end{eqnarray}
+%
+substituting back to the derivative
+
+\begin{equation}
+\begin{split}
+\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \\
+\approx  -\frac{1}{2} \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)  \textrm{Tr} \left[ \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \hat U_k^{ij} \right] = \\
+= -\frac{1}{2} \textrm{Tr} \left[ \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right) \hat U_k^{ij} \right]
+\end{split}
+\end{equation}
+%
+The regularities of the $\hat U_k$ matrices allow us to replace the trace with a much more efficient computation:
+
+\begin{eqnarray}
+M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right) \\
+\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
+\end{eqnarray}
+
+
+\subsection{Complete-data log-likelihood}
+
+\subsubsection{Expectation w.r.t. the posterior}
+\subsubsection{Derivative w.r.t. $C_{1\dots K}$}
+
+
+\section{Posteriors}
+
+\subsection{Full posterior}
+
+\begin{equation}
+p(v,g,z \mid x) = p(x \mid v,g,z) p(v \mid g) p(g) p(z) \frac{1}{p(x)} \sim  p(x \mid v,z) p(v \mid g) p(g) p(z)
+\end{equation}
+%
+so the log-posterior will be the following, up to an additive constant, using Gamma priors over $g$ and $z$ defined by shape and scale parameters:
+
+\begin{equation}
+\begin{split}
+\log p(v,g,z \mid x) \sim \log p(x \mid v,z) + \log p(v \mid g) + \log p(g) + \log p(z) = \\
+= \log \mathcal{N}(x;zAv,\sigma_x I) + \log \mathcal{N}(v;0,C_v) + \log \textrm{Gam}(g;sh_g,sc_g) + \log \textrm{Gam}(z;sh_z,sc_z)
+\end{split}
+\end{equation}
+%
+logarithms of the used pdfs look as follows:
+
+\begin{eqnarray}
+\log  \mathcal{N}(y;\mu,C) = -\frac{1}{2} \left[ \log (2\pi) + \log \det (C) + (y - \mu)^T C^{-1} (y-\mu) \right] \\
+\log  \textrm{Gam}(y;sh,sc) = \log(1) - \log(\Gamma(sh)) - sh \log(sc) + (sh-1) \log(y) - \frac{y}{sc}
+\end{eqnarray}
+
+\subsubsection{Derivative w.r.t. $v$}
+\subsubsection{Derivative w.r.t. $g$}
+\subsubsection{Derivative w.r.t. $z$}
+
+
+\subsection{Marginal posterior of $g$}
+\subsubsection{MAP estimate of $g$}
+
+\begin{eqnarray}
+g_{MAP} = \argmax_g p(g \mid x) = \argmax_g \frac{p(x \mid g)p(g)}{p(x)} = \argmax_g p(x \mid g)p(g)\\
+p(x \mid g) = \int_{-\infty}^{\infty} p(x \mid z,g)p(z)\mathrm{d}z \approx \frac{1}{L} \sum_{l=1}^{L} p(x \mid g,z^l)
+\end{eqnarray}
+
+
+\section*{Appendix}
+
+\subsection{Merging two Gaussian distributions}
+
+We want to merge two Gaussians over $x$ and $v$ into one over $v$
+
+\begin{equation}
+p(x \mid v,z) p(v \mid g) = \mathcal{N}(x;zAv,\sigma_x I) \mathcal{N}(v;0,C_v)
+\end{equation}
+%
+The Gaussian over $x$ spelled out is
+
+\begin{equation} 
+\mathcal{N}(x;zAv,\sigma_x I) = \sqrt{\frac{1}{(2\pi)^{Dx} \sigma_x^{Dx}}}e^{-\frac{1}{2 \sigma_x} (x-zAv)^T(x-zAv)}
+\end{equation}
+
+\begin{equation} 
+-\frac{1}{2} (x-zAv)^T(x-zAv) = -\frac{1}{2} (x^Tx - zv^TA^Tx - zx^TAv + z^2 v^TA^TAv)
+\end{equation}
+%
+as $v^TA^Tx = (x^TAv)^T$, and both are scalars, thus equal to their transposes, it's also true that $v^TA^Tx = x^TAv$
+
+\begin{equation} 
+\begin{split}
+-\frac{1}{2} (x-zAv)^T(x-zAv) = -\frac{1}{2} (x^Tx - 2zx^TAv + z^2 v^TA^TAv) = \\
+= -\frac{x^Tx}{2} + zx^TAv -\frac{z^2}{2} v^TA^TAv
+\end{split}
+\end{equation}
+%
+we have the identity for any symmetric matrix $M$ and vector $b$ that
+
+\begin{equation} 
+-\frac{1}{2} v^T M v + b^Tv = -\frac{1}{2} (v - M^{-1}b)^T M (v - M^{-1}b) + \frac{1}{2}b^T M^{-1} b
+\end{equation}
+%
+making the substitution $M = z^2A^TA$ and $b = (zx^TA)^T=zA^Tx$, yielding $M^{-1} = \frac{1}{z^2}(A^TA)^{-1}$ and $M^{-1} b = \frac{1}{z}(A^TA)^{-1}A^Tx = \frac{1}{z}A^{+}x$, where $A^{+}$ is the Moore-Penrose pseudoinverse of $A$. Thus we get
+
+\begin{equation}
+\begin{split}
+-\frac{1}{2} (x-zAv)^T(x-zAv) = \\
+= -\frac{x^Tx}{2} -\frac{1}{2} (v - \frac{1}{z}A^{+}x)^T z^2A^TA (v - \frac{1}{z}A^{+}x)  + \frac{1}{2} (A^Tx)^T (A^TA)^{-1}A^Tx = \\
+=-\frac{x^Tx}{2} -\frac{1}{2} (v - \frac{1}{z}A^{+}x)^T z^2A^TA (v - \frac{1}{z}A^{+}x)  + \frac{1}{2} x^T A A^{-1} A^{-T} A^T x = \\
+= -\frac{x^Tx}{2} -\frac{1}{2} (v - \frac{1}{z}A^{+}x)^T z^2A^TA (v - \frac{1}{z}A^{+}x)  + \frac{x^Tx}{2} = \\
+= -\frac{1}{2} (v - \frac{1}{z}A^{+}x)^T z^2A^TA (v - \frac{1}{z}A^{+}x)
+\end{split}
+\end{equation}
+%
+which implies
+
+\begin{equation}
+e^{-\frac{1}{2 \sigma_x} (x-zAv)^T(x-zAv)} = e^{-\frac{1}{2} (v - \frac{1}{z}A^{+}x^T)^T \frac{z^2}{\sigma_x} A^TA(v - \frac{1}{z}A^{+}x)}
+\end{equation}
+% 
+meaning that
+
+\begin{equation} 
+\mathcal{N}(x;zAv,\sigma_x I) = \alpha \mathcal{N}(v;\frac{1}{z}A^{+}x,\frac{\sigma_x}{z^2} (A^TA)^{-1})
+\end{equation}
+%
+and as the formulas in the exponents are equal, the constant  $\alpha$ is given by the ratio of the normalisation terms
+
+\begin{eqnarray}
+\sqrt{\frac{1}{(2\pi)^{Dx} \sigma_x^{Dx}}} = \alpha \sqrt{\frac{1}{(2\pi)^{Dv} \det(\frac{\sigma_x}{z^2} (A^TA)^{-1})}} \\
+\alpha = \sqrt{\frac{ (2\pi)^{Dv} \frac{\sigma_x^{D_v}}{z^{2D_v}} \det( (A^TA)^{-1}) }{ (2\pi)^{Dx} \sigma_x^{Dx} }} \\
+\alpha = \sqrt{\frac{ (2\pi)^{Dv} \sigma_x^{D_v} }{ (2\pi)^{Dx} \sigma_x^{Dx} z^{2D_v} \det(A^TA)}}
+\end{eqnarray}
+%
+making the simplifying assumption $D_x = D_v$ we arrive to
+
+\begin{equation} 
+\mathcal{N}(x;zAv,\sigma_x I) = \frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \mathcal{N}(v;\frac{1}{z}A^{+}x,\frac{\sigma_x}{z^2} (A^TA)^{-1})
+\end{equation}
+%
+we can merge two Gaussian distributions over $v$ into one by using the following formula
+
+\begin{equation} 
+\mathcal{N}(v;\mu_1,C_1) \mathcal{N}(v;\mu_2,C_2) = \mathcal{N}(\mu_1;\mu_2,C_1 + C_2) \mathcal{N}(v; \mu_c,C_c)
+\end{equation}
+%
+where $C_c = (C_1^{-1} + C_2^{-1})^{-1}$ and $\mu_c = C_c (C_1^{-1}\mu_1 + C_2^{-1}\mu_2)$. Substitution to these formulas yields
+
+\begin{eqnarray}
+\begin{split}
+ \frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \mathcal{N}(v;\frac{1}{z}A^{+}x,\frac{\sigma_x}{z^2} (A^TA)^{-1})\mathcal{N}(v;0,C_v) = \\
+\frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v) \mathcal{N}(v; \mu_c,C_c)
+ \end{split} \\
+ C_c = (\frac{z^2}{\sigma_x} (A^TA) + C_v^{-1})^{-1} \\
+ \mu_c = C_c \frac{z}{\sigma_x} (A^TA) A^{+}x = \frac{z}{\sigma_x} C_c A^{T}x
+\end{eqnarray}
+
+
+\subsection{Rules of differentiation}
+
+Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropriate dimension, and $f$ is a scalar function, and $s$ is a scalar variable.
+
+\begin{eqnarray}
+\frac{\partial}{\partial y} y^T M y = 2 M y \label{eq:deriv_quadratic} \\
+\frac{\partial}{\partial y} a^T y = a \label{eq:deriv_scalarprod} \\
+\frac{\partial}{\partial M} y^T M^{-1} y = - M^{-1} yy^T M^{-1} \label{eq:deriv_quad_mat} \\
+\frac{\partial}{\partial M} \log \det M = M^{-1} \label{eq:deriv_logdet} \\
+\frac{\partial}{\partial s} f(M(s)) = \textrm{Tr} \left[ \frac{\partial f}{\partial M} \frac{\partial M}{\partial s} \right] \label{eq:deriv_chain} \\
+\frac{\partial}{\partial s} s M = M \label{eq:deriv_scalar} \\
+\frac{\partial}{\partial s} f(s) = f(s) \frac{\partial}{\partial s} \log f(s) \label{eq:deriv_function} \\
+\frac{\partial}{\partial M} \log \mathcal{N}(y;a,M) = M^{-1} - M^{-1}(y-a)(y-a)^TM^{-1} \label{eq:deriv_gausscov}
+\end{eqnarray}
+
+\end{document}

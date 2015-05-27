@@ -40,10 +40,13 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         z_l = Z(l,1);
         cv = componentSum(g_l,cc);
         Cl = siATA / Z2(l) + cv;
-        % cheating
+        % cheating        
+        % TODO itt megnezni, hogy melyik komponens okozza a szivast, es
+        % csak azt allitani
         Cl = nearestSPD(Cl);
         covariances(l,:,:) = Cl;
         inverse_covariances(l,:,:) = stableInverse(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
+        %inverse_covariances(l,:,:) = inv(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
         %hz(l) = idATA / (z_l^ge.Dv);
         hz(l) = 1 / (z_l^ge.Dv);
     end    
@@ -73,9 +76,18 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
 %             end                                              
             
             N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);
+            if any(isnan(N_f))
+                error('NaN in N_f,n %d %d',n,l);
+            end
             %N_f = stableMvnpdf(f_l,zeros(ge.Dv,1),C_l,false,false)
-            scalar_term = hz(l) * N_f;   
+            if N_f == 0
+                scalar_term = 0;
+            else
+                scalar_term = hz(l) * N_f;   
+            end
             if any(isnan(scalar_term))
+                hz(l)
+                N_f
                 error('NaN in scalar,n %d %d',n,l);
             end
             matrix_term = iC_l - iCf * iCf';

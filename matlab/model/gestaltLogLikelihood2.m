@@ -42,14 +42,14 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
         z2_l = Z2(l,1);
         cv = componentSum(g_l,cc);        
         if strcmp(params.method,'intuition')
-            C_l = ge.obsVar * eye(ge.Dv) + z2_l * ge.A * cv * ge.A';
+            Cl = ge.obsVar * eye(ge.Dv) + z2_l * ge.A * cv * ge.A';
         elseif strcmp(params.method,'algebra')
-            C_l = siATA / z2_l + cv;
+            Cl = siATA / z2_l + cv;
             hz(l) = idATA / (z_l^ge.Dv);
         end
         % cheating
-        C_l = nearestSPD(C_l);
-        covariances(l,:,:) = C_l;
+        Cl = nearestSPD(Cl);
+        covariances(l,:,:) = Cl;
     end
     
     ll = 0;

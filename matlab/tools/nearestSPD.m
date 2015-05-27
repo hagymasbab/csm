@@ -29,6 +29,13 @@ elseif (r == 1) && (A <= 0)
   return
 end
 
+% if it's already good, return
+[~,e] = chol(A);
+if e==0
+    Ahat = A;
+    return;
+end
+
 % symmetrize A into B
 B = (A + A')/2;
 

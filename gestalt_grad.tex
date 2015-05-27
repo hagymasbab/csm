@@ -2,6 +2,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \begin{document}
 
@@ -88,5 +89,11 @@ we can move the parameters in the direction of the gradient scaled by a learning
 \left[ U_k \right]_{i,j} \leftarrow \left[ U_k \right]_{i,j} + \epsilon \frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}}
 \end{equation}
 
+\section{MAP estimate of $g$}
+
+\begin{eqnarray}
+g_{MAP} = \argmax_g p(g \mid x) = \argmax_g \frac{p(x \mid g)p(g)}{p(x)} = \argmax_g p(x \mid g)p(g)\\
+p(x \mid g) = \int_{-\infty}^{\infty} p(x \mid z,g)p(z)\mathrm{d}z \approx \frac{1}{L} \sum_{l=1}^{L} p(x \mid g,z^l)
+\end{eqnarray}
 
 \end{document}
