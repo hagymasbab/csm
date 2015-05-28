@@ -17,21 +17,22 @@ p_m(v \mid g) = \mathcal{N}(v; Bg,\sigma_v I)
 \end{eqnarray}
 
 \begin{equation}
-p(v \mid x) = \iint_{-\infty}^\infty p(v \mid x,g,z) p(g) p(z) \mathrm{d}g \mathrm{d}z
+p(v \mid x) = \iint_{-\infty}^\infty p(v \mid x,g,z) p(g \mid x) p(z \mid x) \mathrm{d}g \mathrm{d}z
 \end{equation}
 %
 we can do this by either numerical integration or sampling
 
 \begin{eqnarray}
-p(v \mid x) \approx \sum_{z \in \left[z_{min} z_{max} \right]}  \sum_{g \in \left[g_{min} g_{max} \right]} p(v \mid x,g,z) p(g) p(z) \\
-p(v \mid x) \approx \frac{1}{L} \sum_{l=1}^L p(v \mid x,g^l,z^l)
+p(v \mid x) \approx \sum_{z \in \left[z_{min} z_{max} \right]}  \sum_{g \in \left[g_{min} g_{max} \right]} p(v \mid x,g,z) p(g \mid x) p(z \mid x) \\
+p(v \mid x) \approx \frac{1}{L} \sum_{l=1}^L p(v \mid x,g^l,z^l), ~~ g^l \sim p(g \mid x), ~ z^l \sim p(z \mid x)
 \end{eqnarray}
 
 either way, we approximate the marginal posterior with a finite mixture. In case of sampling, of $L$ components, for wich the covariance is given in the following form
 
-\begin{equation}
-C_{v \mid x} ~ \approx \frac{1}{L} \sum_{l=1}^L C_{v \mid xgz}^l + ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m) ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m)^T
-\end{equation}
+\begin{eqnarray}
+C_{v \mid x} \approx \frac{1}{L} \sum_{l=1}^L C_{v \mid xgz}^l + ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m) ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m)^T \\
+C_{v \mid x} \approx \mathrm{E} \left[ C_{v \mid xgz}^l \right]_l + \mathrm{Cov} \left[\mu_{v \mid xgz}^l \right]_l
+\end{eqnarray}
 
 \begin{eqnarray}
 p_c(v \mid x,g,z) = \mathcal{N}(v;\mu_c,C_c) \\
