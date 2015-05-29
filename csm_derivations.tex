@@ -47,7 +47,7 @@ p(x \mid z,g) = \int_{-\infty}^{\infty} p(x,v \mid z,g)  \mathrm{d}v = \mathcal{
 \end{split} \\
 f(x,z) \equiv \frac{1}{z}A^{+}x, ~ h(z) \equiv  \frac{1}{z^{D_v} } \\
 C(z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k \\
-p(x \mid z,g) =  h(z) \mathcal{N}(f(x,z);0,C(z,g))
+p(x \mid z,g) = \frac{1}{\sqrt{\det(A^TA)}} h(z) \mathcal{N}(f(x,z);0,C(z,g))
 \end{eqnarray}
 
 \subsection{Log-likelihood of the parameters}
