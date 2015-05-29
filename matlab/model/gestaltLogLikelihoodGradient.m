@@ -99,36 +99,23 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         
         M_part = zeros(ge.k,ge.Dv,ge.Dv);
         zero_scalars = 0;
-        
+                
         for l = 1:L      
+            
+            f_l = pAx / Z(l);
+            iC_l = reshape(inverse_covariances(l,:,:),ge.Dv,ge.Dv);
+            iCf = iC_l * f_l;       
+            
             if strcmp(params.method,'scinot')
                 [hNperL_coeff,hNperL_expo] = prodSciNot([h_times_N_coeff(l) 1/Li_coeff],[h_times_N_expo(l) -Li_expo]);
-                hNperL = hNperL_expo
-%                 if l==6
-%                     h_times_N_coeff(l)
-%                     h_times_N_expo(l)
-%                     1/Li_coeff
-%                     -Li_expo
-%                     hNperL_coeff
-%                     hNperL_expo
-%                 end
-                % TODO scalar_term szamolasa a scinotos cuccal legyen
+                scalar_term = hNperL_coeff * 10^hNperL_expo;
             else
-            
-                %printCounter((n-1)*L+l,'maxVal',N*L,'stringVal','e')
-                f_l = pAx / Z(l);
                 C_l = reshape(covariances(l,:,:),ge.Dv,ge.Dv);
-                iC_l = reshape(inverse_covariances(l,:,:),ge.Dv,ge.Dv);
-                iCf = iC_l * f_l;                                          
-
-                N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);
-                [a,e] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,true,true);            
-                %e
+                N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);                
 
                 if any(isnan(N_f))
                     error('NaN in N_f,n %d %d',n,l);
                 end
-                %N_f = stableMvnpdf(f_l,zeros(ge.Dv,1),C_l,false,false)
                 
                 if N_f == 0                
                     scalar_term = 0;
@@ -152,7 +139,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             end                                                                
         end
         
-        zero_scalars
+        %zero_scalars
         % this is as approximation
         if ~strcmp(params.method,'scinot') && Li_n ~= 0
             M_part = M_part / Li_n;      
@@ -171,7 +158,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
 %     pause
     
     grad = cell(1,ge.k);
-    for kk = 1:ge.k
+    parfor kk = 1:ge.k
         grad{kk} = zeros(ge.Dv);
         M_k = reshape(M(kk,:,:),ge.Dv,ge.Dv);
         for i = 1:ge.Dv

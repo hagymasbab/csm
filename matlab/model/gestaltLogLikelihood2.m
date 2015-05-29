@@ -36,7 +36,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     
     covariances = zeros(L,ge.Dv,ge.Dv);
     hz = zeros(L,1);
-    parfor l=1:L
+    for l=1:L
         g_l = G(l,:)';
         z_l = Z(l,1);
         z2_l = Z2(l,1);
@@ -53,7 +53,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     end
     
     ll = 0;
-    parfor n = 1:N
+    for n = 1:N
         ll_part = 0;
         x_n = data(n,:)';
         

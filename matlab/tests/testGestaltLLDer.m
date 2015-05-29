@@ -12,7 +12,7 @@ function testGestaltLLDer(formula,randseed)
         % derivative of log-likelihood
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
         choles{k}(c1,c2) = x;
-        grad = gestaltLogLikelihoodGradient(ge,L,ge.X,choles,'loadSamples',true);
+        grad = gestaltLogLikelihoodGradient(ge,L,ge.X,choles,'loadSamples',true,'method','scinot');
         grad_el = grad{k}(c1,c2);
     end
 
