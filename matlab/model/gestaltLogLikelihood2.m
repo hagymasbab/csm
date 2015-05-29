@@ -22,7 +22,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     end  
     pA = pinv(ge.A);
     ATA = ge.A' * ge.A;
-    siATA = ge.obsVar * inv(ATA);
+    siATA = ge.obsVar * stableInverse(ATA);
     idATA = 1 / sqrt( det(ATA) );
     
     if params.loadSamples

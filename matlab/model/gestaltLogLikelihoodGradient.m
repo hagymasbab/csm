@@ -18,6 +18,10 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         cc{i} = cholesky{i}' * cholesky{i};
     end  
     
+    pA = pinv(ge.A);
+    ATA = ge.A' * ge.A;     
+    siATA = ge.obsVar * stableInverse(ATA);          
+    
     if params.loadSamples
         load('prior_samples.mat');
     else
@@ -25,12 +29,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
         save('bin/prior_samples.mat','G','Z');
     end
-    Z2 = Z .^ 2;
-    
-    pA = pinv(ge.A);
-    ATA = ge.A' * ge.A;
-    siATA = ge.obsVar * inv(ATA);
-    idATA = 1 / sqrt( det(ATA));
+    Z2 = Z .^ 2;       
     
     covariances = zeros(L,ge.Dv,ge.Dv);
     inverse_covariances = zeros(L,ge.Dv,ge.Dv);
@@ -38,12 +37,16 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     parfor l=1:L
         g_l = G(l,:)';
         z_l = Z(l,1);
-        cv = componentSum(g_l,cc);
-        Cl = siATA / Z2(l) + cv;
-        % cheating        
-        % TODO itt megnezni, hogy melyik komponens okozza a szivast, es
-        % csak azt allitani
-        Cl = nearestSPD(Cl);
+        cv = componentSum(g_l,cc);        
+        leftmat = siATA / Z2(l);
+        nCl = leftmat + cv;                    
+        Cl = nearestSPD(nCl);        
+        [~,e1] = cholcov(leftmat);
+        [~,e2] = cholcov(cv);
+        [~,e3] = cholcov(nCl);
+        [~,e4] = cholcov(Cl);
+        fprintf('Condition siATA/z %e Cv %e nCl %e Cl %e\n',rcond(leftmat),rcond(cv),rcond(nCl),rcond(Cl));
+        fprintf('Posdef siATA/z %d Cv %d nCl %d Cl %d\n',e1,e2,e3,e4);
         covariances(l,:,:) = Cl;
         inverse_covariances(l,:,:) = stableInverse(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
         %inverse_covariances(l,:,:) = inv(reshape(covariances(l,:,:),ge.Dv,ge.Dv));
@@ -54,6 +57,8 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         error('NaN in hz');
     end
     %Z.^ge.Dv
+    %Z
+    %hz
         
     M = zeros(ge.k,ge.Dv,ge.Dv);
     parfor n = 1:N
@@ -64,25 +69,33 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         pAx = pA * x_n;
         Li_n = 0;
         M_part = zeros(ge.k,ge.Dv,ge.Dv);
-        for l = 1:L                        
+        zero_scalars = 0;
+        for l = 1:L      
+            %printCounter((n-1)*L+l,'maxVal',N*L,'stringVal','e')
             f_l = pAx / Z(l);
             C_l = reshape(covariances(l,:,:),ge.Dv,ge.Dv);
             iC_l = reshape(inverse_covariances(l,:,:),ge.Dv,ge.Dv);
             iCf = iC_l * f_l;
             
-%             [~,e] = chol(C_l);
-%             if e ~= 0
-%                 C_l = nearestSPD(C_l);
-%             end                                              
+%             size(C_l)
+%             issymmetric(C_l)
+%              [~,e] = cholcov(C_l);
+%              e
+%              [~,e] = cholcov(iC_l);
+%              e                                            
             
             N_f = mvnpdf(f_l',zeros(1,ge.Dv),C_l);
+            [a,e] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,true,true);            
+            %e
+            
             if any(isnan(N_f))
                 error('NaN in N_f,n %d %d',n,l);
             end
             %N_f = stableMvnpdf(f_l,zeros(ge.Dv,1),C_l,false,false)
-            if N_f == 0
+            if N_f == 0                
                 scalar_term = 0;
-            else
+                zero_scalars = zero_scalars + 1;
+            else                
                 scalar_term = hz(l) * N_f;   
             end
             if any(isnan(scalar_term))
@@ -98,6 +111,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             
             Li_n = Li_n + scalar_term;            
         end
+        zero_scalars
         % this is as approximation
         if Li_n ~= 0
             M = M + M_part / Li_n;      
@@ -109,6 +123,9 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     end
     
     M = -M / 2;
+    
+%     viewImageSet(M)
+%     pause
     
     grad = cell(1,ge.k);
     for kk = 1:ge.k
@@ -122,5 +139,9 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
                 grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* M_k(j,:) + cholesky{kk}(i,:) .* M_k(:,j)');
             end
         end
+    end
+    
+    if any(isnan(cell2mat(grad)))
+        error('NaN in grad');
     end
 end

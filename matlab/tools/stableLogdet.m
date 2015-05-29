@@ -14,7 +14,7 @@ function ld = stableLogdet(A)
         end
         scaledDet = det(s*A);
         % if it still sucks, eigenvalues to the rescue
-        if scaledDet == 0 || abs(scaledDet) == Inf
+        if scaledDet == 0 || abs(scaledDet) == Inf                        
             ld = sum(log(eig(A)));
         else
             ld = log(scaledDet) - d * log(s); 

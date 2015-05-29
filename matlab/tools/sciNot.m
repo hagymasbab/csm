@@ -10,7 +10,7 @@ function [coefficient,exponent] = sciNot(a,logarithm)
         a = abs(a);
         a = log10(a);
         exponent = floor(a);
-        coefficient = s * 10^(a-exponent);
+        coefficient = s .* 10.^(a-exponent);
     end
     
 end

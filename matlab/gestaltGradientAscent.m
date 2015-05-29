@@ -20,19 +20,20 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,learningRate,p
     batch_like = zeros(batchNum,stepNum+1);
     
     for batch = 1:batchNum
-        printCounter(batch,'maxVal',batchNum,'stringVal','Batch');
+        %printCounter(batch,'maxVal',batchNum,'stringVal','Batch');
         % sample a data batch
         img_indices = chooseKfromN(batchSize,N_all);
-        X = data(img_indices,:);    
+        X = data(img_indices,:);           
         batch_like(batch,1) = gestaltLogLikelihood2(ge,priorSamples,X,choles,'loadSamples',loadSamples);
         loadSamples = true;
         
         for step = 1:stepNum
+            fprintf('new step\n');
             % calculate gradient
             grad = gestaltLogLikelihoodGradient(ge,priorSamples,X,choles,'loadSamples',loadSamples);            
             
-%             gradmat = abs(cell2mat(grad));
-%             max(gradmat(:))
+            %gradmat = abs(cell2mat(grad));            
+            %max(gradmat(:))
             %pause
             % use the same set of samples at every iteration
             loadSamples = true;
@@ -42,6 +43,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,learningRate,p
             viewImageSet(choles)
             % calculate likelihood on batch
             batch_like(batch,step+1) = gestaltLogLikelihood2(ge,priorSamples,X,choles,'loadSamples',loadSamples);        
+            %viewImageSet(grad)
             %pause
             save('gradasc_iter.mat','batch_like','ge','state_sequence','-v7.3');
         end
