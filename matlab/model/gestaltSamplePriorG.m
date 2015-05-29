@@ -1,7 +1,8 @@
 function G = gestaltSamplePriorG(ge,L,varargin)
     parser = inputParser;
-    addParamValue(parser,'sampleRetry',10,@isnumeric);
-    addParamValue(parser,'precision',false,@islogical);
+    addParameter(parser,'sampleRetry',10,@isnumeric);
+    addParameter(parser,'precision',false,@islogical);
+    addParameter(parser,'checkValues',true,@islogical);
     parse(parser,varargin{:});
     params = parser.Results;
     
@@ -25,7 +26,11 @@ function G = gestaltSamplePriorG(ge,L,varargin)
                 error('Prior distribution %s not implemented',ge.prior);
             end
 
-            valid = gestaltCheckG(g_act,ge,params.precision);
+            if params.checkValues
+                valid = gestaltCheckG(g_act,ge,params.precision);
+            else
+                valid = true;
+            end
             tries = tries + 1;
             % if we cannot find a valid g, return an error code
             if tries > params.sampleRetry

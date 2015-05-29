@@ -26,7 +26,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     if params.loadSamples
         load('prior_samples.mat');
     else
-        G = gestaltSamplePriorG(ge,L);
+        G = gestaltSamplePriorG(ge,L,'checkValues',false);
         Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
         save('bin/prior_samples.mat','G','Z');
     end
@@ -65,7 +65,9 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     %loghz
         
     M = zeros(ge.k,ge.Dv,ge.Dv);
-    parfor n = 1:N
+    h_times_N_coeff = zeros(N,L);        
+    h_times_N_expo = zeros(N,L);
+    for n = 1:N
         if params.verbose == 1
             printCounter(n,'stringVal','Datapoint','maxVal',N);
         end
@@ -74,8 +76,8 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         
         if strcmp(params.method,'scinot')
             % first calculate h_l * N_l for numerical stability
-            h_times_N_coeff = zeros(L,1);        
-            h_times_N_expo = zeros(L,1);        
+%             h_times_N_coeff = zeros(L,1);        
+%             h_times_N_expo = zeros(L,1);        
             Li_coeff = 0;
             Li_expo = 0;
             for l = 1:L
@@ -86,8 +88,8 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
                 %[coeff_h,expo_h] = sciNot(hz(l),false);
                 [coeff_h,expo_h] = sciNot(loghz(l),true);   
                 %expo_h
-                [h_times_N_coeff(l),h_times_N_expo(l)] = prodSciNot([coeff_n coeff_h],[expo_n expo_h]);
-                [Li_coeff,Li_expo] = sumSciNot(Li_coeff,Li_expo,h_times_N_coeff(l),h_times_N_expo(l));
+                [h_times_N_coeff(n,l),h_times_N_expo(n,l)] = prodSciNot([coeff_n coeff_h],[expo_n expo_h]);
+                [Li_coeff,Li_expo] = sumSciNot(Li_coeff,Li_expo,h_times_N_coeff(n,l),h_times_N_expo(n,l));
             end        
     %         h_times_N_coeff
     %         h_times_N_expo
@@ -107,7 +109,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             iCf = iC_l * f_l;       
             
             if strcmp(params.method,'scinot')
-                [hNperL_coeff,hNperL_expo] = prodSciNot([h_times_N_coeff(l) 1/Li_coeff],[h_times_N_expo(l) -Li_expo]);
+                [hNperL_coeff,hNperL_expo] = prodSciNot([h_times_N_coeff(n,l) 1/Li_coeff],[h_times_N_expo(n,l) -Li_expo]);
                 scalar_term = hNperL_coeff * 10^hNperL_expo;
             else
                 C_l = reshape(covariances(l,:,:),ge.Dv,ge.Dv);
