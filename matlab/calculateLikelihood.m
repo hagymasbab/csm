@@ -1,4 +1,4 @@
-function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,calculate,startfrom)
+function calculateLikelihood(iterfile,dataset,N_test,samples,randseed,calculate,startfrom)
 
     setrandseed(randseed);
     namepart = iterfile(5:end);
@@ -10,8 +10,8 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
     end
     
     load(iterfile);
-    load(gefile);
-    ge = ge_saved;
+    %load(gefile);
+    %ge = ge_saved;
     
     % find out how many iterations are actually there in the data
     calc = true;
@@ -38,7 +38,9 @@ function calculateLikelihood(iterfile,gefile,dataset,N_test,samples,randseed,cal
         act_cc = state_sequence{i}.estimated_components;
         if strcmp(calculate,'likelihood')
             ge.cc = act_cc;
+            U = cellchol(act_cc);
             ll = gestaltLogLikelihood(ge,samples,X_test,'scientific',true);        
+            %ll = gestaltLogLikelihood2(ge,samples,X_test,U);        
             likelihoods(didx) = ll;
             %save('iter_likes.mat','likelihoods');
             save(['bin/likes' namepart],'likelihoods','startfrom');
