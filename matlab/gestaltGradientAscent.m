@@ -11,6 +11,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,learningRate,p
     % cc = eyes(ge.k,ge.Dv,0.001);    
     cc = randomCovariances(ge.k,ge.Dv);
     choles = cellchol(cc);
+    ge.cc = cc;
     
     loadSamples = false;
     state_sequence = {};
