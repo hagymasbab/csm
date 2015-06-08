@@ -22,7 +22,12 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     pA = pinv(ge.A);
     ATA = ge.A' * ge.A;
     siATA = ge.obsVar * stableInverse(ATA);
-    logConstant = -N * stableLogdet(ATA) / 2;
+    
+    if strcmp(params.method,'algebra')
+        logConstant = -N * (log(L) + stableLogdet(ATA) / 2);
+    elseif strcmp(params.method,'intuition')
+        logConstant = -N * log(L);
+    end
     
     if params.loadSamples
         load('prior_samples.mat');
@@ -80,4 +85,6 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
         %ll = ll + log(ll_part);
         ll = ll + scinot2log(ll_part_coeff,ll_part_expo);
     end
+    
+    ll = ll + logConstant;
 end
