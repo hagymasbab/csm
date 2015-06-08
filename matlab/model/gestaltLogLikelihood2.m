@@ -1,11 +1,10 @@
-function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
-    % Mate version
-    
+function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)    
     parser = inputParser;   
     addParameter(parser,'verbose',0,@isnumeric);  
     addParameter(parser,'loadSamples',false,@islogical);
     addParameter(parser,'randseed','leave');
     addParameter(parser,'method','intuition');
+    addParameter(parser,'scientific','false');
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -23,7 +22,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     pA = pinv(ge.A);
     ATA = ge.A' * ge.A;
     siATA = ge.obsVar * stableInverse(ATA);
-    idATA = 1 / sqrt( det(ATA) );
+    logConstant = -N * stableLogdet(ATA) / 2;
     
     if params.loadSamples
         load('prior_samples.mat');
@@ -36,25 +35,37 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     
     covariances = zeros(L,ge.Dv,ge.Dv);
     hz = zeros(L,1);
+    loghz = zeros(L,1);
     for l=1:L
         g_l = G(l,:)';
         z_l = Z(l,1);
         z2_l = Z2(l,1);
-        cv = componentSum(g_l,cc);        
+        cv = componentSum(g_l,cc);    
+        %issymmetric(cv)
         if strcmp(params.method,'intuition')
-            Cl = ge.obsVar * eye(ge.Dv) + z2_l * ge.A * cv * ge.A';
+            c_right = z2_l * (ge.A * cv * ge.A');
+            c_right = (c_right + c_right') / 2;
+            %issymmetric(c_right)
+            Cl = ge.obsVar * eye(ge.Dv) + c_right;
         elseif strcmp(params.method,'algebra')
+            error('algebraic approach not implemented');
             Cl = siATA / z2_l + cv;
-            hz(l) = idATA / (z_l^ge.Dv);
+            hz(l) = 1 / (z_l^ge.Dv);
         end
         % cheating
-        Cl = nearestSPD(Cl);
-        covariances(l,:,:) = Cl;
+%         [~,e] = cholcov(c_right)    
+%         issymmetric(Cl)
+        nCl = nearestSPD(Cl);
+%         [~,e] = cholcov(c_right)            
+%         issymmetric(nCl)
+        covariances(l,:,:) = nCl;
     end
     
     ll = 0;
     for n = 1:N
         ll_part = 0;
+        ll_part_coeff = 0;
+        ll_part_expo = 0;
         x_n = data(n,:)';
         
         for l = 1:L                        
@@ -62,9 +73,11 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
                 f_nl = pA * x_n / Z(l,1);
                 ll_part = ll_part + hz(l) * mvnpdf(f_nl',zeros(1,ge.Dx),reshape(covariances(l,:,:),ge.Dv,ge.Dv));
             elseif strcmp(params.method,'intuition')
-                ll_part = ll_part + mvnpdf(x_n',zeros(1,ge.Dx),reshape(covariances(l,:,:),ge.Dv,ge.Dv));
+                [ll_act_coeff,ll_act_expo] = stableMvnpdf(x_n,zeros(ge.Dx,1),reshape(covariances(l,:,:),ge.Dv,ge.Dv),true,false);
+                [ll_part_coeff,ll_part_expo] = sumSciNot(ll_part_coeff,ll_part_expo,ll_act_coeff,ll_act_expo);
             end
         end
-        ll = ll + log(ll_part);
+        %ll = ll + log(ll_part);
+        ll = ll + scinot2log(ll_part_coeff,ll_part_expo);
     end
 end
