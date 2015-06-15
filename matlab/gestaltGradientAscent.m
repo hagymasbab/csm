@@ -1,8 +1,14 @@
-function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,learningRate,priorSamples,randseed,like_comp,verbose)
+function gestaltGradientAscent(ge,template,data,batchSize,batchNum,stepNum,learningRate,priorSamples,randseed,like_comp,verbose)
     if ge.B > 1 || ge.nullComponent
         error('not implemented');
     end
 
+    t = true(ge.Dv);
+    if template
+        t = covarianceTemplate(ge.A,{'overlap','parallell'},{0.05,5});
+    end
+    
+    
     setrandseed(randseed);
     N_all = size(data,1);
     data = reshape(data,N_all,ge.Dx);
@@ -11,6 +17,10 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,learningRate,p
     % cc = eyes(ge.k,ge.Dv,0.001);    
     cc = randomCovariances(ge.k,ge.Dv);
     choles = cellchol(cc);
+    for i = 1:ge.k
+        choles{i}(~t) = 0;
+    end
+    cc = cholcell(choles);
     ge.cc = cc;
     
     loadSamples = false;
@@ -21,6 +31,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,learningRate,p
     batch_like = zeros(batchNum,stepNum+1);
     full_like = zeros(batchNum,1);
     
+
     for batch = 1:batchNum
         if verbose == 1
             printCounter(batch,'maxVal',batchNum,'stringVal','Batch');
@@ -41,7 +52,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,learningRate,p
                 printCounter(step,'maxVal',stepNum,'stringVal','Step');
             end
             % calculate gradient
-            grad = gestaltLogLikelihoodGradient(ge,priorSamples,X,choles,'loadSamples',loadSamples,'method','scinot');            
+            grad = gestaltLogLikelihoodGradient(ge,priorSamples,X,choles,'loadSamples',loadSamples,'method','scinot','template',t);
             
             %gradmat = abs(cell2mat(grad));            
             %max(gradmat(:))

@@ -4,6 +4,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     addParameter(parser,'loadSamples',false,@islogical);
     addParameter(parser,'randseed','leave');      
     addParameter(parser,'method','standard');      
+    addParameter(parser,'template',[]);
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -13,6 +14,10 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         error('not implemented');
     end
     data = reshape(data,N,ge.Dx);
+    
+    if isempty(params.template)
+        params.template = true(ge.Dv);
+    end
     
     cc = cell(1,ge.k);    
     for i=1:ge.k
@@ -41,6 +46,9 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         g_l = G(l,:)';
         z_l = Z(l,1);
         cv = componentSum(g_l,cc);        
+        if sum(sum(abs(cv)>0)) < 0.2 * length(cv);
+            cv = sparse(cv);
+        end
         leftmat = siATA / Z2(l);
         nCl = leftmat + cv;                    
         Cl = nearestSPD(nCl);        
@@ -164,11 +172,13 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         grad{kk} = zeros(ge.Dv);
         M_k = reshape(M(kk,:,:),ge.Dv,ge.Dv);
         for i = 1:ge.Dv
-            for j = i:ge.Dv                
-                %U_hat = derivQuadByElement(cholesky{k},i,j);
-                %grad{kk}(i,j) = trace(M*U_hat);
-                % this should be equivalent with Tr(M U_hat)                
-                grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* M_k(j,:) + cholesky{kk}(i,:) .* M_k(:,j)');
+            for j = i:ge.Dv      
+                if params.template(i,j)
+                    %U_hat = derivQuadByElement(cholesky{k},i,j);
+                    %grad{kk}(i,j) = trace(M*U_hat);
+                    % this should be equivalent with Tr(M U_hat)                
+                    grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* M_k(j,:) + cholesky{kk}(i,:) .* M_k(:,j)');
+                end
             end
         end
     end
