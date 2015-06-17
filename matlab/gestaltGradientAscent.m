@@ -5,9 +5,9 @@ function gestaltGradientAscent(ge,template,data,batchSize,batchNum,stepNum,learn
 
     t = true(ge.Dv);
     if template
-        t = covarianceTemplate(ge.A,{'overlap','parallell'},{0.05,5});
-    end
-    
+        load('covariance_template_576.mat');
+        %t = covarianceTemplate(ge.A,{'overlap','parallell'},{0.05,5});
+    end    
     
     setrandseed(randseed);
     N_all = size(data,1);
@@ -31,12 +31,12 @@ function gestaltGradientAscent(ge,template,data,batchSize,batchNum,stepNum,learn
     batch_like = zeros(batchNum,stepNum+1);
     full_like = zeros(batchNum,1);
     batch_indices = [];
-    
+    verb = 0;
 
     for batch = 1:batchNum
         if verbose == 1
             printCounter(batch,'maxVal',batchNum,'stringVal','Batch');
-        elseif verbose == 2
+        elseif verbose >= 2
             fprintf('Batch %d/%d ',batchNum,batch);
         end
         % sample a data batch
@@ -51,9 +51,12 @@ function gestaltGradientAscent(ge,template,data,batchSize,batchNum,stepNum,learn
         for step = 1:stepNum
             if verbose == 2
                 printCounter(step,'maxVal',stepNum,'stringVal','Step');
+            elseif verbose >= 3
+                fprintf('Step %d/%d ',stepNum,step);
+                verb = 1;
             end
             % calculate gradient
-            grad = gestaltLogLikelihoodGradient(ge,priorSamples,X,choles,'loadSamples',loadSamples,'method','scinot','template',t);
+            grad = gestaltLogLikelihoodGradient(ge,priorSamples,X,choles,'loadSamples',loadSamples,'method','scinot','template',t,'verbose',verb);
             
             %gradmat = abs(cell2mat(grad));            
             %max(gradmat(:))
