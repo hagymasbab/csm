@@ -30,6 +30,7 @@ function gestaltGradientAscent(ge,template,data,batchSize,batchNum,stepNum,learn
     
     batch_like = zeros(batchNum,stepNum+1);
     full_like = zeros(batchNum,1);
+    batch_indices = [];
     
 
     for batch = 1:batchNum
@@ -79,7 +80,8 @@ function gestaltGradientAscent(ge,template,data,batchSize,batchNum,stepNum,learn
         % save stuff
         state.estimated_components = cholcell(choles);
         state_sequence{end+1} = state;
-        save('gradasc_iter.mat','batch_like','ge','state_sequence','-v7.3');
+        batch_inidces = [batch_indices; img_indices];
+        save('gradasc_iter.mat','batch_like','ge','state_sequence','batch_indices','-v7.3');
     end
     
 end
