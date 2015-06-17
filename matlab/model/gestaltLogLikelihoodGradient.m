@@ -70,7 +70,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     end
     h_times_N_coeff = zeros(N,L);        
     h_times_N_expo = zeros(N,L);
-    for n = 1:N
+    parfor n = 1:N
         if params.verbose == 1
             printCounter(n,'stringVal','Datapoint','maxVal',N,'newLine',false);
         end
@@ -89,8 +89,8 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         end        
         
         M_part_cell = cell(1,ge.k);
-        for kk = 1:ge.k
-            M_part_cell{kk} = zeros(ge.Dv);
+        for kkk = 1:ge.k
+            M_part_cell{kkk} = zeros(ge.Dv);
         end
                 
         for l = 1:L      
@@ -105,9 +105,9 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
                        
             matrix_term = iC_l - iCf * iCf';
             
-            for kk = 1:ge.k
-                M_part_update = G(l,kk) * scalar_term * matrix_term;
-                M_part_cell{kk} = M_part_cell{kk} + M_part_update;
+            for kkk = 1:ge.k
+                M_part_update = G(l,kkk) * scalar_term * matrix_term;
+                M_part_cell{kkk} = M_part_cell{kkk} + M_part_update;
             end                                                                
         end
     
