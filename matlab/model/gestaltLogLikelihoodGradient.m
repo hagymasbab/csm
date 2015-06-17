@@ -110,9 +110,9 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
                 M_part_cell{kk} = M_part_cell{kk} + M_part_update;
             end                                                                
         end
+    
+        celladd(M_cell,1,M_part_cell,-1/2);
     end
-
-    celladd(M_cell,1,M_part_cell,-1/2);
     
     % cycle over all the individual parameters
     grad = cell(1,ge.k);          
