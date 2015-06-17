@@ -78,7 +78,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
                 f_nl = pA * x_n / Z(l,1);
                 ll_part = ll_part + hz(l) * mvnpdf(f_nl',zeros(1,ge.Dx),reshape(covariances(l,:,:),ge.Dv,ge.Dv));
             elseif strcmp(params.method,'intuition')
-                [ll_act_coeff,ll_act_expo] = stableMvnpdf(x_n,zeros(ge.Dx,1),reshape(covariances(l,:,:),ge.Dv,ge.Dv),true,false);
+                [ll_act_coeff,ll_act_expo] = stableMvnpdf(x_n,zeros(ge.Dx,1),reshape(covariances(l,:,:),ge.Dv,ge.Dv),'scientific',true);
                 [ll_part_coeff,ll_part_expo] = sumSciNot(ll_part_coeff,ll_part_expo,ll_act_coeff,ll_act_expo);
             end
         end

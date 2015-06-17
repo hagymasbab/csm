@@ -48,10 +48,12 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         end
         g_l = G(l,:)';
         z_l = Z(l,1);
-        cv = componentSum(g_l,cc);        
-        if sum(sum(abs(cv)>0)) < 0.2 * length(cv);
-            cv = sparse(cv);
-        end
+        cv = componentSum(g_l,cc);   
+%         cv = sparse(cv);
+%         if sum(sum(abs(cv)>0)) < 0.5 * length(cv);
+%             cv = sparse(cv);
+%             fprintf('sparse');
+%         end
         leftmat = siATA / Z2(l);
         nCl = leftmat + cv;                    
         Cl = nearestSPD(nCl);        
@@ -80,7 +82,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         for l = 1:L
             f_l = pAx / Z(l);
             iC_l = inverse_covariances{l};
-            [coeff_n,expo_n] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,true,true);  
+            [coeff_n,expo_n] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,'scientific',true,'invertedC',true,'logdetScaling','up');  
             [coeff_h,expo_h] = sciNot(loghz(l),true);   
             [h_times_N_coeff(n,l),h_times_N_expo(n,l)] = prodSciNot([coeff_n coeff_h],[expo_n expo_h]);
             [Li_coeff,Li_expo] = sumSciNot(Li_coeff,Li_expo,h_times_N_coeff(n,l),h_times_N_expo(n,l));
