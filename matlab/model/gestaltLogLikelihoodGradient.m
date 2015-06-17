@@ -70,7 +70,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     end
     h_times_N_coeff = zeros(N,L);        
     h_times_N_expo = zeros(N,L);
-    parfor n = 1:N
+    for n = 1:N
         if params.verbose == 1
             printCounter(n,'stringVal','Datapoint','maxVal',N,'newLine',false);
         end
