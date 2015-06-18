@@ -20,7 +20,16 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
         cc{i} = cholesky{i}' * cholesky{i};
     end  
     
-    logConstant = -N * log(L);
+    pA = pinv(ge.A);
+    ATA = ge.A' * ge.A;     
+    siATA = ge.obsVar * stableInverse(ATA);          
+    
+    logConstant = 0;
+    if strcmp(params.method,'intuition')
+        logConstant = -N * log(L);
+    else
+        logConstant = -N * (L + stableLogdet(ATA)/2);
+    end
     
     if params.loadSamples
         load('prior_samples.mat');
@@ -32,12 +41,18 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     
     inverse_covariances = cell(1,L);
     plogdet = zeros(L,1);
-    loghz = ones(L,1);
+    loghz = zeros(L,1);
     for l=1:L
         cv = componentSum(G(l,:)',cc);    
-        c_right = Z(l,1)^2 * (ge.A * cv * ge.A');
-        c_right = (c_right + c_right') / 2;
-        nCl = ge.obsVar * eye(ge.Dv) + c_right;            
+        if strcmp(params.method,'intuition')
+            c_right = Z(l,1)^2 * (ge.A * cv * ge.A');
+            c_right = (c_right + c_right') / 2;
+            nCl = ge.obsVar * eye(ge.Dv) + c_right;            
+        else
+            c_left = siATA / Z(l,1)^2;
+            nCl = c_left + cv;
+            loghz(l) = -ge.Dv * log(Z(l,1));
+        end
         Cl = nearestSPD(nCl);
         plogdet(l) = stableLogdet(Cl,'scaling','unknown');
         inverse_covariances{l} = stableInverse(Cl);
@@ -54,7 +69,9 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
         x_n = data(n,:)';
         
         for l = 1:L                                  
-            [ll_act_coeff,ll_act_expo] = stableMvnpdf(x_n,zeros(ge.Dx,1),inverse_covariances{l},'invertedC',true,'scientific',true,'precompLogdet',plogdet(l));
+            [coeff_n,expo_n] = stableMvnpdf(x_n,zeros(ge.Dx,1),inverse_covariances{l},'invertedC',true,'scientific',true,'precompLogdet',plogdet(l));
+            [coeff_h,expo_h] = sciNot(loghz(l),true);   
+            [ll_act_coeff,ll_act_expo] = prodSciNot([coeff_n coeff_h],[expo_n expo_h]);            
             [ll_part_coeff,ll_part_expo] = sumSciNot(ll_part_coeff,ll_part_expo,ll_act_coeff,ll_act_expo);
         end
         ll = ll + scinot2log(ll_part_coeff,ll_part_expo);
