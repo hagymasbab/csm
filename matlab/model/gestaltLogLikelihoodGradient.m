@@ -4,7 +4,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     addParameter(parser,'loadSamples',false,@islogical);
     addParameter(parser,'randseed','leave');      
     addParameter(parser,'method','scinot');      % dummy parameter
-    addParameter(parser,'template',[]);
+    addParameter(parser,'template',true(ge.Dv));
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -14,10 +14,6 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         error('not implemented');
     end
     data = reshape(data,N,ge.Dx);
-    
-    if isempty(params.template)
-        params.template = true(ge.Dv);
-    end
     
     cc = cell(1,ge.k);    
     for i=1:ge.k
@@ -35,14 +31,11 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
         save('bin/prior_samples.mat','G','Z');
     end
-    Z2 = Z .^ 2;       
-        
-    covariances = cell(1,L);
-    inverse_covariances = cell(1,L);
-    
+               
     % stuff that only depends on the samples, not the data
     loghz = zeros(L,1);
-    logdet = zeros(L,1);
+    plogdet = zeros(L,1);
+    inverse_covariances = cell(1,L);
     for l=1:L              
         if params.verbose == 1
             printCounter(l,'stringVal','Sample','maxVal',L,'newLine',false);
@@ -50,17 +43,11 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         g_l = G(l,:)';
         z_l = Z(l,1);
         cv = componentSum(g_l,cc);   
-%         cv = sparse(cv);
-%         if sum(sum(abs(cv)>0)) < 0.5 * length(cv);
-%             cv = sparse(cv);
-%             fprintf('sparse');
-%         end
-        leftmat = siATA / Z2(l);
+        leftmat = siATA / Z(l)^2;
         nCl = leftmat + cv;                    
         Cl = nearestSPD(nCl);        
-        covariances{l} = Cl;
-        logdet(l) = stableLogdet(Cl,'scaling','up');
-        inverse_covariances{l} = stableInverse(covariances{l});
+        plogdet(l) = stableLogdet(Cl,'scaling','up');
+        inverse_covariances{l} = stableInverse(Cl);
         loghz(l) = -ge.Dv * log(z_l);
     end    
     
@@ -84,7 +71,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         for l = 1:L
             f_l = pAx / Z(l);
             iC_l = inverse_covariances{l};
-            [coeff_n,expo_n] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,'scientific',true,'invertedC',true,'precompLogdet',logdet(l));  
+            [coeff_n,expo_n] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,'scientific',true,'invertedC',true,'precompLogdet',plogdet(l));  
             [coeff_h,expo_h] = sciNot(loghz(l),true);   
             [h_times_N_coeff(n,l),h_times_N_expo(n,l)] = prodSciNot([coeff_n coeff_h],[expo_n expo_h]);
             [Li_coeff,Li_expo] = sumSciNot(Li_coeff,Li_expo,h_times_N_coeff(n,l),h_times_N_expo(n,l));
@@ -101,7 +88,6 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             iC_l = inverse_covariances{l};
             iCf = iC_l * f_l;       
             
-
             [hNperL_coeff,hNperL_expo] = prodSciNot([h_times_N_coeff(n,l) 1/Li_coeff],[h_times_N_expo(n,l) -Li_expo]);
             scalar_term = hNperL_coeff * 10^hNperL_expo;
                        

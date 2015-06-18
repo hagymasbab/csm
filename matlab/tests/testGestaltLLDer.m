@@ -5,14 +5,14 @@ function testGestaltLLDer(formula,randseed)
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));  
         choles{k}(c1,c2) = x;
         %lp = gestaltLogLikelihood(ge,L,ge.X,'cholesky',choles,'loadSamples',false);
-        lp = gestaltLogLikelihood2(ge,L,ge.X,choles,'loadSamples',true,'method','algebra');
+        lp = gestaltLogLikelihood2(ge,L,ge.X,choles,'loadSamples',true);
     end
 
     function grad_el = gestaltDerLL(x,cholmat,ge,L,k,c1,c2)
         % derivative of log-likelihood
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));
         choles{k}(c1,c2) = x;
-        grad = gestaltLogLikelihoodGradient(ge,L,ge.X,choles,'loadSamples',true,'method','scinot');
+        grad = gestaltLogLikelihoodGradient(ge,L,ge.X,choles,'loadSamples',true);
         grad_el = grad{k}(c1,c2);
     end
 
@@ -44,8 +44,8 @@ function testGestaltLLDer(formula,randseed)
     if strcmp(formula,'ll')
         
         k = 1;
-        c1 = 1;
-        c2 = 2;
+        c1 = 3;
+        c2 = 4;
         
         a = @(x) gestaltLL(x,cholmat,ge,L,k,c1,c2);
         b = @(x) gestaltDerLL(x,cholmat,ge,L,k,c1,c2);   
@@ -69,6 +69,11 @@ function testGestaltLLDer(formula,randseed)
         b = @(x) gaussGrad(x,kovmat,y,mu,1,2);   
     
         init = 0;
+    
+    else
+        
+        error('no such formula');
+        
     end
     
     disc = checkDerivative(a,b,init,false)

@@ -45,7 +45,7 @@ p(x \mid v,z) = \mathcal{N}(x; zAv,\sigma_x I)
 by intuition:
 
 \begin{equation} \label{eq:like_gz_int}
-p(x \mid z,g) = \int_{-\infty}^{\infty} p(x,v \mid z,g)  \mathrm{d}v = \mathcal{N}(x;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T)
+p(x \mid z,g) = \mathcal{N}(x;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T)
 \end{equation}
 
 by algebraic derivation:
@@ -75,9 +75,12 @@ p(X \mid C_{1..K}) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^{L}p(x_n \mid z^
 
 using \ref{eq:like_gz_int}
 
-\begin{equation}
-\log p(X \mid C_{1..K}) \approx -N \log L +\sum_{n=1}^N \log \sum_{l=1}^{L} \mathcal{N}(x_n;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T)
-\end{equation}
+\begin{eqnarray}
+\log p(X \mid C_{1..K}) \approx -N \log L +\sum_{n=1}^N \log \sum_{l=1}^{L} \mathcal{N}(x_n;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T) \\
+C_{int} = \sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T \\
+\mathcal{L}^{int}_n = \sum_{l=1}^{L} \mathcal{N}(x_n;0,C_{int}) \\
+\log p(X \mid C_{1..K}) \approx -N \log L +\sum_{n=1}^N \log \mathcal{L}^{int}_n
+\end{eqnarray}
 
 using \ref{eq:like_gz_alg}
 
@@ -89,7 +92,7 @@ h^l \equiv h(z^l), ~ f_n^l \equiv f(x_n,z^l), ~ C^l \equiv C(z^l,g^l) \\
 \log p(X \mid C_{1..K}) \approx -N (\log L + \frac{1}{2}\log(\det(A^TA))) + \sum_{n=1}^N \log \mathcal{L}_n
 \end{eqnarray}
 
-\subsubsection{Derivative w.r.t. $C_{1\dots K}$}
+\subsubsection{Derivative w.r.t. $U_{1\dots K}$ based on \ref{eq:like_gz_alg}}
 
 \begin{equation}
 \begin{split}
@@ -125,6 +128,22 @@ M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^
 \frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
 \end{eqnarray}
 
+\subsubsection{Derivative w.r.t. $U_{1\dots K}$ based on \ref{eq:like_gz_int}}
+
+\begin{equation}
+\begin{split}
+\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{n=1}^N \frac{\partial \log \mathcal{L}^{int}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}^{int}_n} \frac{\partial \mathcal{L}^{int}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}^{int}_n}  \sum_{l=1}^{L} \frac{\partial \mathcal{N}(x_n;0,C_{int})}{\partial \left[ U_k \right]_{i,j}} = \\
+=  \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \textrm{Tr} \left[ \frac{\partial \mathcal{N}(x_n;0,C_{int})}{\partial C_{int}} \frac{\partial C_{int}}{\partial \left[ U_k \right]_{i,j}} \right]
+\end{split}
+\end{equation}
+
+\begin{eqnarray}
+\begin{split}
+\frac{\partial \mathcal{N}(x_n;0,C_{int})}{\partial  C_{int}} = \frac{\partial}{\partial  C_{int}} \mathcal{N}(f_n^l;0, C_{int}) = \mathcal{N}(f_n^l;0, C_{int}) \frac{\partial}{\partial  C_{int}} \log \mathcal{N}(f_n^l;0, C_{int}) = \\
+= -\frac{1}{2} \mathcal{N}(f_n^l;0, C_{int}) \left[ ( C_{int})^{-1} - ( C_{int})^{-1} f_n^l (f_n^l)^T ( C_{int})^{-1} \right]
+\end{split} \\
+\frac{\partial C(z,g)}{\partial \left[ U_k \right]_{i,j}} = g_k \frac{\partial \left( U_k^T U_k \right)}{\partial \left[ U_k \right]_{i,j}} = g_k \left( U_k^T J^{ij} + J^{ji} U_k \right) \equiv g_k \hat U_k^{ij}
+\end{eqnarray}
 
 \subsection{Complete-data log-likelihood}
 
