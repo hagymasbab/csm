@@ -295,4 +295,52 @@ Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropria
 \frac{\partial}{\partial M} \log \mathcal{N}(y;a,M) = M^{-1} - M^{-1}(y-a)(y-a)^TM^{-1} \label{eq:deriv_gausscov}
 \end{eqnarray}
 
+
+\subsection{Equivalence of the likelihood formulas}
+
+Expanding \ref{eq:like_gz_alg} yields
+
+\begin{eqnarray}
+\begin{split}
+p(x \mid z,g) = \frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \frac{1}{\sqrt{ (2\pi)^{D_v} \det C(z,g) }} e^{-\frac{1}{2} \left( \frac{1}{z}A^{+}x \right)^T C^{-1}(z,g) \frac{1}{z}A^{+}x}  = \\
+= \frac{1}{\sqrt{ (2\pi z^2)^{D_v} \det(A^TA C(z,g))}} e^{-\frac{1}{2z^2} x^TA^{+T} C^{-1}(z,g) A^{+}x}
+\end{split} \\
+C(z,g) \equiv \frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v
+\end{eqnarray}
+%
+so in the exponent, in the place of the covariance matrix, we have
+
+\begin{equation}
+\begin{split}
+\frac{1}{z^2} \left( (A^TA)^{-1}A^T \right)^T \left[  \frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v  \right]^{-1} (A^TA)^{-1}A^T = \\
+= \frac{1}{z^2} A (A^TA)^{-1} \left[  \frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v  \right]^{-1} (A^TA)^{-1}A^T = \\
+= \frac{1}{z^2} A \left[ \left[ \frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v \right] (A^TA) \right]^{-1} (A^TA)^{-1}A^T = \\
+= \frac{1}{z^2} A \left[ \frac{\sigma_x}{z^2} I + C_v A^TA \right]^{-1} (A^TA)^{-1}A^T = \\
+= \frac{1}{z^2} A \left[ (A^TA) \left[ \frac{\sigma_x}{z^2} I + C_v A^TA \right] \right]^{-1} A^T = \\
+= \frac{1}{z^2} A  \left[ \frac{\sigma_x}{z^2} A^TA + A^TA C_v A^TA \right]^{-1} A^T
+\end{split}
+\end{equation}
+%
+assuming that $A$ is invertible this is equal to
+
+\begin{equation}
+\begin{split}
+\frac{1}{z^2} \left[ A^{-1}\right]^{-1}  \left[ \frac{\sigma_x}{z^2} A^TA + A^TA C_v A^TA \right]^{-1} \left[ A^{-T}\right]^{-1} = \\
+\frac{1}{z^2} \left[ A^{-1}\right]^{-1}  \left[ A^{-T} \left[ \frac{\sigma_x}{z^2} A^TA + A^TA C_v A^TA \right] \right]^{-1} = \\
+\frac{1}{z^2} \left[ A^{-1}\right]^{-1}  \left[ \frac{\sigma_x}{z^2} A + A C_v A^TA \right]^{-1} = \\
+\frac{1}{z^2} \left[  \left[ \frac{\sigma_x}{z^2} A + A C_v A^TA\right] A^{-1} \right]^{-1} = \\
+\frac{1}{z^2} \left[ \frac{\sigma_x}{z^2} I + A C_v A^T\right]^{-1} = \\
+= \left[ \sigma_x I + z^2 A C_v A^T \right]^{-1}
+\end{split}
+\end{equation}
+%
+under the square root we have
+
+\begin{equation}
+\begin{split}
+z^{2 D_v} \det(A^TA C(z,g)) = \det \left( z^2 A^TA \left[  \frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v  \right] \right) = \\
+= \det \left( \left[  \sigma_x I +  z^2 A^TA C_v  \right] \right) = \det \left( \left[  \sigma_x I +  z^2  A^T C_v A \right] \right) 
+\end{split}
+\end{equation}
+
 \end{document}
