@@ -53,11 +53,12 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     if params.verbose >= 3
         verb = 1;
     end
+    like_method = 'algebra';
     
     if params.testLike > 0
         test_indices = chooseKfromN(params.testLike,N_all);
         X_test = data(test_indices,:);          
-        test_like(1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb);
+        test_like(1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
         loadSamples = true;
     end
 
@@ -71,7 +72,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
         img_indices = chooseKfromN(batchSize,N_all);
         X = data(img_indices,:);           
         if ~strcmp(params.likeComp,'none')
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb);
+            ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
             batch_like(batch,1) = ll;
             loadSamples = true;
         end        
@@ -96,7 +97,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             % viewImageSet(choles)
             % calculate likelihood on batch
             if ~strcmp(params.likeComp,'none')
-                ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb);
+                ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
                 batch_like(batch,step+1) = ll;        
             end
             %viewImageSet(grad)
@@ -104,11 +105,11 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             save('gradasc_iter.mat','batch_like','ge','state_sequence','-v7.3');
         end
         if strcmp(params.likeComp,'full')
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,data,choles,'loadSamples',loadSamples,'verbose',verb);
+            ll = gestaltLogLikelihood2(ge,params.priorSamples,data,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
             full_like(batch) = ll;
         end
         if params.testLike > 0       
-            test_like(batch+1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb);            
+            test_like(batch+1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);            
         end
         % save stuff
         state.estimated_components = cholcell(choles);

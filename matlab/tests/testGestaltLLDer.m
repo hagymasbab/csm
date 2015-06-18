@@ -1,11 +1,11 @@
-function testGestaltLLDer(formula,randseed)
+function testGestaltLLDer(formula,randseed,like_method)
     
-    function lp = gestaltLL(x,cholmat,ge,L,k,c1,c2)
+    function lp = gestaltLL(x,cholmat,ge,L,k,c1,c2,lm)
         % log-likelihood        
         choles = mat2cell(cholmat,ge.Dv,ge.Dv*ones(1,ge.k));  
         choles{k}(c1,c2) = x;
         %lp = gestaltLogLikelihood(ge,L,ge.X,'cholesky',choles,'loadSamples',false);
-        lp = gestaltLogLikelihood2(ge,L,ge.X,choles,'loadSamples',true);
+        lp = gestaltLogLikelihood2(ge,L,ge.X,choles,'loadSamples',true,'method',lm);
     end
 
     function grad_el = gestaltDerLL(x,cholmat,ge,L,k,c1,c2)
@@ -46,8 +46,9 @@ function testGestaltLLDer(formula,randseed)
         k = 1;
         c1 = 3;
         c2 = 4;
-        
-        a = @(x) gestaltLL(x,cholmat,ge,L,k,c1,c2);
+        % just to save the right samples
+        lp = gestaltLogLikelihood2(ge,L,ge.X,U,'loadSamples',false);
+        a = @(x) gestaltLL(x,cholmat,ge,L,k,c1,c2,like_method);
         b = @(x) gestaltDerLL(x,cholmat,ge,L,k,c1,c2);   
         
         init = 0.1;

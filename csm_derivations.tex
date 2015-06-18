@@ -47,8 +47,8 @@ by intuition:
 \begin{equation} \label{eq:like_gz_int}
 p(x \mid z,g) = \mathcal{N}(x;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T)
 \end{equation}
-
-by algebraic derivation:
+%
+by algebraic derivation (see Seq. \ref{seq:like_equiv}):
 
 \begin{eqnarray}
 p(x \mid z,g) = \int_{-\infty}^{\infty} p(x,v \mid z,g)  \mathrm{d}v = \frac{1}{z^{D_v} \sqrt{\det(A^TA)}} \mathcal{N}(\frac{1}{z}A^{+}x;0,\frac{\sigma_x}{z^2} (A^TA)^{-1} + \sum_{k=1}^K g_k U_k^T U_k) \\
@@ -73,15 +73,6 @@ approximation of the integrals by samples from the priors $p(g_n)$ and $p(z_n)$
 p(X \mid C_{1..K}) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^{L}p(x_n \mid z^l,g^l)
 \end{equation}
 
-using \ref{eq:like_gz_int}
-
-\begin{eqnarray}
-\log p(X \mid C_{1..K}) \approx -N \log L +\sum_{n=1}^N \log \sum_{l=1}^{L} \mathcal{N}(x_n;0,\sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T) \\
-C_{int} = \sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T \\
-\mathcal{L}^{int}_n = \sum_{l=1}^{L} \mathcal{N}(x_n;0,C_{int}) \\
-\log p(X \mid C_{1..K}) \approx -N \log L +\sum_{n=1}^N \log \mathcal{L}^{int}_n
-\end{eqnarray}
-
 using \ref{eq:like_gz_alg}
 
 \begin{eqnarray}
@@ -92,7 +83,7 @@ h^l \equiv h(z^l), ~ f_n^l \equiv f(x_n,z^l), ~ C^l \equiv C(z^l,g^l) \\
 \log p(X \mid C_{1..K}) \approx -N (\log L + \frac{1}{2}\log(\det(A^TA))) + \sum_{n=1}^N \log \mathcal{L}_n
 \end{eqnarray}
 
-\subsubsection{Derivative w.r.t. $U_{1\dots K}$ based on \ref{eq:like_gz_alg}}
+\subsubsection{Derivative w.r.t. $U_{1\dots K}$ }
 
 \begin{equation}
 \begin{split}
@@ -128,22 +119,6 @@ M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^
 \frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
 \end{eqnarray}
 
-\subsubsection{Derivative w.r.t. $U_{1\dots K}$ based on \ref{eq:like_gz_int}}
-
-\begin{equation}
-\begin{split}
-\frac{\partial \log p(X \mid C_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{n=1}^N \frac{\partial \log \mathcal{L}^{int}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}^{int}_n} \frac{\partial \mathcal{L}^{int}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}^{int}_n}  \sum_{l=1}^{L} \frac{\partial \mathcal{N}(x_n;0,C_{int})}{\partial \left[ U_k \right]_{i,j}} = \\
-=  \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \textrm{Tr} \left[ \frac{\partial \mathcal{N}(x_n;0,C_{int})}{\partial C_{int}} \frac{\partial C_{int}}{\partial \left[ U_k \right]_{i,j}} \right]
-\end{split}
-\end{equation}
-
-\begin{eqnarray}
-\begin{split}
-\frac{\partial \mathcal{N}(x_n;0,C_{int})}{\partial  C_{int}} = \frac{\partial}{\partial  C_{int}} \mathcal{N}(f_n^l;0, C_{int}) = \mathcal{N}(f_n^l;0, C_{int}) \frac{\partial}{\partial  C_{int}} \log \mathcal{N}(f_n^l;0, C_{int}) = \\
-= -\frac{1}{2} \mathcal{N}(f_n^l;0, C_{int}) \left[ ( C_{int})^{-1} - ( C_{int})^{-1} f_n^l (f_n^l)^T ( C_{int})^{-1} \right]
-\end{split} \\
-\frac{\partial C(z,g)}{\partial \left[ U_k \right]_{i,j}} = g_k \frac{\partial \left( U_k^T U_k \right)}{\partial \left[ U_k \right]_{i,j}} = g_k \left( U_k^T J^{ij} + J^{ji} U_k \right) \equiv g_k \hat U_k^{ij}
-\end{eqnarray}
 
 \subsection{Complete-data log-likelihood}
 
@@ -190,6 +165,22 @@ p(x \mid g) = \int_{-\infty}^{\infty} p(x \mid z,g)p(z)\mathrm{d}z \approx \frac
 
 
 \section*{Appendix}
+
+\subsection{Rules of differentiation}
+
+Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropriate dimension, and $f$ is a scalar function, and $s$ is a scalar variable.
+
+\begin{eqnarray}
+\frac{\partial}{\partial y} y^T M y = 2 M y \label{eq:deriv_quadratic} \\
+\frac{\partial}{\partial y} a^T y = a \label{eq:deriv_scalarprod} \\
+\frac{\partial}{\partial M} y^T M^{-1} y = - M^{-1} yy^T M^{-1} \label{eq:deriv_quad_mat} \\
+\frac{\partial}{\partial M} \log \det M = M^{-1} \label{eq:deriv_logdet} \\
+\frac{\partial}{\partial s} f(M(s)) = \textrm{Tr} \left[ \frac{\partial f}{\partial M} \frac{\partial M}{\partial s} \right] \label{eq:deriv_chain} \\
+\frac{\partial}{\partial s} s M = M \label{eq:deriv_scalar} \\
+\frac{\partial}{\partial s} f(s) = f(s) \frac{\partial}{\partial s} \log f(s) \label{eq:deriv_function} \\
+\frac{\partial}{\partial M} \log \mathcal{N}(y;a,M) = M^{-1} - M^{-1}(y-a)(y-a)^TM^{-1} \label{eq:deriv_gausscov}
+\end{eqnarray}
+
 
 \subsection{Merging two Gaussian distributions}
 
@@ -280,23 +271,7 @@ where $C_c = (C_1^{-1} + C_2^{-1})^{-1}$ and $\mu_c = C_c (C_1^{-1}\mu_1 + C_2^{
 \end{eqnarray}
 
 
-\subsection{Rules of differentiation}
-
-Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropriate dimension, and $f$ is a scalar function, and $s$ is a scalar variable.
-
-\begin{eqnarray}
-\frac{\partial}{\partial y} y^T M y = 2 M y \label{eq:deriv_quadratic} \\
-\frac{\partial}{\partial y} a^T y = a \label{eq:deriv_scalarprod} \\
-\frac{\partial}{\partial M} y^T M^{-1} y = - M^{-1} yy^T M^{-1} \label{eq:deriv_quad_mat} \\
-\frac{\partial}{\partial M} \log \det M = M^{-1} \label{eq:deriv_logdet} \\
-\frac{\partial}{\partial s} f(M(s)) = \textrm{Tr} \left[ \frac{\partial f}{\partial M} \frac{\partial M}{\partial s} \right] \label{eq:deriv_chain} \\
-\frac{\partial}{\partial s} s M = M \label{eq:deriv_scalar} \\
-\frac{\partial}{\partial s} f(s) = f(s) \frac{\partial}{\partial s} \log f(s) \label{eq:deriv_function} \\
-\frac{\partial}{\partial M} \log \mathcal{N}(y;a,M) = M^{-1} - M^{-1}(y-a)(y-a)^TM^{-1} \label{eq:deriv_gausscov}
-\end{eqnarray}
-
-
-\subsection{Equivalence of the likelihood formulas}
+\subsection{Equivalence of the likelihood formulas} \label{seq:like_equiv}
 
 Expanding \ref{eq:like_gz_alg} yields
 

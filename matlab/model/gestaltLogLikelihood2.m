@@ -4,7 +4,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     addParameter(parser,'loadSamples',false,@islogical);
     addParameter(parser,'randseed','leave'); 
     addParameter(parser,'scientific','true'); % dummy parameter
-    addParameter(parser,'method','intuition'); % TODO this stuff
+    addParameter(parser,'method','intuition'); 
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -24,7 +24,6 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     ATA = ge.A' * ge.A;     
     siATA = ge.obsVar * stableInverse(ATA);          
     
-    logConstant = 0;
     if strcmp(params.method,'intuition')
         logConstant = -N * log(L);
     else
@@ -52,8 +51,9 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
             c_left = siATA / Z(l,1)^2;
             nCl = c_left + cv;
             loghz(l) = -ge.Dv * log(Z(l,1));
-        end
+        end       
         Cl = nearestSPD(nCl);
+%         log10(rcond(Cl))
         plogdet(l) = stableLogdet(Cl,'scaling','unknown');
         inverse_covariances{l} = stableInverse(Cl);
     end
@@ -68,7 +68,14 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
         ll_part_expo = 0;
         x_n = data(n,:)';
         
-        for l = 1:L                                  
+        if ~strcmp(params.method,'intuition')
+            x_n = pA * x_n;
+        end
+        
+        for l = 1:L           
+            if ~strcmp(params.method,'intuition')
+                x_n = x_n / Z(l,1);
+            end
             [coeff_n,expo_n] = stableMvnpdf(x_n,zeros(ge.Dx,1),inverse_covariances{l},'invertedC',true,'scientific',true,'precompLogdet',plogdet(l));
             [coeff_h,expo_h] = sciNot(loghz(l),true);   
             [ll_act_coeff,ll_act_expo] = prodSciNot([coeff_n coeff_h],[expo_n expo_h]);            
