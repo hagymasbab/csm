@@ -3,6 +3,7 @@ function [p,pexp] = stableMvnpdf(x,mu,C,varargin)
     addParameter(parser,'logdetScaling','unknown');
     addParameter(parser,'scientific',false,@islogical);
     addParameter(parser,'invertedC',false,@islogical);
+    addParameter(parser,'precompLogdet',NaN,@isnumeric);
     parse(parser,varargin{:}); 
     params = parser.Results; 
 
@@ -10,18 +11,24 @@ function [p,pexp] = stableMvnpdf(x,mu,C,varargin)
         error('call with 2 output arguments to get scientific notation result');
     end
     d = size(x,1);
-    ld = stableLogdet(C,'scaling',params.logdetScaling);
-    if params.invertedC
-        ld = -ld;
-    end
+    
+    if isnan(params.precompLogdet)
+        ld = stableLogdet(C,'scaling',params.logdetScaling);
+        if params.invertedC
+            ld = -ld;
+        end        
+    else
+        ld = params.precompLogdet;
+    end    
     ld = -ld/2;
+    
     v = x-mu;
     if params.invertedC
         quad = v' * C * v;
-    elseif log10(rcond(C)) < -15
-        quad = v' * pinv(C) * v;
-    else
+    elseif rcond(C) > 1e-16
         quad = v' * (C \ v);
+    else
+        quad = v' * pinv(C) * v;    
     end
     quad = -quad/2;    
     

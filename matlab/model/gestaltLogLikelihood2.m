@@ -38,9 +38,12 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     end
     Z2 = Z .^ 2;
     
-    covariances = zeros(L,ge.Dv,ge.Dv);
+%     covariances = zeros(L,ge.Dv,ge.Dv);
+    inverse_covariances = cell(1,L);
     hz = zeros(L,1);
     loghz = zeros(L,1);
+    logdet = zeros(L,1);
+
     for l=1:L
         g_l = G(l,:)';
         z_l = Z(l,1);
@@ -51,23 +54,28 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
             c_right = z2_l * (ge.A * cv * ge.A');
             c_right = (c_right + c_right') / 2;
             %issymmetric(c_right)
-            Cl = ge.obsVar * eye(ge.Dv) + c_right;
+            nCl = ge.obsVar * eye(ge.Dv) + c_right;            
         elseif strcmp(params.method,'algebra')
             error('algebraic approach not implemented');
-            Cl = siATA / z2_l + cv;
+            nCl = siATA / z2_l + cv;
             hz(l) = 1 / (z_l^ge.Dv);
         end
         % cheating
 %         [~,e] = cholcov(c_right)    
 %         issymmetric(Cl)
-        nCl = nearestSPD(Cl);
+        Cl = nearestSPD(nCl);
 %         [~,e] = cholcov(c_right)            
 %         issymmetric(nCl)
-        covariances(l,:,:) = nCl;
+        logdet(l) = stableLogdet(Cl,'scaling','unknown');
+%         covariances(l,:,:) = Cl;
+        inverse_covariances{l} = stableInverse(Cl);
     end
     
     ll = 0;
     for n = 1:N
+        if params.verbose == 1
+            printCounter(n,'maxVal',N,'stringVal','Likelihood datapoint');
+        end
         ll_part = 0;
         ll_part_coeff = 0;
         ll_part_expo = 0;
@@ -76,9 +84,10 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
         for l = 1:L                        
             if strcmp(params.method,'algebra')
                 f_nl = pA * x_n / Z(l,1);
-                ll_part = ll_part + hz(l) * mvnpdf(f_nl',zeros(1,ge.Dx),reshape(covariances(l,:,:),ge.Dv,ge.Dv));
+%                 ll_part = ll_part + hz(l) * mvnpdf(f_nl',zeros(1,ge.Dx),reshape(covariances(l,:,:),ge.Dv,ge.Dv));
+                ll_part = ll_part + hz(l) * stableMvnpdf(f_nl,zeros(ge.Dx,1),inverse_covariances{l},'invertedC',true,'scientific',false,'precompLogdet',logdet(l));
             elseif strcmp(params.method,'intuition')
-                [ll_act_coeff,ll_act_expo] = stableMvnpdf(x_n,zeros(ge.Dx,1),reshape(covariances(l,:,:),ge.Dv,ge.Dv),'scientific',true);
+                [ll_act_coeff,ll_act_expo] = stableMvnpdf(x_n,zeros(ge.Dx,1),inverse_covariances{l},'invertedC',true,'scientific',true,'precompLogdet',logdet(l));
                 [ll_part_coeff,ll_part_expo] = sumSciNot(ll_part_coeff,ll_part_expo,ll_act_coeff,ll_act_expo);
             end
         end

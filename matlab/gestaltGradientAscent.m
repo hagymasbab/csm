@@ -7,6 +7,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     addParameter(parser,'learningRate',0.1,@isnumeric); 
     addParameter(parser,'template',true,@islogical);
     addParameter(parser,'dampA',true,@islogical);
+    addParameter(parser,'testLike',0,@isnumeric);  
     parse(parser,varargin{:});        
     params = parser.Results;  
 
@@ -45,8 +46,20 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     
     batch_like = zeros(batchNum,stepNum+1);
     full_like = zeros(batchNum,1);
+    test_like = zeros(batchNum+1,1);
     batch_indices = [];
+    test_indices = [];
     verb = 0;
+    if params.verbose >= 3
+        verb = 1;
+    end
+    
+    if params.testLike > 0
+        test_indices = chooseKfromN(params.testLike,N_all);
+        X_test = data(test_indices,:);          
+        test_like(1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb);
+        loadSamples = true;
+    end
 
     for batch = 1:batchNum
         if params.verbose == 1
@@ -58,7 +71,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
         img_indices = chooseKfromN(batchSize,N_all);
         X = data(img_indices,:);           
         if ~strcmp(params.likeComp,'none')
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples);            
+            ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb);
             batch_like(batch,1) = ll;
             loadSamples = true;
         end        
@@ -68,7 +81,6 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
                 printCounter(step,'maxVal',stepNum,'stringVal','Step');
             elseif params.verbose >= 3
                 fprintf('Step %d/%d ',stepNum,step);
-                verb = 1;
             end
             % calculate gradient
             grad = gestaltLogLikelihoodGradient(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'method','scinot','template',t,'verbose',verb);
@@ -84,7 +96,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             % viewImageSet(choles)
             % calculate likelihood on batch
             if ~strcmp(params.likeComp,'none')
-                ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples);
+                ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb);
                 batch_like(batch,step+1) = ll;        
             end
             %viewImageSet(grad)
@@ -92,13 +104,16 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             save('gradasc_iter.mat','batch_like','ge','state_sequence','-v7.3');
         end
         if strcmp(params.likeComp,'full')
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,data,choles,'loadSamples',loadSamples);
+            ll = gestaltLogLikelihood2(ge,params.priorSamples,data,choles,'loadSamples',loadSamples,'verbose',verb);
             full_like(batch) = ll;
+        end
+        if params.testLike > 0       
+            test_like(batch+1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb);            
         end
         % save stuff
         state.estimated_components = cholcell(choles);
         state_sequence{end+1} = state;
         batch_inidces = [batch_indices; img_indices];
-        save('gradasc_iter.mat','batch_like','ge','state_sequence','batch_indices','-v7.3');
+        save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence','batch_indices','test_indices','-v7.3');
     end    
 end
