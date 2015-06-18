@@ -338,8 +338,13 @@ under the square root we have
 
 \begin{equation}
 \begin{split}
-z^{2 D_v} \det(A^TA C(z,g)) = \det \left( z^2 A^TA \left[  \frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v  \right] \right) = \\
-= \det \left( \left[  \sigma_x I +  z^2 A^TA C_v  \right] \right) = \det \left( \left[  \sigma_x I +  z^2  A^T C_v A \right] \right) 
+z^{2 D_v} \det(A^TA C(z,g)) = z^{2 D_v} \det(A^T) \det(A) \det(C(z,g)) = z^{2 D_v} \det(A) \det(C(z,g)) \det(A^T)\\
+= z^{2 D_v} \det(A) \det(\frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v) \det(A^T) = 
+z^{2 D_v} \det(A) \det(\frac{\sigma_x}{z^2} (A^TA)^{-1} + C_v) \det(A^T) = \\
+= z^{2 D_v} \det(A) \det(\frac{\sigma_x}{z^2} A^{-1}A^{-T} + C_v) \det(A^T) = 
+z^{2 D_v} \det \left[ A \left[ \frac{\sigma_x}{z^2} A^{-1}A^{-T} + C_v \right] A^T \right] = \\
+= z^{2 D_v} \det \left[  \frac{\sigma_x}{z^2} I + A C_v A^T \right] =
+\det \left[  \sigma_x I + z^2 A C_v A^T \right]
 \end{split}
 \end{equation}
 
