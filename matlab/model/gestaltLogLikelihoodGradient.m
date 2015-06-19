@@ -71,7 +71,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         for l = 1:L
             f_l = pAx / Z(l);
             iC_l = inverse_covariances{l};
-            [coeff_n,expo_n] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,'scientific',true,'invertedC',true,'precompLogdet',plogdet(l));  
+            [coeff_n,expo_n] = stableMvnpdf(f_l,zeros(ge.Dv,1),iC_l,'scientific',true,'invertedC',true,'precompLogdet',plogdet(l));
             [coeff_h,expo_h] = sciNot(loghz(l),true);   
             [h_times_N_coeff(n,l),h_times_N_expo(n,l)] = prodSciNot([coeff_n coeff_h],[expo_n expo_h]);
             [Li_coeff,Li_expo] = sumSciNot(Li_coeff,Li_expo,h_times_N_coeff(n,l),h_times_N_expo(n,l));
@@ -92,16 +92,17 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
             scalar_term = hNperL_coeff * 10^hNperL_expo;
                        
             matrix_term = iC_l - iCf * iCf';
+            s_times_M = scalar_term * matrix_term;
             
             for kkk = 1:ge.k
-                M_part_update = G(l,kkk) * scalar_term * matrix_term;
+                M_part_update = G(l,kkk) * s_times_M;
                 M_part_cell{kkk} = M_part_cell{kkk} + M_part_update;
             end                                                                
         end
-    
-        celladd(M_cell,1,M_part_cell,-1/2);
+        
+        M_cell = celladd(M_cell,1,M_part_cell,-1/2);
     end
-    
+        
     % cycle over all the individual parameters
     grad = cell(1,ge.k);          
     grad{kk} = zeros(ge.Dv);
@@ -115,6 +116,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         for j = i:ge.Dv      
             if params.template(i,j)                               
                 for kk = 1:ge.k     
+                    %M_cell{kk}(j,:)
                     grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* M_cell{kk}(j,:) + cholesky{kk}(i,:) .* M_cell{kk}(:,j)');
                 end
             end

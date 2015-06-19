@@ -44,9 +44,9 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     state.estimated_components = cc;
     state_sequence{1} = state;
     
-    batch_like = zeros(batchNum,stepNum+1);
-    full_like = zeros(batchNum,1);
-    test_like = zeros(batchNum+1,1);
+    full_like = [];
+    batch_like = [];
+    test_like = [];
     batch_indices = [];
     test_indices = [];
     verb = 0;
@@ -58,7 +58,8 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     if params.testLike > 0
         test_indices = chooseKfromN(params.testLike,N_all);
         X_test = data(test_indices,:);          
-        test_like(1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
+        ll = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
+        test_like = [test_like;ll];
         loadSamples = true;
     end
 
@@ -70,10 +71,11 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
         end
         % sample a data batch
         img_indices = chooseKfromN(batchSize,N_all);
-        X = data(img_indices,:);           
+        X = data(img_indices,:);        
+        act_batch_like = [];
         if ~strcmp(params.likeComp,'none')
             ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
-            batch_like(batch,1) = ll;
+            act_batch_like = [act_batch_like ll];
             loadSamples = true;
         end        
         
@@ -86,8 +88,9 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             % calculate gradient
             grad = gestaltLogLikelihoodGradient(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'method','scinot','template',t,'verbose',verb);
             
-            %gradmat = abs(cell2mat(grad));            
-            %max(gradmat(:))
+%             gradmat = abs(cell2mat(grad));            
+%             max(gradmat(:))
+%             min(gradmat(:))
             %pause
             % use the same set of samples at every iteration
             loadSamples = true;
@@ -97,24 +100,26 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             % viewImageSet(choles)
             % calculate likelihood on batch
             if ~strcmp(params.likeComp,'none')
-                ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
-                batch_like(batch,step+1) = ll;        
+                ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);                 
+                act_batch_like = [act_batch_like ll];
             end
             %viewImageSet(grad)
             %pause
             save('gradasc_iter.mat','batch_like','ge','state_sequence','-v7.3');
         end
+        batch_like = [batch_like; act_batch_like];
         if strcmp(params.likeComp,'full')
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,data,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
-            full_like(batch) = ll;
+            ll = gestaltLogLikelihood2(ge,params.priorSamples,data,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);            
+            full_like = [full_like;ll];
         end
         if params.testLike > 0       
-            test_like(batch+1) = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);            
+            ll = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);          
+            test_like = [test_like;ll];
         end
         % save stuff
         state.estimated_components = cholcell(choles);
         state_sequence{end+1} = state;
-        batch_inidces = [batch_indices; img_indices];
+        batch_indices = [batch_indices; img_indices];
         save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence','batch_indices','test_indices','-v7.3');
     end    
 end
