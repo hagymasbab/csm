@@ -333,9 +333,12 @@ the log-posterior being
 \begin{equation}
 p(g,z \mid x) \sim p(x \mid g,z)p(g)p(z)
 \end{equation}
+%
+from Eq. \ref{eq:like_gz_int}
 
 \begin{eqnarray}
-\log p(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_x) + x^T C_x^{-1} x \right] + (\alpha_z-1)\log(z) - \frac{z}{\theta_z} + (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\theta_g} \sum_{k=1}^K g_k
+\log p(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_x) + x^T C_x^{-1} x \right] + (\alpha_z-1)\log(z) - \frac{z}{\theta_z} + (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\theta_g} \sum_{k=1}^K g_k \\
+C_x = \sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T
 \end{eqnarray}
 
 

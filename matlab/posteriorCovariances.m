@@ -10,8 +10,9 @@ function [C_c,C_m] = posteriorCovariances(x,A,sigma_x,sigma_v,shape_g,scale_g,sh
     sI = eye(Dv) / sigma_v;
     sB = B / sigma_v;
     
-    G = gamrnd(shape_g,scale_g,[L k]);
-    Z = gamrnd(shape_z,scale_z,[L 1]);
+    % TODO take posterior samples
+    % G = gamrnd(shape_g,scale_g,[L k]);
+    % Z = gamrnd(shape_z,scale_z,[L 1]);
     
     Ccl = zeros(L,Dv,Dv);
     Cml = zeros(L,Dv,Dv);    
