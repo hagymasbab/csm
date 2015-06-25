@@ -7,6 +7,7 @@
 !cmp_*.mat
 !img_*mat
 !covariance_template*mat
+!test_indices*mat
 # ignore generated figures
 *.fig
 # also temporary code files created by matlab
