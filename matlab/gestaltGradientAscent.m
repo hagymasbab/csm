@@ -7,7 +7,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     addParameter(parser,'learningRate',0.1,@isnumeric); 
     addParameter(parser,'template',true,@islogical);
     addParameter(parser,'dampA',true,@islogical);
-    addParameter(parser,'testLike',0,@isnumeric);  
+    addParameter(parser,'testLike',0);  
     parse(parser,varargin{:});        
     params = parser.Results;  
 
@@ -55,8 +55,12 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     end
     like_method = 'algebra';
     
-    if params.testLike > 0
-        test_indices = chooseKfromN(params.testLike,N_all);
+    if ischar(params.testLike) || params.testLike > 0
+        if ischar(params.testLike)
+            load(params.testLike)
+        else
+            test_indices = chooseKfromN(params.testLike,N_all);
+        end
         X_test = data(test_indices,:);          
         ll = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
         test_like = [test_like;ll];
