@@ -20,16 +20,16 @@ p(v \mid g) = \mathcal{N}(v; 0,C_v) \\
 C_v = \sum_{k=1}^K g_k U^T_k U_k \label{eq:cv}
 \end{eqnarray}
 %
-where K is the fixed number of possible gestalts in the visual scene and $g_k$ is the strength of the gestalt number $k$, coming from a $K$-dimensional Gamma prior distribution with shape and scale  parameters $\alpha_g$ and $\zeta_g$ controlling the sparsity of the prior.
+where K is the fixed number of possible gestalts in the visual scene and $g_k$ is the strength of the gestalt number $k$, coming from a $K$-dimensional Gamma prior distribution with shape and scale  parameters $\alpha_g$ and $\theta_g$ controlling the sparsity of the prior.
 
 \begin{equation}
-p(g) = \textrm{Gam}(g; \alpha_g,\zeta_g)
+p(g) = \textrm{Gam}(g; \alpha_g,\theta_g)
 \end{equation}
 %
 The global contrast of the image patch is encoded by a scalar variable $z$, also coming from a Gamma prior
 
 \begin{equation}
-p(z) = \textrm{Gam}(z; \alpha_z,\zeta_z)
+p(z) = \textrm{Gam}(z; \alpha_z,\theta_z)
 \end{equation}
 
 The pixel intensities are generated from the neural activity through a set of linear projective field models, possibly Gabor filters, $A$, scaled by the contrast and adding some independent observational noise.
@@ -62,7 +62,7 @@ p(x \mid z,g) = \frac{1}{\sqrt{\det(A^TA)}} h(z) \mathcal{N}(f(x,z);0,C(z,g)) \l
 All parameters of the model consist of
 
 \begin{equation}
-\zeta = \lbrace \sigma_x, A, U_{1..K}, \alpha_g, \zeta_g, \alpha_z, \zeta_z \rbrace
+\zeta = \lbrace \sigma_x, A, U_{1..K}, \alpha_g, \theta_g, \alpha_z, \theta_z \rbrace
 \end{equation}
 %
 for $n$ exchangeable observations of $x$, the likelihood looks like this
@@ -236,7 +236,7 @@ so the log-posterior will be the following, up to an additive constant, using Ga
 \begin{equation}
 \begin{split}
 \log p(v,g,z \mid x) \sim \log p(x \mid v,z) + \log p(v \mid g) + \log p(g) + \log p(z) = \\
-= \log \mathcal{N}(x;zAv,\sigma_x I) + \log \mathcal{N}(v;0,C_v) + \log \textrm{Gam}(g;\alpha_g,\zeta_g) + \log \textrm{Gam}(z;\alpha_z,\zeta_z)
+= \log \mathcal{N}(x;zAv,\sigma_x I) + \log \mathcal{N}(v;0,C_v) + \log \textrm{Gam}(g;\alpha_g,\theta_g) + \log \textrm{Gam}(z;\alpha_z,\theta_z)
 \end{split}
 \end{equation}
 %
@@ -246,7 +246,7 @@ using the logarithms of the used pdfs from Sec. \ref{sec:logpdf} and discarding 
 \begin{split}
 \log p(v,g,z \mid x) \sim -\frac{1}{2 \sigma_x}(x - zAv)^T (x - zAv) - \\
 - \frac{1}{2} \left[ \log \left( \det \left( C_v \right) \right) + v^T C_v^{-1} v \right] + \\
-+ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\zeta_g} \right] + (\alpha_z - 1) \log(z) - \frac{z}{\zeta_z}
++ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\theta_g} \right] + (\alpha_z - 1) \log(z) - \frac{z}{\theta_z}
 \end{split}
 \end{equation}
 %
@@ -256,8 +256,8 @@ rearranging the first quadratic term according to Eq. \ref{eq:quad_rearrange} an
 \begin{split}
 \log p(v,g,z \mid x) \sim - \frac{z}{2 \sigma_x} \left( zv^TA^TAv - 2x^TAv \right)- \\
 - \frac{1}{2} \left[ \log \left( \det \left( C_v \right) \right) + v^T C_v^{-1} v \right] + \\
-+ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\zeta_g} \right] + \\
-+ (\alpha_z - 1) \log(z) - \frac{z}{\zeta_z}
++ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\theta_g} \right] + \\
++ (\alpha_z - 1) \log(z) - \frac{z}{\theta_z}
 \end{split}
 \end{equation}
 
@@ -286,7 +286,7 @@ Taking the derivative using Eq. \ref{eq:deriv_quadratic} and \ref{eq:deriv_scala
 \begin{equation}
 \begin{split}
 \log p(v,g,z \mid x) \sim - \frac{1}{2} \left[ \log \det \left( C_v \right) + v^T C_v^{-1} v \right] + \\
-+ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\zeta_g} \right]   + f_2(v,z)
++ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\theta_g} \right]   + f_2(v,z)
 \end{split}
 \end{equation}
 %
@@ -295,25 +295,25 @@ Taking the derivative w.r.t. a single $g_i$ using Eq. \ref{eq:deriv_chain} we ge
 \begin{equation}
 \begin{split}
 \frac{\partial}{\partial g_i} \log p(v,g,z \mid x) =  - \frac{1}{2} \textrm{Tr} \left[ \frac{\partial}{\partial C_v} \left[ \log \det \left( C_v \right) + v^T C_v^{-1} v \right] \frac{\partial C_v}{\partial g_i}\right]  + \\
-+ \frac{\partial}{\partial g_i} \left[ (\alpha_g - 1) \log(g_i) - \frac{g_i}{\zeta_g} \right]
++ \frac{\partial}{\partial g_i} \left[ (\alpha_g - 1) \log(g_i) - \frac{g_i}{\theta_g} \right]
 \end{split}
 \end{equation}
 %
 using Eq. \ref{eq:deriv_logdet}, \ref{eq:deriv_quad_mat} and \ref{eq:deriv_scalar} we arrive to
 
 \begin{equation}
-\frac{\partial}{\partial g_i} \log p(v,g,z \mid x) =  - \frac{1}{2} \textrm{Tr} \left[ \left[ C_v^{-1} - C_v^{-1} v v^T C_v^{-1} \right] C_i \right]  + \frac{\alpha_g - 1}{g_i} - \frac{1}{\zeta_g}
+\frac{\partial}{\partial g_i} \log p(v,g,z \mid x) =  - \frac{1}{2} \textrm{Tr} \left[ \left[ C_v^{-1} - C_v^{-1} v v^T C_v^{-1} \right] C_i \right]  + \frac{\alpha_g - 1}{g_i} - \frac{1}{\theta_g}
 \end{equation}
 
 
 \subsubsection{Derivative w.r.t. $z$}
 
 \begin{equation}
-\log p(v,g,z \mid x) \sim - \frac{z}{2 \sigma_x} \left( zv^TA^TAv - 2x^TAv \right) + (\alpha_z - 1) \log(z) - \frac{z}{\zeta_z} + f_3(g,v)
+\log p(v,g,z \mid x) \sim - \frac{z}{2 \sigma_x} \left( zv^TA^TAv - 2x^TAv \right) + (\alpha_z - 1) \log(z) - \frac{z}{\theta_z} + f_3(g,v)
 \end{equation}
 
 \begin{equation}
-\frac{\partial}{\partial z} \log p(v,g,z \mid x) =  \frac{1}{\sigma_x} \left[ x^TAv - z v^T A^TA v \right] + \frac{\alpha_z - 1}{z} - \frac{1}{\zeta_z}
+\frac{\partial}{\partial z} \log p(v,g,z \mid x) =  \frac{1}{\sigma_x} \left[ x^TAv - z v^T A^TA v \right] + \frac{\alpha_z - 1}{z} - \frac{1}{\theta_z}
 \end{equation}
 
 \subsection{Conditional posteriors}
@@ -383,9 +383,30 @@ p(g,z \mid x) \sim p(x \mid g,z)p(g)p(z)
 from Eq. \ref{eq:like_gz_int}
 
 \begin{eqnarray}
-\log p(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_x) + x^T C_x^{-1} x \right] + (\alpha_z-1)\log(z) - \frac{z}{\zeta_z} + (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\zeta_g} \sum_{k=1}^K g_k \\
+\begin{split}
+\log p(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_x) + x^T C_x^{-1} x \right] + (\alpha_z-1)\log(z) - \frac{z}{\theta_z} + \\
++ (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\theta_g} \sum_{k=1}^K g_k
+\end{split} \\
 C_x = \sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T
 \end{eqnarray}
+%
+the derivative w.r.t $g_k$
+
+\begin{equation}
+\begin{split}
+\frac{\partial}{\partial g_k} \log p(g,z \mid x) = \mathrm{Tr} \left[ \frac{\partial}{\partial C_x} \log p(g,z \mid x) \frac{\partial C_x}{\partial g_k} \right] + \frac{\alpha_g-1}{g_k} - \frac{g_k}{\theta_g} = \\
+= z^2 \mathrm{Tr} \left[ \left[ C_x^{-1} - C_x^{-1} xx^T C_x^{-1} \right] AU_k^TU_kA^T \right] + \frac{\alpha_g-1}{g_k} - \frac{g_k}{\theta_g}
+\end{split}
+\end{equation}
+%
+the derivative w.r.t $z$
+
+\begin{equation}
+\begin{split}
+\frac{\partial}{\partial z} \log p(g,z \mid x) = \mathrm{Tr} \left[ \frac{\partial}{\partial C_x} \log p(g,z \mid x) \frac{\partial C_x}{\partial z} \right] + \frac{\alpha_z-1}{z} - \frac{z}{\theta_z} = \\
+= 2z \mathrm{Tr} \left[ \left[ C_x^{-1} - C_x^{-1} xx^T C_x^{-1} \right] A C_v A^T \right] + \frac{\alpha_z-1}{z} - \frac{z}{\theta_z}
+\end{split}
+\end{equation}
 
 
 \subsubsection{Marginal posterior of $g$}
