@@ -20,16 +20,16 @@ p(v \mid g) = \mathcal{N}(v; 0,C_v) \\
 C_v = \sum_{k=1}^K g_k U^T_k U_k \label{eq:cv}
 \end{eqnarray}
 %
-where K is the fixed number of possible gestalts in the visual scene and $g_k$ is the strength of the gestalt number $k$, coming from a $K$-dimensional Gamma prior distribution with shape and scale  parameters $\alpha_g$ and $\theta_g$ controlling the sparsity of the prior.
+where K is the fixed number of possible gestalts in the visual scene and $g_k$ is the strength of the gestalt number $k$, coming from a $K$-dimensional Gamma prior distribution with shape and scale  parameters $\alpha_g$ and $\zeta_g$ controlling the sparsity of the prior.
 
 \begin{equation}
-p(g) = \textrm{Gam}(g; \alpha_g,\theta_g)
+p(g) = \textrm{Gam}(g; \alpha_g,\zeta_g)
 \end{equation}
 %
 The global contrast of the image patch is encoded by a scalar variable $z$, also coming from a Gamma prior
 
 \begin{equation}
-p(z) = \textrm{Gam}(z; \alpha_z,\theta_z)
+p(z) = \textrm{Gam}(z; \alpha_z,\zeta_z)
 \end{equation}
 
 The pixel intensities are generated from the neural activity through a set of linear projective field models, possibly Gabor filters, $A$, scaled by the contrast and adding some independent observational noise.
@@ -59,35 +59,49 @@ p(x \mid z,g) = \frac{1}{\sqrt{\det(A^TA)}} h(z) \mathcal{N}(f(x,z);0,C(z,g)) \l
 
 \subsection{Log-likelihood of the parameters}
 
-\begin{equation}
-p(X \mid U_{1..K}) = \prod_{n=1}^N p(x_n \mid U_{1..K}) 
-\end{equation}
+All parameters of the model consist of
 
-\begin{eqnarray}
-p(X \mid U_{1..K}) = \prod_{n=1}^N \iint_{-\infty}^{\infty} p(x_n \mid z,g) p(g) p(z) \mathrm{d}g\mathrm{d}z \\
-\end{eqnarray}
+\begin{equation}
+\zeta = \lbrace \sigma_x, A, U_{1..K}, \alpha_g, \zeta_g, \alpha_z, \zeta_z \rbrace
+\end{equation}
 %
-approximation of the integrals by samples from the priors $p(g_n)$ and $p(z_n)$
+for $n$ exchangeable observations of $x$, the likelihood looks like this
 
 \begin{equation}
-p(X \mid U_{1..K}) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^{L}p(x_n \mid z^l,g^l)
+p(X \mid \zeta) = \prod_{n=1}^N p(x_n \mid \zeta) = \prod_{n=1}^N \iint_{-\infty}^{\infty} p(x_n \mid z,g) p(g) p(z) \mathrm{d}g\mathrm{d}z
+\end{equation}
+%
+approximation of the integrals by samples from the priors $p(g)$ and $p(z)$
+
+\begin{equation}
+p(X \mid \zeta) \approx \prod_{n=1}^N \frac{1}{L} \sum_{l=1}^{L}p(x_n \mid z^l,g^l)
 \end{equation}
 
-using \ref{eq:like_gz_alg}
+using Eq. \ref{eq:like_gz_alg}
 
 \begin{eqnarray}
-p(X \mid U_{1..K}) \approx \left( L \sqrt{\det(A^TA)} \right)^{-N} \prod_{n=1}^N \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \\
-\log p(X \mid U_{1..K}) \approx -N (\log L + \frac{1}{2}\log(\det(A^TA))) + \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \right] \\
+p(X \mid \zeta) \approx \left( L \sqrt{\det(A^TA)} \right)^{-N} \prod_{n=1}^N \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \\
+\log p(X \mid \zeta) \approx -N (\log L + \frac{1}{2}\log(\det(A^TA))) + \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} h(z^l) \mathcal{N}(f(x_n,z^l);0,C(z^l,g^l)) \right] \\
 h^l \equiv h(z^l), ~ f_n^l \equiv f(x_n,z^l), ~ C^l \equiv C(z^l,g^l) \\
 \mathcal{L}_n^l \equiv h^l \mathcal{N}(f_n^l;0,C^l), ~ \mathcal{L}_n \equiv  \sum_{l=1}^{L} \mathcal{L}_n^l \\
-\log p(X \mid U_{1..K}) \approx -N (\log L + \frac{1}{2}\log(\det(A^TA))) + \sum_{n=1}^N \log \mathcal{L}_n
+\log p(X \mid \zeta) \approx -N (\log L + \frac{1}{2}\log(\det(A^TA))) + \sum_{n=1}^N \log \mathcal{L}_n \label{eq:loglike_alg}
+\end{eqnarray}
+%
+An equivalent way to write this based on Eq. \ref{eq:like_gz_int} is the following
+
+\begin{eqnarray}
+p(X \mid \zeta) \approx L^{-N} \prod_{n=1}^N \sum_{l=1}^{L} \mathcal{N}(x_n;0,\sigma_x I + z^{l2} A C_v^l A^T) \\
+C_x^l \equiv \sigma_x I + z^{l2} A C_v^l A^T \\
+\log p(X \mid \zeta) \approx -N \log L \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l) \right] \label{eq:loglike_int}
 \end{eqnarray}
 
 \subsubsection{Derivative w.r.t. $U_{1\dots K}$ }
 
+Using Eq. \ref{eq:loglike_alg}
+
 \begin{equation}
 \begin{split}
-\frac{\partial \log p(X \mid U_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{n=1}^N \frac{\partial \log \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n} \frac{\partial \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \frac{\partial \mathcal{L}_n^l}{\partial \left[ U_k \right]_{i,j}} = \\
+\frac{\partial \log p(X \mid \zeta)}{\partial \left[ U_k \right]_{i,j}} \approx \sum_{n=1}^N \frac{\partial \log \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n} \frac{\partial \mathcal{L}_n}{\partial \left[ U_k \right]_{i,j}} = \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \frac{\partial \mathcal{L}_n^l}{\partial \left[ U_k \right]_{i,j}} = \\
 =  \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} \textrm{Tr} \left[ \frac{\partial \mathcal{L}_n^l}{\partial C^l} \frac{\partial C^l}{\partial \left[ U_k \right]_{i,j}} \right]
 \end{split}
 \end{equation}
@@ -106,7 +120,7 @@ substituting back to the derivative
 
 \begin{equation}
 \begin{split}
-\frac{\partial \log p(X \mid U_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \\
+\frac{\partial \log p(X \mid \zeta)}{\partial \left[ U_k \right]_{i,j}} \approx \\
 \approx  -\frac{1}{2} \sum_{n=1}^N \frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)  \textrm{Tr} \left[ \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \hat U_k^{ij} \right] = \\
 = -\frac{1}{2} \textrm{Tr} \left[ \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right) \hat U_k^{ij} \right]
 \end{split}
@@ -116,21 +130,53 @@ The regularities of the $\hat U_k$ matrices allow us to replace the trace with a
 
 \begin{eqnarray}
 M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right) \\
-\frac{\partial \log p(X \mid U_{1..K})}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
+\frac{\partial \log p(X \mid \zeta)}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
 \end{eqnarray}
+
+
+\subsubsection{Derivative w.r.t. $\sigma_x$}
+
+Using Eq. \ref{eq:loglike_int}
+
+\begin{equation}
+\begin{split}
+\frac{\partial \log p(X \mid \zeta)}{\partial \sigma_x} \approx \sum_{n=1}^N \frac{\partial}{\partial \sigma_x} \log \left[ \sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l) \right] = \\
+= \sum_{n=1}^N \frac{1}{\sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l)} \sum_{l=1}^{L} \frac{\partial}{\partial \sigma_x} \mathcal{N}(x_n;0,C_x^l) = \\
+= \sum_{n=1}^N \frac{1}{\sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l)} \sum_{l=1}^{L} \textrm{Tr} \left[ \frac{\partial}{\partial C_x^l} \mathcal{N}(x_n;0,C_x^l) \frac{\partial C_x^l}{\partial \sigma_x} \right]
+\end{split}
+\end{equation}
+
+the derivatives in this formula are the following
+
+\begin{eqnarray}
+\begin{split}
+\frac{\partial}{\partial C_x^l} \mathcal{N}(x_n;0,C_x^l) = \mathcal{N}(x_n;0,C_x^l) \frac{\partial}{\partial C^l} \log \mathcal{N}(x_n;0,C_x^l) = \\
+= -\frac{1}{2} \mathcal{N}(x_n;0,C_x^l) \left[ (C_x^l)^{-1} - (C_x^l)^{-1} x_n x_n^T (C_x^l)^{-1} \right]
+\end{split} \\
+\frac{\partial C_x^l}{\partial \sigma_x} = I
+\end{eqnarray}
+%
+substituting back to the derivative
+
+\begin{equation}
+\begin{split}
+\frac{\partial \log p(X \mid \zeta)}{\partial \sigma_x} \approx \\
+\approx  -\frac{1}{2} \sum_{n=1}^N \frac{1}{\sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l)}  \sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l)  \textrm{Tr} \left[ (C_x^l)^{-1} - (C_x^l)^{-1} x_n x_n^T (C_x^l)^{-1} \right]
+\end{split}
+\end{equation}
 
 
 \subsection{Complete-data log-likelihood}
 
 \begin{equation}
-p(V,G,Z,X \mid U_{1..K}) = \prod_{n=1}^N p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n)  p(z_n)
+p(V,G,Z,X \mid \zeta) = \prod_{n=1}^N p(x_n \mid v_n,z_n) p(v_n \mid g_n) p(g_n)  p(z_n)
 \end{equation}
 %
 the logarithm of this will be
 
 \begin{equation}
 \begin{split}
-& \log p(V,G,Z,X \mid U_{1..K} )= \\ 
+& \log p(V,G,Z,X \mid \zeta )= \\ 
 & = \sum_{n=1}^N  \left[ \log p(g_n) + \log p(z_n) +  \log p(x_n \mid v_n) + \log p(v_n \mid g_n) \right] = \\
 & = N  (\log p(g) + \log p(z)) + \sum_{n=1}^N \log p(x_n \mid v_n) + \log p(v_n \mid g_n) = \\
 & = c + \sum_{n=1}^N \log p(v_n\mid g_n)
@@ -143,7 +189,7 @@ where $c$ is constant with respect to the parameters $U_{1 \dots K}$.
 \subsubsection{Expectation w.r.t. the posterior}
 
 \begin{equation}
-\mathcal{L}=\iiint_{-\infty}^{\infty} p(V,G,Z \mid X)\log p(V,G,Z,X \mid U_{1..K}) \mathrm{d}V\mathrm{d}G\mathrm{d}Z. 
+\mathcal{L}=\iiint_{-\infty}^{\infty} p(V,G,Z \mid X)\log p(V,G,Z,X \mid \zeta) \mathrm{d}V\mathrm{d}G\mathrm{d}Z. 
 \end{equation}
 
 We can approximate this integral by averaging over $L$ samples from the full posterior, separately for each observation $x_n$, as defined in Seq. \ref{seq:fullpost}. As we will seek the values of the Cholesky components $U_{1 \dots K}$ that maximise this integral, we can discard each term not depending on these parameters, only leaving the term of the form $p(v \mid g)$. This way we arrive to the following expression 
@@ -190,7 +236,7 @@ so the log-posterior will be the following, up to an additive constant, using Ga
 \begin{equation}
 \begin{split}
 \log p(v,g,z \mid x) \sim \log p(x \mid v,z) + \log p(v \mid g) + \log p(g) + \log p(z) = \\
-= \log \mathcal{N}(x;zAv,\sigma_x I) + \log \mathcal{N}(v;0,C_v) + \log \textrm{Gam}(g;\alpha_g,\theta_g) + \log \textrm{Gam}(z;\alpha_z,\theta_z)
+= \log \mathcal{N}(x;zAv,\sigma_x I) + \log \mathcal{N}(v;0,C_v) + \log \textrm{Gam}(g;\alpha_g,\zeta_g) + \log \textrm{Gam}(z;\alpha_z,\zeta_z)
 \end{split}
 \end{equation}
 %
@@ -200,7 +246,7 @@ using the logarithms of the used pdfs from Sec. \ref{sec:logpdf} and discarding 
 \begin{split}
 \log p(v,g,z \mid x) \sim -\frac{1}{2 \sigma_x}(x - zAv)^T (x - zAv) - \\
 - \frac{1}{2} \left[ \log \left( \det \left( C_v \right) \right) + v^T C_v^{-1} v \right] + \\
-+ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\theta_g} \right] + (\alpha_z - 1) \log(z) - \frac{z}{\theta_z}
++ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\zeta_g} \right] + (\alpha_z - 1) \log(z) - \frac{z}{\zeta_z}
 \end{split}
 \end{equation}
 %
@@ -210,8 +256,8 @@ rearranging the first quadratic term according to Eq. \ref{eq:quad_rearrange} an
 \begin{split}
 \log p(v,g,z \mid x) \sim - \frac{z}{2 \sigma_x} \left( zv^TA^TAv - 2x^TAv \right)- \\
 - \frac{1}{2} \left[ \log \left( \det \left( C_v \right) \right) + v^T C_v^{-1} v \right] + \\
-+ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\theta_g} \right] + \\
-+ (\alpha_z - 1) \log(z) - \frac{z}{\theta_z}
++ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\zeta_g} \right] + \\
++ (\alpha_z - 1) \log(z) - \frac{z}{\zeta_z}
 \end{split}
 \end{equation}
 
@@ -240,7 +286,7 @@ Taking the derivative using Eq. \ref{eq:deriv_quadratic} and \ref{eq:deriv_scala
 \begin{equation}
 \begin{split}
 \log p(v,g,z \mid x) \sim - \frac{1}{2} \left[ \log \det \left( C_v \right) + v^T C_v^{-1} v \right] + \\
-+ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\theta_g} \right]   + f_2(v,z)
++ \sum_{j=1}^K \left[ (\alpha_g - 1) \log(g_j) - \frac{g_j}{\zeta_g} \right]   + f_2(v,z)
 \end{split}
 \end{equation}
 %
@@ -249,25 +295,25 @@ Taking the derivative w.r.t. a single $g_i$ using Eq. \ref{eq:deriv_chain} we ge
 \begin{equation}
 \begin{split}
 \frac{\partial}{\partial g_i} \log p(v,g,z \mid x) =  - \frac{1}{2} \textrm{Tr} \left[ \frac{\partial}{\partial C_v} \left[ \log \det \left( C_v \right) + v^T C_v^{-1} v \right] \frac{\partial C_v}{\partial g_i}\right]  + \\
-+ \frac{\partial}{\partial g_i} \left[ (\alpha_g - 1) \log(g_i) - \frac{g_i}{\theta_g} \right]
++ \frac{\partial}{\partial g_i} \left[ (\alpha_g - 1) \log(g_i) - \frac{g_i}{\zeta_g} \right]
 \end{split}
 \end{equation}
 %
 using Eq. \ref{eq:deriv_logdet}, \ref{eq:deriv_quad_mat} and \ref{eq:deriv_scalar} we arrive to
 
 \begin{equation}
-\frac{\partial}{\partial g_i} \log p(v,g,z \mid x) =  - \frac{1}{2} \textrm{Tr} \left[ \left[ C_v^{-1} - C_v^{-1} v v^T C_v^{-1} \right] C_i \right]  + \frac{\alpha_g - 1}{g_i} - \frac{1}{\theta_g}
+\frac{\partial}{\partial g_i} \log p(v,g,z \mid x) =  - \frac{1}{2} \textrm{Tr} \left[ \left[ C_v^{-1} - C_v^{-1} v v^T C_v^{-1} \right] C_i \right]  + \frac{\alpha_g - 1}{g_i} - \frac{1}{\zeta_g}
 \end{equation}
 
 
 \subsubsection{Derivative w.r.t. $z$}
 
 \begin{equation}
-\log p(v,g,z \mid x) \sim - \frac{z}{2 \sigma_x} \left( zv^TA^TAv - 2x^TAv \right) + (\alpha_z - 1) \log(z) - \frac{z}{\theta_z} + f_3(g,v)
+\log p(v,g,z \mid x) \sim - \frac{z}{2 \sigma_x} \left( zv^TA^TAv - 2x^TAv \right) + (\alpha_z - 1) \log(z) - \frac{z}{\zeta_z} + f_3(g,v)
 \end{equation}
 
 \begin{equation}
-\frac{\partial}{\partial z} \log p(v,g,z \mid x) =  \frac{1}{\sigma_x} \left[ x^TAv - z v^T A^TA v \right] + \frac{\alpha_z - 1}{z} - \frac{1}{\theta_z}
+\frac{\partial}{\partial z} \log p(v,g,z \mid x) =  \frac{1}{\sigma_x} \left[ x^TAv - z v^T A^TA v \right] + \frac{\alpha_z - 1}{z} - \frac{1}{\zeta_z}
 \end{equation}
 
 \subsection{Conditional posteriors}
@@ -286,7 +332,7 @@ the product of two Gaussians in the numerator of Eq. \ref{eq:condpost} can also 
 %
 The denominator of Eq. \ref{eq:condpost} is the integral of this formula, which evaluates to $c$, as the Gaussian integrates to one. This cancels the constant in the numerator, making the conditional posterior equal to the combined Gaussian over $v$, which, after expanding $\mu_{post}$ and $C_{post}$, is
 
-\begin{equation}
+\begin{equation} \label{eq:condpost_v}
 p(v \mid x,g,z) = \mathcal{N}\left(v; \frac{z}{ \sigma_x} \left( \frac{z^2}{ \sigma_x} A^T A + C_v^{-1}\right)^{-1} A^T x, \left(\frac{z^2}{\sigma_x} A^T A + C_v^{-1}\right)^{-1}\right)
 \end{equation}
 
@@ -337,18 +383,36 @@ p(g,z \mid x) \sim p(x \mid g,z)p(g)p(z)
 from Eq. \ref{eq:like_gz_int}
 
 \begin{eqnarray}
-\log p(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_x) + x^T C_x^{-1} x \right] + (\alpha_z-1)\log(z) - \frac{z}{\theta_z} + (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\theta_g} \sum_{k=1}^K g_k \\
+\log p(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_x) + x^T C_x^{-1} x \right] + (\alpha_z-1)\log(z) - \frac{z}{\zeta_z} + (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\zeta_g} \sum_{k=1}^K g_k \\
 C_x = \sigma_x I + z^2 A \left( \sum_{k=1}^K g_k U_k^T U_k \right)A^T
 \end{eqnarray}
 
 
-\subsubsection{Marginal posterior and MAP of $g$}
+\subsubsection{Marginal posterior of $g$}
+
+A maximum a posterior estimate of $g$ can be given as follows
 
 \begin{eqnarray}
 g_{MAP} = \argmax_g p(g \mid x) = \argmax_g \frac{p(x \mid g)p(g)}{p(x)} = \argmax_g p(x \mid g)p(g)\\
 p(x \mid g) = \int_{-\infty}^{\infty} p(x \mid z,g)p(z)\mathrm{d}z \approx \frac{1}{L} \sum_{l=1}^{L} p(x \mid g,z^l)
 \end{eqnarray}
 
+
+\subsubsection{Marginal posterior of $v$}
+
+\begin{eqnarray}
+p(v \mid x) = \iint_{-\infty}^\infty p(v \mid x,g,z) p(g,z \mid x) \mathrm{d}g \mathrm{d}z \\
+p(v \mid x) \approx \frac{1}{L} \sum_{l=1}^L p(v \mid x,g^l,z^l), ~~ g^l, z^l \sim p(g,z \mid x)
+\end{eqnarray}
+%
+where $p(v \mid x,g,z)$ is given by Eq. \ref{eq:condpost_v}, so we approximate the marginal posterior with a finite mixture of Gaussians, for wich the covariance is given in the following form
+
+\begin{eqnarray}
+C_{v \mid x} \approx \frac{1}{L} \sum_{l=1}^L C_{v \mid xgz}^l + ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m) ( \mu_{v \mid xgz}^l - \frac{1}{L} \sum_{m=1}^L \mu_{v \mid xgz}^m)^T \\
+C_{v \mid x} \approx \mathrm{E} \left[ C_{v \mid xgz}^l \right]_l + \mathrm{Cov} \left[\mu_{v \mid xgz}^l \right]_l \\
+C_{v \mid xgz} =  \left(\frac{z^2}{\sigma_x} A^T A + \left[\sum_{k=1}^K g_k C_k \right]^{-1}\right)^{-1} \\
+\mu_{v \mid xgz} = \frac{z}{\sigma_x} C_{v \mid xgz} A^T x
+\end{eqnarray}
 
 \section{Appendix}
 
@@ -372,7 +436,7 @@ Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropria
 
 \begin{eqnarray}
 \log  \mathcal{N}(y;\mu,C) = -\frac{1}{2} \left[D \log (2\pi) + \log \det (C) + (y - \mu)^T C^{-1} (y-\mu) \right] \\
-\log  \textrm{Gam}(y;\alpha,\theta) = \log(1) - \log(\Gamma(\alpha)) - \alpha \log(\theta) + (\alpha-1) \log(y) - \frac{y}{\theta}
+\log  \textrm{Gam}(y;\alpha,\zeta) = \log(1) - \log(\Gamma(\alpha)) - \alpha \log(\zeta) + (\alpha-1) \log(y) - \frac{y}{\zeta}
 \end{eqnarray}
 
 \subsection{Merging two Gaussian distributions} \label{sec:mergegauss}
@@ -561,5 +625,16 @@ Matrix formula in the derivative of the expectation of the complete-data log-lik
 \begin{equation}
 M_k = -\frac{1}{2L} \left[ \sum_{m=1}^{LN} g_k^{m} \left[ B \left( C_v^m \right)^{-1} -  \left( C_v^m \right)^{-1} \left( \sum_{b=1}^B v^{m,b} v^{(m,b)T} \right) \left( C_v^m \right)^{-1} \right]\right]
 \end{equation}
+
+\subsection{Latents affecting the mean}
+
+of $v$, instead of the covariance
+
+\begin{eqnarray}
+p_m(v \mid g) = \mathcal{N}(v; Bg,\sigma_v I) \\
+p_m(v \mid x,g,z) = \mathcal{N}(v;\mu_m,C_m) \\
+C_m =  \left(\frac{z^2}{\sigma_x} A^T A + \frac{1}{\sigma_v} I \right)^{-1} \\
+\mu_m = C_m \left(\frac{z}{\sigma_x} A^T x +  \frac{1}{\sigma_v} B g \right)
+\end{eqnarray}
 
 \end{document}
