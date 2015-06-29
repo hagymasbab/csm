@@ -8,64 +8,77 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     addParameter(parser,'template',true,@islogical);
     addParameter(parser,'dampA',true,@islogical);
     addParameter(parser,'testLike',0);  
+    addParameter(parser,'initCond','random');
+    addParameter(parser,'sigmaSteps',0);
+    addParameter(parser,'startWithSigma',false,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;  
 
     if ge.B > 1 || ge.nullComponent
         error('not implemented');
     end
-
-    t = true(ge.Dv);
-    if params.template
-        load('covariance_template_576.mat');
-        %t = covarianceTemplate(ge.A,{'overlap','parallell'},{0.05,5});
-    end    
-    
-    if params.dampA
-        ge.A = ge.A + 0.05*eye(ge.Dv);
-    end
-    
+    loadSamples = false;    
     setrandseed(params.randseed);
     N_all = size(data,1);
-    data = reshape(data,N_all,ge.Dx);
+    data = reshape(data,N_all,ge.Dx);   
     
-    % initial condition
-    % cc = eyes(ge.k,ge.Dv,0.001);    
-    cc = randomCovariances(ge.k,ge.Dv);
-    choles = cellchol(cc);
-    for i = 1:ge.k
-        choles{i}(~t) = 0;
-    end
-    cc = cholcell(choles);
-    ge.cc = cc;
-    
-    loadSamples = false;
-    state_sequence = {};
-    state.estimated_components = cc;
-    state_sequence{1} = state;
-    
-    full_like = [];
-    batch_like = [];
-    test_like = [];
-    batch_indices = [];
-    test_indices = [];
     verb = 0;
     if params.verbose >= 3
         verb = 1;
     end
-    like_method = 'algebra';
+    like_method = 'algebra';    
     
-    if ischar(params.testLike) || params.testLike > 0
-        if ischar(params.testLike)
-            load(params.testLike)
-        else
-            test_indices = chooseKfromN(params.testLike,N_all);
+    t = true(ge.Dv);
+    if params.template
+        load('covariance_template_576.mat');
+        %t = covarianceTemplate(ge.A,{'overlap','parallell'},{0.05,5});
+    end   
+    
+    % initial condition    
+    if strcmp(params.initCond,'random')
+        cc = randomCovariances(ge.k,ge.Dv);
+        choles = cellchol(cc);
+        for i = 1:ge.k
+            choles{i}(~t) = 0;
         end
-        X_test = data(test_indices,:);          
-        ll = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
-        test_like = [test_like;ll];
-        loadSamples = true;
-    end
+        cc = cholcell(choles);
+        state_sequence = {};
+        state.estimated_components = cc;
+        state.estimated_cholesky = choles;
+        state_sequence{1} = state;
+        full_like = [];
+        batch_like = [];
+        test_like = [];
+        batch_indices = [];
+        test_indices = [];
+        
+        if ischar(params.testLike) || params.testLike > 0
+            if ischar(params.testLike)
+                load(params.testLike)
+            else
+                test_indices = chooseKfromN(params.testLike,N_all);
+            end
+            X_test = data(test_indices,:);          
+            ll = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method);
+            test_like = [test_like;ll];
+            loadSamples = true;
+        end
+
+    else
+        load(params.initCond)
+        if isfield(state_sequence{end},'estimated_cholesky')
+            choles = state_sequence{end}.estimated_cholesky;
+            cc = cholcell(choles);
+        else
+            cc = state_sequence{end}.estimated_components;
+            choles = cellchol(cc,'cheat',true);
+        end
+    end    
+    ge.cc = cc;
+    
+    if params.dampA
+        ge.A = ge.A + 0.05*eye(ge.Dv);
+    end                                
 
     for batch = 1:batchNum
         if params.verbose == 1
@@ -122,8 +135,10 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
         end
         % save stuff
         state.estimated_components = cholcell(choles);
+        state.estimated_cholesky = choles;
         state_sequence{end+1} = state;
         batch_indices = [batch_indices; img_indices];
-        save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence','batch_indices','test_indices','-v7.3');
+        learningRate = params.learningRate;
+        save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence','batch_indices','test_indices','learningRate','-v7.3');
     end    
 end

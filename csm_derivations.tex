@@ -92,7 +92,7 @@ An equivalent way to write this based on Eq. \ref{eq:like_gz_int} is the followi
 \begin{eqnarray}
 p(X \mid \zeta) \approx L^{-N} \prod_{n=1}^N \sum_{l=1}^{L} \mathcal{N}(x_n;0,\sigma_x I + z^{l2} A C_v^l A^T) \\
 C_x^l \equiv \sigma_x I + z^{l2} A C_v^l A^T \\
-\log p(X \mid \zeta) \approx -N \log L \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l) \right] \label{eq:loglike_int}
+\log p(X \mid \zeta) \approx -N \log L + \sum_{n=1}^N \log \left[ \sum_{l=1}^{L} \mathcal{N}(x_n;0,C_x^l) \right] \label{eq:loglike_int}
 \end{eqnarray}
 
 \subsubsection{Derivative w.r.t. $U_{1\dots K}$ }

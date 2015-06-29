@@ -16,3 +16,4 @@ if length(test_like) < 5
     set(gca,'XTick',0:length(test_like)-1)
 end
 set(gca,'FontSize',16)
+xlim([0 length(test_like)-1])
