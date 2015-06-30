@@ -64,7 +64,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             loadSamples = true;
         end
 
-    else
+    else        
         load(params.initCond)
         if isfield(state_sequence{end},'estimated_cholesky')
             choles = state_sequence{end}.estimated_cholesky;
@@ -73,6 +73,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
             cc = state_sequence{end}.estimated_components;
             choles = cellchol(cc,'cheat',true);
         end
+        X_test = data(test_indices,:);
     end    
     ge.cc = cc;
     
