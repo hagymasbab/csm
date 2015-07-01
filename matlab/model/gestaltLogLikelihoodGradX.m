@@ -1,4 +1,6 @@
 function grad = gestaltLogLikelihoodGradX(ge,L,data,cholesky,sigma_x,varargin)
+    % TODO this does not pass the derivative test
+
     parser = inputParser;   
     addParameter(parser,'verbose',0,@isnumeric);  
     addParameter(parser,'loadSamples',false,@islogical);

@@ -5,6 +5,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     addParameter(parser,'randseed','leave'); 
     addParameter(parser,'scientific','true'); % dummy parameter
     addParameter(parser,'method','intuition'); 
+    addParameter(parser,'sigma',0,@isnumeric); 
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -14,6 +15,10 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
         error('not implemented');
     end
     data = reshape(data,N,ge.Dx);
+    
+    if params.sigma > 0
+        ge.obsVar = sigma;
+    end
     
     cc = cholcell(cholesky); 
     
