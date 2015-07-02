@@ -31,7 +31,7 @@ function gestaltGradientAscent(ge,data,batchSize,batchNum,stepNum,varargin)
     
     t = true(ge.Dv);
     if params.template
-        load('covariance_template_576.mat');
+        load(sprintf('covariance_template_%d.mat',ge.Dv));
         %t = covarianceTemplate(ge.A,{'overlap','parallell'},{0.05,5});
     end   
     
