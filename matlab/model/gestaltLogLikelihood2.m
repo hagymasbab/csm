@@ -17,7 +17,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     data = reshape(data,N,ge.Dx);
     
     if params.sigma > 0
-        ge.obsVar = sigma;
+        ge.obsVar = params.sigma;
     end
     
     cc = cholcell(cholesky); 
