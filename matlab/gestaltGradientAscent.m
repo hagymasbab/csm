@@ -54,6 +54,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
             choles{i}(~t) = 0;
         end
         cc = cholcell(choles);
+        ge.cc = cc;   
         state_sequence = {};
         state.estimated_components = cc;
         state.estimated_cholesky = choles;
@@ -86,9 +87,9 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
             cc = state_sequence{end}.estimated_components;
             choles = cellchol(cc,'cheat',true);
         end
+        ge.cc = cc;   
         X_test = data(test_indices,:);
-    end    
-    ge.cc = cc;              
+    end                   
     
     if params.sigmaSteps > 0 || params.startWithSigma
         sigset_indices = chooseKfromN(batchSize,N_all);
