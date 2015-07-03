@@ -1,5 +1,5 @@
-function [max_point,max_ll] = gestaltFindSigmaX(ge,cholesky,X,priorSamples)
-    likefunc = @(sigma) gestaltLogLikelihood2(ge,priorSamples,X,cholesky,'loadSamples',true,'verbose',0,'method','intuition','sigma',sigma);
+function [max_point,max_ll] = gestaltFindSigmaX(ge,cholesky,X,priorSamples,likeMethod,loadSamples,verbose)
+    likefunc = @(sigma) gestaltLogLikelihood2(ge,priorSamples,X,cholesky,'loadSamples',loadSamples,'verbose',0,'method',likeMethod,'sigma',sigma);
     lowerbound = 0.1;
     upperbound = 1;  
     
@@ -7,7 +7,9 @@ function [max_point,max_ll] = gestaltFindSigmaX(ge,cholesky,X,priorSamples)
     ll = zeros(res,1);
     evalpoints = linspace(lowerbound,upperbound,res);
     for i = 1:res
-        printCounter(i,'maxVal',res,'stringVal','Eval');
+        if verbose
+            printCounter(i,'maxVal',res,'stringVal','Sigma evaluation');
+        end
         ll(i) = likefunc(evalpoints(i));
     end
     
