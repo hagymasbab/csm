@@ -4,7 +4,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     addParameter(parser,'likeComp','none');
     addParameter(parser,'randseed','shuffle');      
     addParameter(parser,'priorSamples',100,@isnumeric); 
-    addParameter(parser,'learningRate',0.1,@isnumeric); 
+    addParameter(parser,'learningRate',0,@isnumeric); 
     addParameter(parser,'template',true,@islogical);
     addParameter(parser,'dampA',true,@islogical);
     addParameter(parser,'testLike',0);  
@@ -12,6 +12,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     addParameter(parser,'sigmaSteps',0);
     addParameter(parser,'initSigma',1,@isnumeric); % only used if we start a new run
     addParameter(parser,'startWithSigma',false,@islogical);
+    addParameter(parser,'synthetic',false,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -27,6 +28,12 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         ge.A = ge.A + 0.05*eye(ge.Dv);
     end 
     
+    trueCC = {};
+    if params.synthetic
+        trueCC = ge.cc;
+        trueSigma = ge.obsVar;
+    end
+    
     verb = 0;
     if params.verbose >= 3
         verb = 1;
@@ -39,6 +46,11 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         load(sprintf('covariance_template_%d.mat',ge.Dv));
         %t = covarianceTemplate(ge.A,{'overlap','parallell'},{0.05,5});
     end   
+    
+    if params.learningRate == 0
+        % we don't take into account L and Dv
+        params.learningRate = 5 / batchSize;
+    end        
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%% SET INITIAL CONDITIONS %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,6 +77,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         test_like = [];
         batch_indices = [];
         test_indices = [];
+        sigset_indices = [];
         
         if ischar(params.testLike) || params.testLike > 0
             if ischar(params.testLike)
@@ -157,7 +170,8 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         state_sequence{end+1} = state;
         batch_indices = [batch_indices; img_indices];
         learningRate = params.learningRate;
-        save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence','batch_indices','test_indices','learningRate','-v7.3');
+        save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence', ...
+            'batch_indices','test_indices','sigset_indices','learningRate','trueCC','trueSigma','-v7.3');
         
         if params.sigmaSteps > 0 && rem(batch,params.sigmaSteps) == 0
             ge.obsVar = gestaltFindSigmaX(ge,choles,X_sigset,params.priorSamples,like_method,loadSamples,verb);
