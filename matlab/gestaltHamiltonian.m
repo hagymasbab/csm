@@ -30,7 +30,8 @@ function [vsamp,gsamp,zsamp,rr] = gestaltHamiltonian(ge,X,nSamp,varargin)
     elseif strcmp(params.sampler,'nuts')        
         both = @(inputvec) logp_and_grad(inputvec,ge,X);
 
-        s = nuts_da(both,params.burnin,nSamp,initvec');
+        %s = nuts_da(both,params.burnin,nSamp,initvec');
+        s = nuts_da(both,nSamp,params.burnin,initvec');
         rr = NaN;
     end
     

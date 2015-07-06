@@ -394,8 +394,8 @@ the derivative w.r.t $g_k$
 
 \begin{equation}
 \begin{split}
-\frac{\partial}{\partial g_k} \log p(g,z \mid x) = \mathrm{Tr} \left[ \frac{\partial}{\partial C_x} \log p(g,z \mid x) \frac{\partial C_x}{\partial g_k} \right] + \frac{\alpha_g-1}{g_k} - \frac{g_k}{\theta_g} = \\
-= z^2 \mathrm{Tr} \left[ \left[ C_x^{-1} - C_x^{-1} xx^T C_x^{-1} \right] AU_k^TU_kA^T \right] + \frac{\alpha_g-1}{g_k} - \frac{g_k}{\theta_g}
+\frac{\partial}{\partial g_k} \log p(g,z \mid x) = \mathrm{Tr} \left[ \frac{\partial}{\partial C_x} \log p(g,z \mid x) \frac{\partial C_x}{\partial g_k} \right] + \frac{\alpha_g-1}{g_k} - \frac{1}{\theta_g} = \\
+= -\frac{z^2}{2} \mathrm{Tr} \left[ \left[ C_x^{-1} - C_x^{-1} xx^T C_x^{-1} \right] AU_k^TU_kA^T \right] + \frac{\alpha_g-1}{g_k} - \frac{1}{\theta_g}
 \end{split}
 \end{equation}
 %
@@ -403,8 +403,8 @@ the derivative w.r.t $z$
 
 \begin{equation}
 \begin{split}
-\frac{\partial}{\partial z} \log p(g,z \mid x) = \mathrm{Tr} \left[ \frac{\partial}{\partial C_x} \log p(g,z \mid x) \frac{\partial C_x}{\partial z} \right] + \frac{\alpha_z-1}{z} - \frac{z}{\theta_z} = \\
-= 2z \mathrm{Tr} \left[ \left[ C_x^{-1} - C_x^{-1} xx^T C_x^{-1} \right] A C_v A^T \right] + \frac{\alpha_z-1}{z} - \frac{z}{\theta_z}
+\frac{\partial}{\partial z} \log p(g,z \mid x) = \mathrm{Tr} \left[ \frac{\partial}{\partial C_x} \log p(g,z \mid x) \frac{\partial C_x}{\partial z} \right] + \frac{\alpha_z-1}{z} - \frac{1}{\theta_z} = \\
+= -z \mathrm{Tr} \left[ \left[ C_x^{-1} - C_x^{-1} xx^T C_x^{-1} \right] A C_v A^T \right] + \frac{\alpha_z-1}{z} - \frac{1}{\theta_z}
 \end{split}
 \end{equation}
 
@@ -449,7 +449,7 @@ Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropria
 \frac{\partial}{\partial s} f(M(s)) = \textrm{Tr} \left[ \frac{\partial f}{\partial M} \frac{\partial M}{\partial s} \right] \label{eq:deriv_chain} \\
 \frac{\partial}{\partial s} s M = M \label{eq:deriv_scalar} \\
 \frac{\partial}{\partial s} f(s) = f(s) \frac{\partial}{\partial s} \log f(s) \label{eq:deriv_function} \\
-\frac{\partial}{\partial M} \log \mathcal{N}(y;a,M) = M^{-1} - M^{-1}(y-a)(y-a)^TM^{-1} \label{eq:deriv_gausscov}
+\frac{\partial}{\partial M} \log \mathcal{N}(y;a,M) = -\frac{1}{2} \left[ M^{-1} - M^{-1}(y-a)(y-a)^TM^{-1} \right]\label{eq:deriv_gausscov}
 \end{eqnarray}
 
 

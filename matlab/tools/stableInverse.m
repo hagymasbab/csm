@@ -1,5 +1,5 @@
 function iA = stableInverse(A)
-    if log10(rcond(A)) < -16
+    if rcond(A) < 1e-16
         iA = pinv(A);
     else
         % inv is by no means numerically stable

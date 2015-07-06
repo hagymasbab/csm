@@ -52,7 +52,7 @@ function disc = checkDerivative(formula,deriv,init,builtin)
 %             size(numdiff)
 %             size(summeddiff)
 %             size(initder)
-            disc_mat = (initder-summeddiff).^2;
+            disc_mat = (initder-summeddiff).^2;            
             discrepancy = sum(disc_mat(:));
             disc=[disc discrepancy];
         end
