@@ -19,12 +19,12 @@ function testGestaltDerGZ(formula,randseed)
 
     function gr = postcov_derg(g1,g,z,ge,kk)
         g(kk) = g1;
-        gr = z^2 * ge.A * ge.cc{kk} * ge.A;
+        gr = z^2 * ge.A * ge.cc{kk} * ge.A';
     end
 
     function gr = postcov_derz(g,z,ge)
         Cv = componentSum(g,ge.cc);
-        gr = 2 * z * ge.A * Cv * ge.A;
+        gr = 2 * z * ge.A * Cv * ge.A';
         gr = gr(1,1);
     end
 

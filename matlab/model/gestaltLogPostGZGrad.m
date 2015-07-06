@@ -1,9 +1,7 @@
 function grad = gestaltLogPostGZGrad(g,z,x,ge)
     
-    %fprintf('untested');
-
     Cv = componentSum(g,ge.cc);
-    ACAT = ge.A * Cv * ge.A;
+    ACAT = ge.A * Cv * ge.A';
     Cx = ge.obsVar * eye(ge.Dv) + z^2 * ACAT;    
     
     iCx = stableInverse(Cx);
@@ -13,7 +11,7 @@ function grad = gestaltLogPostGZGrad(g,z,x,ge)
     % derivative w.r.t. g    
     ggrad = zeros(ge.k,1);
     for kk=1:ge.k
-        right_gk = ge.A * ge.cc{kk} * ge.A;
+        right_gk = ge.A * ge.cc{kk} * ge.A';
         tr = trace(leftmat*right_gk);
         ggrad(kk) = - (z^2 / 2) * tr + (ge.g_shape-1)/g(kk) - 1/ge.g_scale;
     end
