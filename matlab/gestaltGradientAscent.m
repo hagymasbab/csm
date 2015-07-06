@@ -29,6 +29,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     end 
     
     trueCC = {};
+    trueSigma = 0;
     if params.synthetic
         trueCC = ge.cc;
         trueSigma = ge.obsVar;
