@@ -33,6 +33,7 @@ function contrastMeanCov(randseed)
         end        
     end    
     viewImageSet(cc);
+    figure
     
     % define mean components
     %B = randn(Dv,2);  
@@ -55,7 +56,7 @@ function contrastMeanCov(randseed)
     
     % create contrast-adjusted stimuli
     %contrasts = [0.01 0.1 0.5 1 2 5 10 20 100];
-    contrasts = [2];
+    contrasts = [5];
     
     x_rms = zeros(length(contrasts),1);
 %     corr_c = zeros(length(contrasts),1);
@@ -80,7 +81,10 @@ function contrastMeanCov(randseed)
     for c = 1:length(contrasts)
         x_act = contrasts(c) * x_base;
         x_rms(c) = std(x_act(:));
-        gestaltRejectionGZ(x_act,ge,0,'last')
+        covc = posteriorCovariances(x_act,ge,50,randseed,false);
+        corrc = corrcov(covc);
+        viewImage(corrc);
+        pause
         
 %         % get posterior covariances for each stimuli    
 %         [covc,covm] = posteriorCovariances(x_act,A,0.5,0.5,2,2,2,2,cc,B,200,randseed);

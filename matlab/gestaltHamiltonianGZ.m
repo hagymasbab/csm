@@ -1,5 +1,6 @@
-function [gsamp,zsamp] = gestaltHamiltonianGZ(x,ge,L,burnin)
+function [gsamp,zsamp] = gestaltHamiltonianGZ(x,ge,L,burnin,randseed)
     
+    setrandseed(randseed);
     x = reshape(x,ge.Dv,1);    
     
     % set initial values for g and z
