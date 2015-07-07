@@ -19,7 +19,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     if params.sigma > 0
         ge.obsVar = params.sigma;
     end
-    
+        
     cc = cholcell(cholesky); 
     
     pA = pinv(ge.A);
