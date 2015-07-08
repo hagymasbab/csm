@@ -39,7 +39,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     if params.verbose >= 3
         verb = 1;
     end
-    like_method = 'algebra';    
+    like_method = 'intuition';    
     likefunc = @(X,choles,sigma) gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method,'sigma',sigma);
     
     t = true(ge.Dv);
