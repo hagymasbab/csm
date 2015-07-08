@@ -59,6 +59,7 @@ epsilonbar = 1;
 Hbar = 0;
 
 for m = 2:M+Madapt,
+    printCounter(m-1,'maxVal',M+Madapt-1,'stringVal','Sample');
     % Resample momenta.
     r0 = randn(1, D);
     % Joint log-probability of theta and momenta r.

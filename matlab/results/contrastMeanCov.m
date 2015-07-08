@@ -51,7 +51,7 @@ function contrastMeanCov(randseed)
 %     for f = 1:length(filter_ids)
 %         x_base = x_base + A(:,filter_ids(f));
 %     end
-    x_base = gestaltAncestralSample(ge,[0;1],1)';
+    x_base = gestaltAncestralSample(ge,[1;0],1)';
     %viewImage(x_base);
     
     % create contrast-adjusted stimuli
@@ -81,7 +81,7 @@ function contrastMeanCov(randseed)
     for c = 1:length(contrasts)
         x_act = contrasts(c) * x_base;
         x_rms(c) = std(x_act(:));
-        covc = posteriorCovariances(x_act,ge,50,randseed,false);
+        covc = posteriorCovariances(x_act,ge,200,randseed,false);
         corrc = corrcov(covc);
         viewImage(corrc);
         pause
