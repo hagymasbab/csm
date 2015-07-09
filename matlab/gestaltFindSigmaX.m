@@ -16,7 +16,7 @@ function [max_point,max_ll] = gestaltFindSigmaX(ge,cholesky,X,priorSamples,likeM
     [max_ll,idx] = max(ll);
     max_point = evalpoints(idx);
     
-%     plot(evalpoints,ll);
+    plot(evalpoints,ll);
     
 %     tolerance = 1e-2;
 %     smallstep = 1e-2;

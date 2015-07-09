@@ -62,16 +62,19 @@ set(gca,'FontSize',16)
 
 % difference from truth
 if numcol == 3
+    vcov = cov(reshape(ge.V,ge.N,ge.Dv));
+    vcovdist_sum_avg = zeros(numbatch+1,1);
     truedist_sum_avg = zeros(numbatch+1,1);
     truedist_sum_max = zeros(numbatch+1,1);
     true_cv = componentSum(1,trueCC);
     for i=1:numbatch+1
         act_cv = componentSum(1,state_sequence{i}.estimated_components);
         [truedist_sum_avg(i),~,truedist_sum_max(i)] = covcompRootMeanSquare(true_cv,act_cv,1);
+        vcovdist_sum_avg(i) = covcompRootMeanSquare(vcov,act_cv,1);
     end
     
     subplot(2,numcol,3)
-    plot((0:numbatch)',[truedist_sum_avg],'LineWidth',2);
+    plot((0:numbatch)',[truedist_sum_avg vcovdist_sum_avg],'LineWidth',2);
     %legend({'mean','max'})
     xlim([0 numbatch]);
     xlabel('Gradient ascent batch #','FontSize',16)
