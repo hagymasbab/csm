@@ -5,6 +5,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     addParameter(parser,'randseed','leave');      
     addParameter(parser,'method','scinot');      % dummy parameter
     addParameter(parser,'template',true(ge.Dv));
+    addParameter(parser,'j',true);
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -102,24 +103,31 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
         
         M_cell = celladd(M_cell,1,M_part_cell,-1/2);
     end
-        
-    % cycle over all the individual parameters
-    grad = cell(1,ge.k);          
-    grad{kk} = zeros(ge.Dv);
+            
+    grad = cell(1,ge.k);  
+    
     for kk = 1:ge.k     
-        grad{kk} = zeros(ge.Dv);
+        grad{kk} = triu(cholesky{kk} * M_cell{kk} *  2);
     end
-    for i = 1:ge.Dv
-        if params.verbose == 1
-            printCounter(i,'stringVal','Row','maxVal',ge.Dv,'newLine',true);
-        end
-        for j = i:ge.Dv      
-            if params.template(i,j)                               
-                for kk = 1:ge.k     
-                    %M_cell{kk}(j,:)
-                    grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* M_cell{kk}(j,:) + cholesky{kk}(i,:) .* M_cell{kk}(:,j)');
-                end
-            end
-        end
-    end    
+
+    
+%     % cycle over all the individual parameters
+%     % grad{kk} = zeros(ge.Dv);
+%     for kk = 1:ge.k     
+%         grad{kk} = zeros(ge.Dv);
+%     end
+%     for i = 1:ge.Dv
+%         if params.verbose == 1
+%             printCounter(i,'stringVal','Row','maxVal',ge.Dv,'newLine',true);
+%         end
+%         for j = i:ge.Dv      
+%             if params.template(i,j)                               
+%                 for kk = 1:ge.k     
+%                     %M_cell{kk}(j,:)
+%                     grad{kk}(i,j) = sum(cholesky{kk}(i,:) .* M_cell{kk}(j,:) + cholesky{kk}(i,:) .* M_cell{kk}(:,j)');
+%                 end
+%             end
+%         end
+%     end
+        
 end

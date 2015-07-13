@@ -132,7 +132,24 @@ The regularities of the $\hat U_k$ matrices allow us to replace the trace with a
 M_k = -\frac{1}{2} \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right) \\
 \frac{\partial \log p(X \mid \zeta)}{\partial \left[ U_k \right]_{i,j}} \approx \textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \sum_{a=1}^{Dv} \left[ M_k \right]_{j,a} \left[ U_k \right]_{i,a} + \left[ M_k \right]_{a,j} \left[ U_k \right]_{i,a}
 \end{eqnarray}
+%
+also, by substituting back Eq. \ref{eq:cv_deriv} we get
 
+\begin{equation}
+\textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \textrm{Tr} \left[M_k U_k^T J^{ij} \right] + \mathrm{Tr} \left[ M_k J^{ji} U_k \right]
+\end{equation}
+%
+that is by equivalences of single-entry matrices and noting that $M_k$ are symmetric
+
+\begin{equation}
+\textrm{Tr} \left[M_k \hat U_k^{ij} \right] = \left[U_k M_k^T \right]_{i,j} + \left[ U_k M_k \right]_{i,j} = 2 \left[U_k M_k \right]_{i,j}
+\end{equation}
+%
+yielding
+
+\begin{equation}
+\frac{\partial \log p(X \mid \zeta)}{\partial U_k} \approx - U_k \sum_{n=1}^N \left(\frac{1}{\mathcal{L}_n}  \sum_{l=1}^{L} h^l g^l_k \mathcal{N}(f_n^l;0,C^l)   \left[ (C^l)^{-1} - (C^l)^{-1} f_n^l (f_n^l)^T (C^l)^{-1} \right] \right)
+\end{equation}
 
 \subsubsection{Derivative w.r.t. $\sigma_x$}
 
