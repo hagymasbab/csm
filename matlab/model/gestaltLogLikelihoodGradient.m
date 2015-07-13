@@ -5,7 +5,6 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     addParameter(parser,'randseed','leave');      
     addParameter(parser,'method','scinot');      % dummy parameter
     addParameter(parser,'template',true(ge.Dv));
-    addParameter(parser,'j',true);
     parse(parser,varargin{:});        
     params = parser.Results;  
     
