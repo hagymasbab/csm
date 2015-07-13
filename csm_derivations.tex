@@ -658,4 +658,21 @@ C_m =  \left(\frac{z^2}{\sigma_x} A^T A + \frac{1}{\sigma_v} I \right)^{-1} \\
 \mu_m = C_m \left(\frac{z}{\sigma_x} A^T x +  \frac{1}{\sigma_v} B g \right)
 \end{eqnarray}
 
+likelihood of $g$ and $z$, by intuition:
+
+\begin{equation}
+p_m(x \mid g,z) = \mathcal{N}(x; zABg, \sigma_x I + z^2 \sigma_v AA^T)
+\end{equation}
+%
+log-posterior of $g$ and $z$
+
+\begin{eqnarray}
+\begin{split}
+\log p_m(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_m) + (x-zABg)^T C_m^{-1} (x-zABg) \right] + \\
++ (\alpha_z-1)\log(z) - \frac{z}{\theta_z} + (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\theta_g} \sum_{k=1}^K g_k
+\end{split} \\
+C_m = \sigma_x I + z^2 \sigma_v AA^T
+\end{eqnarray}
+
+
 \end{document}

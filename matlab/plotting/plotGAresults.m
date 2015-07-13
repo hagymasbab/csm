@@ -67,10 +67,12 @@ if numcol == 3
     truedist_sum_avg = zeros(numbatch+1,1);
     truedist_sum_max = zeros(numbatch+1,1);
     true_cv = componentSum(1,trueCC);
+    sigma_est = zeros(numbatch+1,1);
     for i=1:numbatch+1
         act_cv = componentSum(1,state_sequence{i}.estimated_components);
         [truedist_sum_avg(i),~,truedist_sum_max(i)] = covcompRootMeanSquare(true_cv,act_cv,1);
         vcovdist_sum_avg(i) = covcompRootMeanSquare(vcov,act_cv,1);
+        sigma_est(i) = state_sequence{i}.sigma_x;
     end
     
     subplot(2,numcol,3)
@@ -80,4 +82,15 @@ if numcol == 3
     xlabel('Gradient ascent batch #','FontSize',16)
     ylabel('Mean RMS distance from truth','FontSize',16)
     set(gca,'FontSize',16)
+    
+    subplot(2,numcol,numcol + 3)
+    plot((0:numbatch)',sigma_est,'LineWidth',2);
+    hold on;
+    xlim([0 numbatch]);
+    ylim([0 1]);
+    plot([0;numbatch],[trueSigma;trueSigma],'r','LineWidth',2);
+    hold off;
+    xlabel('Gradient ascent batch #','FontSize',16)
+    ylabel('Estimated and true obs. noise','FontSize',16)
+    set(gca,'FontSize',16)        
 end
