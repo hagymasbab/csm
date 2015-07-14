@@ -81,10 +81,10 @@ function contrastMeanCov(randseed)
     for c = 1:length(contrasts)
         x_act = contrasts(c) * x_base;
         x_rms(c) = std(x_act(:));
-        covc = posteriorCovariances(x_act,ge,200,randseed,false);
+        covc = posteriorCovariances(x_act,ge,1000,randseed,false);
         corrc = corrcov(covc);
         viewImage(corrc);
-        pause
+        %pause
         
 %         % get posterior covariances for each stimuli    
 %         [covc,covm] = posteriorCovariances(x_act,A,0.5,0.5,2,2,2,2,cc,B,200,randseed);
