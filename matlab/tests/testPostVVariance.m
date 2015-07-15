@@ -26,9 +26,23 @@ function testPostVVariance(sampleSizes,nTrials,loadVars,plotHist)
     end
     
     if plotHist        
+        vm = cell2mat(variabilities);
+        maxvar = max(vm(:));
+        histbins = linspace(0,maxvar,22);
+        histbins = histbins(2:end-1);
+        maxcount = 0;
         for i=1:length(sampleSizes)
             subplot(1,length(sampleSizes),i);
-            hist(variabilities{i})
+            counts = hist(variabilities{i},histbins);            
+            if max(counts) > maxcount 
+                maxcount = max(counts);
+            end
+            hist(variabilities{i},histbins);
+            xlim([0 maxvar])
+        end
+        for i=1:length(sampleSizes)
+            subplot(1,length(sampleSizes),i);
+            ylim([0 maxcount*1.1]);
         end
     end
 end
