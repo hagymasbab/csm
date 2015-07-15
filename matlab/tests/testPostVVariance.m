@@ -39,6 +39,7 @@ function testPostVVariance(sampleSizes,nTrials,loadVars,plotHist)
             end
             hist(variabilities{i},histbins);
             xlim([0 maxvar])
+            xlabel(sprintf('# of samples = %d',sampleSizes(i)),'FontSize',16)
         end
         for i=1:length(sampleSizes)
             subplot(1,length(sampleSizes),i);
