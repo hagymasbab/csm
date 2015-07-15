@@ -1,4 +1,6 @@
-function contrastMeanCov(randseed)
+function contrastMeanCov(randseed,loadStuff,plotStuff)
+
+    setrandseed(randseed);
     Dv = 256;
     imdim = sqrt(Dv);
     % load filter set
@@ -32,8 +34,8 @@ function contrastMeanCov(randseed)
             cc{2}(j,j) = cc{2}(j,j) + 1;
         end        
     end    
-    viewImageSet(cc);
-    figure
+%     viewImageSet(cc);
+%     figure
     
     % define mean components
     %B = randn(Dv,2);  
@@ -56,7 +58,7 @@ function contrastMeanCov(randseed)
     
     % create contrast-adjusted stimuli
     %contrasts = [0.01 0.1 0.5 1 2 5 10 20 100];
-    contrasts = [5];
+    contrasts = [0.05 0.1 0.5 1 5 10];
     
     x_rms = zeros(length(contrasts),1);
 %     corr_c = zeros(length(contrasts),1);
@@ -77,14 +79,55 @@ function contrastMeanCov(randseed)
 %     cell2 = filter_ids(2);
 %     cell3 = filter_ids(3);
        
+    nSamp = 50;
+    nCont = length(contrasts);
     
-    for c = 1:length(contrasts)
-        x_act = contrasts(c) * x_base;
-        x_rms(c) = std(x_act(:));
-        covc = posteriorCovariances(x_act,ge,1000,randseed,false);
-        corrc = corrcov(covc);
-        viewImage(corrc);
-        %pause
+    if loadStuff
+        load('save_contmeancov.mat');
+    else        
+        corrmats = {};
+        gsamps = {};
+        zsamps = {};
+        for c = 1:nCont
+            x_act = contrasts(c) * x_base;            
+            [covc,gsamp,zsamp] = posteriorCovariances(x_act,ge,nSamp,randseed,false);            
+            corrmats{end+1} = corrcov(covc);
+            gsamps{end+1} = gsamp;
+            zsamps{end+1} = zsamp;
+        end
+        save('bin/save_contmeancov.mat','corrmats','gsamps','zsamps');
+    end           
+    
+    if plotStuff        
+        g_means = zeros(nCont,ge.k);
+        g_stds = zeros(nCont,ge.k);
+        z_means = zeros(nCont,1);
+        z_stds = zeros(nCont,1);
+        g_labels = {};
+        for c = 1:nCont
+            x_act = contrasts(c) * x_base;        
+            x_rms(c) = std(x_act(:));
+            subplot(2,nCont,c);
+            viewImage(corrmats{c});
+            xlabel(sprintf('Posterior correlation of v, Z_{RMS} = %.2f',x_rms(c)),'FontSize',16);
+            g_means(c,:) = mean(gsamps{c},1);
+            g_stds(c,:) = std(gsamps{c},0,1);
+            z_means(c,1) = mean(zsamps{c},1);
+            z_stds(c,1) = std(zsamps{c},0,1);
+            g_labels{end+1} = sprintf('%.2f',x_rms(c));
+        end
+        subplot(2,nCont,nCont+1);
+        barwitherr(g_stds,g_means);
+        xlabel('Z_{RMS}','FontSize',16);
+        ylabel('G posterior mean and std','FontSize',16);
+        set(gca,'XTickLabel',g_labels,'FontSize',16);
+        subplot(2,nCont,nCont+2);
+        barwitherr(z_stds,z_means);
+        xlabel('Z_{RMS}','FontSize',16);
+        ylabel('Z posterior mean and std','FontSize',16);
+         set(gca,'XTickLabel',g_labels,'FontSize',16);
+    end
+    
         
 %         % get posterior covariances for each stimuli    
 %         [covc,covm] = posteriorCovariances(x_act,A,0.5,0.5,2,2,2,2,cc,B,200,randseed);
@@ -106,7 +149,7 @@ function contrastMeanCov(randseed)
 %         var_m_gest(c) = covm(cell1,cell1);
 %         var_c_priv(c) = covc(10,10);
 %         var_m_priv(c) = covm(10,10);
-    end
+%     end
     % plot results
     
 %     subplot(2,1,1)

@@ -1,10 +1,10 @@
-function testPostVVariance(sampleSizes,nTrials,loadVars,plotHist)
+function testPostVVariance(Dv,k,sampleSizes,nTrials,loadVars,plotHist)
     % for all sample sizes
     % calculate nTrials posterior covariance matrices with different
     % samples
     % calculate average variance of matrix elemnts (upper triangle)
     
-    ge = gestaltCreate('temp','Dx',64,'k',2,'filters','gabor_4or','obsVar',0.5,'N',1, ...
+    ge = gestaltCreate('temp','Dx',Dv,'k',k,'filters','gabor_4or','obsVar',0.5,'N',1, ...
         'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'N',1,'generateComponents',true,'generateData',true);
     
     x = reshape(ge.X(1,1,:),ge.Dx,1);

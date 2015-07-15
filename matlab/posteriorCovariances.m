@@ -1,4 +1,4 @@
-function C_c = posteriorCovariances(x,ge,L,randseed,loadSamples)
+function [C_c,G,Z] = posteriorCovariances(x,ge,L,randseed,loadSamples)
     %function [C_c,C_m] = posteriorCovariances(x,A,sigma_x,sigma_v,shape_g,scale_g,shape_z,scale_z,cc,B,L,randseed)
     
     setrandseed(randseed);
