@@ -32,6 +32,13 @@ function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuf
     end
     
     if plotStuff
+        numcols = 3;
+        
+        mom0_mean_g = zeros(nSN,ge.k);
+        mom0_std_g = zeros(nSN,ge.k);
+        mom0_mean_z = zeros(nSN,1);
+        mom0_std_z = zeros(nSN,1);
+        
         mom1_mean_g = zeros(nSN,ge.k);
         mom1_std_g = zeros(nSN,ge.k);
         mom1_mean_z = zeros(nSN,1);
@@ -45,12 +52,26 @@ function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuf
         snlabels = {};
         for i = 1:nSN
             % calculate sample moments for each trial
+            mom0_trials_g = zeros(nTrials,ge.k);
+            mom0_trials_z = zeros(nTrials,1);
+            for t=1:nTrials
+                for kk = 1:ge.k
+                    mom0_trials_g(t,kk) = sampleMode(gsamples{i}(t,:,k),100);
+                end
+                mom0_trials_z(t,1) = sampleMode(zsamples{i}(t,:,1),100);
+            end
+            
             mom1_trials_g = squeeze(mean(gsamples{i},2)); % nTrials x k
             mom1_trials_z = squeeze(mean(zsamples{i},2)); % nTrials x 1
             mom2_trials_g = squeeze(var(gsamples{i},0,2)); % nTrials x k
             mom2_trials_z = squeeze(var(zsamples{i},0,2)); % nTrials x 1
             
             % calculate mean and std for these moments over trials
+            mom0_mean_g(i,:) = mean(mom0_trials_g,1);
+            mom0_std_g(i,:) = std(mom0_trials_g,0,1);    
+            mom0_mean_z(i,:) = mean(mom0_trials_z,1);
+            mom0_std_z(i,:) = std(mom0_trials_z,0,1);  
+            
             mom1_mean_g(i,:) = mean(mom1_trials_g,1);
             mom1_std_g(i,:) = std(mom1_trials_g,0,1);    
             mom1_mean_z(i,:) = mean(mom1_trials_z,1);
@@ -63,27 +84,49 @@ function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuf
             
             snlabels{end+1} = sprintf('%d',sampleNums(i));
         end
-        subplot(2,2,1)        
+        
+        subplot(2,numcols,1)
+        barwitherr(mom0_std_g,mom0_mean_g);
+        set(gca,'XTickLabel',snlabels,'FontSize',16);
+        xlabel('# of samples');
+        ylabel({'Mean and STD';'zeroth sample moment of G'});
+        title(sprintf('Dv=%d, k=%d, nTrials=%d, burn-in=%d',ge.Dv,ge.k,nTrials,burnin));
+        subplot(2,numcols,numcols+1)
+        barwitherr(mom0_std_z,mom0_mean_z);
+        set(gca,'XTickLabel',snlabels,'FontSize',16);
+        xlabel('# of samples');
+        ylabel({'Mean and STD';'zeroth sample moment of Z'});
+        
+        subplot(2,numcols,2)
         barwitherr(mom1_std_g,mom1_mean_g);
         set(gca,'XTickLabel',snlabels,'FontSize',16);
         xlabel('# of samples');
-        ylabel('Mean and STD of first sample moment of G');
-        title(sprintf('Dv=%d, k=%d, nTrials=%d, burn-in=%d',ge.Dv,ge.k,nTrials,burnin));
-        subplot(2,2,2)
+        ylabel({'Mean and STD';'first sample moment of G'});        
+        subplot(2,numcols,numcols+2)
         barwitherr(mom1_std_z,mom1_mean_z);
         set(gca,'XTickLabel',snlabels,'FontSize',16);
         xlabel('# of samples');
-        ylabel('Mean and STD of first sample moment of Z');
+        ylabel({'Mean and STD';'first sample moment of Z'});
         
-        subplot(2,2,3)        
+        subplot(2,numcols,3)    
         barwitherr(mom2_std_g,mom2_mean_g);
         set(gca,'XTickLabel',snlabels,'FontSize',16);
         xlabel('# of samples');
-        ylabel('Mean and STD of second sample moment of G');        
-        subplot(2,2,4)
+        ylabel({'Mean and STD';'second sample moment of G'});
+        subplot(2,numcols,numcols+3)
         barwitherr(mom2_std_z,mom2_mean_z);
         set(gca,'XTickLabel',snlabels,'FontSize',16);
         xlabel('# of samples');
-        ylabel('Mean and STD of second sample moment of Z');
+        ylabel({'Mean and STD';'second sample moment of Z'});
+        
+        subplot(2,numcols,1);
+        title(sprintf('Dv=%d, k=%d, nTrials=%d, burn-in=%d',ge.Dv,ge.k,nTrials,burnin));
+        subplot(2,numcols,2);
+        gstr_parts = [];
+        for kk=1:ge.k
+            gstr_parts = [gstr_parts sprintf(',%.2f',ge.G(1,kk))];
+        end
+        gstr_parts = gstr_parts(2:end);
+        title(['True G=[' gstr_parts sprintf('] Z=%.2f',ge.Z(1,1))]);
     end
 end
