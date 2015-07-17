@@ -56,9 +56,9 @@ function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuf
             mom0_trials_z = zeros(nTrials,1);
             for t=1:nTrials
                 for kk = 1:ge.k
-                    mom0_trials_g(t,kk) = sampleMode(gsamples{i}(t,:,k),100);
+                    mom0_trials_g(t,kk) = sampleMode(squeeze(gsamples{i}(t,:,kk)),100);
                 end
-                mom0_trials_z(t,1) = sampleMode(zsamples{i}(t,:,1),100);
+                mom0_trials_z(t,1) = sampleMode(squeeze(zsamples{i}(t,:,1)),100);
             end
             
             mom1_trials_g = squeeze(mean(gsamples{i},2)); % nTrials x k

@@ -451,22 +451,29 @@ C_{v \mid x} \approx \mathrm{E} \left[ C_{v \mid xgz}^l \right]_l + \mathrm{Cov}
 C_{v \mid xgz} =  \left(\frac{z^2}{\sigma_x} A^T A + \left[\sum_{k=1}^K g_k C_k \right]^{-1}\right)^{-1} \\
 \mu_{v \mid xgz} = \frac{z}{\sigma_x} C_{v \mid xgz} A^T x
 \end{eqnarray}
+%
+The mean of the finite mixture is given by
+
+\begin{equation}
+\mu_{v \mid x} \approx \frac{1}{L} \sum_{l=1}^L \mu_{v \mid xgz}^l
+\end{equation}
 
 \section{Appendix}
 
 \subsection{Rules of differentiation}
 
-Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropriate dimension, and $f$ is a scalar function, and $s$ is a scalar variable.
+Assuming that $y$ and $a$ are vectors, $S$ is a symmetric matrix of appropriate dimension, $M$ is any matrix, $f$ is a scalar function, and $\gamma$ is a scalar variable.
 
 \begin{eqnarray}
-\frac{\partial}{\partial y} y^T M y = 2 M y \label{eq:deriv_quadratic} \\
+\frac{\partial}{\partial y} y^T S y = 2 S y \label{eq:deriv_quadratic} \\
 \frac{\partial}{\partial y} a^T y = a \label{eq:deriv_scalarprod} \\
-\frac{\partial}{\partial M} y^T M^{-1} y = - M^{-1} yy^T M^{-1} \label{eq:deriv_quad_mat} \\
-\frac{\partial}{\partial M} \log \det M = M^{-1} \label{eq:deriv_logdet} \\
-\frac{\partial}{\partial s} f(M(s)) = \textrm{Tr} \left[ \frac{\partial f}{\partial M} \frac{\partial M}{\partial s} \right] \label{eq:deriv_chain} \\
-\frac{\partial}{\partial s} s M = M \label{eq:deriv_scalar} \\
-\frac{\partial}{\partial s} f(s) = f(s) \frac{\partial}{\partial s} \log f(s) \label{eq:deriv_function} \\
-\frac{\partial}{\partial M} \log \mathcal{N}(y;a,M) = -\frac{1}{2} \left[ M^{-1} - M^{-1}(y-a)(y-a)^TM^{-1} \right]\label{eq:deriv_gausscov}
+\frac{\partial}{\partial S} y^T S^{-1} y = - S^{-1} yy^T S^{-1} \label{eq:deriv_quad_mat} \\
+\frac{\partial}{\partial S} \log \det S = S^{-1} \label{eq:deriv_logdet} \\
+\frac{\partial}{\partial \gamma} f(S(\gamma)) = \textrm{Tr} \left[ \frac{\partial f}{\partial S} \frac{\partial S}{\partial \gamma} \right] \label{eq:deriv_chain} \\
+\frac{\partial}{\partial \gamma} \gamma S = S \label{eq:deriv_scalar} \\
+\frac{\partial}{\partial \gamma} f(\gamma) = f(\gamma) \frac{\partial}{\partial \gamma} \log f(\gamma) \label{eq:deriv_function} \\
+\frac{\partial}{\partial S} \log \mathcal{N}(y;a,S) = -\frac{1}{2} \left[ S^{-1} - S^{-1}(y-a)(y-a)^TS^{-1} \right]\label{eq:deriv_gausscov} \\
+\frac{\partial}{\partial a} (y-Ma)^T S (y-Ma) = -2 M^T S (y-Ma) \label{eq:quadderiv}
 \end{eqnarray}
 
 
@@ -477,7 +484,7 @@ Assuming that $y$ and $a$ are vectors and $M$ is a symmetric matrix of appropria
 \log  \textrm{Gam}(y;\alpha,\zeta) = \log(1) - \log(\Gamma(\alpha)) - \alpha \log(\zeta) + (\alpha-1) \log(y) - \frac{y}{\zeta}
 \end{eqnarray}
 
-\subsection{Merging two Gaussian distributions} \label{sec:mergegauss}
+\subsection{Switching and transforming variables of a Gaussian} \label{sec:varswitch}
 
 We want to merge two Gaussians over $x$ and $v$ into one over $v$
 
@@ -544,8 +551,8 @@ making the simplifying assumption $D_x = D_v$ we arrive to
 \begin{equation} 
 \mathcal{N}(x;zAv,\sigma_x I) = \frac{1}{\sqrt{\det(A^TA)}} \frac{1}{z^{D_v}} \mathcal{N}(v;\frac{1}{z}A^{+}x,\frac{\sigma_x}{z^2} (A^TA)^{-1})
 \end{equation}
-%
-we can merge two Gaussian distributions over $v$ into one by using the following formula
+
+\subsection{Merging two Gaussian distributions} \label{sec:mergegauss}
 
 \begin{equation} 
 \mathcal{N}(v;\mu_1,C_1) \mathcal{N}(v;\mu_2,C_2) = \mathcal{N}(\mu_1;\mu_2,C_1 + C_2) \mathcal{N}(v; \mu_c,C_c)
@@ -685,11 +692,25 @@ log-posterior of $g$ and $z$
 
 \begin{eqnarray}
 \begin{split}
-\log p_m(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_m) + (x-zABg)^T C_m^{-1} (x-zABg) \right] + \\
+\log p_m(g,z \mid x) \sim -\frac{1}{2} \left[ \log \det (C_{xm}) + (x-zABg)^T C_{xm}^{-1} (x-zABg) \right] + \\
 + (\alpha_z-1)\log(z) - \frac{z}{\theta_z} + (\alpha_g-1)\sum_{k=1}^K \log(g_k) - \frac{1}{\theta_g} \sum_{k=1}^K g_k
 \end{split} \\
-C_m = \sigma_x I + z^2 \sigma_v AA^T
+C_{xm} = \sigma_x I + z^2 \sigma_v AA^T
 \end{eqnarray}
+%
+the derivative w.r.t. $g$ is given by Eq. \ref{eq:quadderiv}
 
+\begin{equation}
+\frac{\partial}{\partial g} \log p_m(g,z \mid x) = zB^TA^T C_{xm}^{-1} (x-zAB) + \frac{\partial}{\partial g} \log p(g)
+\end{equation}
+
+%
+for the sake of the derivative w.r.t. $z$, we need write out the quadratic form:
+
+\begin{equation}
+\begin{split}
+(x-zABg)^T C_{xm}^{-1} (x-zABg) = x^T C_{xm}^{-1} x - 2 x^T C_{xm}^{-1} zABg + zABg^T C_{xm}^{-1} zABg
+\end{split}
+\end{equation}
 
 \end{document}
