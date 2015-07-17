@@ -1,4 +1,4 @@
-% e
+% ee
 numcol = 2;
 if exist('trueCC') && ~isempty(trueCC)
     numcol = 3;
