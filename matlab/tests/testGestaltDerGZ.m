@@ -10,6 +10,16 @@ function testGestaltDerGZ(formula,randseed)
         gg = gr(1:ge.k);
     end
 
+    function zg = msm_zgrad(g,z,x,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale)
+        gr = msmLogPostGZGrad(g,z,x,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale);
+        zg = gr(end);
+    end
+
+    function gg = msm_ggrad(g,z,x,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale)
+        gr = msmLogPostGZGrad(g,z,x,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale);
+        gg = gr(1:end-1);
+    end
+
     function Cx = postcov(g1,g,z,ge,kk)
         g(kk) = g1;
         Cv = componentSum(g,ge.cc);
@@ -32,6 +42,8 @@ function testGestaltDerGZ(formula,randseed)
     ge = gestaltCreate('temp','Dx',64,'k',2,'N',1,'filters','OF','obsVar',0.5,'g_shape',1,'g_scale',1,'z_shape',2,'z_scale',2, ...
         'generateComponents',true,'generateData',true);    
     x = reshape(ge.X(1,1,:),ge.Dx,1);
+    B = randn(ge.Dv,ge.k);
+    sigma_v = 0.5;
     
     if strcmp(formula,'post')
         a = @(h) gestaltLogPostGZ(h(1:ge.k),h(end),x,ge);
@@ -57,6 +69,18 @@ function testGestaltDerGZ(formula,randseed)
         a = @(z) postcov(1,ones(ge.k,1),z,ge,1);
         b = @(z) postcov_derz(ones(ge.k,1),z,ge);
         init = 1;
+    elseif strcmp(formula,'msm')        
+        a = @(h) msmLogPostGZ(h(1:ge.k),h(end),x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);
+        b = @(h) msmLogPostGZGrad(h(1:ge.k),h(end),x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);
+        init = ones(ge.k+1,1);
+    elseif strcmp(formula,'msmzpost')
+        a = @(z) msmLogPostGZ(ones(ge.k,1),z,x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);  
+        b = @(z) msm_zgrad(ones(ge.k,1),z,x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);
+        init = 1;
+    elseif strcmp(formula,'msmgpost')
+        a = @(g) msmLogPostGZ(g,1,x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);  
+        b = @(g) msm_ggrad(g,1,x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);
+        init = ones(ge.k,1);
     end
     
     disc = checkDerivative(a,b,init,false)

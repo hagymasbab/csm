@@ -742,6 +742,11 @@ substituting back
 =  -2 \mathrm{Tr} \left[ C_{xm}^{-1} \left[ z \sigma_v AA^T (xx^T  + z x y^T) - \sigma_x (x y^T  - z yy^T) \right] C_{xm}^{-1}  \right]
 \end{split}
 \end{equation}
+%
+yielding the derivative 
 
+\begin{equation}
+\frac{\partial}{\partial z} \log p_m(g,z \mid x) = -\frac{1}{2} \left[ 2z \sigma_v  \mathrm{Tr} \left[ C_{xm}^{-1}  AA^T \right] +  \frac{\partial  \mathcal{L}_m}{\partial z} \right] + \frac{\partial}{\partial z} \log p(z)
+\end{equation}
 
 \end{document}
