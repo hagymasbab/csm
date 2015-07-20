@@ -12,6 +12,8 @@ function [C_m,G,Z] = msmPosteriorCovariance(x,L,randseed,loadSamples,A,B,sigma_x
         load('save_msm_postcov.mat');
     else
         [G,Z] = msmHamiltonianGZ(x,L,50,'leave',A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale);
+        G = real(G);
+        Z = real(Z);
         save('bin/save_msm_postcov.mat','G','Z');
     end
     
@@ -20,7 +22,10 @@ function [C_m,G,Z] = msmPosteriorCovariance(x,L,randseed,loadSamples,A,B,sigma_x
 
     for i = 1:L      
         z2ATA = Z(i)^2 * sATA;        
-        Cm = stableInverse(z2ATA + sI);
+        nCm = stableInverse(z2ATA + sI);
+        %[~,e] = cholcov(nCm)
+        %Cm = nearestSPD(nCm);        
+        Cm = nCm;
         mm = Cm * (Z(i)*sAx + sB*G(i,:)');        
         Cml(i,:,:) = Cm;        
         mml(i,:) = mm';

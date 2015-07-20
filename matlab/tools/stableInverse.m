@@ -6,6 +6,12 @@ function iA = stableInverse(A)
         %iA = inv(A);
         iA = eye(size(A,1)) / A;        
     end
+    
+    % the uncievable: 
+%     if isreal(A)
+%         iA = real(iA);
+%     end
+    
     % we might mess up symmetry with pinv and mldivide for some reason, so
     if issymmetric(A)
         iA = 0.5 * (iA + iA');
