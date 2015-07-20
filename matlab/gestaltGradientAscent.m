@@ -40,7 +40,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         verb = 1;
     end
     like_method = 'intuition';    
-    likefunc = @(X,choles,sigma) gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',like_method,'sigma',sigma);
+    likefunc = @(X_param,choles_param,sigma_param) gestaltLogLikelihood2(ge,params.priorSamples,X_param,choles_param,'loadSamples',loadSamples,'verbose',verb,'method',like_method,'sigma',sigma_param);
     
     t = true(ge.Dv);
     if params.template
