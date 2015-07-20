@@ -1,5 +1,30 @@
 function testGestaltDerGZ(formula,randseed)
+    
+    function f = quadfunc(g,z,x,A,B,sigma_x,sigma_v)
+        Dv = size(A,2);
+        AAT = A * A';
+        Cxm = sigma_x * eye(Dv) + z^2 * sigma_v * AAT;
+        iCx = stableInverse(Cxm);
+        y = z*A*B*g;
+        f = (x-y)' * iCx * (x-y);
+        %f = x'*iCx*x + x'* (z*iCx) * y + y' * (z^2*iCx) * y;
         
+    end
+
+    function grad = quadfunc_grad(g,z,x,A,B,sigma_x,sigma_v)
+        Dv = size(A,2);
+        AAT = A * A';
+        Cxm = sigma_x * eye(Dv) + z^2 * sigma_v * AAT;
+        iCxm = stableInverse(Cxm);
+        zAB = z * A * B;
+        y = zAB * g;
+        xx = x * x';
+        xy = x * y';
+        yy = y * y';
+        z_mat = iCxm * ( z * sigma_v * (xx - z * xy) * AAT + sigma_x * (xy - z * yy) ) * iCxm;
+        grad = -2 * trace(z_mat);
+    end
+
     function zg = zgrad(g,z,x,ge)
         gr = gestaltLogPostGZGrad(g,z,x,ge);
         zg = gr(end);
@@ -81,6 +106,10 @@ function testGestaltDerGZ(formula,randseed)
         a = @(g) msmLogPostGZ(g,1,x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);  
         b = @(g) msm_ggrad(g,1,x,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);
         init = ones(ge.k,1);
+    elseif strcmp(formula,'quadfunc')
+        a = @(z) quadfunc(ones(ge.k,1),z,x,ge.A,B,ge.obsVar,sigma_v);
+        b = @(z) quadfunc_grad(ones(ge.k,1),z,x,ge.A,B,ge.obsVar,sigma_v);
+        init = 1;
     end
     
     disc = checkDerivative(a,b,init,false)

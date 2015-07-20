@@ -703,7 +703,6 @@ the derivative w.r.t. $g$ is given by Eq. \ref{eq:quadderiv}
 \begin{equation}
 \frac{\partial}{\partial g} \log p_m(g,z \mid x) = zB^TA^T C_{xm}^{-1} (x-zABg) + \frac{\partial}{\partial g} \log p(g)
 \end{equation}
-
 %
 for the sake of the derivative w.r.t. $z$, we need write out the quadratic form:
 
@@ -718,7 +717,7 @@ for the sake of the derivative w.r.t. $z$, we need write out the quadratic form:
 \begin{equation}
 \begin{split}
 \frac{\partial  \mathcal{L}_m}{\partial z}  = \mathrm{Tr} \left[  \frac{\partial}{\partial C_{xm}} x^T C_{xm}^{-1} x  \frac{\partial C_{xm}}{\partial z} \right] 
-+ \mathrm{Tr} \left[  \frac{\partial}{\partial \frac{1}{z} C_{xm}}  2 x^T \left[ \frac{1}{z} C_{xm} \right]^{-1} y  \frac{\partial \frac{1}{z} C_{xm}}{\partial z} \right] + \\ 
++ \mathrm{Tr} \left[  \frac{\partial}{\partial \frac{1}{z} C_{xm}}  -2 x^T \left[ \frac{1}{z} C_{xm} \right]^{-1} y  \frac{\partial \frac{1}{z} C_{xm}}{\partial z} \right] + \\ 
 +  \mathrm{Tr} \left[  \frac{\partial}{\partial \frac{1}{z^2} C_{xm}}   y^T  \left[ \frac{1}{z^2} C_{xm} \right]^{-1} y  \frac{\partial \frac{1}{z^2} C_{xm}}{\partial z} \right]
 \end{split}
 \end{equation}
@@ -727,19 +726,27 @@ the six derivatives being
 
 \begin{eqnarray}
 \frac{\partial}{\partial C_{xm}} x^T C_{xm}^{-1} x = - C_{xm}^{-1} xx^T C_{xm}^{-1} \\
-\frac{\partial}{\partial \frac{1}{z} C_{xm}}  2 x^T \left[ \frac{1}{z} C_{xm} \right]^{-1} y = -2z^2 C_{xm}^{-1} x y^T C_{xm}^{-1} \\
-\frac{\partial}{\partial \frac{1}{z^2} C_{xm}}   y^T  \left[ \frac{1}{z^2} C_{xm} \right]^{-1} y = - z^4 C_{xm}^{-1} yy^T C_{xm}^{-1} \\
-\frac{\partial C_{xm}}{\partial z} = 2z \sigma_v AA^T \\
- \frac{\partial \frac{1}{z} C_{xm}}{\partial z} =  - \frac{\sigma_x}{z^2} I + \sigma_v AA^T \\
- \frac{\partial \frac{1}{z^2} C_{xm}}{\partial z} = -\frac{2 \sigma_x}{z^3} I
+\frac{\partial}{\partial \frac{1}{z} C_{xm}} -2 x^T \left[ \frac{1}{z} C_{xm} \right]^{-1} y = 2z^2 C_{xm}^{-1} x y^T C_{xm}^{-1} \\
+\frac{\partial}{\partial \frac{1}{z^2} C_{xm}} y^T  \left[ \frac{1}{z^2} C_{xm} \right]^{-1} y = - z^4 C_{xm}^{-1} yy^T C_{xm}^{-1} \\
+\frac{\partial C_{xm}}{\partial z} = \frac{\partial}{\partial z} \sigma_x I + z^2 \sigma_v AA^T = 2z \sigma_v AA^T \\
+ \frac{\partial \frac{1}{z} C_{xm}}{\partial z} = \frac{\partial}{\partial z} \frac{\sigma_x}{z} I + z \sigma_v AA^T = - \frac{\sigma_x}{z^2} I + \sigma_v AA^T \\
+ \frac{\partial \frac{1}{z^2} C_{xm}}{\partial z} = \frac{\partial}{\partial z} \frac{\sigma_x}{z^2} I + \sigma_v AA^T = -\frac{2 \sigma_x}{z^3} I
+\end{eqnarray}
+%
+the three products
+
+\begin{eqnarray}
+- C_{xm}^{-1} xx^T C_{xm}^{-1} \left[ 2z \sigma_v AA^T \right] = -2 C_{xm}^{-1} \left[ z \sigma_v xx^T AA^T \right] C_{xm}^{-1} \\
+-2z^2 C_{xm}^{-1} x y^T C_{xm}^{-1} \left[ \frac{\sigma_x}{z^2} I - \sigma_v AA^T \right] = -2 C_{xm}^{-1} \left[ \sigma_x x y^T - z^2 \sigma_v x y^T AA^T \right] C_{xm}^{-1} \\ 
+- z^4 C_{xm}^{-1} yy^T C_{xm}^{-1} \left[-\frac{2 \sigma_x}{z^3} I \right] = 2 C_{xm}^{-1} \left[z \sigma_x yy^T \right] C_{xm}^{-1}
 \end{eqnarray}
 %
 substituting back
 
 \begin{equation}
 \begin{split}
-\frac{\partial  \mathcal{L}_m}{\partial z}  = \mathrm{Tr} \left[   - C_{xm}^{-1} \left[ 2z \sigma_v AA^T xx^T  - 2 \sigma_x x y^T + 2z^2 \sigma_v AA^T x y^T - 2z \sigma_x yy^T \right] C_{xm}^{-1}  \right]  = \\
-=  -2 \mathrm{Tr} \left[ C_{xm}^{-1} \left[ z \sigma_v AA^T (xx^T  + z x y^T) - \sigma_x (x y^T  - z yy^T) \right] C_{xm}^{-1}  \right]
+\frac{\partial  \mathcal{L}_m}{\partial z}  = \mathrm{Tr} \left[ -2 C_{xm}^{-1} \left[ z \sigma_v xx^T AA^T +  \sigma_x x y^T - z^2 \sigma_v x y^T AA^T - z \sigma_x yy^T \right] C_{xm}^{-1}  \right]  = \\
+=  -2 \mathrm{Tr} \left[ C_{xm}^{-1} \left[ z \sigma_v (xx^T - z x y^T)  AA^T + \sigma_x (x y^T  - z yy^T) \right] C_{xm}^{-1}  \right]
 \end{split}
 \end{equation}
 %
