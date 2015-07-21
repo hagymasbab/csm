@@ -13,6 +13,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     addParameter(parser,'initSigma',1,@isnumeric); % only used if we start a new run
     addParameter(parser,'startWithSigma',false,@islogical);
     addParameter(parser,'synthetic',false,@islogical);
+    addParameter(parser,'likeMethod','intuition');
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -39,8 +40,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     if params.verbose >= 3
         verb = 1;
     end
-    like_method = 'intuition';    
-    likefunc = @(X_param,choles_param,sigma_param) gestaltLogLikelihood2(ge,params.priorSamples,X_param,choles_param,'loadSamples',loadSamples,'verbose',verb,'method',like_method,'sigma',sigma_param);
+    likefunc = @(X_param,choles_param,sigma_param) gestaltLogLikelihood2(ge,params.priorSamples,X_param,choles_param,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',sigma_param);
     
     t = true(ge.Dv);
     if params.template
