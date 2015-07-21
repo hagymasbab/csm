@@ -1,4 +1,4 @@
-function contrastMeanCov(Dv,randseed,loadStuff,plotStuff)
+function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp,contrasts)
 
     setrandseed(randseed);   
     imdim = sqrt(Dv);
@@ -11,6 +11,8 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff)
         filter_ids = [12 16 30];
     elseif Dv == 64
         filter_ids = [6 8 15];
+    elseif Dv == 576
+        filter_ids = [24 32 60];
     end
     for f = 1:length(filter_ids)
         for ff = f+1:length(filter_ids)
@@ -29,6 +31,8 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff)
         filter_ids = [146-2*16+4 146 146+2*16-4];
     elseif Dv == 64
         filter_ids = [36-2*8+4 36 36+2*8-4];
+    elseif Dv == 576
+        filter_ids = [292-2*24+4 292 292+2*24-4];
     end
     cc{2} = eye(Dv);
     for f = 1:length(filter_ids)
@@ -66,7 +70,7 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff)
     
     % create contrast-adjusted stimuli
     %contrasts = [0.01 0.1 0.5 1 2 5 10 20 100];
-    contrasts = [0.5 2];
+    %contrasts = [0.5 2];
     
     x_rms = zeros(length(contrasts),1);
 %     corr_c = zeros(length(contrasts),1);
@@ -87,7 +91,7 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff)
 %     cell2 = filter_ids(2);
 %     cell3 = filter_ids(3);
        
-    nSamp = 50;
+    %nSamp = 50;
     nCont = length(contrasts);
     
     if loadStuff
@@ -101,8 +105,8 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff)
         msm_zsamps = {};
         for c = 1:nCont
             x_act = contrasts(c) * x_base;            
-            [covc,gsamp,zsamp] = posteriorCovariances(x_act,ge,nSamp,randseed,false);
-            [covm,gsampm,zsampm] = msmPosteriorCovariance(x_act,nSamp,randseed,false,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale);
+            [covc,gsamp,zsamp] = posteriorCovariances(x_act,ge,nSamp,randseed,false,target_acceptance);
+            [covm,gsampm,zsampm] = msmPosteriorCovariance(x_act,nSamp,randseed,false,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale,target_acceptance);
             corrmats{end+1} = corrcov(covc);
             msm_corrmats{end+1} = corrcov(covm);
             gsamps{end+1} = gsamp;

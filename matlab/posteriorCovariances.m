@@ -1,4 +1,4 @@
-function [C_c,G,Z] = posteriorCovariances(x,ge,L,randseed,loadSamples)
+function [C_c,G,Z] = posteriorCovariances(x,ge,L,randseed,loadSamples,target_acceptance)
     %function [C_c,C_m] = posteriorCovariances(x,A,sigma_x,sigma_v,shape_g,scale_g,shape_z,scale_z,cc,B,L,randseed)
     
     setrandseed(randseed);
@@ -16,7 +16,7 @@ function [C_c,G,Z] = posteriorCovariances(x,ge,L,randseed,loadSamples)
     if loadSamples
         load('save_postcov.mat');
     else
-        [G,Z] = gestaltHamiltonianGZ(x,ge,L,50,'leave');
+        [G,Z] = gestaltHamiltonianGZ(x,ge,L,50,'leave',target_acceptance);
         save('bin/save_postcov.mat','G','Z');
     end
     

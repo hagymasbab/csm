@@ -1,4 +1,4 @@
-function [gsamp,zsamp] = msmHamiltonianGZ(x,L,burnin,randseed,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale)
+function [gsamp,zsamp] = msmHamiltonianGZ(x,L,burnin,randseed,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale,target_acceptance)
     
     setrandseed(randseed);
     Dv = size(A,2);
@@ -11,7 +11,7 @@ function [gsamp,zsamp] = msmHamiltonianGZ(x,L,burnin,randseed,A,B,sigma_x,sigma_
     initvec = [initG; initZ];
     
     both = @(inputvec) logp_and_grad(inputvec,x,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale);
-    s = nuts_da(both,L,burnin,initvec');
+    s = nuts_da(both,L,burnin,initvec',target_acceptance);
     gsamp = s(:,1:k);
     zsamp = s(:,end);    
 end

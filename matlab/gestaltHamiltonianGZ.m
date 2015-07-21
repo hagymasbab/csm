@@ -1,4 +1,4 @@
-function [gsamp,zsamp] = gestaltHamiltonianGZ(x,ge,L,burnin,randseed)
+function [gsamp,zsamp] = gestaltHamiltonianGZ(x,ge,L,burnin,randseed,target_acceptance)
     
     setrandseed(randseed);
     x = reshape(x,ge.Dv,1);    
@@ -9,7 +9,7 @@ function [gsamp,zsamp] = gestaltHamiltonianGZ(x,ge,L,burnin,randseed)
     initvec = [initG; initZ];
     
     both = @(inputvec) logp_and_grad(inputvec,ge,x);
-    s = nuts_da(both,L,burnin,initvec');
+    s = nuts_da(both,L,burnin,initvec',target_acceptance);
     gsamp = s(:,1:ge.k);
     zsamp = s(:,end);    
 end

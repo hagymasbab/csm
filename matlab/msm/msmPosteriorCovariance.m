@@ -1,4 +1,4 @@
-function [C_m,G,Z] = msmPosteriorCovariance(x,L,randseed,loadSamples,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale)
+function [C_m,G,Z] = msmPosteriorCovariance(x,L,randseed,loadSamples,A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale,target_acceptance)
     setrandseed(randseed);
     
     Dv = size(A,2);
@@ -11,9 +11,9 @@ function [C_m,G,Z] = msmPosteriorCovariance(x,L,randseed,loadSamples,A,B,sigma_x
     if loadSamples
         load('save_msm_postcov.mat');
     else
-        [G,Z] = msmHamiltonianGZ(x,L,50,'leave',A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale);
-        G = real(G);
-        Z = real(Z);
+        [G,Z] = msmHamiltonianGZ(x,L,50,'leave',A,B,sigma_x,sigma_v,g_shape,g_scale,z_shape,z_scale,target_acceptance);
+%         G = real(G);
+%         Z = real(Z);
         save('bin/save_msm_postcov.mat','G','Z');
     end
     

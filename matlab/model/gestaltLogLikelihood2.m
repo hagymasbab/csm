@@ -35,7 +35,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     if params.loadSamples
         load('prior_samples.mat');
     else
-        G = gestaltSamplePriorG(ge,L,'checkValues',false);
+        G = gestaltSamplePriorG(ge,L);
         Z = gamrnd(ge.z_shape,ge.z_scale,[L 1]);
         save('bin/prior_samples.mat','G','Z');
     end
