@@ -1,17 +1,20 @@
-function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuff)
+function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuff,target_acceptance,burnin,msm)
     % see if the estimations of the first two moments converge as we
     % increase sample size
     
     setrandseed(randseed);
         
     ge = gestaltCreate('temp','Dx',Dv,'k',k,'filters','gabor_4or','obsVar',0.5,'N',1, ...
-        'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'N',1,'generateComponents',true,'generateData',true);
+        'g_shape',1,'g_scale',1,'z_shape',2,'z_scale',2,'N',1,'generateComponents',true,'generateData',true);
+
+    B = cc2B(ge.cc);
+    sigma_v = ge.obsVar - 0.1;
     
-    ge.Z
-    ge.G
+    ge.Z(1,1) = 5;
+    ge.G(1,:) = [5 0.1];
     
-    x = reshape(ge.X(1,1,:),ge.Dx,1);
-    burnin = 10;
+    %x = reshape(ge.X(1,1,:),ge.Dx,1);
+    x = gestaltAncestralSample(ge,ge.G(1,:)',ge.Z(1,1));
     
     nSN = length(sampleNums);
     if loadSamples
@@ -23,7 +26,12 @@ function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuf
             gtr = zeros(nTrials,sampleNums(i),ge.k);
             ztr = zeros(nTrials,sampleNums(i),1);
             for t = 1:nTrials
-                [gtr(t,:,:),ztr(t,:,:)] = gestaltHamiltonianGZ(x,ge,sampleNums(i),burnin,'shuffle');
+                if msm
+                    [gtr(t,:,:),ztr(t,:,:)] = msmHamiltonianGZ(x,sampleNums(i),burnin,'shuffle', ...
+                        ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale,target_acceptance);
+                else
+                    [gtr(t,:,:),ztr(t,:,:)] = gestaltHamiltonianGZ(x,ge,sampleNums(i),burnin,'shuffle',target_acceptance);
+                end
             end
             gsamples{i} = gtr;
             zsamples{i} = ztr;
@@ -128,5 +136,12 @@ function testPostGZSampler(randseed,Dv,k,sampleNums,nTrials,loadSamples,plotStuf
         end
         gstr_parts = gstr_parts(2:end);
         title(['True G=[' gstr_parts sprintf('] Z=%.2f',ge.Z(1,1))]);
+        subplot(2,numcols,3);
+        if msm
+            typestring = 'MSM';
+        else
+            typestring = 'CSM';
+        end
+        title(sprintf('Model type: %s',typestring));
     end
 end

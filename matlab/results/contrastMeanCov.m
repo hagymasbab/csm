@@ -8,16 +8,16 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
     % define covariance components
     cc{1} = eye(Dv);
     if Dv == 256
-        filter_ids = [12 16 30];
+        filter1_ids = [12 16 30];
     elseif Dv == 64
-        filter_ids = [6 8 15];
+        filter1_ids = [6 8 15];
     elseif Dv == 576
-        filter_ids = [24 32 60];
+        filter1_ids = [24 32 60];
     end
-    for f = 1:length(filter_ids)
-        for ff = f+1:length(filter_ids)
-            i = filter_ids(f);
-            j = filter_ids(ff);
+    for f = 1:length(filter1_ids)
+        for ff = f+1:length(filter1_ids)
+            i = filter1_ids(f);
+            j = filter1_ids(ff);
             cc{1}(i,j) = 1;
             cc{1}(j,i) = 1;
             cc{1}(i,i) = cc{1}(i,i) + 1;
@@ -51,13 +51,16 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
     % define mean components
     %B = randn(Dv,2);  
     B = zeros(Dv,2);
+    for f = 1:length(filter1_ids)
+        B(filter1_ids(f),1) = 1;
+    end
     for f = 1:length(filter_ids)
-        B(filter_ids(f),1) = 1;
+        B(filter_ids(f),2) = 1;
     end
     sigma_v = 0.5;
     
     ge = gestaltCreate('temp','Dx',Dv,'k',length(cc),'filters','gabor_4or','obsVar',0.5,'cc',cc, ...
-        'g_shape',2,'g_scale',2,'z_shape',2,'z_scale',2,'N',1,'generateComponents',false,'generateData',false);
+        'g_shape',1,'g_scale',1,'z_shape',2,'z_scale',2,'N',1,'generateComponents',false,'generateData',false);
 
     % construct base stimulus
     %x_base = zeros(Dv,1);
@@ -65,7 +68,7 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
 %     for f = 1:length(filter_ids)
 %         x_base = x_base + A(:,filter_ids(f));
 %     end
-    x_base = gestaltAncestralSample(ge,[1;0],1)';
+    x_base = gestaltAncestralSample(ge,[0;5],1)';
     %viewImage(x_base);
     
     % create contrast-adjusted stimuli
