@@ -10,7 +10,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     addParameter(parser,'testLike',0);  
     addParameter(parser,'initCond','random');
     addParameter(parser,'sigmaSteps',0);
-    addParameter(parser,'initSigma',1,@isnumeric); % only used if we start a new run
+    addParameter(parser,'initSigma',0.5,@isnumeric); % only used if we start a new run
     addParameter(parser,'startWithSigma',false,@islogical);
     addParameter(parser,'synthetic',false,@islogical);
     addParameter(parser,'likeMethod','intuition');
