@@ -88,8 +88,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
                 test_indices = chooseKfromN(params.testLike,N_all);
             end
             X_test = data(test_indices,:);          
-            %ll = likefunc(X_test,choles,ge.obsVar);
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',ge.obsVar);
+            ll = likefunc(X_test,choles,ge.obsVar);
             test_like = [test_like;ll];
             loadSamples = true;
         end                
@@ -132,8 +131,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         X = data(img_indices,:);        
         act_batch_like = [];
         if ~strcmp(params.likeComp,'none')
-            %ll = likefunc(X,choles,ge.obsVar);
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',ge.obsVar);
+            ll = likefunc(X,choles,ge.obsVar);
             act_batch_like = [act_batch_like ll];
             loadSamples = true;
         end        
@@ -153,20 +151,17 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
             
             % calculate likelihood on batch
             if ~strcmp(params.likeComp,'none')
-                %ll = likefunc(X,choles,ge.obsVar);
-                ll = gestaltLogLikelihood2(ge,params.priorSamples,X,choles,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',ge.obsVar);
+                ll = likefunc(X,choles,ge.obsVar);
                 act_batch_like = [act_batch_like ll];
             end
         end
         batch_like = [batch_like; act_batch_like];
         if strcmp(params.likeComp,'full')
-            %ll = likefunc(data,choles,ge.obsVar);
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,data,choles,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',ge.obsVar);
+            ll = likefunc(data,choles,ge.obsVar);
             full_like = [full_like;ll];
         end
         if ~isempty(test_indices)       
-            %ll = likefunc(X_test,choles,ge.obsVar);
-            ll = gestaltLogLikelihood2(ge,params.priorSamples,X_test,choles,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',ge.obsVar);
+            ll = likefunc(X_test,choles,ge.obsVar);
             test_like = [test_like;ll];
         end
         % save stuff
