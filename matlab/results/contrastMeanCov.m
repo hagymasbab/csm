@@ -59,8 +59,8 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
     end
     sigma_v = 0.5;
     
-    ge = gestaltCreate('temp','Dx',Dv,'k',length(cc),'filters','gabor_4or','obsVar',0.5,'cc',cc, ...
-        'g_shape',1,'g_scale',1,'z_shape',2,'z_scale',2,'N',1,'generateComponents',false,'generateData',false);
+    ge = gestaltCreate('temp','Dx',Dv,'k',length(cc),'filters','gabor_4or','obsVar',0.4,'cc',cc, ...
+        'g_shape',1,'g_scale',0.1,'z_shape',2,'z_scale',2,'N',1,'generateComponents',false,'generateData',false);
 
     % construct base stimulus
     %x_base = zeros(Dv,1);
