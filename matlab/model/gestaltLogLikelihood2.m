@@ -16,6 +16,7 @@ function ll = gestaltLogLikelihood2(ge,L,data,cholesky,varargin)
     data = reshape(data,N,ge.Dx);
     
     cc = cholcell(cholesky); 
+    ge.cc = cc;
     
     pA = pinv(ge.A);
     ATA = ge.A' * ge.A;     
