@@ -173,7 +173,8 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     if params.verbose >= 3
         verb = 1;
     end
-    likefunc = @(X_param,choles_param,sigma_param) gestaltLogLikelihood2(ge,params.priorSamples,X_param,choles_param,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',sigma_param);
+    %likefunc = @(X_param,choles_param,sigma_param) gestaltLogLikelihood2(ge,params.priorSamples,X_param,choles_param,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod,'sigma',sigma_param);
+    likefunc = @(X_param,choles_param,sigma_param) gestaltLogLikelihood2(ge,params.priorSamples,X_param,choles_param,'loadSamples',loadSamples,'verbose',verb,'method',params.likeMethod);
     
     t = true(ge.Dv);
     if params.template
