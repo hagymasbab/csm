@@ -235,6 +235,7 @@ function grad = gestaltLogLikelihoodGradient(ge,L,data,cholesky,varargin)
     
     for kk = 1:ge.k     
         grad{kk} = triu(cholesky{kk} * M_cell{kk} *  2);
+        grad{kk}(~params.template) = 0;
     end
 
     
