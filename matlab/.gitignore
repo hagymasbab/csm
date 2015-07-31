@@ -1,5 +1,6 @@
 # ignore .mat files except for patches, RF filters and whitening filters
 *.mat
+*.jpg
 # !patches_*_*.mat - don't add patches for now as they are pretty big
 !filters_*_*.mat
 !wnodes_*.mat
