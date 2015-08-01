@@ -83,7 +83,7 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         msm_zsamps = {};
         for c = 1:nCont
             x_act = contrasts(c) * x_base;            
-            [covc,gsamp,zsamp] = posteriorCovariances(x_act,ge,nSamp,randseed,false,target_acceptance);
+            [covc,gsamp,zsamp] = gestaltPostVCovariance(x_act,ge,nSamp,randseed,false,target_acceptance);
             [covm,gsampm,zsampm] = msmPosteriorCovariance(x_act,nSamp,randseed,false,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale,target_acceptance);
             corrmats{end+1} = corrcov(covc);
             msm_corrmats{end+1} = corrcov(covm);
