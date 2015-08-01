@@ -6,7 +6,7 @@ function [mu_post,C_post] = gsmPosteriorV(x,A,C,x_sigma,z_shape,z_scale,z_res)
     sAx = A' * x / x_sigma^2;
     Dv = size(A,2);
 
-    [z_post_dens,z_vals] = gsmPosteriorZ(x,A,C,x_sigma,z_shape,z_scale,z_res);
+    [z_post_dens,z_vals] = gsmPosteriorZ(x,A,C,x_sigma,z_shape,z_scale,z_res,true);
     
     component_Cs = zeros(z_res,Dv,Dv);
     component_mus = zeros(z_res,Dv);

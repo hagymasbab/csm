@@ -1,20 +1,31 @@
-function compareCorrelations(dim,filters,t1,t2)
+function compareCorrelations(nPatches,dim,filters,t1,t2,gsm_res,predef_pair,loadStuff)
 
     filterfile = sprintf('filters_%s_%d.mat',filters,dim);
 
-    [cm1,U1] = linearFilterCorrelation(1000,sprintf('patches_text%d_%d.mat',t1,dim),filterfile);
-    [cm2,U2] = linearFilterCorrelation(1000,sprintf('patches_text%d_%d.mat',t2,dim),filterfile);
-    diff12 = cm1 - cm2;
-    [~,idx] =max(diff12(:));
-    [a,b] = ind2sub(size(cm1),idx);
+    if loadStuff
+        load('save_compcorr.mat');
+    else
+        [cm1,U1] = linearFilterCorrelation(nPatches,sprintf('patches_text%d_%d.mat',t1,dim),filterfile,gsm_res);
+        [cm2,U2] = linearFilterCorrelation(nPatches,sprintf('patches_text%d_%d.mat',t2,dim),filterfile,gsm_res);
+        save('bin/save_compcorr.mat','cm1','cm2','U1','U2');
+    end
+    
+    if isempty(predef_pair)
+        diff12 = cm1 - cm2;
+        [~,idx] =max(diff12(:));
+        [a,b] = ind2sub(size(cm1),idx);
+    else
+        a = predef_pair(1);
+        b = predef_pair(2);
+    end
 
     load(filterfile);
     subplot(3,2,1);
     viewImage(A(:,a),'useMax',true);
-    title('Filter 1','FontSize',16);
+    title(sprintf('Filter %d',a),'FontSize',16);
     subplot(3,2,2);
     viewImage(A(:,b),'useMax',true);
-    title('Filter 2','FontSize',16);
+    title(sprintf('Filter %d',b),'FontSize',16);
     
     subplot(3,2,3);
     scatter(U1(:,a),U1(:,b),'k');
