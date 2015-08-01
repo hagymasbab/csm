@@ -7,7 +7,9 @@ function compareCorrelations(nPatches,dim,filters,t1,t2,gsm_res,predef_pair,load
     else
         [cm1,U1] = linearFilterCorrelation(nPatches,sprintf('patches_text%d_%d.mat',t1,dim),filterfile,gsm_res);
         [cm2,U2] = linearFilterCorrelation(nPatches,sprintf('patches_text%d_%d.mat',t2,dim),filterfile,gsm_res);
-        save('bin/save_compcorr.mat','cm1','cm2','U1','U2');
+        if gsm_res > 0
+            save('bin/save_compcorr.mat','cm1','cm2','U1','U2');
+        end
     end
     
     if isempty(predef_pair)
