@@ -1,27 +1,55 @@
 function cat = categorizeFilters(stimulus,filters,components,model)
-    cat.single_criteria = {'ovl','stim'};
-    if strcmp(model,'csm')
-        cat.pairwise_criteria = {'var','covar'};
-    elseif strcmp(model,'csm')
-        cat.pairwise_criteria = {'mean'};
-    end
+    Dv = size(A,2);
+    cat.criteria = {'ovl','stim','priorcov'};    
     
     nCrit = length(cat.criteria);
     
-    % produce positive and negative criteria-fulfilling sets
-    cat.criteria_positive = [];
-    cat.criteria_negative = [];
-    
+    cat.criteria_assignments = cell{1,nCrit};
     for cr = 1:nCrit
+        positive = [];
+        negative = [];
+        for i=1:Dv
+            for j=i+1:Dv
+                assignment = feval(cat.criteria{cr},stimulus,filters,components,model);
+                if assignment == 1
+                    positive = [positive; i j];
+                elseif assignment == -1
+                    negative = [negative; i j];
+                end
+            end
+        end
+        crit_assign.positive = positive;
+        crit_assign.negative = negative;
+        cat.criteria_asignments{cr} = crit_assign;
     end
     
-    % produce all possible pairwise criteria from single ones
     
-    % produce all combinations of binary criteria to get categories
+    % TODO produce all combinations of binary criteria to get categories
     
-    
-    
-    % calculate indices for category pairs
+        
+    % TODO calculate indices for category pairs
 end
 
-function res = ovl()
+function res = ovl(stimulus,filters,components,model)
+    % overlap of the two filters    
+    f1 = filters(:,i1);
+    f2 = filters(:,i2);
+    overlap = abs(f1' * f2) / length(f1);
+    % TODO figure out thresholds
+    if overlap > 0.5
+        res = 1;
+    elseif overlap < 0.1
+        res = -1;
+    else
+        res = 0;
+    end
+end
+
+function res = stim(stimulus,filters,components,model)
+    % similarity in activation by the stimulus
+
+end
+
+function res = priorcov(stimulus,filters,components,model)
+    % absolute value of correlation implied by the prior
+end
