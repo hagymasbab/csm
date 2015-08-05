@@ -114,6 +114,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     
     if params.startWithSigma
         ge.obsVar = gestaltFindSigmaX(ge,choles,X_sigset,params.priorSamples,like_method,loadSamples,verb);
+        fprintf('New sigma selected: %.2f\n',ge.obsVar);
         loadSamples = true;
     end
     
@@ -177,6 +178,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         
         if params.sigmaSteps > 0 && rem(batch,params.sigmaSteps) == 0
             ge.obsVar = gestaltFindSigmaX(ge,choles,X_sigset,params.priorSamples,params.likeMethod,loadSamples,verb);
+            fprintf('New sigma selected: %.2f\n',ge.obsVar);
         end
     end    
 end
