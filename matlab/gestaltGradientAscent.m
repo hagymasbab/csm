@@ -113,7 +113,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     end
     
     if params.startWithSigma
-        ge.obsVar = gestaltFindSigmaX(ge,choles,X_sigset,params.priorSamples,like_method,loadSamples,verb);
+        ge.obsVar = gestaltFindSigmaX(ge,choles,X_sigset,params.priorSamples,params.likeMethod,loadSamples,verb);
         fprintf('New sigma selected: %.2f\n',ge.obsVar);
         loadSamples = true;
     end
