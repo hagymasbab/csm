@@ -81,8 +81,14 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         msm_corrmats = {};
         msm_gsamps = {};
         msm_zsamps = {};
+        csm_cats = {};
+        msm_cats = {};
         for c = 1:nCont
-            x_act = contrasts(c) * x_base;            
+            x_act = contrasts(c) * x_base;
+            cat_c = categorizeFilters(x_act,A,ge.cc,'CSM');
+            cat_m = categorizeFilters(x_act,A,B,'MSM');
+            csm_cats{end+1} = cat_c;
+            msm_cats{end+1} = cat_m;
             [covc,gsamp,zsamp] = gestaltPostVCovariance(x_act,ge,nSamp,randseed,false,target_acceptance);
             [covm,gsampm,zsampm] = msmPosteriorCovariance(x_act,nSamp,randseed,false,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale,target_acceptance);
             corrmats{end+1} = corrcov(covc);
@@ -92,15 +98,25 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
             msm_gsamps{end+1} = gsampm;
             msm_zsamps{end+1} = zsampm;
         end
-        save('bin/save_contmeancov.mat','corrmats','gsamps','zsamps','msm_corrmats','msm_gsamps','msm_zsamps');
+        save('bin/save_contmeancov.mat','corrmats','gsamps','zsamps','msm_corrmats','msm_gsamps','msm_zsamps','csm_cats','msm_cats');
     end           
     
     if plotStuff    
         close all;
         plotResults(contrasts,x_base,corrmats,gsamps,zsamps,'CSM');
         plotResults(contrasts,x_base,msm_corrmats,msm_gsamps,msm_zsamps,'MSM');
+        %plotCatCorr(contrasts,corrmats,csm_cats,'CSM');
+        %plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM');
     end
     
+end
+
+function plotCatCorr(contrasts,corrmats,cats,modelName)
+    figure;
+    nCont = length(contrasts);
+    for c = 1:nCont
+        
+    end
 end
 
 function plotResults(contrasts,x_base,corrmats,gsamps,zsamps,modelName)
