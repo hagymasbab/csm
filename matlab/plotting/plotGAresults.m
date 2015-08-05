@@ -19,6 +19,11 @@ yl1 = ylim();
 
 subplot(2,numcol,2)
 plot((0:numbatch)',test_like/size(test_indices,2),'LineWidth',2)
+if trueLL ~= 0
+    hold on;
+    plot([0;numbatch],[trueLL/size(test_indices,2);trueLL/size(test_indices,2)],'r','LineWidth',2);
+    hold off;
+end
 xlabel('Gradient ascent batch #','FontSize',16)
 ylabel('Log-likelihood per image on test set','FontSize',16)
 if length(test_like) < 5

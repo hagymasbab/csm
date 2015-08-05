@@ -168,11 +168,11 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
                 cc{k+1} = eye(ge.Dv);
             else
                 fprintf('....%d/', N);
-                ige.Dx = find(onindices);
+                igeDx = find(onindices);
                 for nn=1:N
                     printCounter(nn);
-                    x = X(nn,:)';
-                    x(onindices) = x(ige.Dx(1));
+                    x = X(nn,:)';                    
+                    x(logical(onindices)) = x(igeDx(1));
                     vs(nn,:) = x';
                 end
                 fprintf('\n....Calculating covariance\n');

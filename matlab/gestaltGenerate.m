@@ -5,6 +5,7 @@ function ge = gestaltGenerate(ge,N,varargin)
     addParameter(parser,'batchSize',10,@isnumeric);
     addParameter(parser,'obsVar',0.1,@isnumeric);
     addParameter(parser,'sparsity',0.2,@isnumeric);
+    addParameter(parser,'genFromDir',false,@islogical);
     parse(parser,varargin{:});
     precision = parser.Results.precision; 
     verbose = parser.Results.verbose;
@@ -19,7 +20,7 @@ function ge = gestaltGenerate(ge,N,varargin)
     end        
     
     % heuristically, we are better of with a dirichlet for small k
-    if ge.k < 10
+    if parser.Results.genFromDir
         %ge.G = symmetricDirichlet(ge.sparsity,ge.k,ge.N);
         ge.G = symmetricDirichlet(0.1,ge.k,ge.N);
     else        
