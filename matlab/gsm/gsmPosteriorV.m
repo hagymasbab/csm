@@ -1,4 +1,4 @@
-function [mu_post,C_post] = gsmPosteriorV(x,A,C,x_sigma,z_shape,z_scale,z_res)
+function [mu_post,C_post,z_mean,z_var] = gsmPosteriorV(x,A,C,x_sigma,z_shape,z_scale,z_res)
     
     ATA = A' * A;
     sATA = ATA / x_sigma^2;    
@@ -7,6 +7,12 @@ function [mu_post,C_post] = gsmPosteriorV(x,A,C,x_sigma,z_shape,z_scale,z_res)
     Dv = size(A,2);
 
     [z_post_dens,z_vals] = gsmPosteriorZ(x,A,C,x_sigma,z_shape,z_scale,z_res,true);
+    
+%     size(z_post_dens)
+%     size(z_vals)
+    
+    z_mean = z_post_dens' * z_vals;
+    z_var = z_post_dens' * (z_vals - z_mean).^2;
     
     component_Cs = zeros(z_res,Dv,Dv);
     component_mus = zeros(z_res,Dv);

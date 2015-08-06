@@ -182,16 +182,16 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
                 cc{g} = cov(vs);
 
                 % preventing ill-conditioned covariance components
-                if rcond(cc{g}) < 1e-10
-                    if params.verbose
-                        fprintf('ill-conditioned\n');
-                    end
-                    maxelem = max(cc{g}(:));
-                    mindiag = min(diag(cc{g}));
-                    %eyecoeff = maxelem-mindiag;
-                    eyecoeff = 0.1;
-                    cc{g} = cc{g} + eyecoeff * eye(ge.Dv);
-                end
+%                 if rcond(cc{g}) < 1e-10
+%                     if params.verbose
+%                         fprintf('ill-conditioned\n');
+%                     end
+%                     maxelem = max(cc{g}(:));
+%                     mindiag = min(diag(cc{g}));
+%                     %eyecoeff = maxelem-mindiag;
+%                     eyecoeff = 0.1;
+%                     cc{g} = cc{g} + eyecoeff * eye(ge.Dv);
+%                 end
             end
         end
     else

@@ -4,7 +4,7 @@ function [z_post_dens,z_vals] = gsmPosteriorZ(x,A,C,x_sigma,z_shape,z_scale,z_re
     
     % get a MAP estimate of z
     [~,z_min,z_max] = get_pz_x_max(x, noiseCov, ACAT, zeros(size(x)), z_shape, z_scale);
-    z_vals = linspace(z_min,z_max,z_res);
+    z_vals = linspace(z_min,z_max,z_res)';
     
     if ~scinot
         z_post_numerators = zeros(z_res,1);    
