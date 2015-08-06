@@ -1,4 +1,4 @@
-function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp,contrasts,genFromMSM)
+function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp,contrasts,stimulus)
 
     setrandseed(randseed);               
     imdim = sqrt(Dv);
@@ -89,13 +89,18 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
     genG = zeros(ge.k,1);
     genG(2) = 5;
     genZ = 1;
-    if genFromMSM
+    if strcmp(stimulus,'msm')
         %x_base = msmGenerate(1,'leave',ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale)';
         x_base = msmAncestralSample(genG,genZ,'leave',ge.A,B,ge.obsVar,sigma_v)';
-    else
+    elseif strcmp(stimulus,'csm')
         x_base = gestaltAncestralSample(ge,genG,genZ)';    
+    elseif strcmp(stimulus,'natural')
+        load(sprintf('patches_vanhateren_%d.mat',Dv));
+        x_base = patchDB(:,randi(size(patchDB,2),1));
+        base_rms = std(x_base);
+        contrasts = contrasts * (1/base_rms);
     end
-    %viewImage(x_base);    
+    figure;viewImage(x_base);    
     
     x_rms = zeros(length(contrasts),1);
     nCont = length(contrasts);
