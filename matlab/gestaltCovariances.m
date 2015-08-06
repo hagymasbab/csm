@@ -167,20 +167,25 @@ function [cc,receptiveFields] = gestaltCovariances(ge,k,varargin)
                 end
                 cc{k+1} = eye(ge.Dv);
             else
-                fprintf('....%d/', N);
                 igeDx = find(onindices);
                 for nn=1:N
-                    printCounter(nn);
+                    if params.verbose
+                        printCounter(nn,'maxVal',N,'stringVal','...');
+                    end
                     x = X(nn,:)';                    
                     x(logical(onindices)) = x(igeDx(1));
                     vs(nn,:) = x';
                 end
-                fprintf('\n....Calculating covariance\n');
+                if params.verbose
+                    fprintf('....Calculating covariance\n');
+                end
                 cc{g} = cov(vs);
 
                 % preventing ill-conditioned covariance components
                 if rcond(cc{g}) < 1e-10
-                    fprintf('ill-conditioned\n');
+                    if params.verbose
+                        fprintf('ill-conditioned\n');
+                    end
                     maxelem = max(cc{g}(:));
                     mindiag = min(diag(cc{g}));
                     %eyecoeff = maxelem-mindiag;
