@@ -99,11 +99,14 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         x_base = patchDB(:,randi(size(patchDB,2),1));
         base_rms = std(x_base);
         contrasts = contrasts * (1/base_rms);
+    else
+        error('Ivalid stimulus generation choice: %s',stimulus);
     end
     figure;viewImage(x_base);    
     
     x_rms = zeros(length(contrasts),1);
     nCont = length(contrasts);
+    filterCatPerc = 0.1;
         
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%% CALCULATE POSTERIORS %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,12 +135,12 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         for c = 1:nCont
             x_act = contrasts(c) * x_base;
             
-%             cat_c = categorizeFilters(x_act,A,ge.cc,'CSM');
-%             cat_m = categorizeFilters(x_act,A,B,'MSM');
-%             cat_g = categorizeFilters(x_act,A,C_gsm,'GSM');
-            cat_c = 0;
-            cat_m = 0;
-            cat_g = 0;
+            cat_c = categorizeFilters(x_act,A,ge.cc,'CSM',filterCatPerc);
+            cat_m = categorizeFilters(x_act,A,B,'MSM',filterCatPerc);
+            cat_g = categorizeFilters(x_act,A,C_gsm,'GSM',filterCatPerc);
+%             cat_c = 0;
+%             cat_m = 0;
+%             cat_g = 0;
             csm_cats{end+1} = cat_c;
             msm_cats{end+1} = cat_m;
             gsm_cats{end+1} = cat_g;
@@ -173,8 +176,13 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         plotResults(contrasts,x_base,covmats,corrmats,gsamps,zsamps,'CSM');
         plotResults(contrasts,x_base,msm_covmats,msm_corrmats,msm_gsamps,msm_zsamps,'MSM');
         plotResults(contrasts,x_base,gsm_covmats,gsm_corrmats,[],gsm_zmoments,'GSM');
-        %plotCatCorr(contrasts,corrmats,csm_cats,'CSM');
-        %plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM');
+        figure;
+        subplot(3,1,1);
+        plotCatCorr(contrasts,corrmats,csm_cats,'CSM',false);
+        subplot(3,1,2);
+        plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM',false);
+        subplot(3,1,3);
+        plotCatCorr(contrasts,gsm_corrmats,gsm_cats,'GSM',true);
     end
     
 end
@@ -263,10 +271,46 @@ function plotResults(contrasts,x_base,covmats,corrmats,gsamps,zsamps,modelName)
     ylim([0 max(vvar_means)+max(vvar_stds)+0.1])
 end
 
-function plotCatCorr(contrasts,corrmats,cats,modelName)
-    figure;
-    nCont = length(contrasts);
-    for c = 1:nCont
-        
+function plotCatCorr(xrms,corrmats,cats,modelName,x_axis)
+    %figure;
+    nCont = length(xrms);
+    nCat = length(cats{1}.categories);
+%     nRow = floor(sqrt(nCat));
+%     nCol = ceil(nCat/nRow);
+
+    cat_corr_std = ones(nCont,nCat);
+    cat_corr_mean = ones(nCont,nCat);
+    labels = {};
+    legend_names = cats{1}.categories;
+    
+    for cont = 1:nCont
+        labels{end+1} = sprintf('%.2f',xrms(cont));
+        for cat = 1:nCat
+    %         subplot(nRow,nCol,cat);   
+            act_assign = cats{cont}.category_assignments{cat};
+            nPairs = size(act_assign,1);
+            if cont == 1
+                legend_names{cat} = [legend_names{cat} sprintf(', N=%d',nPairs)];
+            end
+            corrvalues = zeros(nPairs,1);
+            for pair = 1:nPairs
+                corrvalues(pair) = abs(corrmats{cont}(act_assign(pair,1),act_assign(pair,2)));
+            end
+            cat_corr_std(cont,cat) = std(corrvalues,0,1) / nPairs;
+            cat_corr_mean(cont,cat) = mean(corrvalues,1);
+        end
     end
+    
+    barwitherr(cat_corr_std,cat_corr_mean)
+    ylabel({'V post. corr. magn.';'mean, SEM'},'FontSize',16);
+    if x_axis
+        xlabel('Z_{RMS}','FontSize',16);
+        set(gca,'XTickLabel',labels,'FontSize',16);
+    else
+        set(gca,'XTickLabel',{});
+    end
+    legend(legend_names,'FontSize',16);
+    lh=findall(gcf,'tag','legend');
+    set(lh,'location','northeastoutside');
+    title(sprintf('Model = %s',modelName),'FontSize',16);
 end
