@@ -177,11 +177,8 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         plotResults(contrasts,x_base,msm_covmats,msm_corrmats,msm_gsamps,msm_zsamps,'MSM');
         plotResults(contrasts,x_base,gsm_covmats,gsm_corrmats,[],gsm_zmoments,'GSM');
         figure;
-%         subplot(3,1,1);
         plotCatCorr(contrasts,corrmats,csm_cats,'CSM',false,3,1);
-%         subplot(3,1,2);
         plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM',false,3,2);
-%         subplot(3,1,3);
         plotCatCorr(contrasts,gsm_corrmats,gsm_cats,'GSM',true,3,3);
     end
     
@@ -289,9 +286,10 @@ function plotCatCorr(xrms,corrmats,cats,modelName,x_axis,nModels,number)
     %         subplot(nRow,nCol,cat);   
             act_assign = cats{cont}.category_assignments{cat};
             nPairs = size(act_assign,1);
-%             if cont == 1
-%                 legend_names{cat} = [legend_names{cat} sprintf(', N=%d',nPairs)];
-%             end
+            if cont == 1
+                %legend_names{cat} = [legend_names{cat} sprintf(', N=%d',nPairs)];
+                legend_names{cat} = [legend_names{cat} sprintf('%d',nPairs)];
+            end
             corrvalues = zeros(nPairs,1);
             for pair = 1:nPairs
                 corrvalues(pair) = abs(corrmats{cont}(act_assign(pair,1),act_assign(pair,2)));
@@ -320,13 +318,12 @@ function plotCatCorr(xrms,corrmats,cats,modelName,x_axis,nModels,number)
         
         %lh=findall(gcf,'tag','legend');
         %set(lh,'location','northeastoutside');
-        title(sprintf('Model = %s',modelName),'FontSize',16);
+        title(sprintf('%s',modelName),'FontSize',16);
         
         subplot(nModels*2,1,(number-1)*2+2);
         barwitherr(cat_corr_std(:,fLen+1:end)',cat_corr_mean(:,fLen+1:end)');
         set(gca,'XTickLabel',legend_names(fLen+1:end),'FontSize',16);
-        %legend(labels,'FontSize',16);
-        
+        %legend(labels,'FontSize',16);                
     else
         subplot(nModels,1,number);
         barwitherr(cat_corr_std',cat_corr_mean')    
