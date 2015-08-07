@@ -1,7 +1,8 @@
-function cat = categorizeFilters(stimulus,filters,components,model,percentage)
+function cat = categorizeFilters(stimulus,filters,components,model,percentage,plotPairs)
     Dv = size(filters,2);
     cat.criteria = {'ovl','stim','prior'};    
     %cat.criteria = {'ovl','stim'};    
+    %cat.criteria = {'prior'};    
     
     nCrit = length(cat.criteria);
     nExts = floor((Dv*(Dv-1)/2) * percentage);
@@ -29,23 +30,30 @@ function cat = categorizeFilters(stimulus,filters,components,model,percentage)
     % produce all combinations of binary criteria to get pair categories
     cat.categories = {};
     cat.category_assignments = {};
-    combinations = dec2bin(0:2^(length(cat.criteria))-1);
-    for c=1:size(combinations,1)
+    % combinations = dec2bin(0:2^(length(cat.criteria))-1);
+    combs = combinations([0 -1 1],length(cat.criteria));
+    combs = combs(2:end,:); % drop the all zero line
+    for c=1:size(combs,1)
         catname = [];
         filter_pairs = [];
-        for cr=1:size(combinations,2);
-            catname = [catname cat.criteria{cr}];            
-            if strcmp(combinations(c,cr),'0')
+        firstLoad = true;
+        for cr=1:size(combs,2);            
+            %if strcmp(combinations(c,cr),'0')
+            if combs(c,cr) == -1
+                catname = [catname cat.criteria{cr}(1)];            
                 catname = [catname '-'];
-                if cr == 1
+                if firstLoad
                     filter_pairs = cat.criteria_assignments{cr}.negative;
+                    firstLoad = false;
                 else
                     filter_pairs = pair_intersection(filter_pairs,cat.criteria_assignments{cr}.negative);
                 end
-            else
+            elseif combs(c,cr) == 1
+                catname = [catname cat.criteria{cr}(1)];            
                 catname = [catname '+'];
-                if cr == 1
+                if firstLoad
                     filter_pairs = cat.criteria_assignments{cr}.positive;
+                    firstLoad = false;
                 else
                     filter_pairs = pair_intersection(filter_pairs,cat.criteria_assignments{cr}.positive);
                 end
@@ -53,6 +61,24 @@ function cat = categorizeFilters(stimulus,filters,components,model,percentage)
         end
         cat.categories{end+1} = catname;
         cat.category_assignments{end+1} = filter_pairs;
+        if plotPairs
+            nRow = size(combs,1);
+            nCol = nRow;
+            actCol = min(nCol,size(cat.category_assignments{c},1));
+            for i = 1:actCol
+                act_idx1 = cat.category_assignments{c}(i,1);
+                act_idx2 = cat.category_assignments{c}(i,2);
+                act_f1 = filters(:,act_idx1);
+                act_f2 = filters(:,act_idx2);
+                act_img = act_f1 + act_f2;
+                subplot(nRow,nCol,(c-1)*nCol+i);
+                viewImage(act_img,'useMax',true);      
+                xlabel(sprintf('%d %d',act_idx1,act_idx2));
+            end
+            subplot(nRow,nCol,(c-1)*nCol+1);
+            %viewImage(zeros(size(filters,1)));
+            ylabel(cat.categories{c});
+        end
     end
 end
             

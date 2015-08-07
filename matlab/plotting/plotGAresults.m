@@ -74,15 +74,21 @@ if numcol == 3
     truedist_sum_max = zeros(numbatch+1,1);
     true_cv = componentSum(1,trueCC);
     sigma_est = zeros(numbatch+1,1);
+    differences = [];
     for i=1:numbatch+1
         act_cv = componentSum(1,state_sequence{i}.estimated_components);
         [truedist_sum_avg(i),~,truedist_sum_max(i)] = covcompRootMeanSquare(true_cv,act_cv,1);
         vcovdist_sum_avg(i) = covcompRootMeanSquare(vcov,act_cv,1);
         sigma_est(i) = state_sequence{i}.sigma_x;
+        actdiff = upperTriangleValues(act_cv) - upperTriangleValues(true_cv);
+        differences = [differences actdiff];
     end
     
     subplot(2,numcol,3)
+    %plot((0:numbatch)',differences');
+    hold on;
     plot((0:numbatch)',[truedist_sum_avg vcovdist_sum_avg],'LineWidth',2);
+    hold off;
     %legend({'mean','max'})
     xlim([0 numbatch]);
     xlabel('Gradient ascent batch #','FontSize',16)

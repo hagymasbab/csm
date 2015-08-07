@@ -135,9 +135,9 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         for c = 1:nCont
             x_act = contrasts(c) * x_base;
             
-            cat_c = categorizeFilters(x_act,A,ge.cc,'CSM',filterCatPerc);
-            cat_m = categorizeFilters(x_act,A,B,'MSM',filterCatPerc);
-            cat_g = categorizeFilters(x_act,A,C_gsm,'GSM',filterCatPerc);
+            cat_c = categorizeFilters(x_act,A,ge.cc,'CSM',filterCatPerc,false);
+            cat_m = categorizeFilters(x_act,A,B,'MSM',filterCatPerc,false);
+            cat_g = categorizeFilters(x_act,A,C_gsm,'GSM',filterCatPerc,false);
 %             cat_c = 0;
 %             cat_m = 0;
 %             cat_g = 0;
@@ -177,12 +177,12 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         plotResults(contrasts,x_base,msm_covmats,msm_corrmats,msm_gsamps,msm_zsamps,'MSM');
         plotResults(contrasts,x_base,gsm_covmats,gsm_corrmats,[],gsm_zmoments,'GSM');
         figure;
-        subplot(3,1,1);
-        plotCatCorr(contrasts,corrmats,csm_cats,'CSM',false);
-        subplot(3,1,2);
-        plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM',false);
-        subplot(3,1,3);
-        plotCatCorr(contrasts,gsm_corrmats,gsm_cats,'GSM',true);
+%         subplot(3,1,1);
+        plotCatCorr(contrasts,corrmats,csm_cats,'CSM',false,3,1);
+%         subplot(3,1,2);
+        plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM',false,3,2);
+%         subplot(3,1,3);
+        plotCatCorr(contrasts,gsm_corrmats,gsm_cats,'GSM',true,3,3);
     end
     
 end
@@ -271,7 +271,7 @@ function plotResults(contrasts,x_base,covmats,corrmats,gsamps,zsamps,modelName)
     ylim([0 max(vvar_means)+max(vvar_stds)+0.1])
 end
 
-function plotCatCorr(xrms,corrmats,cats,modelName,x_axis)
+function plotCatCorr(xrms,corrmats,cats,modelName,x_axis,nModels,number)
     %figure;
     nCont = length(xrms);
     nCat = length(cats{1}.categories);
@@ -289,9 +289,9 @@ function plotCatCorr(xrms,corrmats,cats,modelName,x_axis)
     %         subplot(nRow,nCol,cat);   
             act_assign = cats{cont}.category_assignments{cat};
             nPairs = size(act_assign,1);
-            if cont == 1
-                legend_names{cat} = [legend_names{cat} sprintf(', N=%d',nPairs)];
-            end
+%             if cont == 1
+%                 legend_names{cat} = [legend_names{cat} sprintf(', N=%d',nPairs)];
+%             end
             corrvalues = zeros(nPairs,1);
             for pair = 1:nPairs
                 corrvalues(pair) = abs(corrmats{cont}(act_assign(pair,1),act_assign(pair,2)));
@@ -301,16 +301,47 @@ function plotCatCorr(xrms,corrmats,cats,modelName,x_axis)
         end
     end
     
-    barwitherr(cat_corr_std,cat_corr_mean)
-    ylabel({'V post. corr. magn.';'mean, SEM'},'FontSize',16);
-    if x_axis
-        xlabel('Z_{RMS}','FontSize',16);
-        set(gca,'XTickLabel',labels,'FontSize',16);
+%     barwitherr(cat_corr_std,cat_corr_mean)    
+%     if x_axis
+%         xlabel('Z_{RMS}','FontSize',16);
+%         set(gca,'XTickLabel',labels,'FontSize',16);
+%     else
+%         set(gca,'XTickLabel',{});
+%     end
+%     legend(legend_names,'FontSize',16);
+    
+    if nCat > 20
+        %subplot = @(m,n,p) subtightplot (m, n, p, [0.1 0.001], [0 0.025], [0 0.01]);
+        fLen = floor(nCat / 2);
+        subplot(nModels*2,1,(number-1)*2+1);
+        barwitherr(cat_corr_std(:,1:fLen)',cat_corr_mean(:,1:fLen)');
+        set(gca,'XTickLabel',legend_names(1:fLen),'FontSize',16);
+        %legend(labels,'FontSize',16);
+        
+        %lh=findall(gcf,'tag','legend');
+        %set(lh,'location','northeastoutside');
+        title(sprintf('Model = %s',modelName),'FontSize',16);
+        
+        subplot(nModels*2,1,(number-1)*2+2);
+        barwitherr(cat_corr_std(:,fLen+1:end)',cat_corr_mean(:,fLen+1:end)');
+        set(gca,'XTickLabel',legend_names(fLen+1:end),'FontSize',16);
+        %legend(labels,'FontSize',16);
+        
     else
-        set(gca,'XTickLabel',{});
+        subplot(nModels,1,number);
+        barwitherr(cat_corr_std',cat_corr_mean')    
+        if x_axis
+            %xlabel('Z_{RMS}','FontSize',16);
+            set(gca,'XTickLabel',legend_names,'FontSize',16);
+        else
+            set(gca,'XTickLabel',{});
+        end
+        legend(labels,'FontSize',16);
+    
+    
+        ylabel({'V post. corr. magn.';'mean, SEM'},'FontSize',16);
+        lh=findall(gcf,'tag','legend');
+        set(lh,'location','northeastoutside');
+        title(sprintf('Model = %s',modelName),'FontSize',16);
     end
-    legend(legend_names,'FontSize',16);
-    lh=findall(gcf,'tag','legend');
-    set(lh,'location','northeastoutside');
-    title(sprintf('Model = %s',modelName),'FontSize',16);
 end
