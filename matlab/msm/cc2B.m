@@ -5,8 +5,8 @@ function B = cc2B(cc)
     for kk = 1:k
         for i = 1:Dv
             for j = i+1:Dv
-                B(i,k) = B(i,k) + cc{kk}(i,j);
-                B(j,k) = B(j,k) + cc{kk}(i,j);
+                B(i,kk) = B(i,kk) + cc{kk}(i,j);
+                B(j,kk) = B(j,kk) + cc{kk}(i,j);
             end
         end
     end
