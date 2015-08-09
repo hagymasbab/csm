@@ -9,6 +9,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     addParameter(parser,'dampA',true,@islogical);
     addParameter(parser,'testLike',0);  
     addParameter(parser,'initCond','random');
+    addParameter(parser,'initNoise','0.1');
     addParameter(parser,'sigmaSteps',0);
     addParameter(parser,'initSigma',0.5,@isnumeric); % only used if we start a new run
     addParameter(parser,'startWithSigma',false,@islogical);
@@ -65,7 +66,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         
         ge.obsVar = params.initSigma;
         
-        cc = randomCovariances(ge.k,ge.Dv);
+        cc = randomCovariances(ge.k,ge.Dv,'noiseLevel',params.initNoise);
         choles = cellchol(cc);
         for i = 1:ge.k
             choles{i}(~t) = 0;

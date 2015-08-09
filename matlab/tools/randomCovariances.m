@@ -1,9 +1,9 @@
 function cc = randomCovariances(k,dim,varargin)
     p = inputParser;
-    addParamValue(p,'blockStrength',0,@isnumeric);
-    addParamValue(p,'precision',false,@islogical);
-    addParamValue(p,'noiseLevel',0.1,@isnumeric);
-    addParamValue(p,'transformationMatrix',[]);
+    addParameter(p,'blockStrength',0,@isnumeric);
+    addParameter(p,'precision',false,@islogical);
+    addParameter(p,'noiseLevel',0.1,@isnumeric);
+    addParameter(p,'transformationMatrix',[]);
     parse(p,varargin{:});
     blockStrength = p.Results.blockStrength;
     noiseLevel = p.Results.noiseLevel;
@@ -13,7 +13,7 @@ function cc = randomCovariances(k,dim,varargin)
     blocksize = floor(dim/k);
     block = blockStrength * ones(blocksize);
     for i=1:k
-          base = rand(dim,dim);
+          base = randn(dim,dim);
           cc{i} = (noiseLevel/dim)*(base'*base);
           cc{i} = cc{i} + eye(dim);
           begin_block = (i-1)*blocksize + 1;
