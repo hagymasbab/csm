@@ -1,6 +1,11 @@
-function gVarianceCorrelations(g_scales)
-    ge = gestaltCreate('temp','Dx',64,'k',2,'filters','gabor_4or','obsVar',0.7,'g_shape',1,'g_scale',0.1, ...
-        'z_shape',2,'z_scale',2,'N',1000,'generateComponents',true,'generateData',true,'componentShape','vertical-bars');
+function gVarianceCorrelations(g_scales,move_mean)
+    %cc = eyes(2,64,1);
+    cc = randomCovariances(2,64,'noiseLevel',10);
+    ge = gestaltCreate('temp','Dx',64,'k',2,'filters','gabor_4or','obsVar',0.7,'g_shape',1,'g_scale',0.1,'cc',cc, ...
+        'z_shape',2,'z_scale',2,'N',1,'generateComponents',false,'generateData',true);
+
+%     ge = gestaltCreate('temp','Dx',64,'k',2,'filters','gabor_4or','obsVar',0.7,'g_shape',1,'g_scale',0.1, ...
+%         'z_shape',2,'z_scale',2,'N',1000,'generateComponents',true,'generateData',true,'componentShape','vertical-bars');
     B = cc2B(ge.cc);
     sigma_v = 0.5;
     
@@ -10,10 +15,12 @@ function gVarianceCorrelations(g_scales)
         
     y_max = 0;
     for i = 1:length(g_scales)
-        % TODO set variance independently of the mean
-        %G = gamrnd(2,g_scales(i),[ge.N,ge.k]);        
-        G = abs(normrnd(1,g_scales(i),[ge.N,ge.k]));
-        %G = abs(normrnd(g_scales(i)*10,0.1,[ge.N,ge.k]));
+        %G = gamrnd(2,g_scales(i),[nSamp,ge.k]); 
+        if move_mean
+            G = abs(normrnd(g_scales(i)*10,0.05,[nSamp,ge.k]));   
+        else
+            G = abs(normrnd(1,g_scales(i),[nSamp,ge.k]));
+        end        
         
         g_var = var(G,0,1);
         g_mean = mean(G,1);
