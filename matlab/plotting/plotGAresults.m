@@ -1,7 +1,7 @@
-% eee
+close all
 numcol = 2;
-if exist('trueCC') && ~isempty(trueCC)
-    numcol = 3;
+if exist('trueCC') && ~isempty(trueCC)    
+    numcol = 3;    
 end
 numbatch = length(test_like)-1;
 numstep = size(batch_like,2)-1;
@@ -45,7 +45,9 @@ for i=1:numbatch+1
     for kk = 1:ge.k
       norms(i,kk) = norm(act_cc{kk});
       for other = kk+1:ge.k
+          norms(i,other) = norm(act_cc{other});
           dist = covcompRootMeanSquare(act_cc(kk),act_cc(other),1);
+          dist = dist / (norms(i,kk)*norms(i,other));
           distances(i,met_idx) = dist;
           met_idx = met_idx+1;
       end
@@ -59,18 +61,43 @@ xlabel('Gradient ascent batch #','FontSize',16)
 ylabel('2-norm of covariance components','FontSize',16)
 set(gca,'FontSize',16)
 
+if exist('trueCC') && ~isempty(trueCC)    
+    hold on;
+    truenorms = {};
+    for kk=1:ge.k
+        act_truenorm = norm(trueCC{kk});
+        truenorms{end+1} = act_truenorm;
+        plot([0;numbatch],[act_truenorm;act_truenorm],'r','LineWidth',1);
+    end
+    hold off;
+end
+
 subplot(2,numcol,numcol+2)
 plot((0:numbatch)',distances);
 xlim([0 numbatch]);
 xlabel('Gradient ascent batch #','FontSize',16)
-ylabel('RMS distance of component pairs','FontSize',16)
+ylabel({'RMS distance of component pairs','normalised by the product of norms'},'FontSize',16)
 set(gca,'FontSize',16)
 
+if exist('trueCC') && ~isempty(trueCC)    
+    hold on;
+    for kk = 1:ge.k
+      for other = kk+1:ge.k
+          dist = covcompRootMeanSquare(act_cc(kk),act_cc(other),1);
+          dist = dist / (truenorms{kk}*truenorms{other});
+          plot([0;numbatch],[dist;dist],'r','LineWidth',1);
+      end
+    end
+    hold off;
+end
+
 % difference from truth
-if numcol == 3
+if exist('trueCC') && ~isempty(trueCC)
     vcov = cov(reshape(ge.V,ge.N,ge.Dv));
     vcovdist_sum_avg = zeros(numbatch+1,1);
     truedist_sum_avg = zeros(numbatch+1,1);
+    truedist_avg = zeros(numbatch+1,1);
+    truedist_max = zeros(numbatch+1,1);
     truedist_sum_max = zeros(numbatch+1,1);
     true_cv = componentSum(1,trueCC);
     sigma_est = zeros(numbatch+1,1);
@@ -78,6 +105,9 @@ if numcol == 3
     for i=1:numbatch+1
         act_cv = componentSum(1,state_sequence{i}.estimated_components);
         [truedist_sum_avg(i),~,truedist_sum_max(i)] = covcompRootMeanSquare(true_cv,act_cv,1);
+        if ge.k < 4
+            [truedist_avg(i),~,truedist_max(i)] = covcompRootMeanSquare(trueCC,state_sequence{i}.estimated_components,[]);
+        end
         vcovdist_sum_avg(i) = covcompRootMeanSquare(vcov,act_cv,1);
         sigma_est(i) = state_sequence{i}.sigma_x;
         actdiff = upperTriangleValues(act_cv) - upperTriangleValues(true_cv);
@@ -87,9 +117,13 @@ if numcol == 3
     subplot(2,numcol,3)
     %plot((0:numbatch)',differences');
     hold on;
-    plot((0:numbatch)',[truedist_sum_avg vcovdist_sum_avg],'LineWidth',2);
+    if ge.k < 4
+        plot((0:numbatch)',[truedist_sum_avg vcovdist_sum_avg truedist_avg],'LineWidth',2);    
+    else
+        plot((0:numbatch)',[truedist_sum_avg vcovdist_sum_avg],'LineWidth',2);
+    end
     hold off;
-    %legend({'mean','max'})
+    legend({'sum','vcov','perm'},'FontSize',12)
     xlim([0 numbatch]);
     xlabel('Gradient ascent batch #','FontSize',16)
     ylabel('Mean RMS distance from truth','FontSize',16)
