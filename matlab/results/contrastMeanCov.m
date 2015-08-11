@@ -1,4 +1,4 @@
-function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp,contrasts,stimulus)
+function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp,contrasts,stimulus,categories)
 
     setrandseed(randseed);               
     imdim = sqrt(Dv);
@@ -75,8 +75,17 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
 %     randM = randn(Dv);
 %     C_gsm = randM * randM';
 %     C_gsm = C_gsm / (max(C_gsm(:)));
-    C_gsm = componentSum(1,cc(1:2));
+%     C_gsm = componentSum(1,cc(1:2));
 %     C_gsm = sigma_v * eye(Dv);
+    %load('c_gsm-learned_248.mat');
+    C = eye(248);
+    C_gsm = C;
+    load('filters_gabor_256x248.mat');
+    %load('filters_gsm-learned_256x248.mat');
+    A_gsm = A;
+    load('sigmaX_gsm-learned-C.mat');
+    %load('sigmaX_gsm-learned-A.mat');
+    sigma_x_gsm = sigma_x;
     
     ge = gestaltCreate('temp','Dx',Dv,'k',length(cc),'filters','gabor_4or','obsVar',0.7,'cc',cc, ...
         'g_shape',1,'g_scale',0.1,'z_shape',2,'z_scale',2,'N',1,'generateComponents',false,'generateData',false,'nullComponent',length(cc)==3);
@@ -135,19 +144,22 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         for c = 1:nCont
             x_act = contrasts(c) * x_base;
             
-            cat_c = categorizeFilters(x_act,A,ge.cc,'CSM',filterCatPerc,false);
-            cat_m = categorizeFilters(x_act,A,B,'MSM',filterCatPerc,false);
-            cat_g = categorizeFilters(x_act,A,C_gsm,'GSM',filterCatPerc,false);
-%             cat_c = 0;
-%             cat_m = 0;
-%             cat_g = 0;
+            if categories
+                cat_c = categorizeFilters(x_act,A,ge.cc,'CSM',filterCatPerc,false);
+                cat_m = categorizeFilters(x_act,A,B,'MSM',filterCatPerc,false);
+                cat_g = categorizeFilters(x_act,A_gsm,C_gsm,'GSM',filterCatPerc,false);
+            else
+                cat_c = 0;
+                cat_m = 0;
+                cat_g = 0;
+            end
             csm_cats{end+1} = cat_c;
             msm_cats{end+1} = cat_m;
             gsm_cats{end+1} = cat_g;
             
             [covc,gsamp,zsamp] = gestaltPostVCovariance(x_act,ge,nSamp,randseed,false,target_acceptance);
             [covm,gsampm,zsampm] = msmPosteriorCovariance(x_act,nSamp,randseed,false,ge.A,B,ge.obsVar,sigma_v,ge.g_shape,ge.g_scale,ge.z_shape,ge.z_scale,target_acceptance);
-            [~,covg,zmeang,zstdg] = gsmPosteriorV(x_act,ge.A,C_gsm,sqrt(ge.obsVar),ge.z_shape,ge.z_scale,30);
+            [~,covg,zmeang,zstdg] = gsmPosteriorV(x_act,A_gsm,C_gsm,sigma_x_gsm,ge.z_shape,ge.z_scale,30);
             
             covmats{end+1} = covc;
             msm_covmats{end+1} = covm;
@@ -176,10 +188,12 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
         plotResults(contrasts,x_base,covmats,corrmats,gsamps,zsamps,'CSM');
         plotResults(contrasts,x_base,msm_covmats,msm_corrmats,msm_gsamps,msm_zsamps,'MSM');
         plotResults(contrasts,x_base,gsm_covmats,gsm_corrmats,[],gsm_zmoments,'GSM');
-        figure;
-        plotCatCorr(contrasts,corrmats,csm_cats,'CSM',false,3,1);
-        plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM',false,3,2);
-        plotCatCorr(contrasts,gsm_corrmats,gsm_cats,'GSM',true,3,3);
+        if categories
+            figure;
+            plotCatCorr(contrasts,corrmats,csm_cats,'CSM',false,3,1);
+            plotCatCorr(contrasts,msm_corrmats,msm_cats,'MSM',false,3,2);
+            plotCatCorr(contrasts,gsm_corrmats,gsm_cats,'GSM',true,3,3);
+        end
     end
     
 end
