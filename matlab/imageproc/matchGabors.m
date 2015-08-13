@@ -1,4 +1,4 @@
-function gabors = matchGabors(A,compare,randseed)
+function [gabors,permutation] = matchGabors(A,compare,randseed,plotStuff)
     
     close all;
     setrandseed(randseed);
@@ -15,10 +15,19 @@ function gabors = matchGabors(A,compare,randseed)
     orients = zeros(numFilt,1);
     phases = zeros(numFilt,1);
     sigmas = zeros(numFilt,1);
-    gabors = zeros(numFilt);
+    gabors = zeros(imSize^2,numFilt);
         
     options = optimoptions('fmincon','Algorithm','interior-point','Display', 'off');
-        
+      
+    permutation = zeros(numFilt,1);
+    if exist(compare, 'file') == 2
+        A_temp = A;
+        load(compare);
+        A_comp = A;
+        A = A_temp;
+        used = false(numFilt,1);        
+    end
+    
     %figure;
     for i = 1:numFilt
         printCounter(i,'stringVal','Filter','maxVal',numFilt);
@@ -84,35 +93,51 @@ function gabors = matchGabors(A,compare,randseed)
             %lambdas(i,1) = lambda0;
             %sigmas(i,1) = sigma0;
             act_gabor = gaborfilter(lambdas(i,1),orients(i,1),imSize,maxX(i),maxY(i),sigmas(i,1));
+        else
+            maxProd = -Inf;
+            maxInd = 0;
+            for j = 1:numFilt
+                if ~used(j)
+                    actProd = filter' * A_comp(:,j);
+                    if actProd > maxProd
+                        maxProd = actProd;
+                        maxInd = j;
+                    end
+                end
+            end
+            %used(maxInd) = true;
+            act_gabor = A_comp(:,maxInd);
+            permutation(i) = maxInd;
         end               
         gabors(:,i) = reshape(act_gabor,imSize^2,1);
     end
     
     save('filtermatching.mat','orients','lambdas','maxX','maxY');
     
-    figure;
-    hist(orients,20);
-    title('Orients');
-    figure;
-    hist(lambdas-2,20);
-    title('Wavelengths');
-    figure;
-    hist(sigmas,20);
-    title('Sigmas');
-    figure;
-    viewImageSet(A(:,1:100)');
-    figure;
-    viewImageSet(gabors(:,1:100)');
-    
-    figure;
-    scatter(maxX,maxY);
-    hold on;
-    scatter(maxX(orients<135),maxY(orients<135));
-    hold on;
-    scatter(maxX(orients<90),maxY(orients<90));
-    hold on;
-    scatter(maxX(orients<45),maxY(orients<45));
-    
+    if plotStuff
+        figure;
+        hist(orients,20);
+        title('Orients');
+        figure;
+        hist(lambdas-2,20);
+        title('Wavelengths');
+        figure;
+        hist(sigmas,20);
+        title('Sigmas');
+        figure;
+        viewImageSet(A(:,1:100)');
+        figure;
+        viewImageSet(gabors(:,1:100)');
+
+        figure;
+        scatter(maxX,maxY);
+        hold on;
+        scatter(maxX(orients<135),maxY(orients<135));
+        hold on;
+        scatter(maxX(orients<90),maxY(orients<90));
+        hold on;
+        scatter(maxX(orients<45),maxY(orients<45));
+    end
 end
 
 function rms = difference(filter,lambda,theta,phase)
