@@ -6,7 +6,7 @@
 !sigmaX_*.mat
 !c_*.mat
 !wnodes_*.mat
-!filtermatching.mat
+!bin/filtermatching.mat
 !cmp_*.mat
 !img_*mat
 !covariance_template*mat

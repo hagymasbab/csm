@@ -1,7 +1,12 @@
 function signalAndPriorCorrelations(A,C,perm)
     numFilt = size(A,2);
     priorCorr = corrcov(C);
+%     %priorCorr = log(abs(priorCorr));
+%     priorCorr = log(priorCorr.^2);
+%     %priorCorr = 1 ./ priorCorr;
     filterCorr = A'*A;
+%     %filterCorr = log(abs(filterCorr));
+%     filterCorr = log(filterCorr.^2);
     
     corrPairs = [];
     for i=1:numFilt

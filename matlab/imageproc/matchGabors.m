@@ -105,7 +105,7 @@ function [gabors,permutation] = matchGabors(A,compare,randseed,plotStuff)
                     end
                 end
             end
-            %used(maxInd) = true;
+            used(maxInd) = true;
             act_gabor = A_comp(:,maxInd);
             permutation(i) = maxInd;
         end               
