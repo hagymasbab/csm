@@ -55,7 +55,23 @@ function filterPairCorrelations(corr1,orient1,corr2,orient2)
     plotWithNan(diff./(abs(binned_average) + abs(binned_average')));
     
     figure
-    scatter(abs(binned_average(:)),diff(:))
+%     subplot(1,2,1);
+    absmax = max(abs(binned_average),abs(binned_average)');
+    scatter(absmax(:),diff(:))
+    xlabel('Larger absolute value of corr. matrices','FontSize',16);
+    ylabel('Absolute ifference between corr. matrices','FontSize',16);
+    hold on
+    plot(xlim(),xlim(),'k','LineWidth',2);
+    hold off
+    
+%     subplot(1,2,2);
+%     abssum = abs(binned_average) + abs(binned_average)';
+%     scatter(abssum(:),diff(:))
+%     xlabel('Sum of absolute values of the two matrices');
+%     ylabel('Difference between matrices');
+%     hold on
+%     plot(xlim(),xlim(),'k','LineWidth',2);
+%     hold off
     
 %     figure
 %     scatter(abs(binned_average(:)),binned_variance(:));
