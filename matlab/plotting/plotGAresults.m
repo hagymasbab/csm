@@ -47,7 +47,7 @@ for i=1:numbatch+1
       for other = kk+1:ge.k
           norms(i,other) = norm(act_cc{other});
           dist = covcompRootMeanSquare(act_cc(kk),act_cc(other),1);
-          dist = dist / (norms(i,kk)*norms(i,other));
+          %dist = dist / (norms(i,kk)*norms(i,other));
           distances(i,met_idx) = dist;
           met_idx = met_idx+1;
       end
@@ -76,7 +76,8 @@ subplot(2,numcol,numcol+2)
 plot((0:numbatch)',distances);
 xlim([0 numbatch]);
 xlabel('Gradient ascent batch #','FontSize',16)
-ylabel({'RMS distance of component pairs','normalised by the product of norms'},'FontSize',16)
+%ylabel({'RMS distance of component pairs','normalised by the product of norms'},'FontSize',16)
+ylabel('RMS distance of component pairs','FontSize',16)
 set(gca,'FontSize',16)
 
 if exist('trueCC') && ~isempty(trueCC)    
