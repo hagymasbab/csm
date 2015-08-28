@@ -8,10 +8,8 @@ function plotCorrelationMatrices()
     synsignal = sc;
     load('filters_gabor_256x248.mat')
     synfilter = corrcov(A'*A);
-    invsynfilter = corrcov(stableInverse(A'*A));
     load('filters_gsm-learned_256x248.mat')
     learnfilter = corrcov(A'*A);
-    invlearnfilter = corrcov(inv(A'*A));
     
     close all;
     
