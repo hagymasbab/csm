@@ -9,12 +9,13 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     addParameter(parser,'dampA',true,@islogical);
     addParameter(parser,'testLike',0);  
     addParameter(parser,'initCond','random');
-    addParameter(parser,'initNoise','0.1');
+    addParameter(parser,'initNoise',10);
     addParameter(parser,'sigmaSteps',0);
     addParameter(parser,'initSigma',0.5,@isnumeric); % only used if we start a new run
     addParameter(parser,'startWithSigma',false,@islogical);
     addParameter(parser,'synthetic',false,@islogical);
     addParameter(parser,'likeMethod','algebra');
+    addParameter(parser,'adjustBatchSize',false,@islogical);
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -78,6 +79,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         state.estimated_cholesky = choles;
         state.sigma_x = ge.obsVar;
         state.learningRate = params.learningRate;
+        state.batchSize = batchSize;
         state_sequence{1} = state;
         full_like = [];
         batch_like = [];
@@ -179,10 +181,25 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         state.estimated_cholesky = choles;
         state.sigma_x = ge.obsVar;
         state.learningRate = params.learningRate;
+        state.batchSize = batchSize;
         state_sequence{end+1} = state;
         batch_indices = [batch_indices; img_indices];
         save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence', ...
             'batch_indices','test_indices','sigset_indices','trueCC','trueSigma','trueLL','-v7.3');
+        
+        if params.adjustBatchSize && ~isempty(test_indices) && batchSize < N_all && test_like(end) > test_like(end-1)
+            prevBatchSize = batchSize;
+            batchSize = min(batchSize * 2, N_all);
+            batchSizeRatio = batchSize / prevBatchSize;
+            batchSizeDiff = batchSize - prevBatchSize;
+            % adjust learning rate accordingly
+            params.learningRate = params.learningRate / batchSizeRatio;
+            % augment the batch_indices vector with zeros so it remains
+            % rectangular
+            batchesSoFar = size(batch_indices,1);
+            batch_indices = [batch_indices zeros(batchesSoFar,batchSizeDiff)];
+            fprintf('Adjusting batch size %d -> %d\n',prevBatchSize,batchSize);
+        end            
         
         if params.sigmaSteps > 0 && rem(batch,params.sigmaSteps) == 0
             ge.obsVar = gestaltFindSigmaX(ge,choles,X_sigset,params.priorSamples,params.likeMethod,loadSamples,verb);

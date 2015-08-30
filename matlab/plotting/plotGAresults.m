@@ -6,8 +6,17 @@ end
 numbatch = length(test_like)-1;
 numstep = size(batch_like,2)-1;
 
+batch_like_adjusted = zeros(size(batch_like));
+if isfield(state_sequence{1},'batchSize')
+    for b = 1:numbatch
+        batch_like_adjusted(b,:) = batch_like_adjusted(b,:) / state_sequence{b}.batchSize;
+    end
+else
+    batch_like_adjusted = batch_like ./ size(batch_indices,2);
+end
+
 subplot(2,numcol,1)
-plot((0:numstep)',batch_like'/size(batch_indices,2),'LineWidth',1)
+plot((0:numstep)',batch_like_adjusted','LineWidth',1)
 %hold on
 %plot((0:size(batch_like,2)-1)',mean(batch_like),'LineWidth',3)
 xlabel('Gradient ascent step #','FontSize',16)
