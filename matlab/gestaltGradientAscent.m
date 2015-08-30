@@ -187,7 +187,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence', ...
             'batch_indices','test_indices','sigset_indices','trueCC','trueSigma','trueLL','-v7.3');
         
-        if params.adjustBatchSize && ~isempty(test_indices) && batchSize < N_all && test_like(end) > test_like(end-1)
+        if params.adjustBatchSize && ~isempty(test_indices) && batchSize < N_all && test_like(end) < test_like(end-1)
             prevBatchSize = batchSize;
             batchSize = min(batchSize * 2, N_all);
             batchSizeRatio = batchSize / prevBatchSize;

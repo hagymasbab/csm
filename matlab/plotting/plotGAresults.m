@@ -9,7 +9,7 @@ numstep = size(batch_like,2)-1;
 batch_like_adjusted = zeros(size(batch_like));
 if isfield(state_sequence{1},'batchSize')
     for b = 1:numbatch
-        batch_like_adjusted(b,:) = batch_like_adjusted(b,:) / state_sequence{b}.batchSize;
+        batch_like_adjusted(b,:) = batch_like(b,:) ./ state_sequence{b}.batchSize;
     end
 else
     batch_like_adjusted = batch_like ./ size(batch_indices,2);
