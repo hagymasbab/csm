@@ -77,14 +77,14 @@ function contrastMeanCov(Dv,randseed,loadStuff,plotStuff,target_acceptance,nSamp
 %     C_gsm = C_gsm / (max(C_gsm(:)));
 %     C_gsm = componentSum(1,cc(1:2));
 %     C_gsm = sigma_v * eye(Dv);
-    %load('c_gsm-learned_248.mat');
-    C = eye(248);
+    load('c_gsm-learned_248.mat');
+    %C = eye(248);
     C_gsm = C;
-    load('filters_gabor_256x248.mat');
-    %load('filters_gsm-learned_256x248.mat');
+    %load('filters_gabor_256x248.mat');
+    load('filters_gsm-learned_256x248.mat');
     A_gsm = A;
-    load('sigmaX_gsm-learned-C.mat');
-    %load('sigmaX_gsm-learned-A.mat');
+    %load('sigmaX_gsm-syn-A.mat');
+    load('sigmaX_gsm-learned-A.mat');
     sigma_x_gsm = sigma_x;
     
     ge = gestaltCreate('temp','Dx',Dv,'k',length(cc),'filters','gabor_4or','obsVar',0.7,'cc',cc, ...
