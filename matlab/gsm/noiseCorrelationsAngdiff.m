@@ -2,8 +2,8 @@ function noiseCorrelationsAngdiff(filters,priorcov,orients,sigma_x)
     z = 1;
     nFilt = length(orients);
     postCov = stableInverse(stableInverse(priorcov) + (z^2 / sigma_x^2) * (filters' * filters));
-    %postCorr = corrcov(postCov);
-    postCorr = corrcov(stableInverse(filters'*filters));
+    postCorr = corrcov(postCov);
+    %postCorr = corrcov(stableInverse(filters'*filters));
     %postCorr = corrcov(priorcov);
     
     corr_vs_orientdiff = [];
@@ -15,9 +15,11 @@ function noiseCorrelationsAngdiff(filters,priorcov,orients,sigma_x)
         end
     end
     
-    f = fit(corr_vs_orientdiff(:,1),corr_vs_orientdiff(:,2),'poly2');
+    f = fit(corr_vs_orientdiff(:,1),abs(corr_vs_orientdiff(:,2)),'poly2');
     
-    plot(f,corr_vs_orientdiff(:,1),corr_vs_orientdiff(:,2));
+    close all
+    plot(f,corr_vs_orientdiff(:,1),abs(corr_vs_orientdiff(:,2)));
     ylim([-0.1 0.2])
-        
+    figure;
+    scatter(corr_vs_orientdiff(:,1),corr_vs_orientdiff(:,2))
 end
