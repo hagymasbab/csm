@@ -1,4 +1,4 @@
-function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match)
+function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod)
 
     nFilt = size(A,2);
     imsize = sqrt(size(A,1));
@@ -32,30 +32,47 @@ function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match)
         
     if ~loadStuff         
         for t = 1:thetaRes
-            printCounter(t,'maxVal',thetaRes,'stringVal','Orientation');        
+            printCounter(t,'maxVal',thetaRes,'stringVal','Orientation');    
+            theta_responses = zeros(lambdaRes,nFilt);
             for l = 1:lambdaRes                
                 if strcmp(match,'grating')
+                    lambda_responses = zeros(phaseRes,nFilt);
                     for p = 1:phaseRes                    
                         act_grat = grating(lambdaVals(l),thetaVals(t),phaseVals(p),imsize);                            
                         act_stim = act_grat(:);
                         act_stim = act_stim ./ std(act_stim);
-                        act_resp = gsmPostMeanTransform * act_stim;
-                        responses(:,t) = responses(:,t) + act_resp;
-                    end
+                        %act_resp = gsmPostMeanTransform * act_stim;
+                        if scalarprod
+                            act_resp = A' * act_stim;
+                        else
+                            act_resp = gsmPostMeanTransform * act_stim;
+                        end
+                        %responses(:,t) = responses(:,t) + act_resp;
+                        lambda_responses(p,:) = act_resp;                        
+                    end                    
                 elseif strcmp(match,'gabor')
+                    lambda_responses = zeros(spaceRes^2,nFilt);
                     for x = 1:spaceRes
                         for y = 1:spaceRes
                             act_gabor = gaborfilter(lambdaVals(l),thetaVals(t),imsize,xVals(x),yVals(y));
                             act_stim = act_gabor(:);
                             act_stim = act_stim ./ std(act_stim);
-                            act_resp = gsmPostMeanTransform * act_stim;
-                            responses(:,t) = responses(:,t) + act_resp;
+                            %act_resp = gsmPostMeanTransform * act_stim;
+                            %responses(:,t) = responses(:,t) + act_resp;                            
+                            if scalarprod
+                                act_resp = A' * act_stim;
+                            else
+                                act_resp = gsmPostMeanTransform * act_stim;
+                            end
+                            lambda_responses((x-1)*spaceRes+y,:) = act_resp;
                         end
                     end
                 else
                     error('no valid match');
                 end
+                theta_responses(l,:) = max(lambda_responses)';                
             end
+            responses(:,t) = max(theta_responses)';
         end
     end
     for i = 1:nFilt
