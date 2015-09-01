@@ -1,5 +1,6 @@
 function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod)
 
+    setrandseed(1);
     nFilt = size(A,2);
     imsize = sqrt(size(A,1));
     lambdaRes = 3;
@@ -45,7 +46,8 @@ function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarpr
                         if scalarprod
                             act_resp = A' * act_stim;
                         else
-                            act_resp = gsmPostMeanTransform * act_stim;
+                            %act_resp = gsmPostMeanTransform * act_stim;
+                            act_resp = gsmPosteriorV(act_stim,A,C,sigma_x,2,2,10);
                         end
                         %responses(:,t) = responses(:,t) + act_resp;
                         lambda_responses(p,:) = act_resp;                        
