@@ -1,4 +1,6 @@
-function correlationPlot(x1,x2,c)
+function correlationPlot(x1,x2)
+    cr = corrcoef(x1,x2);
+    c = cr(1,2);
     def_colors = get(groot,'DefaultAxesColorOrder');
     reddish_color = def_colors(2,:);
     rfont = 20;

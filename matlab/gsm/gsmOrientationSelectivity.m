@@ -77,6 +77,28 @@ function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarpr
             responses(:,t) = max(theta_responses)';
         end
     end
+    
+    [~,maxidx] = max(responses');
+    maxtun = thetaVals(maxidx);
+    
+    if any(toPlot)
+        close all;
+        priorcorr_vs_orientdiff = [];
+        priorCorr = corrcov(C);
+        for i = 1:nFilt
+            for j=i+1:nFilt
+                priorcorr_vs_orientdiff = [priorcorr_vs_orientdiff; abs(maxtun(i)-maxtun(j)) priorCorr(i,j)];
+            end
+        end
+        scatter(priorcorr_vs_orientdiff(:,1),abs(priorcorr_vs_orientdiff(:,2)));
+        xlabel('Preferred orientation difference','FontSize',16);
+        ylabel('Prior correlation magnitude','FontSize',16);
+%         hold on
+%         correlationPlot(priorcorr_vs_orientdiff(:,1),abs(priorcorr_vs_orientdiff(:,2)));
+%         hold off
+        figure;
+    end
+    
     for i = 1:nFilt
         f = A(:,i);
         if toPlot(i)
@@ -92,7 +114,8 @@ function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarpr
             
             subplot(rownum*nRow,nPlot,(tuningrow-1)*nPlot + actcol);
             plot(thetaVals,responses(i,:))
-            title('Orientation tuning');
+            [~,maxidx] = max(responses(i,:));
+            title(sprintf('Max tuning %.2f',maxtun(i)));
             
             plotcount = plotcount + 1;
         end
