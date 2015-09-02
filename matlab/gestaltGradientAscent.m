@@ -15,7 +15,7 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
     addParameter(parser,'startWithSigma',false,@islogical);
     addParameter(parser,'synthetic',false,@islogical);
     addParameter(parser,'likeMethod','algebra');
-    addParameter(parser,'adjustBatchSize',false,@islogical);
+    addParameter(parser,'adjustBatchSize',0,@isnumeric);
     parse(parser,varargin{:});        
     params = parser.Results;  
     
@@ -128,6 +128,10 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         loadSamples = true;
     end
     
+    if params.adjustBatchSize > 0
+        drops = 0;
+    end
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%% MAIN LOOP %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -187,18 +191,23 @@ function gestaltGradientAscent(ge,data,batchSize,stepNum,varargin)
         save('bin/gradasc_iter.mat','batch_like','full_like','test_like','ge','state_sequence', ...
             'batch_indices','test_indices','sigset_indices','trueCC','trueSigma','trueLL','-v7.3');
         
-        if params.adjustBatchSize && ~isempty(test_indices) && batchSize < N_all && test_like(end) < test_like(end-1)
-            prevBatchSize = batchSize;
-            batchSize = min(batchSize * 2, N_all);
-            batchSizeRatio = batchSize / prevBatchSize;
-            batchSizeDiff = batchSize - prevBatchSize;
-            % adjust learning rate accordingly
-            params.learningRate = params.learningRate / batchSizeRatio;
-            % augment the batch_indices vector with zeros so it remains
-            % rectangular
-            batchesSoFar = size(batch_indices,1);
-            batch_indices = [batch_indices zeros(batchesSoFar,batchSizeDiff)];
-            fprintf('Adjusting batch size %d -> %d\n',prevBatchSize,batchSize);
+        if params.adjustBatchSize > 0 && ~isempty(test_indices) && batchSize < N_all && test_like(end) < test_like(end-1)
+            if drops >= params.adjustBatchSize
+                prevBatchSize = batchSize;
+                batchSize = min(batchSize * 2, N_all);
+                batchSizeRatio = batchSize / prevBatchSize;
+                batchSizeDiff = batchSize - prevBatchSize;
+                % adjust learning rate accordingly
+                params.learningRate = params.learningRate / batchSizeRatio;
+                % augment the batch_indices vector with zeros so it remains
+                % rectangular
+                batchesSoFar = size(batch_indices,1);
+                batch_indices = [batch_indices zeros(batchesSoFar,batchSizeDiff)];
+                fprintf('Adjusting batch size %d -> %d\n',prevBatchSize,batchSize);
+                drops = 0;
+            else
+                drops = drops + 1;
+            end
         end            
         
         if params.sigmaSteps > 0 && rem(batch,params.sigmaSteps) == 0
