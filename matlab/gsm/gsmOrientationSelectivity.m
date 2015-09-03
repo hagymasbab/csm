@@ -1,4 +1,4 @@
-function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod)
+function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast)
 
     setrandseed(1);
     nFilt = size(A,2);
@@ -39,9 +39,9 @@ function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarpr
                 if strcmp(match,'grating')
                     lambda_responses = zeros(phaseRes,nFilt);
                     for p = 1:phaseRes                    
-                        act_grat = grating(lambdaVals(l),thetaVals(t),phaseVals(p),imsize);                            
+                        act_grat = contrast * grating(lambdaVals(l),thetaVals(t),phaseVals(p),imsize);                            
                         act_stim = act_grat(:);
-                        act_stim = act_stim ./ std(act_stim);
+                        %act_stim = act_stim ./ std(act_stim);
                         %act_resp = gsmPostMeanTransform * act_stim;
                         if scalarprod
                             act_resp = A' * act_stim;
@@ -56,7 +56,7 @@ function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarpr
                     lambda_responses = zeros(spaceRes^2,nFilt);
                     for x = 1:spaceRes
                         for y = 1:spaceRes
-                            act_gabor = gaborfilter(lambdaVals(l),thetaVals(t),imsize,xVals(x),yVals(y));
+                            act_gabor = contrast * gaborfilter(lambdaVals(l),thetaVals(t),imsize,xVals(x),yVals(y));
                             act_stim = act_gabor(:);
                             act_stim = act_stim ./ std(act_stim);
                             %act_resp = gsmPostMeanTransform * act_stim;
