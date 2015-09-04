@@ -6,6 +6,7 @@
 
 # temporary files from text editors
 *~
+*.swp
 
 # OSX folder property files
 .DS_store
