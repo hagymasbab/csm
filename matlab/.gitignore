@@ -11,7 +11,7 @@
 !img_*mat
 !covariance_template*mat
 !test_indices*mat
-!directions*mat
+!orientpref*mat
 # ignore generated figures
 *.fig
 # also temporary code files created by matlab
