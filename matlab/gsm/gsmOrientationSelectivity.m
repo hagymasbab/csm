@@ -1,4 +1,4 @@
-function gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast)
+function maxtun = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast)
 
     setrandseed(1);
     nFilt = size(A,2);
