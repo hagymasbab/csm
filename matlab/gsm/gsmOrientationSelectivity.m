@@ -1,4 +1,4 @@
-function maxtun = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast)
+function [maxtun,responses] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast,plotStuff)
 
     setrandseed(1);
     nFilt = size(A,2);
@@ -18,18 +18,20 @@ function maxtun = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match
         responses = zeros(nFilt,thetaRes);        
     end
     
-    nPlot = min(10,nFilt);
-    nRow = 2;
-    plotIndices = [];
-    for r = 1:nRow
-        plotIndices = [plotIndices; chooseKfromN(nPlot,nFilt)];
+    if plotStuff
+        nPlot = min(10,nFilt);
+        nRow = 2;
+        plotIndices = [];
+        for r = 1:nRow
+            plotIndices = [plotIndices; chooseKfromN(nPlot,nFilt)];
+        end
+        toPlot = false(nFilt,1);
+        toPlot(plotIndices(:)) = true;
+        plotcount = 1;
     end
-    toPlot = false(nFilt,1);
-    toPlot(plotIndices(:)) = true;
-    plotcount = 1;
     
-    z = 1;
-    gsmPostMeanTransform = (z / sigma_x^2) * stableInverse(stableInverse(C) + (z^2 / sigma_x^2) * (A'*A)) * A';
+%     z = 1;
+%     gsmPostMeanTransform = (z / sigma_x^2) * stableInverse(stableInverse(C) + (z^2 / sigma_x^2) * (A'*A)) * A';
         
     if ~loadStuff         
         for t = 1:thetaRes
@@ -81,7 +83,7 @@ function maxtun = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match
     [~,maxidx] = max(responses');
     maxtun = thetaVals(maxidx);
     
-    if any(toPlot)
+    if plotStuff
         close all;
         priorcorr_vs_orientdiff = [];
         priorCorr = corrcov(C);
@@ -97,29 +99,29 @@ function maxtun = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match
 %         correlationPlot(priorcorr_vs_orientdiff(:,1),abs(priorcorr_vs_orientdiff(:,2)));
 %         hold off
         figure;
-    end
     
-    for i = 1:nFilt
-        f = A(:,i);
-        if toPlot(i)
-            rownum = 2;
-            actbundle = ceil(plotcount / nPlot);
-            filterrow = (actbundle-1)* rownum + 1;
-            tuningrow = actbundle * rownum;
-            actcol = plotcount - (actbundle-1) * nPlot;
-            
-            subplot(rownum*nRow,nPlot,(filterrow-1)*nPlot + actcol);
-            viewImage(f,'useMax',true);
-            title(sprintf('Filter no. %d',i));            
-            
-            subplot(rownum*nRow,nPlot,(tuningrow-1)*nPlot + actcol);
-            plot(thetaVals,responses(i,:))
-            [~,maxidx] = max(responses(i,:));
-            title(sprintf('Max tuning %.2f',maxtun(i)));
-            
-            plotcount = plotcount + 1;
-        end
-    end    
+        for i = 1:nFilt
+            f = A(:,i);
+            if toPlot(i)
+                rownum = 2;
+                actbundle = ceil(plotcount / nPlot);
+                filterrow = (actbundle-1)* rownum + 1;
+                tuningrow = actbundle * rownum;
+                actcol = plotcount - (actbundle-1) * nPlot;
+
+                subplot(rownum*nRow,nPlot,(filterrow-1)*nPlot + actcol);
+                viewImage(f,'useMax',true);
+                title(sprintf('Filter no. %d',i));            
+
+                subplot(rownum*nRow,nPlot,(tuningrow-1)*nPlot + actcol);
+                plot(thetaVals,responses(i,:))
+                [~,maxidx] = max(responses(i,:));
+                title(sprintf('Max tuning %.2f',maxtun(i)));
+
+                plotcount = plotcount + 1;
+            end
+        end    
+    end
     
     if ~loadStuff
         save('bin/save_gsmorient.mat','responses');
