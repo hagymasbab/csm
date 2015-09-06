@@ -1,4 +1,4 @@
-function [maxtun,responses] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast,plotStuff)
+function [maxtun,responses,maxPhase,maxLambda,prefRespVars] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast,plotStuff)
 
     setrandseed(1);
     nFilt = size(A,2);
@@ -15,7 +15,10 @@ function [maxtun,responses] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loa
     if loadStuff
         load('save_gsmorient.mat');
     else
-        responses = zeros(nFilt,thetaRes);        
+        responses = zeros(nFilt,thetaRes);  
+        respVars = zeros(nFilt,thetaRes);  
+        respLambda = zeros(nFilt,thetaRes);
+        respPhase = zeros(nFilt,thetaRes);
     end
     
     if plotStuff
@@ -37,9 +40,12 @@ function [maxtun,responses] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loa
         for t = 1:thetaRes
             printCounter(t,'maxVal',thetaRes,'stringVal','Orientation');    
             theta_responses = zeros(lambdaRes,nFilt);
+            theta_variances = zeros(lambdaRes,nFilt);
+            phase_indices = zeros(lambdaRes,nFilt);
             for l = 1:lambdaRes                
                 if strcmp(match,'grating')
                     lambda_responses = zeros(phaseRes,nFilt);
+                    lambda_variances = zeros(phaseRes,nFilt);
                     for p = 1:phaseRes                    
                         act_grat = contrast * grating(lambdaVals(l),thetaVals(t),phaseVals(p),imsize);                            
                         act_stim = act_grat(:);
@@ -47,15 +53,19 @@ function [maxtun,responses] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loa
                         %act_resp = gsmPostMeanTransform * act_stim;
                         if scalarprod
                             act_resp = A' * act_stim;
+                            act_var = zeros(nFilt,1);
                         else
                             %act_resp = gsmPostMeanTransform * act_stim;
-                            act_resp = gsmPosteriorV(act_stim,A,C,sigma_x,2,2,10);
+                            [act_resp,act_C_post] = gsmPosteriorV(act_stim,A,C,sigma_x,2,2,10);
+                            act_var = diag(act_C_post);
                         end
                         %responses(:,t) = responses(:,t) + act_resp;
-                        lambda_responses(p,:) = act_resp;                        
+                        lambda_responses(p,:) = act_resp;   
+                        lambda_variances(p,:) = act_var;  
                     end                    
                 elseif strcmp(match,'gabor')
                     lambda_responses = zeros(spaceRes^2,nFilt);
+                    % tODO lambda variances
                     for x = 1:spaceRes
                         for y = 1:spaceRes
                             act_gabor = contrast * gaborfilter(lambdaVals(l),thetaVals(t),imsize,xVals(x),yVals(y));
@@ -74,14 +84,29 @@ function [maxtun,responses] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loa
                 else
                     error('no valid match');
                 end
-                theta_responses(l,:) = max(lambda_responses)';                
+                % this only makes sense if we used gratings
+                [theta_resp,phase_idx] = max(lambda_responses);  
+                theta_responses(l,:) = theta_resp';
+                theta_variances(l,:) = lambda_variances(phase_idx);
+                phase_indices(l,:) = phase_idx';
             end
-            responses(:,t) = max(theta_responses)';
+            [resp,lambda_idx] = max(theta_responses);
+            responses(:,t) = resp';
+            respVars(:,t) = theta_variances(lambda_idx);
+            phase_idx = phase_indices(lambda_idx');
+            actPhase = phaseVals(phase_idx);
+            actLambda = lambdaVals(lambda_idx');
+            respPhase(:,t) = actPhase;
+            respLambda(:,t) = actLambda;
         end
     end
     
     [~,maxidx] = max(responses');
     maxtun = thetaVals(maxidx);
+    maxPhase = respPhase(maxidx);
+    maxLambda = respLambda(maxidx);
+    trespVars = respVars';
+    prefRespVars = trespVars(maxidx);
     
     if plotStuff
         close all;
@@ -124,7 +149,7 @@ function [maxtun,responses] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loa
     end
     
     if ~loadStuff
-        save('bin/save_gsmorient.mat','responses');
+        save('bin/save_gsmorient.mat','responses','respLambda','respPhase','respVars');
     end
     
 end
