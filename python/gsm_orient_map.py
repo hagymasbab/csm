@@ -20,5 +20,5 @@ lay = g.layout_fruchterman_reingold(weights="weight",area=16*g.vcount()**2)
 #lay = g.layout_drl(weights="weight")
 #lay = g.layout_kamada_kawai(weights="weight")
 #lay = g.layout_sugiyama(weights="weight")
-g.write_svg('orient_map.svg',layout=lay,labels=None,vertex_size=10,colors="color",edge_colors=["white"]*g.ecount())
+g.write_svg('orient_map.svg',layout=lay,labels=None,vertex_size=10,colors="color",edge_colors=["grey"]*g.ecount())
 

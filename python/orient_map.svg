@@ -12,15 +12,15 @@ width="400px" height="400px"> <defs id="defs3">
    style="overflow:visible;">
   <path
      id="pathArrow0"
-     style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;fill:white"
+     style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;fill:grey"
      d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
      transform="scale(1.1) rotate(180) translate(1,0)" />
 </marker>
 </defs>
 <g inkscape:groupmode="layer" id="layer2" inkscape:label="Lines" sodipodi:insensitive="true">
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 251.019196219,63.3084473175 281.563837099,97.9632291976"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 91.1501536496,239.362685929 87.4472779215,191.990718579"
     id="path0"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -29,8 +29,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g38"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 251.019196219,63.3084473175 223.127016534,42.7820821395"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 91.1501536496,239.362685929 99.9274523748,264.490262891"
     id="path1"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -39,8 +39,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g56"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 251.019196219,63.3084473175 268.881001723,38.4226294451"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 91.1501536496,239.362685929 42.172184179,245.852888947"
     id="path2"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -49,8 +49,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g59"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 251.019196219,63.3084473175 286.610010191,76.5386511903"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 91.1501536496,239.362685929 80.044049304,214.612630901"
     id="path3"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -59,8 +59,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g62"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 251.019196219,63.3084473175 246.580774575,33.6462945027"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 91.1501536496,239.362685929 66.2056420513,254.771397421"
     id="path4"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -69,8 +69,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g67"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 251.019196219,63.3084473175 187.344126499,77.6214428846"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 91.1501536496,239.362685929 156.929619495,280.330507278"
     id="path5"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -79,8 +79,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 251.019196219,63.3084473175 278.583385669,112.187890915"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 91.1501536496,239.362685929 102.618903078,186.714053833"
     id="path6"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -89,8 +89,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 328.28013741,204.888730293 301.619171461,175.324019246"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 146.160311779,99.2078226452 136.451766463,135.694930657"
     id="path7"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -99,8 +99,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g5"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 155.835540323,372.176380365 198.842504475,367.219501203"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 367.623577825,294.96494204 363.215396726,257.424770271"
     id="path8"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -109,8 +109,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g11"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 155.835540323,372.176380365 132.313203399,374.594640747"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 367.623577825,294.96494204 348.931963587,321.713146109"
     id="path9"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -119,8 +119,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g36"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 39.5198679595,170.820475574 47.4348304531,186.362833609"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 41.7518671499,300.289119251 77.663011037,327.737141263"
     id="path10"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -129,8 +129,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g6"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 39.5198679595,170.820475574 80.5944850205,193.279794177"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 41.7518671499,300.289119251 51.3283201553,315.702400269"
     id="path11"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -139,8 +139,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g9"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 359.851418755,173.344691432 320.102637529,152.496036702"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 71.3836935961,95.73174369 97.5617819239,131.578866267"
     id="path12"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -149,8 +149,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g24"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 294.922210131,167.897666915 269.401928871,178.171760177"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 133.880419602,145.358686414 157.502294977,139.188862204"
     id="path13"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -159,8 +159,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g8"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 294.922210131,167.897666915 277.621733357,196.378762647"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 133.880419602,145.358686414 171.732513056,158.042037104"
     id="path14"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -169,8 +169,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g15"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 294.922210131,167.897666915 304.932372505,155.605259776"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 133.880419602,145.358686414 113.288040694,141.49759248"
     id="path15"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -179,8 +179,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g24"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 294.922210131,167.897666915 289.250326086,115.407288461"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 133.880419602,145.358686414 94.566244216,175.887804848"
     id="path16"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -189,8 +189,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g38"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 294.922210131,167.897666915 320.254278177,167.976495466"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 133.880419602,145.358686414 117.354095628,123.367651272"
     id="path17"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -199,8 +199,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g49"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 294.922210131,167.897666915 285.857853762,130.6152841"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 133.880419602,145.358686414 111.527399546,169.592623509"
     id="path18"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -209,8 +209,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 51.9727942824,195.273887659 61.7056057267,208.066474109"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 85.6080240479,333.809765758 93.0176244689,350.08404218"
     id="path19"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -219,8 +219,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g7"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 51.9727942824,195.273887659 79.3964818042,197.329783605"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 85.6080240479,333.809765758 66.0978932532,327.342774371"
     id="path20"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -229,8 +229,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g9"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 51.9727942824,195.273887659 68.5726111951,178.451043393"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 85.6080240479,333.809765758 116.204884525,353.089316865"
     id="path21"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -239,8 +239,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g23"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 67.7605568096,216.02496438 73.8693957367,181.182704128"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 97.1613084319,359.185134599 114.669222857,358.698331822"
     id="path22"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -249,8 +249,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g23"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 260.125455197,181.906333268 267.715954112,196.106411951"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 167.177707353,136.661730359 176.251963972,152.537340102"
     id="path23"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -259,8 +259,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g15"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 260.125455197,181.906333268 243.572772648,220.367148023"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 167.177707353,136.661730359 214.153756855,144.760655171"
     id="path24"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -269,8 +269,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g17"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 260.125455197,181.906333268 302.924441043,153.395200046"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 167.177707353,136.661730359 113.448307283,139.185496071"
     id="path25"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -279,8 +279,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g24"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 195.34316698,236.805749759 229.751102651,231.169189312"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 238.39397884,114.303438345 228.092017319,137.331454765"
     id="path26"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -289,8 +289,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g17"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 208.776737443,366.074505424 200.255247551,356.961160071"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 362.049152708,247.493009355 349.062159065,245.821549358"
     id="path27"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -299,8 +299,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g35"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 208.776737443,366.074505424 243.752816184,326.403761224"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 362.049152708,247.493009355 323.249609082,209.834410076"
     id="path28"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -309,8 +309,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g72"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 208.776737443,366.074505424 211.545841358,336.914864966"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 362.049152708,247.493009355 356.899423736,214.658283"
     id="path29"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -319,8 +319,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g81"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 93.0402567385,345.06645334 126.637364472,316.7993065"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 307.77777944,43.7622718859 302.813947796,69.5998387174"
     id="path30"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -329,8 +329,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g14"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 126.079304203,342.16684063 131.789915112,320.043919234"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 335.687179249,65.8927639914 310.24644488,75.793517849"
     id="path31"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -339,8 +339,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g14"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.289298465,310.361301672 118.014481899,287.834742363"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 300.927281316,79.4202506024 254.268043486,54.9500127798"
     id="path32"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -349,8 +349,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g31"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.289298465,310.361301672 106.867194806,312.488314898"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 300.927281316,79.4202506024 284.274907332,49.8596427925"
     id="path33"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -359,8 +359,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g43"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.289298465,310.361301672 196.493455943,301.172513938"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 300.927281316,79.4202506024 340.611670757,150.362252784"
     id="path34"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -369,8 +369,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 272.430114085,204.925521643 247.617325406,223.549593279"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 181.214375554,161.21918733 214.554845807,149.720141761"
     id="path35"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -379,8 +379,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g17"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 308.346387054,251.278956048 290.130902085,244.947944167"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 351.886692946,105.360715234 363.192707412,117.348009665"
     id="path36"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -389,8 +389,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g21"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 308.346387054,251.278956048 340.703812841,243.606692094"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 351.886692946,105.360715234 331.764803685,103.622214623"
     id="path37"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -399,8 +399,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g25"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 308.346387054,251.278956048 251.393606562,272.390755199"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 351.886692946,105.360715234 332.355415891,139.934058713"
     id="path38"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -409,8 +409,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g48"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 239.619566265,229.552579928 208.259658003,207.231126041"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 224.008371854,146.459644055 208.176039189,115.717907169"
     id="path39"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -419,8 +419,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g30"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 239.619566265,229.552579928 266.667398741,289.193673168"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 224.008371854,146.459644055 283.205836281,170.56252586"
     id="path40"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -429,8 +429,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g71"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 239.619566265,229.552579928 262.702580455,264.764405611"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 224.008371854,146.459644055 266.043850757,158.25276774"
     id="path41"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -439,8 +439,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g79"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 94.9276155287,249.154783419 118.827366598,247.914046153"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 216.123758141,16.7447112218 236.788479758,17.7794012286"
     id="path42"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -449,8 +449,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g33"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 94.9276155287,249.154783419 75.6321315794,270.95207246"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 216.123758141,16.7447112218 197.168622914,31.1760688025"
     id="path43"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -459,8 +459,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g37"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 390.0,167.921668567 371.264578271,141.686333433"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 35.8388083013,104.644357967 28.4943109374,129.646017566"
     id="path44"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -469,8 +469,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g20"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 365.453039181,133.548396754 346.289257176,100.532798042"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 25.6758026422,139.240599943 27.2425572372,164.747975272"
     id="path45"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -479,8 +479,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g32"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 365.453039181,133.548396754 333.789479099,118.585274889"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 25.6758026422,139.240599943 51.0307397874,158.014285318"
     id="path46"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -489,8 +489,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g60"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 280.685160611,241.664962594 249.507520929,269.241312904"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 370.054027371,124.622780343 336.148537393,143.731061055"
     id="path47"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -499,8 +499,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g48"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 116.105046402,152.773002113 84.6875422776,167.167615928"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 144.557640654,333.911567877 130.967251207,350.655975577"
     id="path48"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -509,8 +509,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g23"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 116.105046402,152.773002113 151.535524018,100.850453006"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 144.557640654,333.911567877 179.140855191,298.99297975"
     id="path49"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -519,8 +519,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 75.5963378334,171.332949258 67.630253461,136.919987227"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 124.665359582,358.420391972 166.679241447,369.522398278"
     id="path50"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -529,8 +529,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g61"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 311.246875218,147.851096025 292.956756981,114.248361076"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 103.459320804,139.654696575 90.3525162781,172.724661548"
     id="path51"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -539,8 +539,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g38"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 311.246875218,147.851096025 323.393596991,160.732194652"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 103.459320804,139.654696575 108.257081455,124.884260063"
     id="path52"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -549,8 +549,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g49"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 311.246875218,147.851096025 321.013801718,123.589217375"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 103.459320804,139.654696575 67.8384105024,159.161757865"
     id="path53"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -559,8 +559,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g60"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 311.246875218,147.851096025 290.668950124,127.865430988"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 103.459320804,139.654696575 104.402129644,166.949152796"
     id="path54"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -569,8 +569,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 350.434031181,241.299561609 341.755999126,262.276660736"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 321.801919505,102.76143659 295.766563833,115.103863614"
     id="path55"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -579,8 +579,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g26"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 337.933288673,271.517163146 370.342288974,257.173816883"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 286.730513856,119.387530363 270.732106237,94.6739083128"
     id="path56"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -589,8 +589,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g27"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 337.933288673,271.517163146 280.085739978,294.595395642"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 286.730513856,119.387530363 291.429079401,164.38760314"
     id="path57"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -599,8 +599,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g71"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 159.90778478,212.983536956 190.50151431,204.193642846"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 214.74239899,72.5910919024 206.692856713,97.3187876188"
     id="path58"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -609,8 +609,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g30"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 198.621477286,134.057384213 181.202995754,89.1380955568"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 122.759357047,304.175126862 156.248112878,289.606311139"
     id="path59"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -619,8 +619,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 112.158243892,279.728912584 124.234543542,256.285445979"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 245.412045073,50.3055222693 246.350474439,28.2704220004"
     id="path60"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -629,8 +629,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g33"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 112.158243892,279.728912584 78.999377612,278.738369324"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 245.412045073,50.3055222693 198.952150845,39.4991535074"
     id="path61"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -639,8 +639,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g37"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 341.269188307,91.8841618171 359.319359979,98.7045347049"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 27.8556377054,174.729164197 15.0343179042,196.734267773"
     id="path62"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -649,8 +649,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g34"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 341.269188307,91.8841618171 297.86409242,102.986996294"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 27.8556377054,174.729164197 76.7439840948,180.790681036"
     id="path63"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -659,8 +659,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g38"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 341.269188307,91.8841618171 330.678956271,106.261208056"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 27.8556377054,174.729164197 49.6138950773,167.225282925"
     id="path64"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -669,8 +669,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g60"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 193.425342445,349.656887607 183.9940728,380.438718855"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 339.143965958,244.545052005 340.453942375,275.572535893"
     id="path65"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -679,8 +679,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g46"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 193.425342445,349.656887607 241.567444857,323.655017541"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 339.143965958,244.545052005 320.916952883,211.618583239"
     id="path66"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -689,8 +689,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g72"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 193.425342445,349.656887607 206.059262726,334.6166674"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 339.143965958,244.545052005 351.576007092,214.039562269"
     id="path67"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -699,8 +699,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g81"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 69.0038365046,278.439776007 34.1900926016,271.156725839"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 189.212151162,37.2336720623 181.03487033,19.1147367828"
     id="path68"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -709,8 +709,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g40"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 69.0038365046,278.439776007 62.3720506489,310.95770483"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 189.212151162,37.2336720623 180.561484999,58.6148937891"
     id="path69"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -719,8 +719,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g45"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 69.0038365046,278.439776007 52.6132490434,259.849986389"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 189.212151162,37.2336720623 151.400350181,27.7991715006"
     id="path70"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -729,8 +729,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g54"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 69.0038365046,278.439776007 52.1363884258,287.330716046"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 189.212151162,37.2336720623 160.048833441,46.4088148396"
     id="path71"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -739,8 +739,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g83"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 288.176022788,105.465162309 315.028569085,111.961307402"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 86.6679952836,182.02112889 67.4358397473,169.439521451"
     id="path72"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -749,8 +749,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g60"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 288.176022788,105.465162309 293.049702478,89.5830159294"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 86.6679952836,182.02112889 80.1043476922,196.392840037"
     id="path73"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -759,8 +759,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g62"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 288.176022788,105.465162309 260.162759981,131.882580414"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 86.6679952836,182.02112889 73.6999975337,147.871291141"
     id="path74"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -769,8 +769,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g64"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 288.176022788,105.465162309 271.114886708,91.9956381944"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 86.6679952836,182.02112889 104.482856127,204.788344231"
     id="path75"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -779,8 +779,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g68"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 288.176022788,105.465162309 237.698021443,104.665249046"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 86.6679952836,182.02112889 135.113704523,219.260343621"
     id="path76"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -789,8 +789,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g69"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 288.176022788,105.465162309 286.397690151,111.328775531"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 86.6679952836,182.02112889 95.1198813629,179.647252524"
     id="path77"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -799,8 +799,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 291.698543474,313.445764849 278.895243249,304.168455275"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 281.568528969,210.336341638 289.570141144,183.904583899"
     id="path78"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -809,8 +809,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g71"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 291.698543474,313.445764849 260.280072696,317.593881176"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 281.568528969,210.336341638 306.300037898,204.984614647"
     id="path79"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -819,8 +819,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g72"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 291.698543474,313.445764849 273.222877553,281.765875418"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 281.568528969,210.336341638 276.857722341,170.883459577"
     id="path80"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -829,8 +829,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g79"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 291.698543474,313.445764849 272.01617487,337.250356604"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 281.568528969,210.336341638 299.547886122,222.459283252"
     id="path81"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -839,8 +839,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g94"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 373.302386735,205.020506802 337.836823725,174.527143199"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 107.18486096,76.8998732217 110.27101755,105.431413035"
     id="path82"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -849,8 +849,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g49"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 235.626373767,336.223262499 263.997503309,305.632907936"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 335.597105074,183.873072662 302.231571884,176.49317235"
     id="path83"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -859,8 +859,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g71"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 235.626373767,336.223262499 243.885196805,326.518431164"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 335.597105074,183.873072662 323.240909871,195.895909293"
     id="path84"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -869,8 +869,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g72"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 235.626373767,336.223262499 221.774668889,330.676862734"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 335.597105074,183.873072662 348.482216787,197.510367364"
     id="path85"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -879,8 +879,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g81"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 235.626373767,336.223262499 212.637042233,307.516669806"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 335.597105074,183.873072662 341.785198369,168.376515331"
     id="path86"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -889,8 +889,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 300.767668566,341.84820725 292.399730268,365.557356527"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 254.163421365,195.626634887 218.200552712,195.021342007"
     id="path87"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -899,8 +899,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g47"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 300.767668566,341.84820725 276.466916169,306.538543392"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 254.163421365,195.626634887 283.727247167,179.192235145"
     id="path88"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -909,8 +909,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g71"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 300.767668566,341.84820725 259.467347684,323.046158923"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 254.163421365,195.626634887 306.141563034,201.707643968"
     id="path89"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -919,8 +919,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g72"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 300.767668566,341.84820725 329.155142204,336.914569115"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 254.163421365,195.626634887 241.355124274,217.611539811"
     id="path90"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -929,8 +929,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g86"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 242.017093981,275.866530194 248.461619505,309.085830326"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 327.436786006,148.640784852 318.124656575,193.082190504"
     id="path91"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -939,8 +939,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g72"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 242.017093981,275.866530194 258.239367067,274.168574654"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 327.436786006,148.640784852 285.400668607,158.639870528"
     id="path92"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -949,8 +949,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g79"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 242.017093981,275.866530194 217.494685904,318.301398307"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 327.436786006,148.640784852 350.897758236,195.824851679"
     id="path93"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -959,8 +959,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g81"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 242.017093981,275.866530194 214.696835415,294.149542355"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 327.436786006,148.640784852 336.838322546,154.081075823"
     id="path94"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -969,8 +969,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 330.254229761,168.007613402 290.540024043,127.995765705"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 111.346409731,115.373421467 105.813044127,167.000140204"
     id="path95"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -979,8 +979,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 165.442651937,147.032087978 140.170345444,106.878225405"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 292.333932388,349.915537447 236.996054328,327.80299478"
     id="path96"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -989,8 +989,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g76"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 74.3057169051,122.678385599"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 180.042432413,362.784878507"
     id="path97"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -999,8 +999,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g61"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 109.746562519,67.7246618587"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 234.310280285,314.906086807"
     id="path98"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1009,8 +1009,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g70"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 125.005795598,100.208270895"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 218.247086328,327.325568966"
     id="path99"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1019,8 +1019,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g76"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 109.584130649,92.942739166"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 203.892392624,340.301231224"
     id="path100"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1029,8 +1029,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g77"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 147.414534499,94.7792836576"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 187.102199522,301.845049187"
     id="path101"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1039,8 +1039,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 99.8308072426,117.111382702"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 206.79648931,367.417709993"
     id="path102"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1049,8 +1049,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g88"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 168.167450026,83.1703213129"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 169.793714194,294.608914464"
     id="path103"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1059,8 +1059,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 125.610702141,66.4716033411"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 209.226797167,309.34070742"
     id="path104"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1069,8 +1069,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g91"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 115.450013247,101.950147764 136.73112235,77.1451087385"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 190.352834306,336.85626686 194.752806377,320.998572621"
     id="path105"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1079,8 +1079,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 304.805507326,59.2391307206 299.890625694,70.8179478596"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 53.4383794787,210.756253882 66.2130092737,207.767308565"
     id="path106"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1089,8 +1089,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g62"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 304.805507326,59.2391307206 271.691140013,80.4122279348"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 53.4383794787,210.756253882 100.650858996,212.330613738"
     id="path107"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1099,8 +1099,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g68"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 304.805507326,59.2391307206 286.761927295,111.446903255"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 53.4383794787,210.756253882 96.3974481903,182.445848163"
     id="path108"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1109,8 +1109,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 63.3812106326,66.1035251087 95.0181885188,80.4363478189"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 269.34732725,367.707459081 222.712194813,346.84981055"
     id="path109"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1119,8 +1119,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g77"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 45.9997936404,252.349172591 25.9519524119,232.863348032"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 141.697812273,25.3782712268 117.07134905,34.8495899146"
     id="path110"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1129,8 +1129,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g66"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 45.9997936404,252.349172591 43.9720001737,282.016933544"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 141.697812273,25.3782712268 147.067113449,40.021201083"
     id="path111"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1139,8 +1139,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g83"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 10.0,191.986238675 16.274055964,216.212867321"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 77.4429851116,55.6606848761 99.0443183993,43.3811760199"
     id="path112"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1149,8 +1149,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g66"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 215.072906328,36.8549151285 201.423128704,18.0872453861"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 103.225147775,273.930877545 82.733050894,285.543906962"
     id="path113"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1159,8 +1159,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g63"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 215.072906328,36.8549151285 235.935014347,27.7546586269"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 103.225147775,273.930877545 67.261863466,262.947615335"
     id="path114"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1169,8 +1169,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g67"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 215.072906328,36.8549151285 184.162248404,72.2797094587"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 103.225147775,273.930877545 155.58995979,283.770384046"
     id="path115"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1179,8 +1179,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 364.472163914,293.849178105 333.156391057,302.209198539"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 315.060517136,309.232935076 305.814478279,277.997656539"
     id="path116"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1189,8 +1189,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g87"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 234.66562316,382.477251192 216.200423489,336.246301104"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 390.0,233.689429183 363.02834277,211.185518253"
     id="path117"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1199,8 +1199,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g81"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 274.712006315,30.2986288638 254.865442416,25.9137571086"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 32.2588426469,247.166532609 48.7734957631,255.515194343"
     id="path118"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1209,8 +1209,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g67"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 324.748193116,114.312670557 302.410218738,87.684285614"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 59.0674864453,163.964974619 72.1837043732,196.225461982"
     id="path119"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1219,8 +1219,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g62"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 324.748193116,114.312670557 293.37036102,119.321890828"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 59.0674864453,163.964974619 95.1280460851,174.210229474"
     id="path120"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1229,8 +1229,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 65.3750382369,127.177605368 37.0548752654,131.533267946"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 176.347392359,372.077169882 162.613006367,383.579420827"
     id="path121"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1239,8 +1239,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g65"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 65.3750382369,127.177605368 97.3991967681,91.9614234457"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 176.347392359,372.077169882 205.725878957,348.952178197"
     id="path122"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1249,8 +1249,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g77"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 65.3750382369,127.177605368 82.7193182001,125.205964502"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 176.347392359,372.077169882 201.603419337,375.05354353"
     id="path123"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1259,8 +1259,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g88"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 295.983337747,80.0230063003 273.113811891,84.0605534077"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 75.9500367711,205.489086558 100.852502128,210.638789619"
     id="path124"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1269,8 +1269,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g68"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 295.983337747,80.0230063003 286.417213802,111.334718479"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 75.9500367711,205.489086558 97.6453433563,183.983190265"
     id="path125"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1279,8 +1279,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 252.887502841,138.743384562 274.856439029,125.935042991"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 70.1499587148,138.522642876 98.0556792797,169.512068042"
     id="path126"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1289,8 +1289,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 263.266105178,85.7991368834 236.549660613,99.8516206347"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 110.645303761,212.663891143 133.73097781,221.707265646"
     id="path127"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1299,8 +1299,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g69"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 263.266105178,85.7991368834 220.03977535,79.8058657427"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 110.645303761,212.663891143 142.645899084,246.412384854"
     id="path128"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1309,8 +1309,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g73"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 263.266105178,85.7991368834 278.501929461,112.234330522"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 110.645303761,212.663891143 106.376420154,186.809605792"
     id="path129"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1319,8 +1319,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 227.699276807,104.506801242 167.032256,94.2563237431"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 143.04205685,225.354704079 180.737672438,283.497052895"
     id="path130"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1329,8 +1329,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 227.699276807,104.506801242 186.557726978,84.2345316435"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 143.04205685,225.354704079 161.93709167,276.242473976"
     id="path131"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1339,8 +1339,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 227.699276807,104.506801242 273.900861205,118.079705171"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 143.04205685,225.354704079 110.951280014,184.78609944"
     id="path132"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1349,8 +1349,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g90"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 108.102796116,57.8606853779 129.338839753,90.0665165369"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 243.256874708,310.438598897 235.223704388,317.493575431"
     id="path133"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1359,8 +1359,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g76"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 108.102796116,57.8606853779 105.599704998,74.6720464822"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 243.256874708,310.438598897 220.34567226,335.399907743"
     id="path134"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1369,8 +1369,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g77"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 108.102796116,57.8606853779 149.009592317,86.8132078307"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 243.256874708,310.438598897 195.688061088,294.978734658"
     id="path135"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1379,8 +1379,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 108.102796116,57.8606853779 139.165803137,44.3967574584"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 243.256874708,310.438598897 232.155474123,286.922252953"
     id="path136"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1389,8 +1389,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g80"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 108.102796116,57.8606853779 133.754177869,66.3977095885"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 243.256874708,310.438598897 207.424424586,311.161043035"
     id="path137"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1399,8 +1399,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 270.797611333,298.300887009 257.407747714,311.802429422"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 292.467558013,174.333535081 309.699718895,195.164390202"
     id="path138"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1409,8 +1409,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g72"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 270.797611333,298.300887009 269.217327001,283.074155805"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 292.467558013,174.333535081 283.493688593,167.184795984"
     id="path139"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1419,8 +1419,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g79"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 270.797611333,298.300887009 216.383707864,299.49227661"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 292.467558013,174.333535081 335.882921256,161.85247342"
     id="path140"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1429,8 +1429,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 270.797611333,298.300887009 266.741877248,335.017613263"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 292.467558013,174.333535081 305.087979379,218.435753924"
     id="path141"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1439,8 +1439,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g94"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 250.36610645,318.902801829 264.557487021,282.446425643"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 316.07382238,202.869635477 282.611957951,168.153889189"
     id="path142"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1449,8 +1449,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g79"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 250.36610645,318.902801829 222.272369195,324.878980132"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 316.07382238,202.869635477 345.361782002,204.293472599"
     id="path143"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1459,8 +1459,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g81"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 250.36610645,318.902801829 313.675955857,306.683555209"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 316.07382238,202.869635477 304.935798608,258.602836819"
     id="path144"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1469,8 +1469,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g87"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 250.36610645,318.902801829 215.551470658,303.71068023"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 316.07382238,202.869635477 339.916100921,167.389621259"
     id="path145"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1479,8 +1479,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 250.36610645,318.902801829 260.585624478,336.330844104"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 316.07382238,202.869635477 310.947470586,218.545195337"
     id="path146"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1489,8 +1489,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g94"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 210.134528609,78.4325169141 166.832795961,90.0078147701"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 149.526556032,253.668868848 179.256243775,284.670314722"
     id="path147"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1499,8 +1499,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 210.134528609,78.4325169141 187.578570093,79.3902967408"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 149.526556032,253.668868848 160.964379869,276.663571588"
     id="path148"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1509,8 +1509,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 173.32371761,52.3949759832 141.258313465,90.7434288675"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 200.399048269,264.983707769 223.515598111,315.014519734"
     id="path149"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1519,8 +1519,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g76"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 173.32371761,52.3949759832 160.900556238,83.3114092846"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 200.399048269,264.983707769 190.850936019,283.046999821"
     id="path150"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1529,8 +1529,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 173.32371761,52.3949759832 176.050999134,69.9332964788"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 200.399048269,264.983707769 174.031243518,280.536602886"
     id="path151"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1539,8 +1539,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 173.32371761,52.3949759832 151.928503431,64.6003792946"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 200.399048269,264.983707769 198.066080095,301.383096242"
     id="path152"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1549,8 +1549,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 176.956016528,281.676109752 206.317813098,319.092696589"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 382.379552114,163.345087278 360.813715352,196.403630205"
     id="path153"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1559,8 +1559,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g81"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 176.956016528,281.676109752 197.859738844,294.486128354"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 382.379552114,163.345087278 355.427770816,160.235668756"
     id="path154"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1569,8 +1569,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 113.242952129,88.6739259033"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 219.616460535,334.791776125"
     id="path155"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1579,8 +1579,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g77"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 147.495827638,95.1144787763"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 194.080305952,298.015609393"
     id="path156"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1589,8 +1589,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 146.074262868,50.1595710109"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 227.848322358,287.879167885"
     id="path157"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1599,8 +1599,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g80"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 72.5185149522,97.1552749752"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 272.039085105,321.679889606"
     id="path158"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1609,8 +1609,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g82"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 141.856463425,158.770393538"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 243.021790939,369.999572099"
     id="path159"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1619,8 +1619,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g84"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 101.198963072,118.879716858"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 214.498104872,366.673103271"
     id="path160"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1629,8 +1629,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g88"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 168.418138559,83.8047098018"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 173.925895655,290.872101822"
     id="path161"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1639,8 +1639,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 129.904552479,66.738690058"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 219.754247298,309.827789401"
     id="path162"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1649,8 +1649,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g91"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 134.843685217,98.4149700715 140.448181682,79.1571689493"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.709979764,324.092358824 206.645118577,315.237702383"
     id="path163"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1659,8 +1659,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 104.127011349,84.5630107131 147.284586887,91.0940445015"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 213.583615615,342.767036759 190.919982606,300.691904243"
     id="path164"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1669,8 +1669,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g78"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 104.127011349,84.5630107131 95.4434356866,114.473011798"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 213.583615615,342.767036759 212.145955026,366.242624389"
     id="path165"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1679,8 +1679,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g88"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 104.127011349,84.5630107131 167.608399437,80.4595896153"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 213.583615615,342.767036759 171.862403667,293.263610575"
     id="path166"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1689,8 +1689,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 104.127011349,84.5630107131 121.779625052,64.3845086817"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 213.583615615,342.767036759 214.571599121,311.089418627"
     id="path167"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1699,8 +1699,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g91"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 104.127011349,84.5630107131 133.906095135,73.1376262273"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 213.583615615,342.767036759 202.001350801,320.254769918"
     id="path168"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1709,8 +1709,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 157.172012989,92.5903082083 150.009985285,50.2796061256"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 186.17772039,291.887873968 218.406922965,281.06313119"
     id="path169"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1719,8 +1719,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g80"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 157.172012989,92.5903082083 169.110585725,85.1193176182"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 186.17772039,291.887873968 174.990770712,288.508697529"
     id="path170"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1729,8 +1729,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 157.172012989,92.5903082083 134.640355687,64.6430857688"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 186.17772039,291.887873968 205.361079399,298.040320932"
     id="path171"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1739,8 +1739,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g91"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 157.172012989,92.5903082083 148.417101418,78.1125874492"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 186.17772039,291.887873968 192.424793609,302.703325569"
     id="path172"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1749,8 +1749,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 148.341004656,40.4198645642 171.626703587,71.7853395004"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.886524345,277.879240855 175.342118749,284.387810528"
     id="path173"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1759,8 +1759,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g89"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 148.341004656,40.4198645642 144.966227111,59.7051957028"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 227.886524345,277.879240855 204.155679672,303.965487836"
     id="path174"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1769,8 +1769,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 212.491223979,326.959652678 179.785678856,319.462090968"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 355.349985767,204.779050136 376.842293483,195.721759426"
     id="path175"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1779,8 +1779,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g85"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 212.491223979,326.959652678 208.572435034,309.469244976"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 355.349985767,204.779050136 347.602396622,168.864708272"
     id="path176"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1789,8 +1789,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 212.491223979,326.959652678 256.172192026,341.75002166"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 355.349985767,204.779050136 316.819790326,223.651147628"
     id="path177"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1799,8 +1799,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g94"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 170.03852058,317.227609922 197.377613378,304.052498046"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 386.057435657,191.838313185 353.27441761,165.371284173"
     id="path178"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1809,8 +1809,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g92"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 177.587573192,79.814538312 137.426775767,61.0847306154"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 165.417963466,285.617095651 205.339592927,298.108144569"
     id="path179"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1819,8 +1819,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g91"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 177.587573192,79.814538312 152.824173576,72.4176017283"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 165.417963466,285.617095651 189.634269861,305.095097655"
     id="path180"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1829,8 +1829,8 @@ width="400px" height="400px"> <defs id="defs3">
     inkscape:connection-end="#g93"
     inkscape:connection-end-point="d4" />
 <path
-    style="fill:none;stroke:white;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-    d="M 128.363915749,56.8580808426 135.635897009,63.0640133628"
+    style="fill:none;stroke:grey;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+    d="M 214.883334469,301.094278754 206.045887317,306.292568922"
     id="path181"
     inkscape:connector-type="polyline"
     inkscape:connector-curvature="0"
@@ -1842,477 +1842,477 @@ width="400px" height="400px"> <defs id="defs3">
 
   <g inkscape:label="Nodes"                     inkscape:groupmode="layer" id="layer1">
   <!-- Vertices -->
-    <g id="g0" transform="translate(251.019196219,63.3084473175)">
+    <g id="g0" transform="translate(91.1501536496,239.362685929)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text0" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan0" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g1" transform="translate(328.28013741,204.888730293)">
+    <g id="g1" transform="translate(146.160311779,99.2078226452)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text1" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan1" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g2" transform="translate(155.835540323,372.176380365)">
+    <g id="g2" transform="translate(367.623577825,294.96494204)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text2" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan2" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g3" transform="translate(39.5198679595,170.820475574)">
+    <g id="g3" transform="translate(41.7518671499,300.289119251)">
      <circle cx="0" cy="0" r="10" fill="black"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text3" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan3" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g4" transform="translate(359.851418755,173.344691432)">
+    <g id="g4" transform="translate(71.3836935961,95.73174369)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text4" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan4" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g5" transform="translate(294.922210131,167.897666915)">
+    <g id="g5" transform="translate(133.880419602,145.358686414)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text5" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan5" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g6" transform="translate(51.9727942824,195.273887659)">
+    <g id="g6" transform="translate(85.6080240479,333.809765758)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text6" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan6" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g7" transform="translate(67.7605568096,216.02496438)">
+    <g id="g7" transform="translate(97.1613084319,359.185134599)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text7" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan7" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g8" transform="translate(260.125455197,181.906333268)">
+    <g id="g8" transform="translate(167.177707353,136.661730359)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text8" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan8" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g9" transform="translate(89.3684987799,198.077364661)">
+    <g id="g9" transform="translate(56.6057629281,324.196433338)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text9" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan9" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g10" transform="translate(195.34316698,236.805749759)">
+    <g id="g10" transform="translate(238.39397884,114.303438345)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text10" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan10" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g11" transform="translate(208.776737443,366.074505424)">
+    <g id="g11" transform="translate(362.049152708,247.493009355)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text11" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan11" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g12" transform="translate(93.0402567385,345.06645334)">
+    <g id="g12" transform="translate(307.77777944,43.7622718859)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text12" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan12" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g13" transform="translate(126.079304203,342.16684063)">
+    <g id="g13" transform="translate(335.687179249,65.8927639914)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text13" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan13" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g14" transform="translate(134.289298465,310.361301672)">
+    <g id="g14" transform="translate(300.927281316,79.4202506024)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text14" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan14" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g15" transform="translate(272.430114085,204.925521643)">
+    <g id="g15" transform="translate(181.214375554,161.21918733)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text15" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan15" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g16" transform="translate(308.346387054,251.278956048)">
+    <g id="g16" transform="translate(351.886692946,105.360715234)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text16" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan16" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g17" transform="translate(239.619566265,229.552579928)">
+    <g id="g17" transform="translate(224.008371854,146.459644055)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text17" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan17" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g18" transform="translate(94.9276155287,249.154783419)">
+    <g id="g18" transform="translate(216.123758141,16.7447112218)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text18" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan18" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g19" transform="translate(390.0,167.921668567)">
+    <g id="g19" transform="translate(35.8388083013,104.644357967)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text19" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan19" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g20" transform="translate(365.453039181,133.548396754)">
+    <g id="g20" transform="translate(25.6758026422,139.240599943)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text20" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan20" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g21" transform="translate(280.685160611,241.664962594)">
+    <g id="g21" transform="translate(370.054027371,124.622780343)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text21" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan21" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g22" transform="translate(116.105046402,152.773002113)">
+    <g id="g22" transform="translate(144.557640654,333.911567877)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text22" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan22" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g23" transform="translate(75.5963378334,171.332949258)">
+    <g id="g23" transform="translate(124.665359582,358.420391972)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text23" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan23" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g24" transform="translate(311.246875218,147.851096025)">
+    <g id="g24" transform="translate(103.459320804,139.654696575)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text24" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan24" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g25" transform="translate(350.434031181,241.299561609)">
+    <g id="g25" transform="translate(321.801919505,102.76143659)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text25" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan25" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g26" transform="translate(337.933288673,271.517163146)">
+    <g id="g26" transform="translate(286.730513856,119.387530363)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text26" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan26" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g27" transform="translate(379.486744862,253.126728235)">
+    <g id="g27" transform="translate(265.297860008,86.2793286377)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text27" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan27" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g28" transform="translate(159.90778478,212.983536956)">
+    <g id="g28" transform="translate(214.74239899,72.5910919024)">
      <circle cx="0" cy="0" r="10" fill="black"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text28" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan28" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g29" transform="translate(198.621477286,134.057384213)">
+    <g id="g29" transform="translate(122.759357047,304.175126862)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text29" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan29" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g30" transform="translate(200.112691323,201.432252537)">
+    <g id="g30" transform="translate(203.597460543,106.82765309)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text30" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan30" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g31" transform="translate(112.158243892,279.728912584)">
+    <g id="g31" transform="translate(245.412045073,50.3055222693)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text31" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan31" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g32" transform="translate(341.269188307,91.8841618171)">
+    <g id="g32" transform="translate(27.8556377054,174.729164197)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text32" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan32" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g33" transform="translate(128.813918337,247.395601972)">
+    <g id="g33" transform="translate(246.775968075,18.279478343)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text33" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan33" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g34" transform="translate(368.67383775,102.239184)">
+    <g id="g34" transform="translate(10.0,205.374617491)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text34" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan34" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g35" transform="translate(193.425342445,349.656887607)">
+    <g id="g35" transform="translate(339.143965958,244.545052005)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text35" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan35" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g36" transform="translate(122.365634518,375.617320245)">
+    <g id="g36" transform="translate(343.2039499,329.910088174)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text36" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan36" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g37" transform="translate(69.0038365046,278.439776007)">
+    <g id="g37" transform="translate(189.212151162,37.2336720623)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text37" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan37" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g38" transform="translate(288.176022788,105.465162309)">
+    <g id="g38" transform="translate(86.6679952836,182.02112889)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text38" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan38" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g39" transform="translate(291.698543474,313.445764849)">
+    <g id="g39" transform="translate(281.568528969,210.336341638)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text39" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan39" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g40" transform="translate(24.4019864045,269.109049821)">
+    <g id="g40" transform="translate(176.921286323,10.0)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text40" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan40" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g41" transform="translate(373.302386735,205.020506802)">
+    <g id="g41" transform="translate(107.18486096,76.8998732217)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text41" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan41" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g42" transform="translate(235.626373767,336.223262499)">
+    <g id="g42" transform="translate(335.597105074,183.873072662)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text42" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan42" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g43" transform="translate(96.897141891,313.261648507)">
+    <g id="g43" transform="translate(279.366803255,41.1469787698)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text43" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan43" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g44" transform="translate(300.767668566,341.84820725)">
+    <g id="g44" transform="translate(254.163421365,195.626634887)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text44" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan44" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g45" transform="translate(60.3737598358,320.756012532)">
+    <g id="g45" transform="translate(176.810912666,67.8849103573)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text45" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan45" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g46" transform="translate(181.064584301,390.0)">
+    <g id="g46" transform="translate(340.875765315,285.563635202)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text46" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan46" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g47" transform="translate(289.071527938,374.987259456)">
+    <g id="g47" transform="translate(208.201968832,194.853055331)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text47" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan47" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g48" transform="translate(242.017093981,275.866530194)">
+    <g id="g48" transform="translate(327.436786006,148.640784852)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text48" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan48" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g49" transform="translate(330.254229761,168.007613402)">
+    <g id="g49" transform="translate(111.346409731,115.373421467)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text49" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan49" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g50" transform="translate(165.442651937,147.032087978)">
+    <g id="g50" transform="translate(292.333932388,349.915537447)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text50" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan50" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g51" transform="translate(115.450013247,101.950147764)">
+    <g id="g51" transform="translate(190.352834306,336.85626686)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text51" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan51" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g52" transform="translate(304.805507326,59.2391307206)">
+    <g id="g52" transform="translate(53.4383794787,210.756253882)">
      <circle cx="0" cy="0" r="10" fill="black"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text52" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan52" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g53" transform="translate(63.3812106326,66.1035251087)">
+    <g id="g53" transform="translate(269.34732725,367.707459081)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text53" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan53" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g54" transform="translate(45.9997936404,252.349172591)">
+    <g id="g54" transform="translate(141.697812273,25.3782712268)">
      <circle cx="0" cy="0" r="10" fill="black"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text54" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan54" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g55" transform="translate(10.0,191.986238675)">
+    <g id="g55" transform="translate(77.4429851116,55.6606848761)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text55" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan55" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g56" transform="translate(215.072906328,36.8549151285)">
+    <g id="g56" transform="translate(103.225147775,273.930877545)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text56" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan56" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g57" transform="translate(364.472163914,293.849178105)">
+    <g id="g57" transform="translate(315.060517136,309.232935076)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text57" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan57" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g58" transform="translate(234.66562316,382.477251192)">
+    <g id="g58" transform="translate(390.0,233.689429183)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text58" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan58" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g59" transform="translate(274.712006315,30.2986288638)">
+    <g id="g59" transform="translate(32.2588426469,247.166532609)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text59" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan59" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g60" transform="translate(324.748193116,114.312670557)">
+    <g id="g60" transform="translate(59.0674864453,163.964974619)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text60" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan60" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g61" transform="translate(65.3750382369,127.177605368)">
+    <g id="g61" transform="translate(176.347392359,372.077169882)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text61" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan61" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g62" transform="translate(295.983337747,80.0230063003)">
+    <g id="g62" transform="translate(75.9500367711,205.489086558)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text62" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan62" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g63" transform="translate(195.541252977,10.0)">
+    <g id="g63" transform="translate(74.0329822247,290.474303006)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text63" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan63" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g64" transform="translate(252.887502841,138.743384562)">
+    <g id="g64" transform="translate(70.1499587148,138.522642876)">
      <circle cx="0" cy="0" r="10" fill="black"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text64" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan64" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g65" transform="translate(27.171090869,133.053401494)">
+    <g id="g65" transform="translate(154.946445007,390.0)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text65" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan65" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g66" transform="translate(18.7810857891,225.893507871)">
+    <g id="g66" transform="translate(107.737842456,38.4392493236)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text66" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan66" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g67" transform="translate(245.100924843,23.7563984077)">
+    <g id="g67" transform="translate(57.6979376731,260.026772404)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text67" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan67" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g68" transform="translate(263.266105178,85.7991368834)">
+    <g id="g68" transform="translate(110.645303761,212.663891143)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text68" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan68" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g69" transform="translate(227.699276807,104.506801242)">
+    <g id="g69" transform="translate(143.04205685,225.354704079)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text69" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan69" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g70" transform="translate(108.102796116,57.8606853779)">
+    <g id="g70" transform="translate(243.256874708,310.438598897)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text70" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan70" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g71" transform="translate(270.797611333,298.300887009)">
+    <g id="g71" transform="translate(292.467558013,174.333535081)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text71" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan71" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g72" transform="translate(250.36610645,318.902801829)">
+    <g id="g72" transform="translate(316.07382238,202.869635477)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text72" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan72" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g73" transform="translate(210.134528609,78.4325169141)">
+    <g id="g73" transform="translate(149.526556032,253.668868848)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text73" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan73" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g74" transform="translate(173.32371761,52.3949759832)">
+    <g id="g74" transform="translate(200.399048269,264.983707769)">
      <circle cx="0" cy="0" r="10" fill="black"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text74" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan74" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g75" transform="translate(176.956016528,281.676109752)">
+    <g id="g75" transform="translate(382.379552114,163.345087278)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text75" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan75" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g76" transform="translate(134.843685217,98.4149700715)">
+    <g id="g76" transform="translate(227.709979764,324.092358824)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text76" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan76" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g77" transform="translate(104.127011349,84.5630107131)">
+    <g id="g77" transform="translate(213.583615615,342.767036759)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text77" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan77" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g78" transform="translate(157.172012989,92.5903082083)">
+    <g id="g78" transform="translate(186.17772039,291.887873968)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text78" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan78" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g79" transform="translate(268.185035954,273.127579752)">
+    <g id="g79" transform="translate(275.672110572,160.953992082)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text79" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan79" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g80" transform="translate(148.341004656,40.4198645642)">
+    <g id="g80" transform="translate(227.886524345,277.879240855)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text80" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan80" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g81" transform="translate(212.491223979,326.959652678)">
+    <g id="g81" transform="translate(355.349985767,204.779050136)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text81" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan81" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g82" transform="translate(62.5205568824,96.9531996547)">
+    <g id="g82" transform="translate(282.024309263,321.136475843)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text82" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan82" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g83" transform="translate(43.2900904912,291.993656412)">
+    <g id="g83" transform="translate(150.509788179,49.40991722)">
      <circle cx="0" cy="0" r="10" fill="black"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text83" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan83" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g84" transform="translate(143.010612303,168.703567269)">
+    <g id="g84" transform="translate(246.185817972,379.485821776)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text84" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan84" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g85" transform="translate(170.03852058,317.227609922)">
+    <g id="g85" transform="translate(386.057435657,191.838313185)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text85" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan85" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g86" transform="translate(339.007453835,335.20227372)">
+    <g id="g86" transform="translate(236.321174293,226.252103889)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text86" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan86" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g87" transform="translate(323.494744661,304.788459849)">
+    <g id="g87" transform="translate(302.976095016,268.408935015)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text87" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan87" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g88" transform="translate(92.6553257544,124.076471748)">
+    <g id="g88" transform="translate(211.53469355,376.223924876)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text88" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan88" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g89" transform="translate(177.587573192,79.814538312)">
+    <g id="g89" transform="translate(165.417963466,285.617095651)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text89" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan89" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g90" transform="translate(283.495403804,120.898348874)">
+    <g id="g90" transform="translate(104.747345125,176.943192333)">
      <circle cx="0" cy="0" r="10" fill="green"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text90" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan90" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g91" transform="translate(128.363915749,56.8580808426)">
+    <g id="g91" transform="translate(214.883334469,301.094278754)">
      <circle cx="0" cy="0" r="10" fill="red"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text91" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan91" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g92" transform="translate(206.386103946,299.711173631)">
+    <g id="g92" transform="translate(345.49366457,159.089574046)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text92" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan92" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g93" transform="translate(143.24250081,69.555513852)">
+    <g id="g93" transform="translate(197.426456443,311.362619356)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text93" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan93" sodipodi:role="line"></tspan></text>
     </g>
-    <g id="g94" transform="translate(265.643953836,344.957158735)">
+    <g id="g94" transform="translate(307.839178441,228.04985314)">
      <circle cx="0" cy="0" r="10" fill="blue"/>
       <text sodipodi:linespacing="125%" y="5.0" x="0" id="text94" style="font-size:16pxpx;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans">
 <tspan y="5.0" x="0" id="tspan94" sodipodi:role="line"></tspan></text>
