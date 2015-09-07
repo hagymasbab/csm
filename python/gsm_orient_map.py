@@ -37,7 +37,7 @@ for fn in filenames:
 	g.es["distance"] = distances
 
 	osi = loadmat('../matlab/bin/osi_gsm-learned_248.mat')['OSI'][0]
-	osi_thresholds = [0.1,0.2]	
+	osi_thresholds = [0.2,0.5,0.6]	
 	for ot in osi_thresholds:
 		print "..OSI threshold %.1f" % ot
 		to_delete = []

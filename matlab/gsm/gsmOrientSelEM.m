@@ -30,7 +30,7 @@ function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin)
     OSIs = zeros(nStep,nFilt);
     for i=1:nStep        
         for j = 1:nFilt                
-            OSIs(i,j) = orientationSelectivityIndex(tuning_curves(i,j,:).FRnonlin);
+            OSIs(i,j) = orientationSelectivityIndex(tuning_curves(i,j,:),FRnonlin);
         end
     end
     
