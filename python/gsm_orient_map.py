@@ -9,8 +9,8 @@ for fn in filenames:
 	
 	corrmat = loadmat("c_adj_%s.mat" % fn)["CC"]
 	A = ndarray.tolist(corrmat) 
-	g = Graph.Weighted_Adjacency(A,mode=ADJ_UNDIRECTED)
-	g = g.simplify()
+	g = Graph.Weighted_Adjacency(A,mode=ADJ_UNDIRECTED,loops=False)
+	#g = g.simplify()
 
 	ors = loadmat('../matlab/bin/orientpref_gsm-learned_248.mat')['orientpref'][0]
 	colors = []
@@ -57,8 +57,8 @@ for fn in filenames:
 		#layouts["drl"] = g.layout_drl(weights="weight")
 		#lay = g.layout_kamada_kawai(weights="weight")
 		#lay = g.layout_sugiyama(weights="weight")
-		#layouts["mdsw"] = g.layout_mds(dist=distmat)
-		#layouts["mds"] = g.layout_mds()
+		layouts["mdsw"] = g.layout_mds(dist=distmat)
+		layouts["mds"] = g.layout_mds()
 		layouts["graphopt"] = g.layout_graphopt()
 		
 		for lk in layouts.keys():
