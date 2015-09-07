@@ -13,6 +13,7 @@
 !test_indices*mat
 !orientpref*mat
 !A_gsm_iter.mat
+!osi*.mat
 # ignore generated figures
 *.fig
 # also temporary code files created by matlab
