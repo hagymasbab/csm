@@ -9,7 +9,8 @@ for fn in filenames:
 	
 	corrmat = loadmat("c_adj_%s.mat" % fn)["CC"]
 	A = ndarray.tolist(corrmat) 
-	g = Graph.Weighted_Adjacency(A,mode=ADJ_UNDIRECTED,loops=False)
+	g = Graph.Weighted_Adjacency(A,mode=ADJ_UNDIRECTED)
+	g = g.simplify()
 
 	ors = loadmat('../matlab/bin/orientpref_gsm-learned_248.mat')['orientpref'][0]
 	colors = []
@@ -28,6 +29,12 @@ for fn in filenames:
 		if corrval == 0: distances.append(1)
 		else: distances.append(1/corrval)
 	g.es["distance"] = distances
+
+	osi = loadmat('../matlab/bin/osi_gsm-learned_248.mat')['OSI'][0]
+	to_delete = []
+	for i in range(0,g.vcount()):
+		if osi[i] < 0.2: to_delete.append(i)
+	g.delete_vertices(to_delete)
 	
 	g = g.clusters().giant()
 	
@@ -36,15 +43,13 @@ for fn in filenames:
 		distmat[e.source,e.target] = e["distance"]
 		distmat[e.target,e.source] = e["distance"]
 	
-	print distmat
-
 	layouts = {}
 	layouts["fr"] = g.layout_fruchterman_reingold(weights="weight",area=16*g.vcount()**2)
 	#layouts["drl"] = g.layout_drl(weights="weight")
 	#lay = g.layout_kamada_kawai(weights="weight")
 	#lay = g.layout_sugiyama(weights="weight")
-	layouts["mdsw"] = g.layout_mds(dist=distmat)
-	layouts["mds"] = g.layout_mds()
+	#layouts["mdsw"] = g.layout_mds(dist=distmat)
+	#layouts["mds"] = g.layout_mds()
 	layouts["graphopt"] = g.layout_graphopt()
 	
 	for lk in layouts.keys():
