@@ -1,4 +1,4 @@
-function [mu_post,C_post,z_mean,z_var] = gsmPosteriorV(x,A,C,x_sigma,z_shape,z_scale,z_res)
+function [mu_post,C_post,z_mean,z_var,z_post_dens,component_mus,component_Cs] = gsmPosteriorV(x,A,C,x_sigma,z_shape,z_scale,z_res)
     
     ATA = A' * A;
     sATA = ATA / x_sigma^2;    
