@@ -35,9 +35,9 @@ function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin)
         for j = 1:nFilt                
             OSIs(i,j) = orientationSelectivityIndex(tuning_curves(i,j,:),FRnonlin);
         end
-        hist(prefThetas(i,:),linspace(0,180,100));
-        title(sprintf('EM step %d',em_steps(i)))
-        pause
+%         hist(prefThetas(i,:),linspace(0,180,100));
+%         title(sprintf('EM step %d',em_steps(i)))
+%         pause
     end
     
     close all;
