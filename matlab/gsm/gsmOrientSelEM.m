@@ -10,8 +10,12 @@ function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin,plotPhase
         tuning_curves = zeros(nStep,nFilt,thetaRes);
         respVar = zeros(nStep,nFilt);
         prefThetas = zeros(nStep,nFilt);
+        zmeans = zeros(nStep,nFilt);
+        zvars = zeros(nStep,nFilt);
         for i=1:nStep       
-            [prefTheta,tuningCurves,prefPhase,prefLambda,prefVars] = gsmOrientationSelectivity(A_iter{i},C,sigma_iter(i),thetaRes,false,'grating',~posterior,1,plotPhases);
+            [prefTheta,tuningCurves,prefPhase,prefLambda,prefVars,zmean,zvar] = gsmOrientationSelectivity(A_iter{i},C,sigma_iter(i),thetaRes,false,'grating',~posterior,1,plotPhases); 
+            zmeans(i,:) = zmean;
+            zvars(i,:) = zvar;
             prefThetas(i,:) = prefTheta;
             if plotPhases
                 pause
@@ -29,11 +33,42 @@ function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin,plotPhase
                 end
             end
         end
-        save('bin/save_emorient.mat','respVar','tuning_curves','prefThetas');
+        save('bin/save_emorient.mat','respVar','tuning_curves','prefThetas','zmeans','zvars');
     end
     
+    close all;
     OSIs = zeros(nStep,nFilt);
+    postVars = zeros(nStep,nFilt);
     for i=1:nStep        
+        load('testX.mat')
+        %x = randn(size(A_iter{i},1),1);
+        [act_resp,act_C_post,z_mean,z_var] = gsmPosteriorV(x',A_iter{i},C,sigma_iter(i),2,2,20);
+        postVars(i,:) = diag(act_C_post)';
+        
+        ATA = A_iter{i}' * A_iter{i};
+        iATA = stableInverse(ATA);
+        
+        subplot(4,nStep,i);
+        hist(upperTriangleValues(ATA),linspace(-500,500,100));
+        xlim([-500 500])
+        ylim([0 12000])
+        title('Filter cov');        
+        subplot(4,nStep,nStep + i);
+        hist(upperTriangleValues(iATA),linspace(-0.01,0.01,100));  
+        xlim([-0.01 0.01])
+        ylim([0 5000])
+        title('inv Filter cov');
+        subplot(4,nStep,2*nStep + i);
+        hist(diag(ATA),linspace(0,1500,100));
+        xlim([0 1500])
+        ylim([0 120])
+        title('Filter var');
+        subplot(4,nStep,3*nStep + i);
+        hist(diag(iATA),linspace(0,0.03,100));
+        xlim([0 0.03])
+        ylim([0 120])
+        title('inv Filter var');
+        
         for j = 1:nFilt                
             OSIs(i,j) = orientationSelectivityIndex(tuning_curves(i,j,:),FRnonlin);
         end
@@ -42,15 +77,22 @@ function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin,plotPhase
 %         pause
     end
     
-    close all;
-    errorbar(em_steps,mean(OSIs,2),std(OSIs,0,2),'LineWidth',2);
-    xlim([0 em_steps(nStep)+20]);
+    figure;
+    errorbar(em_steps,mean(OSIs,2),std(OSIs,0,2)/sqrt(nFilt),'LineWidth',2);
+    [s,p] = ttest(OSIs(1,:),OSIs(end,:))
+    xlim([0 em_steps(nStep)+1]);
     xlabel('EM step #','FontSize',16);
-    ylabel('OSI mean and st.d.','FontSize',16);
-%     figure;
-%     errorbar(em_steps,mean(respVar,2),std(respVar,0,2),'LineWidth',2);
-%     xlim([0 em_steps(nStep)+20]);
-%     xlabel('EM step #','FontSize',16);
-%     ylabel('Response variance to pref. stim., mean and st.d.','FontSize',16);
+    ylabel('OSI mean and s.e.m.','FontSize',16);
+    figure;
+    errorbar(em_steps,mean(postVars,2),std(postVars,0,2)/sqrt(nFilt),'LineWidth',2);
+    xlim([0 em_steps(nStep)+1]);
+    xlabel('EM step #','FontSize',16);
+    ylabel('Response variance, mean and s.e.m.','FontSize',16);
+    figure;
+    errorbar(em_steps,mean(zmeans,2),std(zmeans,0,2)/sqrt(nFilt),'LineWidth',2);
+    ylabel('Z MEAN mean and s.e.m.','FontSize',16);
+     figure;
+    errorbar(em_steps,mean(zvars,2),std(zvars,0,2)/sqrt(nFilt),'LineWidth',2);
+    ylabel('Z VAR mean and s.e.m.','FontSize',16);
 end
         

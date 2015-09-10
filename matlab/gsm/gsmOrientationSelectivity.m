@@ -1,4 +1,4 @@
-function [maxtun,responses,maxPhase,maxLambda,prefRespVars] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast,plotStuff)
+function [maxtun,responses,maxPhase,maxLambda,prefRespVars,max_zmean,max_zvar] = gsmOrientationSelectivity(A,C,sigma_x,thetaRes,loadStuff,match,scalarprod,contrast,plotStuff)
 
     setrandseed(1);
     nFilt = size(A,2);
@@ -19,6 +19,8 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars] = gsmOrientationSele
         respVars = zeros(nFilt,thetaRes);  
         respLambda = zeros(nFilt,thetaRes);
         respPhase = zeros(nFilt,thetaRes);
+        zMeansT = zeros(nFilt,thetaRes);
+        zVarT = zeros(nFilt,thetaRes);
     end
     
     if plotStuff
@@ -41,11 +43,15 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars] = gsmOrientationSele
             printCounter(t,'maxVal',thetaRes,'stringVal','Orientation');    
             theta_responses = zeros(lambdaRes,nFilt);
             theta_variances = zeros(lambdaRes,nFilt);
+            theta_zmean = zeros(lambdaRes,nFilt);
+            theta_zvar = zeros(lambdaRes,nFilt);
             phase_indices = zeros(lambdaRes,nFilt);
             for l = 1:lambdaRes                
                 if strcmp(match,'grating')
                     lambda_responses = zeros(phaseRes,nFilt);
                     lambda_variances = zeros(phaseRes,nFilt);
+                    lambda_zmean = zeros(phaseRes,nFilt);
+                    lambda_zvar = zeros(phaseRes,nFilt);
                     for p = 1:phaseRes                    
                         act_grat = contrast * grating(lambdaVals(l),thetaVals(t),phaseVals(p),imsize);                            
                         act_stim = act_grat(:);
@@ -56,8 +62,10 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars] = gsmOrientationSele
                             act_var = zeros(nFilt,1);
                         else
                             %act_resp = gsmPostMeanTransform * act_stim;
-                            [act_resp,act_C_post] = gsmPosteriorV(act_stim,A,C,sigma_x,2,2,10);
+                            [act_resp,act_C_post,z_mean,z_var] = gsmPosteriorV(act_stim,A,C,sigma_x,2,2,10);
                             act_var = diag(act_C_post);
+                            lambda_zmean(p,:) = z_mean * ones(1,nFilt);
+                            lambda_zvar(p,:) = z_var * ones(1,nFilt);
                         end
                         %responses(:,t) = responses(:,t) + act_resp;
                         lambda_responses(p,:) = act_resp;   
@@ -88,11 +96,16 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars] = gsmOrientationSele
                 [theta_resp,phase_idx] = max(lambda_responses);  
                 theta_responses(l,:) = theta_resp';
                 theta_variances(l,:) = lambda_variances(phase_idx);
+                theta_zmean(l,:) = lambda_zmean(phase_idx);
+                theta_zvar(l,:) = lambda_zvar(phase_idx);
+                
                 phase_indices(l,:) = phase_idx';
             end
             [resp,lambda_idx] = max(theta_responses);
             responses(:,t) = resp';
             respVars(:,t) = theta_variances(lambda_idx);
+            zMeansT = theta_zmean(lambda_idx);
+            zVarT = theta_zvar(lambda_idx);
             phase_idx = phase_indices(lambda_idx');
             actPhase = phaseVals(phase_idx);
             actLambda = lambdaVals(lambda_idx');
@@ -107,6 +120,8 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars] = gsmOrientationSele
     maxLambda = respLambda(maxidx);
     trespVars = respVars';
     prefRespVars = trespVars(maxidx);
+    max_zmean = zMeansT(maxidx);
+    max_zvar = zVarT(maxidx);
     
     if plotStuff
         close all;
