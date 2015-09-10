@@ -1,4 +1,4 @@
-function gsmPosteriorCorrVsCont(A,C,sigma_x,zs,x_base)
+function gsmPosteriorCorrVsCont(A,C,sigma_x,zs,x_base,rateTh)
     setrandseed(1);
     nZ = length(zs);
     iC = stableInverse(C);
@@ -33,9 +33,9 @@ function gsmPosteriorCorrVsCont(A,C,sigma_x,zs,x_base)
             error('e');
         end
     end
-    pmax = 0;
-    rmax = 0;
-    smax = 0;
+    
+    nRow = 4;
+    maxvals = zeros(nRow,1);
     nSamp = 20000;
     for i=1:nZ
         printCounter(i,'maxVal',nZ,'stringVal','Contrast');
@@ -43,12 +43,14 @@ function gsmPosteriorCorrVsCont(A,C,sigma_x,zs,x_base)
         if isempty(x_base)        
             C_post = stableInverse(iC + zs(i)^2 * sATA);
             samples = mvnrnd(zeros(nSamp,size(A,2)),C_post);
-
+            mean(abs(samples(:)))
         else
             % construct x        
             x_act = zs(i) * x_base;
             % compute posterior
             [mu_post,C_post,~,~,z_post_dens,component_mus,component_Cs] = gsmPosteriorV(x_act,A,C,sigma_x,2,2,10);
+            mean(mu_post)
+            mean(abs(mu_post))
 
             if any(isnan(z_post_dens))
                 fprintf('NaN is Z dens\n');
@@ -56,14 +58,18 @@ function gsmPosteriorCorrVsCont(A,C,sigma_x,zs,x_base)
             end
             % sample back from mixture
             samples = sampleFromGaussianMixture(z_post_dens,component_mus,component_Cs,nSamp);
+            mean(abs(samples(:)))
             % this might be very bad
             %samples = mvnrnd(repmat(mu_post',nSamp,1),C_post);
 %             imagesc(samples)
 %             pause
         end
-
+        
+        C_samp = cov(samples);
+        
         % transform values to firing rates
-        rates = 10 * max(samples - 1,0).^(1.1);
+        rates = 10 * max(samples - rateTh,0).^(1.1);
+        %rates = 10 * max(abs(samples) - rateTh,0).^(1.1);
         % calculate FR correlations
         C_r = cov(rates);
         
@@ -83,48 +89,67 @@ function gsmPosteriorCorrVsCont(A,C,sigma_x,zs,x_base)
         sum(all(C_r==0,2))
                
         potCorr = upperTriangleValues(corrcov(C_post));
+        potCorr(isnan(potCorr)) = 0;
+        sampCorr = upperTriangleValues(corrcov(C_samp));     
+        sampCorr(isnan(sampCorr)) = 0;
         rateCorr = upperTriangleValues(corrcov(C_r));     
+        rateCorr(isnan(rateCorr)) = 0;
         spikeCorr = upperTriangleValues(corrcov(C_s));     
-
+        spikeCorr(isnan(spikeCorr)) = 0;                
+        allcorrs = [potCorr sampCorr rateCorr spikeCorr];   
+        names = {'Potential','Sample','Rate','Spike count'};
+                
         % plot everything
-        subplot(3,nZ,i);
-        hist(potCorr,linspace(-1,1,100));
-        yl = ylim();
-        if yl(2) > pmax
-            pmax = yl(2);
+        for r = 1:nRow
+            subplot(nRow,nZ,(r-1)*nZ + i);
+            hist(allcorrs(:,r),linspace(-1,1,100));
+            yl = ylim();
+            if yl(2) > maxvals(r)
+                maxvals(r) = yl(2);
+            end
         end
-        subplot(3,nZ,nZ+i);
-        hist(rateCorr,linspace(-1,1,100));
-        yl = ylim();
-        if yl(2) > rmax
-            rmax = yl(2);
-        end
-        subplot(3,nZ,2*nZ+i);
-        hist(spikeCorr,linspace(-1,1,100));
-        yl = ylim();
-        if yl(2) > smax
-            smax = yl(2);
-        end
+%         subplot(nRow,nZ,nZ+i);
+%         hist(rateCorr,linspace(-1,1,100));
+%         yl = ylim();
+%         if yl(2) > rmax
+%             rmax = yl(2);
+%         end
+%         subplot(3,nZ,2*nZ+i);
+%         hist(spikeCorr,linspace(-1,1,100));
+%         yl = ylim();
+%         if yl(2) > smax
+%             smax = yl(2);
+%         end
     end
     for i=1:nZ
-        subplot(3,nZ,i);
-        title(sprintf('Z = %.2f',zs(i)),'FontSize',16);
-        xlim([-1 1]);
-        ylim([0 pmax*1.05]);
-        if i==1
-            ylabel('Potential','FontSize',16);
+        for r = 1:nRow
+            subplot(nRow,nZ,(r-1)*nZ + i);
+            xlim([-1 1]);
+            ylim([0 maxvals(r)*1.05]);
+            if i==1
+                ylabel(names{r},'FontSize',16);
+            end
         end
-        subplot(3,nZ,nZ+i);
-        xlim([-1 1]);
-        ylim([0 rmax*1.05]);
-        if i==1
-            ylabel('Rate','FontSize',16);
-        end
-        subplot(3,nZ,2*nZ+i);
-        xlim([-1 1]);
-        ylim([0 smax*1.05]);
-        if i==1
-            ylabel('Spike count','FontSize',16);
-        end
+        
+%         subplot(3,nZ,i);
+%         title(sprintf('Z = %.2f',zs(i)),'FontSize',16);
+        
+%         xlim([-1 1]);
+%         ylim([0 pmax*1.05]);
+%         if i==1
+%             ylabel('Potential','FontSize',16);
+%         end
+%         subplot(3,nZ,nZ+i);
+%         xlim([-1 1]);
+%         ylim([0 rmax*1.05]);
+%         if i==1
+%             ylabel('Rate','FontSize',16);
+%         end
+%         subplot(3,nZ,2*nZ+i);
+%         xlim([-1 1]);
+%         ylim([0 smax*1.05]);
+%         if i==1
+%             ylabel('Spike count','FontSize',16);
+%         end
     end
 end

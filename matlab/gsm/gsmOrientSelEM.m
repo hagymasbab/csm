@@ -1,4 +1,4 @@
-function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin)
+function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin,plotPhases)
     setrandseed(1);
     load(iterfile);
     nStep = length(A_iter);
@@ -10,10 +10,12 @@ function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin)
         tuning_curves = zeros(nStep,nFilt,thetaRes);
         respVar = zeros(nStep,nFilt);
         prefThetas = zeros(nStep,nFilt);
-        for i=1:nStep        
-            [prefTheta,tuningCurves,prefPhase,prefLambda,prefVars] = gsmOrientationSelectivity(A_iter{i},C,sigma_iter(i),thetaRes,false,'grating',~posterior,1,false);
+        for i=1:nStep       
+            [prefTheta,tuningCurves,prefPhase,prefLambda,prefVars] = gsmOrientationSelectivity(A_iter{i},C,sigma_iter(i),thetaRes,false,'grating',~posterior,1,plotPhases);
             prefThetas(i,:) = prefTheta;
-            %pause
+            if plotPhases
+                pause
+            end
             tuning_curves(i,:,:) = tuningCurves;
             if posterior
                 respVar(i,:) = prefVars;
