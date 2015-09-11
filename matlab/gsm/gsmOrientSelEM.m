@@ -83,11 +83,13 @@ function gsmOrientSelEM(iterfile,loadStuff,posterior,thetaRes,FRnonlin,plotPhase
     xlim([0 em_steps(nStep)+1]);
     xlabel('EM step #','FontSize',16);
     ylabel('OSI mean and s.e.m.','FontSize',16);
+    set(gca,'FontSize',16);
     figure;
     errorbar(em_steps,mean(postVars,2),std(postVars,0,2)/sqrt(nFilt),'LineWidth',2);
     xlim([0 em_steps(nStep)+1]);
     xlabel('EM step #','FontSize',16);
     ylabel('Response variance, mean and s.e.m.','FontSize',16);
+    set(gca,'FontSize',16);
     figure;
     errorbar(em_steps,mean(zmeans,2),std(zmeans,0,2)/sqrt(nFilt),'LineWidth',2);
     ylabel('Z MEAN mean and s.e.m.','FontSize',16);

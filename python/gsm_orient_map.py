@@ -4,7 +4,7 @@ from scipy.io import loadmat
 from scipy import log,exp,sqrt
 import random
 
-random.seed(2)
+random.seed(3)
 
 filenames = ["cutoff02","cutoff03","cutoff04"]
 
@@ -27,7 +27,7 @@ for fn in filenames:
 			if ors[i] >= centers[j] and ors[i] < centers[j+1]:				
 				if ors[i] - centers[j] >= centers[j+1] - ors[i]: color_idx = j
 				else: color_idx = j+1
-				color_idx = (color_idx + 3) % 8
+				color_idx = (color_idx + 4) % 8
 				#colors.append(colornames[color_idx])
 				act_rgb = []
 				for r in rgb[color_idx]: 
