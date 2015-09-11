@@ -126,10 +126,15 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars,max_zmean,max_zvar] =
     if plotStuff
         close all;
         priorcorr_vs_orientdiff = [];
+        noisecorr_vs_orientdiff = [];
         priorCorr = corrcov(C);
+        testZ = 1;
+        noiseCov = stableInverse( stableInverse(C) + (testZ^2 / sigma_x^2) * (A'*A) );
+        noiseCorr = corrcov(noiseCov);
         for i = 1:nFilt
             for j=i+1:nFilt
                 priorcorr_vs_orientdiff = [priorcorr_vs_orientdiff; abs(maxtun(i)-maxtun(j)) priorCorr(i,j)];
+                noisecorr_vs_orientdiff = [noisecorr_vs_orientdiff; abs(maxtun(i)-maxtun(j)) noiseCorr(i,j)];
             end
         end
         scatter(priorcorr_vs_orientdiff(:,1),abs(priorcorr_vs_orientdiff(:,2)));
@@ -141,6 +146,14 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars,max_zmean,max_zvar] =
 %         hold on
 %         correlationPlot(priorcorr_vs_orientdiff(:,1),abs(priorcorr_vs_orientdiff(:,2)));
 %         hold off
+        figure;
+        
+        scatter(noisecorr_vs_orientdiff(:,1),abs(noisecorr_vs_orientdiff(:,2)));
+        xlabel('Difference in preferred orientation (degrees)','FontSize',16);
+        ylabel('Noise correlation magnitude','FontSize',16);
+        set(gca,'FontSize',16);
+        ylim([0 1]);
+        xlim([0 180]);
         figure;
     
         for i = 1:nFilt
