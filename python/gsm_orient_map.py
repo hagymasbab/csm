@@ -48,6 +48,10 @@ for fn in filenames:
 		if corrval == 0: distances.append(1)
 		else: distances.append(sqrt(1/corrval))
 	g.es["distance"] = distances
+	
+	labels = []
+	for i in range(g.vcount()): labels.append("%d" % i)
+	g.vs["label"] = labels
 
 	osi_thresholds = [0,0.2,0.3,0.5]
 	if fn == "cutoff04": osi_thresholds = osi_thresholds[0:-2]	
@@ -79,5 +83,6 @@ for fn in filenames:
 			imdim = [400,600,800]
 			for d in imdim:
 				outname = "orient_map_%s_osith%.1f_%s_dim%d.svg" % (fn,ot,lk,d);
-				g.write_svg(outname,layout=layouts[lk],labels=None,vertex_size=10,colors="color",edge_colors=["white"]*g.ecount(),width=d,height=d)
+				#g.write_svg(outname,layout=layouts[lk],labels=None,vertex_size=10,colors="color",edge_colors=["white"]*g.ecount(),width=d,height=d)
+				g.write_svg(outname,layout=layouts[lk],labels="label",vertex_size=10,colors="color",edge_colors=["white"]*g.ecount(),width=d,height=d)
 
