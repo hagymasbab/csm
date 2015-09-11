@@ -133,8 +133,11 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars,max_zmean,max_zvar] =
             end
         end
         scatter(priorcorr_vs_orientdiff(:,1),abs(priorcorr_vs_orientdiff(:,2)));
-        xlabel('Preferred orientation difference','FontSize',16);
+        xlabel('Difference in preferred orientation (degrees)','FontSize',16);
         ylabel('Prior correlation magnitude','FontSize',16);
+        set(gca,'FontSize',16);
+        ylim([0 1]);
+        xlim([0 180]);
 %         hold on
 %         correlationPlot(priorcorr_vs_orientdiff(:,1),abs(priorcorr_vs_orientdiff(:,2)));
 %         hold off
@@ -164,7 +167,7 @@ function [maxtun,responses,maxPhase,maxLambda,prefRespVars,max_zmean,max_zvar] =
     end
     
     if ~loadStuff
-        save('bin/save_gsmorient.mat','responses','respLambda','respPhase','respVars');
+        save('bin/save_gsmorient.mat','responses','respLambda','respPhase','respVars','zMeansT','zVarT');
     end
     
 end
