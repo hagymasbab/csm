@@ -1,8 +1,8 @@
 data {
-  int<lower=0> N;
+  int<lower=1> N;
 	
-  int<lower=0> d_x;
-	int<lower=0> d_u;
+  int<lower=1> d_x;
+	int<lower=1> d_u;
 
   real<lower=0> z_shape;
   real<lower=0> z_scale;
@@ -16,12 +16,12 @@ data {
 
 transformed data {
   real z_rate; 
-  vector[d_u] mu_z;   
+  vector[d_u] mu_u;   
 
   z_rate <- 1 / z_scale;
 
   for (i in 1:d_u)
-    mu_z[i] <- 0.0;
+    mu_u[i] <- 0.0;
 }
 
 parameters {
@@ -31,7 +31,7 @@ parameters {
 
 model {
   z ~ gamma(z_shape,z_rate);
-  u ~ multi_normal(mu_z,C);
+  u ~ multi_normal(mu_u,C);
   for (i in 1:N)
     x[i] ~ multi_normal(z[i]*A*u[i],sigma_x);
 }
