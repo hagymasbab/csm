@@ -12,7 +12,7 @@ data {
   real<lower=0> g_scale;
 
   cov_matrix[d_u] C[k];
-  matrix[d_u, d_x] A;
+  matrix[d_x, d_u] A;
   cov_matrix[d_x] sigma_x;
 
   vector[d_x] x[N];
@@ -47,7 +47,7 @@ model {
     C_u <- g[i,1] * C[1];
     for (j in 2:k)
       C_u <- C_u + g[i,j] * C[j];
-      
+
     u ~ multi_normal(mu_u,C_u);
     x[i] ~ multi_normal(z[i]*A*u[i],sigma_x);
   }
