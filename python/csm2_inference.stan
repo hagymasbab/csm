@@ -32,7 +32,7 @@ transformed data {
 }
 
 parameters {
-  vector[k] g[N];
+  vector<lower=0, upper=1>[k] g[N];
   real<lower=0.001> z[N];
   vector[d_u] u[N];
 }
@@ -46,7 +46,8 @@ model {
   
   for (i in 1:N) {
     for (j in 1:k)
-      g[i,j] ~ gamma(g_shape,g_rate);
+      # g[i,j] ~ gamma(g_shape,g_rate);
+      g[i,j] ~ beta(g_shape,g_scale);
 
     # add weighed components
     C_u <- g[i,1] * C[1];

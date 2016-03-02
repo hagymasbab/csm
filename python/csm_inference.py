@@ -1,11 +1,11 @@
 import pickle
 import numpy as np
-from numpy.random import gamma, dirichlet, multivariate_normal
+import numpy.random as rnd
 from pystan import StanModel
 import matplotlib.pyplot as pl
 
 recompile = False
-model_type = 3
+model_type = 2
 
 N = 1
 k = 2
@@ -15,7 +15,7 @@ sigma_x = 0.1 * np.identity(d_x)
 z_scale = 2
 z_shape = 2
 g_scale = 1
-g_shape = 2
+g_shape = 1
 A = np.identity(d_x)
 Var_u = np.identity(d_x)
 
@@ -41,8 +41,12 @@ for i in range(k):
                 act_C[idx2, idx1] = act_C[idx1, idx2]
         C.append(act_C)
 
-z_synth = gamma(z_shape, z_scale, N)
-g_synth = gamma(g_shape, g_scale, (N, k))
+z_synth = rnd.gamma(z_shape, z_scale, N)
+
+if model_type == 2:
+    g_synth = rnd.beta(g_shape, g_scale, (N, k))
+else:
+    g_synth = rnd.gamma(g_shape, g_scale, (N, k))
 # g_synth = dirichlet((1, 1), N)
 u_synth = np.zeros((N, d_u))
 x_synth = np.zeros((N, d_x))
@@ -51,18 +55,20 @@ for i in range(N):
         act_g = g_synth[i, :].T
         mu_u = np.dot(C, act_g)
         # mu_u = C.T.dot(act_g)
-        act_u = multivariate_normal(mu_u, Var_u)
+        act_u = rnd.multivariate_normal(mu_u, Var_u)
     else:
         act_C = np.zeros((d_u, d_u))
         for j in range(k):
             act_C += g_synth[i, j] * C[j]
         if model_type == 2:
             act_C = np.minimum(act_C, np.ones((d_u, d_u))) + np.identity(d_u)
-            act_C = Var_u * act_C * Var_u
-        act_u = multivariate_normal(np.zeros(d_u), act_C)
+            act_C = np.dot(np.dot(Var_u, act_C), Var_u)
+            pl.imshow(act_C, interpolation='nearest')
+            pl.show()
+        act_u = rnd.multivariate_normal(np.zeros(d_u), act_C)
     u_synth[i, :] = act_u.T
     act_mean = z_synth[i] * A.dot(act_u)
-    x_synth[i, :] = multivariate_normal(act_mean, sigma_x)
+    x_synth[i, :] = rnd.multivariate_normal(act_mean, sigma_x)
 
 gsm_dat = {
     'N': N,
@@ -93,7 +99,7 @@ if recompile:
 else:
     sm = pickle.load(open(fname + '_inference.pkl', 'rb'))
 
-fit = sm.sampling(data=gsm_dat, iter=2000, chains=2)
+fit = sm.sampling(data=gsm_dat, iter=2000, chains=8)
 estimation = fit.extract(permuted=True)
 
 g_est_mean = np.mean(estimation["g"], 0)
