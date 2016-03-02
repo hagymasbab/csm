@@ -9,7 +9,7 @@ model_type = 2
 
 N = 1
 k = 2
-d_x = 16
+d_x = 36
 d_u = d_x
 sigma_x = 0.1 * np.identity(d_x)
 z_scale = 2
