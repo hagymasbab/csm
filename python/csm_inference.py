@@ -10,7 +10,7 @@ model_type = 2
 
 N = 1
 k = 2
-d_x = 64
+d_x = 36
 d_u = d_x
 sigma_x = 0.1 * np.identity(d_x)
 z_scale = 2
@@ -19,9 +19,10 @@ g_scale = 1
 g_shape = 1
 Var_u = np.identity(d_x)
 
-# A = np.identity(d_x)
-matDict = loadmat('../matlab/bin/filters_OF_64.mat')
-A = matDict['A']
+A = np.identity(d_x)
+# matDict = loadmat('../matlab/bin/filters_OF_64.mat')
+# A = matDict['A']
+# A = A + 1 * np.identity(d_x)
 
 templates = [[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13, 14, 15]]
 if model_type == 3:
@@ -103,7 +104,7 @@ if recompile:
 else:
     sm = pickle.load(open(fname + '_inference.pkl', 'rb'))
 
-fit = sm.sampling(data=gsm_dat, iter=400, chains=8)
+fit = sm.sampling(data=gsm_dat, iter=400, chains=3)
 estimation = fit.extract(permuted=True)
 
 g_est_mean = np.mean(estimation["g"], 0)
