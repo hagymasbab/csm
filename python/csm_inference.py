@@ -10,7 +10,7 @@ model_type = 2
 
 N = 1
 k = 2
-d_x = 36
+d_x = 16
 d_u = d_x
 sigma_x = 0.1 * np.identity(d_x)
 z_scale = 2
@@ -20,9 +20,14 @@ g_shape = 1
 Var_u = np.identity(d_x)
 
 A = np.identity(d_x)
+i, j = np.indices(A.shape)
+A[i == j+1] = 0.5
+A[i == j-1] = 0.5
 # matDict = loadmat('../matlab/bin/filters_OF_64.mat')
 # A = matDict['A']
 # A = A + 1 * np.identity(d_x)
+# pl.imshow(A, interpolation='nearest')
+# pl.show()
 
 templates = [[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13, 14, 15]]
 if model_type == 3:
@@ -68,8 +73,8 @@ for i in range(N):
         if model_type == 2:
             act_C = np.minimum(act_C, np.ones((d_u, d_u))) + np.identity(d_u)
             act_C = np.dot(np.dot(Var_u, act_C), Var_u)
-            pl.imshow(act_C, interpolation='nearest')
-            pl.show()
+            # pl.imshow(act_C, interpolation='nearest')
+            # pl.show()
         act_u = rnd.multivariate_normal(np.zeros(d_u), act_C)
     u_synth[i, :] = act_u.T
     act_mean = z_synth[i] * A.dot(act_u)
@@ -104,7 +109,7 @@ if recompile:
 else:
     sm = pickle.load(open(fname + '_inference.pkl', 'rb'))
 
-fit = sm.sampling(data=gsm_dat, iter=400, chains=3)
+fit = sm.sampling(data=gsm_dat, iter=2000, chains=2)
 estimation = fit.extract(permuted=True)
 
 g_est_mean = np.mean(estimation["g"], 0)
