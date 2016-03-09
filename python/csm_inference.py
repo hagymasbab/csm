@@ -109,7 +109,7 @@ if recompile:
 else:
     sm = pickle.load(open(fname + '_inference.pkl', 'rb'))
 
-fit = sm.sampling(data=gsm_dat, iter=2000, chains=2)
+fit = sm.sampling(data=gsm_dat, iter=2000, chains=7)
 estimation = fit.extract(permuted=True)
 
 g_est_mean = np.mean(estimation["g"], 0)
