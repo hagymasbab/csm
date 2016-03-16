@@ -6,7 +6,7 @@ from pystan import StanModel
 import matplotlib.pyplot as pl
 
 recompile = False
-model_type = 2
+model_type = 1
 
 N = 1
 k = 2
