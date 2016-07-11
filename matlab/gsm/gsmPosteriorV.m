@@ -5,7 +5,8 @@ function [mu_post,C_post,z_mean,z_var,z_post_dens,component_mus,component_Cs] = 
     iC = stableInverse(C);
     sAx = A' * x / x_sigma^2;
     Dv = size(A,2);
-
+    
+    fprintf('z')
     [z_post_dens,z_vals] = gsmPosteriorZ(x,A,C,x_sigma,z_shape,z_scale,z_res,true);
     
 %     size(z_post_dens)
@@ -21,6 +22,8 @@ function [mu_post,C_post,z_mean,z_var,z_post_dens,component_mus,component_Cs] = 
     
     mu_post = zeros(Dv,1);
     C_post = zeros(Dv);
+    
+    fprintf('int')
     
     for i=1:z_res
         Cc = stableInverse(iC + z_vals(i)^2 * sATA);
